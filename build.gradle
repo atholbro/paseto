@@ -47,7 +47,3 @@ allprojects {
 task allDependencies {
 	subprojects.each { dependsOn("${it.name}:dependencies") }
 }
-
-tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
-}
