@@ -1,0 +1,42 @@
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+
+def artifact_id = "meta"
+
+jar {
+	baseName = generateBaseName(artifact_id)
+	version = library_version
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			groupId group_id
+			artifactId artifact_id
+			version library_version
+
+			from components.java
+		}
+	}
+}
+
+sourceCompatibility = 1.8
+
+dependencies {
+	api project(':paseto-base')
+	api project(':crypto-v1-bc')
+	api project(':crypto-v2-libsodium')
+	api project(':encoding-json-jackson')
+	api project(':base64-jvm8')
+
+	testImplementation group: 'junit', name: 'junit', version: '4.12'
+	testImplementation project(':test')
+}
+
+tasks.withType(Test) {
+	testLogging {
+		exceptionFormat "full"
+		events "started", "skipped", "passed", "failed"
+		showStandardStreams true
+	}
+}

@@ -1,0 +1,49 @@
+buildscript {
+	repositories {
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+	}
+	dependencies {
+		classpath "gradle.plugin.com.github.gradle-git-version-calculator:gradle-git-version-calculator:1.0.0"
+	}
+}
+
+plugins {
+	id 'nu.studer.credentials' version '1.0.4'
+}
+
+ext {
+	publish_user = project.hasProperty('publish_user') ? project.getProperty('publish_user') : credentials.publish_user
+	publish_pass = project.hasProperty('publish_pass') ? project.getProperty('publish_pass') : credentials.publish_pass
+}
+
+def generateBaseName(artifact_id) {
+	return "paseto-" + artifact_id
+}
+
+allprojects {
+	apply plugin: 'com.github.gradle-git-version-calculator'
+
+	gitVersionCalculator {
+		prefix = 'release@'
+		withSnapshot = true
+	}
+
+	ext {
+		group_id = "net.aholbrook.paseto"
+		library_version = gitVersionCalculator.calculateVersion()
+	}
+
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		maven {
+			url  "https://dl.bintray.com/terl/lazysodium-maven"
+		}
+	}
+}
+
+task allDependencies {
+	subprojects.each { dependsOn("${it.name}:dependencies") }
+}

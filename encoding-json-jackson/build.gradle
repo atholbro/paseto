@@ -1,0 +1,29 @@
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+
+def artifact_id = "encoding-json-jackson"
+
+jar {
+	baseName = generateBaseName(artifact_id)
+	version = library_version
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			groupId group_id
+			artifactId artifact_id
+			version library_version
+
+			from components.java
+		}
+	}
+}
+
+sourceCompatibility = 1.8
+
+dependencies {
+	implementation project(':encoding-base')
+
+	implementation "com.fasterxml.jackson.core:jackson-databind:2.9.5"
+}

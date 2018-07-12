@@ -1,0 +1,29 @@
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+
+def artifact_id = "crypto-v2-libsodium"
+
+jar {
+	baseName = generateBaseName(artifact_id)
+	version = library_version
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			groupId group_id
+			artifactId artifact_id
+			version library_version
+
+			from components.java
+		}
+	}
+}
+
+sourceCompatibility = 1.8
+
+dependencies {
+	implementation project(":crypto-v2-base")
+
+	implementation "com.goterl.lazycode:lazysodium-java:2.5.0"
+}

@@ -1,0 +1,16 @@
+apply plugin: 'java-library'
+
+def artifact_id = "test"
+
+jar {
+	baseName = generateBaseName(artifact_id)
+	version = library_version
+}
+
+sourceCompatibility = 1.8
+
+dependencies {
+	implementation project(':paseto-base')
+
+	implementation group: 'junit', name: 'junit', version: '4.12'
+}

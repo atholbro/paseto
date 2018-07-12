@@ -1,0 +1,5 @@
+rootProject.name = 'paseto'
+
+include ":crypto-base", ":crypto-v1-base", ":crypto-v2-base", ":crypto-v1-bc", ":crypto-v2-libsodium", ":base64-base", ":base64-jvm8", ":encoding-base", ":encoding-json-jackson", ":paseto-base", ":test", ":paseto-meta"
+
+enableFeaturePreview('STABLE_PUBLISHING')

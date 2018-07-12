@@ -1,0 +1,32 @@
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+
+def artifact_id = "encoding-base"
+
+jar {
+	baseName = generateBaseName(artifact_id)
+	version = library_version
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			groupId group_id
+			artifactId 'base'
+			version library_version
+
+			from components.java
+		}
+	}
+}
+
+sourceCompatibility = 1.8
+
+dependencies {
+	api project(':base64-base')
+	api project(':encoding-base')
+	api project(':crypto-v1-base')
+	api project(':crypto-v2-base')
+
+	testCompile group: 'junit', name: 'junit', version: '4.12'
+}
