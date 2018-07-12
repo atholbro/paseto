@@ -46,7 +46,7 @@ public class StringUtilsTest {
 		AssertUtils.assertEquals(new byte[] {}, StringUtils.getBytesUtf8(""));
 		AssertUtils.assertEquals(new byte[] {0x41}, StringUtils.getBytesUtf8("A"));
 		AssertUtils.assertEquals(new byte[] {0x74, 0x65, 0x73, 0x74}, StringUtils.getBytesUtf8("test"));
-		AssertUtils.assertEquals(new short[] {0xE2, 0x99, 0xA0}, StringUtils.getBytesUtf8("♠"));
+		AssertUtils.assertEquals(new short[] {0xE2, 0x99, 0xA0}, StringUtils.getBytesUtf8("\u2660"));
 	}
 
 	@Test
@@ -61,12 +61,12 @@ public class StringUtilsTest {
 		Assert.assertTrue(StringUtils.isEqual(" ", " "));
 		Assert.assertTrue(StringUtils.isEqual("A", "A"));
 		Assert.assertTrue(StringUtils.isEqual("test", "test"));
-		Assert.assertTrue(StringUtils.isEqual("♠", "♠"));
+		Assert.assertTrue(StringUtils.isEqual("\u2660", "\u2660"));
 
 		// not equal
 		Assert.assertFalse(StringUtils.isEqual("  ", " "));
 		Assert.assertFalse(StringUtils.isEqual("AA", "A"));
 		Assert.assertFalse(StringUtils.isEqual("testtest", "test"));
-		Assert.assertFalse(StringUtils.isEqual("♠♠", "♠"));
+		Assert.assertFalse(StringUtils.isEqual("\u2660\u2660", "\u2660"));
 	}
 }
