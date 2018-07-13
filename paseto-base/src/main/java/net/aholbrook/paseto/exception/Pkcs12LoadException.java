@@ -24,31 +24,31 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
-public class Pkcs12Exception extends RuntimeException {
+public class Pkcs12LoadException extends PasetoException {
 	private final Reason reason;
 
-	public Pkcs12Exception(FileNotFoundException e) {
-		super(e);
+	public Pkcs12LoadException(FileNotFoundException e) {
+		super("Unable to load Pkcs12 file", e);
 		reason = Reason.FILE_NOT_FOUND;
 	}
 
-	public Pkcs12Exception(KeyStoreException e) {
-		super(e);
+	public Pkcs12LoadException(KeyStoreException e) {
+		super("Unable to load Pkcs12 file", e);
 		reason = Reason.NO_PKCS12_PROVIDER;
 	}
 
-	public Pkcs12Exception(NoSuchAlgorithmException e) {
-		super(e);
+	public Pkcs12LoadException(NoSuchAlgorithmException e) {
+		super("Unable to load Pkcs12 file", e);
 		reason = Reason.ALGORITHM_NOT_FOUND;
 	}
 
-	public Pkcs12Exception(UnrecoverableKeyException e) {
-		super(e);
+	public Pkcs12LoadException(UnrecoverableKeyException e) {
+		super("Unable to load Pkcs12 file", e);
 		reason = Reason.UNRECOVERABLE_KEY;
 	}
 
-	public Pkcs12Exception(IOException e) {
-		super(e);
+	public Pkcs12LoadException(IOException e) {
+		super("Unable to load Pkcs12 file", e);
 		if (e.getCause() != null && e.getCause() instanceof UnrecoverableKeyException) {
 			reason = Reason.INCORRECT_PASSWORD;
 		} else {
@@ -56,8 +56,8 @@ public class Pkcs12Exception extends RuntimeException {
 		}
 	}
 
-	public Pkcs12Exception(CertificateException e) {
-		super(e);
+	public Pkcs12LoadException(CertificateException e) {
+		super("Unable to load Pkcs12 file", e);
 		reason = Reason.CERTIFICATE_ERROR;
 	}
 

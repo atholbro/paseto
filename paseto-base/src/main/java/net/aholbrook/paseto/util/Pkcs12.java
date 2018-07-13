@@ -18,7 +18,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.util;
 
 import net.aholbrook.paseto.Tuple;
-import net.aholbrook.paseto.exception.Pkcs12Exception;
+import net.aholbrook.paseto.exception.Pkcs12LoadException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -47,17 +47,17 @@ public class Pkcs12 {
 
 			return new Tuple<>(privateKey, publicKey);
 		} catch (FileNotFoundException e) {
-			throw new Pkcs12Exception(e);
+			throw new Pkcs12LoadException(e);
 		} catch (CertificateException e) {
-			throw new Pkcs12Exception(e);
+			throw new Pkcs12LoadException(e);
 		} catch (NoSuchAlgorithmException e) {
-			throw new Pkcs12Exception(e);
+			throw new Pkcs12LoadException(e);
 		} catch (UnrecoverableKeyException e) {
-			throw new Pkcs12Exception(e);
+			throw new Pkcs12LoadException(e);
 		} catch (IOException e) {
-			throw new Pkcs12Exception(e);
+			throw new Pkcs12LoadException(e);
 		} catch (KeyStoreException e) {
-			throw new Pkcs12Exception(e);
+			throw new Pkcs12LoadException(e);
 		}
 	}
 }

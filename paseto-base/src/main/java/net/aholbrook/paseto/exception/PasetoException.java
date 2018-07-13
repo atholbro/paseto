@@ -18,19 +18,11 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.exception;
 
 public class PasetoException extends RuntimeException {
-	private final String token;
-
-	public PasetoException(String s, String token) {
+	public PasetoException(String s) {
 		super(s);
-		this.token = token;
 	}
 
-	public PasetoException(String s, String token, Throwable throwable) {
+	public PasetoException(String s, Throwable throwable) {
 		super(s, throwable);
-		this.token = token;
-	}
-
-	public String getToken() {
-		return token;
 	}
 }

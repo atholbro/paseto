@@ -17,7 +17,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.exception;
 
-public class TokenParseException extends PasetoException {
+public class TokenParseException extends PasetoStringException {
 	public TokenParseException(String token) {
 		super(message(token), token);
 	}

@@ -17,7 +17,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.exception;
 
-public class DecryptionException extends PasetoException {
+public class DecryptionException extends PasetoStringException {
 	public DecryptionException(String token) {
 		super("Failed to decrypt token payload.", token);
 	}
