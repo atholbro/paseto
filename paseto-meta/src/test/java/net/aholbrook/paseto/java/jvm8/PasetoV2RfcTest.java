@@ -18,13 +18,13 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.jvm8;
 
 import net.aholbrook.paseto.Paseto;
-import net.aholbrook.paseto.test.PasetoV1TestBase;
+import net.aholbrook.paseto.test.PasetoV2RfcTestBase;
 import net.aholbrook.paseto.test.crypto.TestNonceGenerator;
 
-public class PasetoV1Test extends PasetoV1TestBase {
+public class PasetoV2RfcTest extends PasetoV2RfcTestBase {
 	@Override
 	protected <_Payload> Paseto<_Payload> createPaseto(byte[] nonce) {
-		return PasetoBuilders.<_Payload>v1()
+		return PasetoBuilders.<_Payload>v2()
 				.withTestingNonceGenerator(new TestNonceGenerator(nonce))
 				.build();
 	}

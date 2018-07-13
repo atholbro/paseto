@@ -20,7 +20,7 @@ package net.aholbrook.paseto.test;
 import net.aholbrook.paseto.test.data.RfcTestVectors;
 import org.junit.Test;
 
-public abstract class PasetoV1TestBase extends PasetoTestBase {
+public abstract class PasetoV1RfcTestBase extends PasetoTestBase {
 	// Encryption tests
 	@Test
 	public void v1_RfcVectorE1() {
