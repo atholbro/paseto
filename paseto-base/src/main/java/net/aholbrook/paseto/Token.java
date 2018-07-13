@@ -4,6 +4,15 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 
 public class Token {
+	public final static String CLAIM_ISSUER = "ISSUER";
+	public final static String CLAIM_SUBJECT = "SUBJECT";
+	public final static String CLAIM_AUDIENCE = "AUDIENCE";
+	public final static String CLAIM_EXPIRATION = "EXPIRATION";
+	public final static String CLAIM_NOT_BEFORE = "NOT_BEFORE";
+	public final static String CLAIM_ISSUED_AT = "ISSUED_AT";
+	public final static String CLAIM_TOKEN_ID = "TOKEN_ID";
+
+
 	// These are the standard names from the RFC. Using these names should lead to correct serialization with GSON.
 	// Jackson requires the use of a mixin since it reads the getters/setters.
 	private String iss; // Issuer

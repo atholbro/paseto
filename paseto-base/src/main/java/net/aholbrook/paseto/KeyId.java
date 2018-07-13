@@ -3,6 +3,8 @@ package net.aholbrook.paseto;
 import java.util.Objects;
 
 public class KeyId {
+	public final static String CLAIM_KEY_ID = "KEY_ID";
+
 	// Standard name from the RFC. Using this name should lead to correct serialization with GSON.
 	// Jackson requires the use of a mixin since it reads the getter/setter.
 	private String kid;
