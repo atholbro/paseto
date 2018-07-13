@@ -19,15 +19,21 @@ package net.aholbrook.paseto.encoding.json.jackson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import net.aholbrook.paseto.KeyId;
+import net.aholbrook.paseto.Token;
 import net.aholbrook.paseto.encoding.base.EncodingProvider;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 
 public class JacksonJsonProvider implements EncodingProvider {
 	private final ObjectMapper objectMapper;
 
 	public JacksonJsonProvider() {
 		objectMapper = new ObjectMapper();
+		registerMixins(objectMapper);
+		objectMapper.registerModule(offsetDateTimeModule());
 	}
 
 	public JacksonJsonProvider(ObjectMapper objectMapper) {
@@ -50,5 +56,17 @@ public class JacksonJsonProvider implements EncodingProvider {
 		} catch (IOException e) {
 			return null;
 		}
+	}
+
+	public static void registerMixins(ObjectMapper mapper) {
+		mapper.addMixIn(Token.class, TokenMixIn.class);
+		mapper.addMixIn(KeyId.class, KeyIdMixIn.class);
+	}
+
+	public static SimpleModule offsetDateTimeModule() {
+		SimpleModule module = new SimpleModule();
+		module.addSerializer(OffsetDateTime.class, new OffsetDateTimeSerializer());
+		module.addDeserializer(OffsetDateTime.class, new OffsetDateTimeDeserializer());
+		return module;
 	}
 }
