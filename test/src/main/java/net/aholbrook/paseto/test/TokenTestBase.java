@@ -10,7 +10,7 @@ public abstract class TokenTestBase {
 	protected abstract EncodingProvider getEncodingProvider();
 
 	@Test
-	public void token_encodeDecode1() {
+	public void token1_encodeDecode() {
 		EncodingProvider encodingProvider = getEncodingProvider();
 		String s = encodingProvider.toJson(TokenTestVectors.TOKEN_1);
 		Token token2 = encodingProvider.fromJson(s, Token.class);
@@ -18,14 +18,14 @@ public abstract class TokenTestBase {
 	}
 
 	@Test
-	public void token_decode1() {
+	public void token1_decode() {
 		EncodingProvider encodingProvider = getEncodingProvider();
 		Token token = encodingProvider.fromJson(TokenTestVectors.TOKEN_1_STRING, Token.class);
 		Assert.assertEquals("decoded token", TokenTestVectors.TOKEN_1, token);
 	}
 
 	@Test
-	public void token_encodeDecode2() {
+	public void token2_encodeDecode() {
 		EncodingProvider encodingProvider = getEncodingProvider();
 		String s = encodingProvider.toJson(TokenTestVectors.TOKEN_2);
 		TokenTestVectors.CustomToken token2 = encodingProvider.fromJson(s, TokenTestVectors.CustomToken.class);
@@ -33,7 +33,7 @@ public abstract class TokenTestBase {
 	}
 
 	@Test
-	public void token_decode2() {
+	public void token2_decode() {
 		EncodingProvider encodingProvider = getEncodingProvider();
 		TokenTestVectors.CustomToken token = encodingProvider.fromJson(TokenTestVectors.TOKEN_2_STRING,
 				TokenTestVectors.CustomToken.class);
