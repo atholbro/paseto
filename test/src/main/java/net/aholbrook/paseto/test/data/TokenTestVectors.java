@@ -40,6 +40,16 @@ public class TokenTestVectors {
 			+ "\"sub\":\"user-auth\",\"iss\":\"auth.example.com\",\"aud\":\"internal-service.example.com\","
 			+ "\"jti\":null,\"nbf\":\"2018-01-01T17:18:44+00:00\",\"iat\":\"2018-01-01T17:18:44+00:00\"}";
 
+	// Minimal token, only iss and exp set.
+	public final static Token TOKEN_3 = new Token()
+			.setExpiration(OffsetDateTime.of(LocalDate.of(2018, 1, 1),
+					LocalTime.of(17, 23, 44), ZoneOffset.UTC))
+			.setIssuedAt(OffsetDateTime.of(LocalDate.of(2018, 1, 1),
+					LocalTime.of(17, 18, 44), ZoneOffset.UTC));
+
+	// Empty token
+	public final static Token TOKEN_4 = new Token();
+
 	public static class CustomToken extends Token {
 		private Long userId;
 
