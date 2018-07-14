@@ -2,6 +2,7 @@ package net.aholbrook.paseto.verification.rules;
 
 import net.aholbrook.paseto.Token;
 import net.aholbrook.paseto.exception.verification.rules.IncorrectAudienceException;
+import net.aholbrook.paseto.exception.verification.rules.MissingClaimException;
 import net.aholbrook.paseto.util.StringUtils;
 import net.aholbrook.paseto.verification.PasetoVerificationContext;
 
@@ -25,9 +26,11 @@ public class ForAudience implements Rule {
 
 	@Override
 	public void check(Token token, PasetoVerificationContext context) {
-		String tokenAudience = StringUtils.ntes(token.getAudience());
+		if (StringUtils.isEmpty(token.getAudience())) {
+			throw new MissingClaimException(Token.CLAIM_AUDIENCE, NAME, token);
+		}
 
-		if (!audience.equals(tokenAudience)) {
+		if (!audience.equals(token.getAudience())) {
 			throw new IncorrectAudienceException(audience, token.getAudience(), NAME, token);
 		}
 	}

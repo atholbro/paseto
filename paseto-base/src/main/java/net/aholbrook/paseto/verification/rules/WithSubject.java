@@ -2,10 +2,11 @@ package net.aholbrook.paseto.verification.rules;
 
 import net.aholbrook.paseto.Token;
 import net.aholbrook.paseto.exception.verification.rules.IncorrectSubjectException;
+import net.aholbrook.paseto.exception.verification.rules.MissingClaimException;
 import net.aholbrook.paseto.util.StringUtils;
 import net.aholbrook.paseto.verification.PasetoVerificationContext;
 
-public class HasSubject implements Rule {
+public class WithSubject implements Rule {
 	public final static String NAME = "HAS_SUBJECT";
 
 	private final String subject;
@@ -14,7 +15,7 @@ public class HasSubject implements Rule {
 	 * Verifies that the token Subject (sub) claim matches the given value.
 	 * @param subject The expected subject for the token.
 	 */
-	public HasSubject(String subject) {
+	public WithSubject(String subject) {
 		this.subject = StringUtils.ntes(subject);
 	}
 
@@ -25,9 +26,11 @@ public class HasSubject implements Rule {
 
 	@Override
 	public void check(Token token, PasetoVerificationContext context) {
-		String tokenSubject = StringUtils.ntes(token.getSubject());
+		if (StringUtils.isEmpty(token.getSubject())) {
+			throw new MissingClaimException(Token.CLAIM_SUBJECT, NAME, token);
+		}
 
-		if (!subject.equals(tokenSubject)) {
+		if (!subject.equals(token.getSubject())) {
 			throw new IncorrectSubjectException(subject, token.getSubject(), NAME, token);
 		}
 	}
