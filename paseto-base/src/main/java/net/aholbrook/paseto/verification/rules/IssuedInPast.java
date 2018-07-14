@@ -81,8 +81,7 @@ public class IssuedInPast implements Rule {
 			throw new MissingClaimException(Token.CLAIM_ISSUED_AT, NAME, token);
 		}
 
-		Duration difference = Duration.between(token.getIssuedAt(), time);
-		if (difference.compareTo(allowableDrift) < 0) {
+		if (token.getIssuedAt().minus(allowableDrift).isAfter(time)) {
 			throw new IssuedInFutureException(time, token.getIssuedAt(), NAME, token);
 		}
 	}
