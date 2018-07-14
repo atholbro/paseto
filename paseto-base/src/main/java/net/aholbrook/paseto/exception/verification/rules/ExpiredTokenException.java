@@ -5,30 +5,11 @@ import net.aholbrook.paseto.Token;
 import java.time.OffsetDateTime;
 
 public class ExpiredTokenException extends RuleException {
-	private final Reason reason;
-
-	public ExpiredTokenException(Reason reason, OffsetDateTime time, String ruleName, Token token) {
-		super(message(reason, time), ruleName, token);
-		this.reason = reason;
+	public ExpiredTokenException(OffsetDateTime time, String ruleName, Token token) {
+		super(message(time), ruleName, token);
 	}
 
-	public Reason getReason() {
-		return reason;
-	}
-
-	public enum Reason {
-		NOT_YET_VALID,
-		EXPIRED
-	}
-
-	private static String message(Reason reason, OffsetDateTime time) {
-		switch (reason) {
-			default:
-				return "--missing switch branch--";
-			case NOT_YET_VALID:
-				return "Token is not valid until " + time.toString() + '.';
-			case EXPIRED:
-				return "Token expired at " + time.toString() + '.';
-		}
+	private static String message(OffsetDateTime time) {
+		return "Token expired at " + time.toString() + '.';
 	}
 }
