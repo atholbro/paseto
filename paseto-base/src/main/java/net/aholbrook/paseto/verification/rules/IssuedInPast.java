@@ -20,8 +20,8 @@ public class IssuedInPast implements Rule {
 	 * Ensures that the token was issued in the past.
 	 *
 	 * If a token was issued in the future, then it's likely that either the issuer clock is running fast, or that our
-	 * clock is running slow. In either case our expiry checks will be unreliable and in most cases you should treat the
-	 * token as invalid.
+	 * clock is running slow. In either case our expiry not before check will be unreliable and in most cases you should
+	 * treat the token as invalid.
 	 *
 	 * This constructor sets the allowable clock drift as DEFAULT_ALLOWABLE_DRIFT which is defined as 1 second. This
 	 * relaxes the check by adding a 1 second window into the future during which this check will pass.
@@ -36,10 +36,14 @@ public class IssuedInPast implements Rule {
 	 * Ensures that the token was issued in the past.
 	 *
 	 * If a token was issued in the future, then it's likely that either the issuer clock is running fast, or that our
-	 * clock is running slow. In either case our expiry checks will be unreliable and in most cases you should treat the
-	 * token as invalid.
+	 * clock is running slow. In either case our expiry not before check will be unreliable and in most cases you should
+	 * treat the token as invalid.
 	 *
 	 * This call sets the "check time" to Clock.systemUTC() and should be used in most cases.
+	 *
+	 * @param allowableDrift Time window during which a token is considered valid even if it was issued in the future.
+	 *                       Should be set to a small time window (default is 1 second) which allows for a slight clock
+	 *                       drift between servers.
 	 */
 	public IssuedInPast(Duration allowableDrift) {
 		this(OffsetDateTime.now(Clock.systemUTC()), allowableDrift);
@@ -49,15 +53,17 @@ public class IssuedInPast implements Rule {
 	 * Ensures that the token was issued in the past.
 	 *
 	 * If a token was issued in the future, then it's likely that either the issuer clock is running fast, or that our
-	 * 	 * clock is running slow. In either case our expiry checks will be unreliable and in most cases you should treat the
-	 * 	 * token as invalid.
+	 * clock is running slow. In either case our expiry not before check will be unreliable and in most cases you should
+	 * treat the token as invalid.
 	 *
 	 * This constructor allows the caller to specify the instant ("NOW") at which to check. It's intended
 	 * for unit testing and edge cases. In most cases you should use the no argument constructor which uses the
 	 * current UTC system time.
+	 *
 	 * @param time The time used for validity checks.
-	 * @param allowableDrift Maximum allowable clock drift between our time and the issued time. Allows for a small
-	 *                       window of clock drift between servers. Default is DEFAULT_ALLOWABLE_DRIFT(1 second).
+	 * @param allowableDrift Time window during which a token is considered valid even if it was issued in the future.
+	 *                       Should be set to a small time window (default is 1 second) which allows for a slight clock
+	 *                       drift between servers.
 	 */
 	public IssuedInPast(OffsetDateTime time, Duration allowableDrift) {
 		this.time = time;
