@@ -49,7 +49,7 @@ public abstract class PasetoV2TestBase extends PasetoTestBase {
 
 	@Test
 	public void v2_RfcVectorE6() {
-		encryptTestVector(RfcTestVectors.RFC_TEST_VECTOR_V2_E_5);
+		encryptTestVector(RfcTestVectors.RFC_TEST_VECTOR_V2_E_6);
 	}
 
 	// Decryption tests
