@@ -86,14 +86,18 @@ public class LocalTokenService<_TokenType extends Token> extends TokenService<_T
 			this.keyProvider = keyProvider;
 		}
 
-		public Builder withDefaultValidityPeriod(Duration defaultValidityPeriod) {
+		public Builder<_TokenType> withDefaultValidityPeriod(Duration defaultValidityPeriod) {
 			this.defaultValidityPeriod = defaultValidityPeriod;
 			return this;
 		}
 
-		public Builder checkClaims(Claim[] claims) {
+		public Builder<_TokenType> checkClaims(Claim[] claims) {
 			this.claims = claims;
 			return this;
+		}
+
+		public LocalTokenService<_TokenType> build() {
+			return new LocalTokenService<>(paseto, keyProvider, claims, defaultValidityPeriod, tokenClass);
 		}
 	}
 }
