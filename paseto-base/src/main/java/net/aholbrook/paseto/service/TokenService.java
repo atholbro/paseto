@@ -43,8 +43,8 @@ abstract class TokenService<_TokenType extends Token> {
 	abstract public <_FooterType> _FooterType getFooter(String token, Class<_FooterType> footerClass);
 
 	protected final void validateToken(_TokenType token) {
-		// set issued at if null
-		if (token.getIssuedAt() == null) {
+		// set issued at if null and we have a defaultValidityPeriod
+		if (token.getIssuedAt() == null && defaultValidityPeriod != null) {
 			token.setIssuedAt(OffsetDateTime.now(Clock.systemUTC()));
 		}
 
