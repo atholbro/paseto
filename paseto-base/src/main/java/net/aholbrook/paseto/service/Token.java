@@ -1,6 +1,7 @@
 package net.aholbrook.paseto.service;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Token {
@@ -12,6 +13,7 @@ public class Token {
 	public final static String CLAIM_ISSUED_AT = "ISSUED_AT";
 	public final static String CLAIM_TOKEN_ID = "TOKEN_ID";
 
+	public final static DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ssxxxxx");
 
 	// These are the standard names from the RFC. Using these names should lead to correct serialization with GSON.
 	// Jackson requires the use of a mixin since it reads the getters/setters.

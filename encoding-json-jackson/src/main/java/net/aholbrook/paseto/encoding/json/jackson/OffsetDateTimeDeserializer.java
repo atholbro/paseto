@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import net.aholbrook.paseto.service.Token;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
@@ -17,7 +18,7 @@ public class OffsetDateTimeDeserializer extends JsonDeserializer<OffsetDateTime>
 		JsonToken token = p.getCurrentToken();
 
 		if (token.equals(JsonToken.VALUE_STRING)) {
-			return OffsetDateTimeSerializer.FORMATTER.parse(p.getValueAsString(), OffsetDateTime::from);
+			return Token.DATETIME_FORMATTER.parse(p.getValueAsString(), OffsetDateTime::from);
 		} else {
 			return getNullValue(ctxt);
 		}
