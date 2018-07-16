@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.test;
 
-import net.aholbrook.paseto.KeyId;
+import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.encoding.base.EncodingProvider;
 import net.aholbrook.paseto.test.data.KeyIdTestVectors;
 import org.junit.Assert;

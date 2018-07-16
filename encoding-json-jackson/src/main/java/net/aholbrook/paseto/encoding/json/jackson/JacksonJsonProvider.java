@@ -20,8 +20,8 @@ package net.aholbrook.paseto.encoding.json.jackson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import net.aholbrook.paseto.KeyId;
-import net.aholbrook.paseto.Token;
+import net.aholbrook.paseto.service.KeyId;
+import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.encoding.base.EncodingProvider;
 
 import java.io.IOException;

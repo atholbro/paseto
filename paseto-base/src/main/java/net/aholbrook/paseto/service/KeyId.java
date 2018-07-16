@@ -1,4 +1,4 @@
-package net.aholbrook.paseto;
+package net.aholbrook.paseto.service;
 
 import java.util.Objects;
 

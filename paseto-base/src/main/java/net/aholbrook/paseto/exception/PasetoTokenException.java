@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.exception;
 
-import net.aholbrook.paseto.Token;
+import net.aholbrook.paseto.service.Token;
 
 public class PasetoTokenException extends PasetoException {
 	private final Token token;

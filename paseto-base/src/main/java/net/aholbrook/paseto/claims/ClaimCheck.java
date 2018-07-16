@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.claims;
 
-import net.aholbrook.paseto.Token;
+import net.aholbrook.paseto.service.Token;
 
 public interface ClaimCheck {
 	/**

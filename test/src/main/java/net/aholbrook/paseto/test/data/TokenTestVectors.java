@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.test.data;
 
-import net.aholbrook.paseto.Token;
+import net.aholbrook.paseto.service.Token;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

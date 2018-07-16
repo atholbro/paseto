@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.exception.claims;
 
-import net.aholbrook.paseto.Token;
+import net.aholbrook.paseto.service.Token;
 
 import java.util.LinkedList;
 import java.util.List;

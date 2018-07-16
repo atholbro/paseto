@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.test.data;
 
-import net.aholbrook.paseto.KeyId;
+import net.aholbrook.paseto.service.KeyId;
 
 import java.util.Objects;
 

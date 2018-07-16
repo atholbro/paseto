@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.test;
 
-import net.aholbrook.paseto.Token;
+import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.claims.ClaimCheck;
 import net.aholbrook.paseto.claims.Claims;
 import net.aholbrook.paseto.encoding.base.EncodingProvider;

@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.claims;
 
-import net.aholbrook.paseto.Token;
+import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.exception.claims.ClaimException;
 import net.aholbrook.paseto.exception.claims.MultipleClaimException;
 
