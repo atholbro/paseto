@@ -17,18 +17,20 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.test.data;
 
+import net.aholbrook.paseto.service.Token;
+
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
-public class BasicPayload {
+public class RfcToken extends Token {
 	private String data;
-	private String exp;
 
-	public BasicPayload() {
+	public RfcToken() {
 	}
 
-	public BasicPayload(String data, String exp) {
+	public RfcToken(String data, String exp) {
 		this.data = data;
-		this.exp = exp;
+		setExpiration(Token.DATETIME_FORMATTER.parse(exp, OffsetDateTime::from));
 	}
 
 	public String getData() {
@@ -39,26 +41,17 @@ public class BasicPayload {
 		this.data = data;
 	}
 
-	public String getExp() {
-		return exp;
-	}
-
-	public void setExp(String exp) {
-		this.exp = exp;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		BasicPayload payload = (BasicPayload) o;
-		return Objects.equals(data, payload.data) &&
-				Objects.equals(exp, payload.exp);
+		if (!super.equals(o)) return false;
+		RfcToken rfcToken = (RfcToken) o;
+		return Objects.equals(data, rfcToken.data);
 	}
 
 	@Override
 	public int hashCode() {
-
-		return Objects.hash(data, exp);
+		return Objects.hash(super.hashCode(), data);
 	}
 }
