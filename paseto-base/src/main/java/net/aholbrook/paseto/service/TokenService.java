@@ -10,7 +10,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 
-abstract class TokenService<_TokenType extends Token> {
+public abstract class TokenService<_TokenType extends Token> {
 	final Paseto<_TokenType> paseto;
 	final Class<_TokenType> tokenClass;
 	final Claim[] claims;
