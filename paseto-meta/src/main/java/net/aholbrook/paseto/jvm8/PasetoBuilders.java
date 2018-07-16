@@ -22,19 +22,82 @@ import net.aholbrook.paseto.base64.jvm8.Jdk8Base64Provider;
 import net.aholbrook.paseto.crypto.v1.bc.JvmV1CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.libsodium.LibSodiumV2CryptoProvider;
 import net.aholbrook.paseto.encoding.json.jackson.JacksonJsonProvider;
+import net.aholbrook.paseto.service.LocalTokenService;
+import net.aholbrook.paseto.service.PublicTokenService;
+import net.aholbrook.paseto.service.Token;
 
 public class PasetoBuilders {
-	public static <_Payload> Paseto.Builder<_Payload> v1() {
-		return new Paseto.Builder<_Payload>()
-				.v1(new JvmV1CryptoProvider())
-				.withBase64(new Jdk8Base64Provider())
-				.withJson(new JacksonJsonProvider());
+	public static class V1 {
+		public static <_Payload> Paseto.Builder<_Payload> paseto() {
+			return new Paseto.Builder<_Payload>()
+					.v1(new JvmV1CryptoProvider())
+					.withBase64(new Jdk8Base64Provider())
+					.withJson(new JacksonJsonProvider());
+		}
+
+		public static <_TokenType extends Token> LocalTokenService.Builder<_TokenType> localService(
+				LocalTokenService.KeyProvider keyProvider,
+				Class<_TokenType> tokenClass) {
+			Paseto.Builder<_TokenType> paseto = paseto();
+			return localService(paseto, keyProvider, tokenClass);
+		}
+
+		public static <_TokenType extends Token> LocalTokenService.Builder<_TokenType> localService(
+				Paseto.Builder<_TokenType> paseto,
+				LocalTokenService.KeyProvider keyProvider,
+				Class<_TokenType> tokenClass) {
+			return new LocalTokenService.Builder<>(paseto.build(), tokenClass, keyProvider);
+		}
+
+		public static <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicService(
+				PublicTokenService.KeyProvider keyProvider,
+				Class<_TokenType> tokenClass) {
+			Paseto.Builder<_TokenType> paseto = paseto();
+			return publicService(paseto, keyProvider, tokenClass);
+		}
+
+		public static <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicService(
+				Paseto.Builder<_TokenType> paseto,
+				PublicTokenService.KeyProvider keyProvider,
+				Class<_TokenType> tokenClass) {
+			return new PublicTokenService.Builder<>(paseto.build(), tokenClass, keyProvider);
+		}
 	}
 
-	public static <_Payload> Paseto.Builder<_Payload> v2() {
-		return new Paseto.Builder<_Payload>()
-				.v2(new LibSodiumV2CryptoProvider())
-				.withBase64(new Jdk8Base64Provider())
-				.withJson(new JacksonJsonProvider());
+	public static class V2 {
+		public static <_Payload> Paseto.Builder<_Payload> paseto() {
+			return new Paseto.Builder<_Payload>()
+					.v2(new LibSodiumV2CryptoProvider())
+					.withBase64(new Jdk8Base64Provider())
+					.withJson(new JacksonJsonProvider());
+		}
+
+		public static <_TokenType extends Token> LocalTokenService.Builder<_TokenType> localService(
+				LocalTokenService.KeyProvider keyProvider,
+				Class<_TokenType> tokenClass) {
+			Paseto.Builder<_TokenType> paseto = paseto();
+			return localService(paseto, keyProvider, tokenClass);
+		}
+
+		public static <_TokenType extends Token> LocalTokenService.Builder<_TokenType> localService(
+				Paseto.Builder<_TokenType> paseto,
+				LocalTokenService.KeyProvider keyProvider,
+				Class<_TokenType> tokenClass) {
+			return new LocalTokenService.Builder<>(paseto.build(), tokenClass, keyProvider);
+		}
+
+		public static <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicService(
+				PublicTokenService.KeyProvider keyProvider,
+				Class<_TokenType> tokenClass) {
+			Paseto.Builder<_TokenType> paseto = paseto();
+			return publicService(paseto, keyProvider, tokenClass);
+		}
+
+		public static <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicService(
+				Paseto.Builder<_TokenType> paseto,
+				PublicTokenService.KeyProvider keyProvider,
+				Class<_TokenType> tokenClass) {
+			return new PublicTokenService.Builder<>(paseto.build(), tokenClass, keyProvider);
+		}
 	}
 }

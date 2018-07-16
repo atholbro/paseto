@@ -24,8 +24,9 @@ import net.aholbrook.paseto.test.crypto.TestNonceGenerator;
 public class PasetoV1Test extends PasetoV1TestBase {
 	@Override
 	protected <_Payload> Paseto<_Payload> createPaseto(byte[] nonce) {
-		return PasetoBuilders.<_Payload>v1()
+		return PasetoBuilders.V1.<_Payload>paseto()
 				.withTestingNonceGenerator(new TestNonceGenerator(nonce))
 				.build();
+
 	}
 }
