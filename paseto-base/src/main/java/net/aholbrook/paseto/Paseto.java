@@ -100,7 +100,7 @@ public abstract class Paseto<_Payload> {
 		return new Tuple<>(payload, footer);
 	}
 
-	public <_Footer> Tuple<_Payload, _Footer> verifytWithFooter(String token, byte[] pk, Class<_Payload> payloadClass,
+	public <_Footer> Tuple<_Payload, _Footer> verifyWithFooter(String token, byte[] pk, Class<_Payload> payloadClass,
 			Class<_Footer> footerClass) {
 		_Payload payload = decrypt(token, pk, payloadClass);
 		_Footer footer = extractFooter(token, footerClass);
