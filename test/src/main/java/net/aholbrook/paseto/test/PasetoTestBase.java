@@ -55,7 +55,7 @@ public abstract class PasetoTestBase {
 		Assert.assertEquals("Decrypted payload does not match test vector.", tv.getPayload(), payload);
 	}
 
-	protected <_Payload> void signTestVector(TestVector<_Payload> tv) {
+	protected <_Payload> void signTestVector(TestVector<_Payload> tv, boolean assertSigned) {
 		// A: sk, B: pk
 		Paseto<_Payload> paseto = createPaseto(null);
 		Assert.assertNotNull("paseto V1 instance", paseto);
@@ -66,6 +66,10 @@ public abstract class PasetoTestBase {
 					tv.getFooter());
 		} else {
 			token = paseto.sign(tv.getPayload(), tv.getA());
+		}
+
+		if (assertSigned) {
+			Assert.assertEquals("Generated token does not match test vector.", tv.getToken(), token);
 		}
 
 		// Now verify the signature (we can't use the token in the test vector as the signature will change each time.

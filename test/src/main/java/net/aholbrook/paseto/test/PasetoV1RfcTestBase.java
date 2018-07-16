@@ -86,12 +86,12 @@ public abstract class PasetoV1RfcTestBase extends PasetoTestBase {
 	// Sign tests
 	@Test
 	public void v1_RfcVectorS1Sign() {
-		signTestVector(RfcTestVectors.RFC_TEST_VECTOR_V1_S_1);
+		signTestVector(RfcTestVectors.RFC_TEST_VECTOR_V1_S_1, false);
 	}
 
 	@Test
 	public void v1_RfcVectorS2Sign() {
-		signTestVector(RfcTestVectors.RFC_TEST_VECTOR_V1_S_2);
+		signTestVector(RfcTestVectors.RFC_TEST_VECTOR_V1_S_2, false);
 	}
 
 	// Verify tests
