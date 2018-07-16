@@ -44,14 +44,14 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 
 	@Override
 	public _TokenType decode(String token) {
-		_TokenType result = paseto.decrypt(token, keyProvider.getPublicKey(), tokenClass);
+		_TokenType result = paseto.verify(token, keyProvider.getPublicKey(), tokenClass);
 		Claims.verify(result, claims);
 		return result;
 	}
 
 	@Override
 	public <_FooterType> _TokenType decode(String token, _FooterType footer) {
-		_TokenType result = paseto.decrypt(token, keyProvider.getPublicKey(), footer, tokenClass);
+		_TokenType result = paseto.verify(token, keyProvider.getPublicKey(), footer, tokenClass);
 		Claims.verify(result, claims);
 		return result;
 	}
@@ -59,7 +59,7 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 	@Override
 	public <_FooterType> Tuple<_TokenType, _FooterType> decodeWithFooter(String token, Class<_FooterType> footerClass) {
 		Tuple<_TokenType, _FooterType> result
-				= paseto.decryptWithFooter(token, keyProvider.getPublicKey(), tokenClass, footerClass);
+				= paseto.verifyWithFooter(token, keyProvider.getPublicKey(), tokenClass, footerClass);
 		Claims.verify(result.a, claims);
 		return result;
 	}
