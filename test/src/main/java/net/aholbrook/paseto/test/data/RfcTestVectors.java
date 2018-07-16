@@ -17,6 +17,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.test.data;
 
+import net.aholbrook.paseto.service.KeyId;
+
 public class RfcTestVectors {
 	private static short[] RFC_TEST_KEY = new short[] {
 			0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7a, 0x7b, 0x7c, 0x7d, 0x7e, 0x7f,
@@ -157,13 +159,13 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V1_E_1_NONCE = rfcTestNonce1();
 	private static BasicPayload RFC_TEST_VECTOR_V1_E_1_PAYLOAD
 			= new BasicPayload("this is a signed message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V1_E_1_FOOTER = null;
+	private static KeyId RFC_TEST_VECTOR_V1_E_1_FOOTER = null;
 	private static String RFC_TEST_VECTOR_V1_E_1_TOKEN
 			= "v1.local.WzhIh1MpbqVNXNt7-HbWvL-JwAym3Tomad9Pc2nl7wK87vGraUV"
 			+ "vn2bs8BBNo7jbukCNrkVID0jCK2vr5bP18G78j1bOTbBcP9HZzqnraEdspcj"
 			+ "d_PvrxDEhj9cS2MG5fmxtvuoHRp3M24HvxTtql9z26KTfPWxJN5bAJaAM6go"
 			+ "s8fnfjJO8oKiqQMaiBP_Cqncmqw8";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V1_E_1
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V1_E_1
 			= new TestVector<>(RFC_TEST_VECTOR_V1_E_1_KEY, RFC_TEST_VECTOR_V1_E_1_NONCE, RFC_TEST_VECTOR_V1_E_1_PAYLOAD,
 			BasicPayload.class, RFC_TEST_VECTOR_V1_E_1_FOOTER, RFC_TEST_VECTOR_V1_E_1_TOKEN);
 
@@ -172,13 +174,13 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V1_E_2_NONCE = rfcTestNonce1();
 	private static BasicPayload RFC_TEST_VECTOR_V1_E_2_PAYLOAD
 			= new BasicPayload("this is a secret message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V1_E_2_FOOTER = null;
+	private static KeyId RFC_TEST_VECTOR_V1_E_2_FOOTER = null;
 	private static String RFC_TEST_VECTOR_V1_E_2_TOKEN
 			= "v1.local.w_NOpjgte4bX-2i1JAiTQzHoGUVOgc2yqKqsnYGmaPaCu_KWUkR"
 			+ "GlCRnOvZZxeH4HTykY7AE_jkzSXAYBkQ1QnwvKS16uTXNfnmp8IRknY76I2m"
 			+ "3S5qsM8klxWQQKFDuQHl8xXV0MwAoeFh9X6vbwIqrLlof3s4PMjRDwKsxYzk"
 			+ "Mr1RvfDI8emoPoW83q4Q60_xpHaw";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V1_E_2
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V1_E_2
 			= new TestVector<>(RFC_TEST_VECTOR_V1_E_2_KEY, RFC_TEST_VECTOR_V1_E_2_NONCE, RFC_TEST_VECTOR_V1_E_2_PAYLOAD,
 			BasicPayload.class, RFC_TEST_VECTOR_V1_E_2_FOOTER, RFC_TEST_VECTOR_V1_E_2_TOKEN);
 
@@ -187,13 +189,13 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V1_E_3_NONCE = rfcTestNonceV1();
 	private static BasicPayload RFC_TEST_VECTOR_V1_E_3_PAYLOAD
 			= new BasicPayload("this is a signed message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V1_E_3_FOOTER = null;
+	private static KeyId RFC_TEST_VECTOR_V1_E_3_FOOTER = null;
 	private static String RFC_TEST_VECTOR_V1_E_3_TOKEN
 			= "v1.local.4VyfcVcFAOAbB8yEM1j1Ob7Iez5VZJy5kHNsQxmlrAwKUbOtq9c"
 			+ "v39T2fC0MDWafX0nQJ4grFZzTdroMvU772RW-X1oTtoFBjsl_3YYHWnwgqzs"
 			+ "0aFc3ejjORmKP4KUM339W3syBYyjKIOeWnsFQB6Yef-1ov9rvqt7TmwONUHe"
 			+ "JUYk4IK_JEdUeo_uFRqAIgHsiGCg";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V1_E_3
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V1_E_3
 			= new TestVector<>(RFC_TEST_VECTOR_V1_E_3_KEY, RFC_TEST_VECTOR_V1_E_3_NONCE, RFC_TEST_VECTOR_V1_E_3_PAYLOAD,
 			BasicPayload.class, RFC_TEST_VECTOR_V1_E_3_FOOTER, RFC_TEST_VECTOR_V1_E_3_TOKEN);
 
@@ -202,13 +204,13 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V1_E_4_NONCE = rfcTestNonceV1();
 	private static BasicPayload RFC_TEST_VECTOR_V1_E_4_PAYLOAD
 			= new BasicPayload("this is a secret message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V1_E_4_FOOTER = null;
+	private static KeyId RFC_TEST_VECTOR_V1_E_4_FOOTER = null;
 	private static String RFC_TEST_VECTOR_V1_E_4_TOKEN
 			= "v1.local.IddlRQmpk6ojcD10z1EYdLexXvYiadtY0MrYQaRnq3dnqKIWcbb"
 			+ "pOcgXdMIkm3_3gksirTj81bvWrWkQwcUHilt-tQo7LZK8I6HCK1V78B9YeEq"
 			+ "GNeeWXOyWWHoJQIe0d5nTdvejdt2Srz_5Q0QG4oiz1gB_wmv4U5pifedaZbH"
 			+ "XUTWXchFEi0etJ4u6tqgxZSklcec";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V1_E_4
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V1_E_4
 			= new TestVector<>(RFC_TEST_VECTOR_V1_E_4_KEY, RFC_TEST_VECTOR_V1_E_4_NONCE, RFC_TEST_VECTOR_V1_E_4_PAYLOAD,
 			BasicPayload.class, RFC_TEST_VECTOR_V1_E_4_FOOTER, RFC_TEST_VECTOR_V1_E_4_TOKEN);
 
@@ -217,14 +219,15 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V1_E_5_NONCE = rfcTestNonceV1();
 	private static BasicPayload RFC_TEST_VECTOR_V1_E_5_PAYLOAD
 			= new BasicPayload("this is a signed message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V1_E_5_FOOTER = "{\"kid\":\"UbkK8Y6iv4GZhFp6Tx3IWLWLfNXSEvJcdT3zdR65YZxo\"}";
+	private static KeyId RFC_TEST_VECTOR_V1_E_5_FOOTER
+			= new KeyId().setKeyId("UbkK8Y6iv4GZhFp6Tx3IWLWLfNXSEvJcdT3zdR65YZxo");
 	private static String RFC_TEST_VECTOR_V1_E_5_TOKEN
 			= "v1.local.4VyfcVcFAOAbB8yEM1j1Ob7Iez5VZJy5kHNsQxmlrAwKUbOtq9c"
 			+ "v39T2fC0MDWafX0nQJ4grFZzTdroMvU772RW-X1oTtoFBjsl_3YYHWnwgqzs"
 			+ "0aFc3ejjORmKP4KUM339W3szA28OabR192eRqiyspQ6xPM35NMR-04-FhRJ"
 			+ "ZEWiF0W5oWjPVtGPjeVjm2DI4YtJg.eyJraWQiOiJVYmtLOFk2aXY0R1poRn"
 			+ "A2VHgzSVdMV0xmTlhTRXZKY2RUM3pkUjY1WVp4byJ9";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V1_E_5
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V1_E_5
 			= new TestVector<>(RFC_TEST_VECTOR_V1_E_5_KEY, RFC_TEST_VECTOR_V1_E_5_NONCE, RFC_TEST_VECTOR_V1_E_5_PAYLOAD,
 			BasicPayload.class, RFC_TEST_VECTOR_V1_E_5_FOOTER, RFC_TEST_VECTOR_V1_E_5_TOKEN);
 
@@ -233,14 +236,15 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V1_E_6_NONCE = rfcTestNonceV1();
 	private static BasicPayload RFC_TEST_VECTOR_V1_E_6_PAYLOAD
 			= new BasicPayload("this is a secret message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V1_E_6_FOOTER = "{\"kid\":\"UbkK8Y6iv4GZhFp6Tx3IWLWLfNXSEvJcdT3zdR65YZxo\"}";
+	private static KeyId RFC_TEST_VECTOR_V1_E_6_FOOTER
+			= new KeyId().setKeyId("UbkK8Y6iv4GZhFp6Tx3IWLWLfNXSEvJcdT3zdR65YZxo");
 	private static String RFC_TEST_VECTOR_V1_E_6_TOKEN
 			= "v1.local.IddlRQmpk6ojcD10z1EYdLexXvYiadtY0MrYQaRnq3dnqKIWcbb"
 			+ "pOcgXdMIkm3_3gksirTj81bvWrWkQwcUHilt-tQo7LZK8I6HCK1V78B9YeEq"
 			+ "GNeeWXOyWWHoJQIe0d5nTdvcT2vnER6NrJ7xIowvFba6J4qMlFhBnYSxHEq9"
 			+ "v9NlzcKsz1zscdjcAiXnEuCHyRSc.eyJraWQiOiJVYmtLOFk2aXY0R1poRnA"
 			+ "2VHgzSVdMV0xmTlhTRXZKY2RUM3pkUjY1WVp4byJ9";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V1_E_6
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V1_E_6
 			= new TestVector<>(RFC_TEST_VECTOR_V1_E_6_KEY, RFC_TEST_VECTOR_V1_E_6_NONCE, RFC_TEST_VECTOR_V1_E_6_PAYLOAD,
 			BasicPayload.class, RFC_TEST_VECTOR_V1_E_6_FOOTER, RFC_TEST_VECTOR_V1_E_6_TOKEN);
 	
@@ -249,7 +253,7 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V1_S_1_PK = rfcTestV1PublicKey();
 	private static BasicPayload RFC_TEST_VECTOR_V1_S_1_PAYLOAD
 			= new BasicPayload("this is a signed message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V1_S_1_FOOTER = null;
+	private static KeyId RFC_TEST_VECTOR_V1_S_1_FOOTER = null;
 	private static String RFC_TEST_VECTOR_V1_S_1_TOKEN
 			= "v1.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiw"
 			+ "iZXhwIjoiMjAxOS0wMS0wMVQwMDowMDowMCswMDowMCJ9cIZKahKeGM5k"
@@ -259,7 +263,7 @@ public class RfcTestVectors {
 			+ "Q6i85lOsTX8Kc6SQaG-3CgThrJJ6W9DC-YfQ3lZ4TJUoY3QNYdtEgAvp1"
 			+ "QuWWK6xmIb8BwvkBPej5t88QUb7NcvZ15VyNw3qemQGn2ITSdpdDgwMtp"
 			+ "flZOeYdtuxQr1DSGO2aQyZl7s0WYn1IjdQFx6VjSQ4yfw";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V1_S_1
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V1_S_1
 			= new TestVector<>(RFC_TEST_VECTOR_V1_S_1_SK, RFC_TEST_VECTOR_V1_S_1_PK,
 			RFC_TEST_VECTOR_V1_S_1_PAYLOAD, BasicPayload.class, RFC_TEST_VECTOR_V1_S_1_FOOTER,
 			RFC_TEST_VECTOR_V1_S_1_TOKEN);
@@ -269,7 +273,8 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V1_S_2_PK = rfcTestV1PublicKey();
 	private static BasicPayload RFC_TEST_VECTOR_V1_S_2_PAYLOAD
 			= new BasicPayload("this is a signed message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V1_S_2_FOOTER = "{\"kid\":\"dYkISylxQeecEcHELfzF88UZrwbLolNiCdpzUHGw9Uqn\"}";
+	private static KeyId RFC_TEST_VECTOR_V1_S_2_FOOTER
+			= new KeyId().setKeyId("dYkISylxQeecEcHELfzF88UZrwbLolNiCdpzUHGw9Uqn");
 	private static String RFC_TEST_VECTOR_V1_S_2_TOKEN
 			= "v1.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiw"
 			+ "iZXhwIjoiMjAxOS0wMS0wMVQwMDowMDowMCswMDowMCJ9sBTIb0J_4mis"
@@ -281,7 +286,7 @@ public class RfcTestVectors {
 			+ "0fN5oGv8Rl0dF11b3tRmsmbDoIokIM0Dba29x_T3YzOyg.eyJraWQiOiJ"
 			+ "kWWtJU3lseFFlZWNFY0hFTGZ6Rjg4VVpyd2JMb2xOaUNkcHpVSEd3OVVx"
 			+ "biJ9";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V1_S_2
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V1_S_2
 			= new TestVector<>(RFC_TEST_VECTOR_V1_S_2_SK, RFC_TEST_VECTOR_V1_S_2_PK,
 			RFC_TEST_VECTOR_V1_S_2_PAYLOAD, BasicPayload.class, RFC_TEST_VECTOR_V1_S_2_FOOTER,
 			RFC_TEST_VECTOR_V1_S_2_TOKEN);
@@ -293,12 +298,12 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V2_E_1_NONCE = rfcTestNonce1();
 	private static BasicPayload RFC_TEST_VECTOR_V2_E_1_PAYLOAD
 			= new BasicPayload("this is a signed message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V2_E_1_FOOTER = null;
+	private static KeyId RFC_TEST_VECTOR_V2_E_1_FOOTER = null;
 	private static String RFC_TEST_VECTOR_V2_E_1_TOKEN
 			= "v2.local.97TTOvgwIxNGvV80XKiGZg_kD3tsXM_-qB4dZGHOeN1cTkgQ4Pn"
 			+ "W8888l802W8d9AvEGnoNBY3BnqHORy8a5cC8aKpbA0En8XELw2yDk2f1sVOD"
 			+ "yfnDbi6rEGMY3pSfCbLWMM2oHJxvlEl2XbQ";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V2_E_1
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V2_E_1
 			= new TestVector<>(RFC_TEST_VECTOR_V2_E_1_KEY, RFC_TEST_VECTOR_V2_E_1_NONCE, RFC_TEST_VECTOR_V2_E_1_PAYLOAD,
 			BasicPayload.class, RFC_TEST_VECTOR_V2_E_1_FOOTER, RFC_TEST_VECTOR_V2_E_1_TOKEN);
 
@@ -307,12 +312,12 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V2_E_2_NONCE = rfcTestNonce1();
 	private static BasicPayload RFC_TEST_VECTOR_V2_E_2_PAYLOAD
 			= new BasicPayload("this is a secret message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V2_E_2_FOOTER = null;
+	private static KeyId RFC_TEST_VECTOR_V2_E_2_FOOTER = null;
 	private static String RFC_TEST_VECTOR_V2_E_2_TOKEN
 			= "v2.local.CH50H-HM5tzdK4kOmQ8KbIvrzJfjYUGuu5Vy9ARSFHy9owVDMYg"
 			+ "3-8rwtJZQjN9ABHb2njzFkvpr5cOYuRyt7CRXnHt42L5yZ7siD-4l-FoNsC7"
 			+ "J2OlvLlIwlG06mzQVunrFNb7Z3_CHM0PK5w";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V2_E_2
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V2_E_2
 			= new TestVector<>(RFC_TEST_VECTOR_V2_E_2_KEY, RFC_TEST_VECTOR_V2_E_2_NONCE, RFC_TEST_VECTOR_V2_E_2_PAYLOAD,
 			BasicPayload.class, RFC_TEST_VECTOR_V2_E_2_FOOTER, RFC_TEST_VECTOR_V2_E_2_TOKEN);
 
@@ -321,12 +326,12 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V2_E_3_NONCE = rfcTestNonceV2();
 	private static BasicPayload RFC_TEST_VECTOR_V2_E_3_PAYLOAD
 			= new BasicPayload("this is a signed message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V2_E_3_FOOTER = null;
+	private static KeyId RFC_TEST_VECTOR_V2_E_3_FOOTER = null;
 	private static String RFC_TEST_VECTOR_V2_E_3_TOKEN
 			= "v2.local.5K4SCXNhItIhyNuVIZcwrdtaDKiyF81-eWHScuE0idiVqCo72bb"
 			+ "jo07W05mqQkhLZdVbxEa5I_u5sgVk1QLkcWEcOSlLHwNpCkvmGGlbCdNExn6"
 			+ "Qclw3qTKIIl5-O5xRBN076fSDPo5xUCPpBA";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V2_E_3
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V2_E_3
 			= new TestVector<>(RFC_TEST_VECTOR_V2_E_3_KEY, RFC_TEST_VECTOR_V2_E_3_NONCE, RFC_TEST_VECTOR_V2_E_3_PAYLOAD,
 			BasicPayload.class, RFC_TEST_VECTOR_V2_E_3_FOOTER, RFC_TEST_VECTOR_V2_E_3_TOKEN);
 
@@ -335,12 +340,12 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V2_E_4_NONCE = rfcTestNonceV2();
 	private static BasicPayload RFC_TEST_VECTOR_V2_E_4_PAYLOAD
 			= new BasicPayload("this is a secret message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V2_E_4_FOOTER = null;
+	private static KeyId RFC_TEST_VECTOR_V2_E_4_FOOTER = null;
 	private static String RFC_TEST_VECTOR_V2_E_4_TOKEN
 			= "v2.local.pvFdDeNtXxknVPsbBCZF6MGedVhPm40SneExdClOxa9HNR8wFv7"
 			+ "cu1cB0B4WxDdT6oUc2toyLR6jA6sc-EUM5ll1EkeY47yYk6q8m1RCpqTIzUr"
 			+ "Iu3B6h232h62DPbIxtjGvNRAwsLK7LcV8oQ";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V2_E_4
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V2_E_4
 			= new TestVector<>(RFC_TEST_VECTOR_V2_E_4_KEY, RFC_TEST_VECTOR_V2_E_4_NONCE, RFC_TEST_VECTOR_V2_E_4_PAYLOAD,
 			BasicPayload.class, RFC_TEST_VECTOR_V2_E_4_FOOTER, RFC_TEST_VECTOR_V2_E_4_TOKEN);
 
@@ -349,13 +354,14 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V2_E_5_NONCE = rfcTestNonceV2();
 	private static BasicPayload RFC_TEST_VECTOR_V2_E_5_PAYLOAD
 			= new BasicPayload("this is a signed message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V2_E_5_FOOTER = "{\"kid\":\"zVhMiPBP9fRf2snEcT7gFTioeA9COcNy9DfgL1W60haN\"}";
+	private static KeyId RFC_TEST_VECTOR_V2_E_5_FOOTER
+			= new KeyId().setKeyId("zVhMiPBP9fRf2snEcT7gFTioeA9COcNy9DfgL1W60haN");
 	private static String RFC_TEST_VECTOR_V2_E_5_TOKEN
 			= "v2.local.5K4SCXNhItIhyNuVIZcwrdtaDKiyF81-eWHScuE0idiVqCo72bb"
 			+ "jo07W05mqQkhLZdVbxEa5I_u5sgVk1QLkcWEcOSlLHwNpCkvmGGlbCdNExn6"
 			+ "Qclw3qTKIIl5-zSLIrxZqOLwcFLYbVK1SrQ.eyJraWQiOiJ6VmhNaVBCUDlm"
 			+ "UmYyc25FY1Q3Z0ZUaW9lQTlDT2NOeTlEZmdMMVc2MGhhTiJ9";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V2_E_5
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V2_E_5
 			= new TestVector<>(RFC_TEST_VECTOR_V2_E_5_KEY, RFC_TEST_VECTOR_V2_E_5_NONCE, RFC_TEST_VECTOR_V2_E_5_PAYLOAD,
 			BasicPayload.class, RFC_TEST_VECTOR_V2_E_5_FOOTER, RFC_TEST_VECTOR_V2_E_5_TOKEN);
 
@@ -364,13 +370,14 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V2_E_6_NONCE = rfcTestNonceV2();
 	private static BasicPayload RFC_TEST_VECTOR_V2_E_6_PAYLOAD
 			= new BasicPayload("this is a secret message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V2_E_6_FOOTER = "{\"kid\":\"zVhMiPBP9fRf2snEcT7gFTioeA9COcNy9DfgL1W60haN\"}";
+	private static KeyId RFC_TEST_VECTOR_V2_E_6_FOOTER
+			= new KeyId().setKeyId("zVhMiPBP9fRf2snEcT7gFTioeA9COcNy9DfgL1W60haN");
 	private static String RFC_TEST_VECTOR_V2_E_6_TOKEN
 			= "v2.local.pvFdDeNtXxknVPsbBCZF6MGedVhPm40SneExdClOxa9HNR8wFv7"
 			+ "cu1cB0B4WxDdT6oUc2toyLR6jA6sc-EUM5ll1EkeY47yYk6q8m1RCpqTIzUr"
 			+ "Iu3B6h232h62DnMXKdHn_Smp6L_NfaEnZ-A.eyJraWQiOiJ6VmhNaVBCUDlm"
 			+ "UmYyc25FY1Q3Z0ZUaW9lQTlDT2NOeTlEZmdMMVc2MGhhTiJ9";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V2_E_6
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V2_E_6
 			= new TestVector<>(RFC_TEST_VECTOR_V2_E_6_KEY, RFC_TEST_VECTOR_V2_E_6_NONCE,
 			RFC_TEST_VECTOR_V2_E_6_PAYLOAD, BasicPayload.class, RFC_TEST_VECTOR_V2_E_6_FOOTER,
 			RFC_TEST_VECTOR_V2_E_6_TOKEN);
@@ -380,13 +387,13 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V2_S_1_PK = rfcTestV2PublicKey();
 	private static BasicPayload RFC_TEST_VECTOR_V2_S_1_PAYLOAD
 			= new BasicPayload("this is a signed message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V2_S_1_FOOTER = null;
+	private static KeyId RFC_TEST_VECTOR_V2_S_1_FOOTER = null;
 	private static String RFC_TEST_VECTOR_V2_S_1_TOKEN
 			= "v2.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIi"
 			+ "wiZXhwIjoiMjAxOS0wMS0wMVQwMDowMDowMCswMDowMCJ9HQr8URrGnt"
 			+ "Tu7Dz9J2IF23d1M7-9lH9xiqdGyJNvzp4angPW5Esc7C5huy_M8I8_Dj"
 			+ "JK2ZXC2SUYuOFM-Q_5Cw";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V2_S_1
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V2_S_1
 			= new TestVector<>(RFC_TEST_VECTOR_V2_S_1_SK, RFC_TEST_VECTOR_V2_S_1_PK,
 			RFC_TEST_VECTOR_V2_S_1_PAYLOAD, BasicPayload.class, RFC_TEST_VECTOR_V2_S_1_FOOTER,
 			RFC_TEST_VECTOR_V2_S_1_TOKEN);
@@ -396,14 +403,15 @@ public class RfcTestVectors {
 	private static byte[] RFC_TEST_VECTOR_V2_S_2_PK = rfcTestV2PublicKey();
 	private static BasicPayload RFC_TEST_VECTOR_V2_S_2_PAYLOAD
 			= new BasicPayload("this is a signed message", "2019-01-01T00:00:00+00:00");
-	private static String RFC_TEST_VECTOR_V2_S_2_FOOTER = "{\"kid\":\"zVhMiPBP9fRf2snEcT7gFTioeA9COcNy9DfgL1W60haN\"}";
+	private static KeyId RFC_TEST_VECTOR_V2_S_2_FOOTER
+			= new KeyId().setKeyId("zVhMiPBP9fRf2snEcT7gFTioeA9COcNy9DfgL1W60haN");
 	private static String RFC_TEST_VECTOR_V2_S_2_TOKEN
 			= "v2.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIi"
 			+ "wiZXhwIjoiMjAxOS0wMS0wMVQwMDowMDowMCswMDowMCJ9flsZsx_gYC"
 			+ "R0N_Ec2QxJFFpvQAs7h9HtKwbVK2n1MJ3Rz-hwe8KUqjnd8FAnIJZ601"
 			+ "tp7lGkguU63oGbomhoBw.eyJraWQiOiJ6VmhNaVBCUDlmUmYyc25FY1Q"
 			+ "3Z0ZUaW9lQTlDT2NOeTlEZmdMMVc2MGhhTiJ9";
-	public static TestVector<BasicPayload> RFC_TEST_VECTOR_V2_S_2
+	public static TestVector<BasicPayload, KeyId> RFC_TEST_VECTOR_V2_S_2
 			= new TestVector<>(RFC_TEST_VECTOR_V2_S_2_SK, RFC_TEST_VECTOR_V2_S_2_PK,
 			RFC_TEST_VECTOR_V2_S_2_PAYLOAD, BasicPayload.class, RFC_TEST_VECTOR_V2_S_2_FOOTER,
 			RFC_TEST_VECTOR_V2_S_2_TOKEN);

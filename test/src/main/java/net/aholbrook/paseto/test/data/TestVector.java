@@ -17,14 +17,14 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.test.data;
 
-public class TestVector<_Payload> {
+public class TestVector<_Payload, _Footer> {
 	private final byte[] a, b;
 	private final _Payload payload;
 	private final Class<_Payload> payloadClass;
-	private final String footer;
+	private final _Footer footer;
 	private final String token;
 
-	public TestVector(byte[] a, byte[] b, _Payload payload, Class<_Payload> payloadClass, String footer, String token) {
+	public TestVector(byte[] a, byte[] b, _Payload payload, Class<_Payload> payloadClass, _Footer footer, String token) {
 		this.a = a;
 		this.b = b;
 		this.payload = payload;
@@ -49,7 +49,7 @@ public class TestVector<_Payload> {
 		return payloadClass;
 	}
 
-	public String getFooter() {
+	public _Footer getFooter() {
 		return footer;
 	}
 

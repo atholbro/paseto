@@ -24,7 +24,7 @@ import org.junit.Assert;
 public abstract class PasetoTestBase {
 	protected abstract  <_Payload> Paseto<_Payload> createPaseto(byte[] nonce);
 
-	protected <_Payload> void encryptTestVector(TestVector<_Payload> tv) {
+	protected <_Payload, _Footer> void encryptTestVector(TestVector<_Payload, _Footer> tv) {
 		// A: key, B: nonce
 		Paseto<_Payload> paseto = createPaseto(tv.getB());
 		Assert.assertNotNull("paseto V1 instance", paseto);
@@ -39,7 +39,7 @@ public abstract class PasetoTestBase {
 		Assert.assertEquals("Generated token does not match test vector.", tv.getToken(), token);
 	}
 
-	protected <_Payload> void decryptTestVector(TestVector<_Payload> tv) {
+	protected <_Payload, _Footer> void decryptTestVector(TestVector<_Payload, _Footer> tv) {
 		// A: key, B: nonce
 		Paseto<_Payload> paseto = createPaseto(tv.getB());
 		Assert.assertNotNull("paseto V1 instance", paseto);
@@ -55,7 +55,7 @@ public abstract class PasetoTestBase {
 		Assert.assertEquals("Decrypted payload does not match test vector.", tv.getPayload(), payload);
 	}
 
-	protected <_Payload> void signTestVector(TestVector<_Payload> tv) {
+	protected <_Payload, _Footer> void signTestVector(TestVector<_Payload, _Footer> tv) {
 		// A: sk, B: pk
 		Paseto<_Payload> paseto = createPaseto(null);
 		Assert.assertNotNull("paseto V1 instance", paseto);
@@ -79,7 +79,7 @@ public abstract class PasetoTestBase {
 		Assert.assertEquals("Decoded payload does not match test vector.", tv.getPayload(), decoded);
 	}
 
-	protected <_Payload> void verifyTestVector(TestVector<_Payload> tv) {
+	protected <_Payload, _Footer> void verifyTestVector(TestVector<_Payload, _Footer> tv) {
 		// A: sk, B: pk
 		Paseto<_Payload> paseto = createPaseto(null);
 		Assert.assertNotNull("paseto V1 instance", paseto);
