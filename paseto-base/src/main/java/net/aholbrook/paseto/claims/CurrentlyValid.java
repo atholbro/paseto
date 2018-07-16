@@ -9,7 +9,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 
-public class CurrentlyValid implements ClaimCheck {
+public class CurrentlyValid implements Claim {
 	public final static String NAME = "CURRENTLY_VALID";
 	public final static Duration DEFAULT_ALLOWABLE_DRIFT = Duration.ofSeconds(1);
 

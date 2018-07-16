@@ -2,7 +2,7 @@ package net.aholbrook.paseto.service;
 
 import net.aholbrook.paseto.Paseto;
 import net.aholbrook.paseto.Tuple;
-import net.aholbrook.paseto.claims.ClaimCheck;
+import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.Claims;
 
 import java.time.Duration;
@@ -14,7 +14,7 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 		this(paseto, keyProvider, Claims.DEFAULT_CLAIM_CHECKS, null, tokenClass);
 	}
 
-	public PublicTokenService(Paseto<_TokenType> paseto, KeyProvider keyProvider, ClaimCheck[] claims,
+	public PublicTokenService(Paseto<_TokenType> paseto, KeyProvider keyProvider, Claim[] claims,
 			Class<_TokenType> tokenClass) {
 		this(paseto, keyProvider, claims, null, tokenClass);
 	}
@@ -24,7 +24,7 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 		this(paseto, keyProvider, Claims.DEFAULT_CLAIM_CHECKS, defaultValidityPeriod, tokenClass);
 	}
 
-	public PublicTokenService(Paseto<_TokenType> paseto, KeyProvider keyProvider, ClaimCheck[] claims,
+	public PublicTokenService(Paseto<_TokenType> paseto, KeyProvider keyProvider, Claim[] claims,
 			Duration defaultValidityPeriod, Class<_TokenType> tokenClass) {
 		super(paseto, claims, defaultValidityPeriod, tokenClass);
 		this.keyProvider = keyProvider;
@@ -78,7 +78,7 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 		private final Class<_TokenType> tokenClass;
 		private final KeyProvider keyProvider;
 		private Duration defaultValidityPeriod = null;
-		private ClaimCheck[] claims = Claims.DEFAULT_CLAIM_CHECKS;
+		private Claim[] claims = Claims.DEFAULT_CLAIM_CHECKS;
 
 		public Builder(Paseto<_TokenType> paseto, Class<_TokenType> tokenClass, KeyProvider keyProvider) {
 			this.paseto = paseto;
@@ -91,7 +91,7 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 			return this;
 		}
 
-		public Builder checkClaims(ClaimCheck[] claims) {
+		public Builder checkClaims(Claim[] claims) {
 			this.claims = claims;
 			return this;
 		}

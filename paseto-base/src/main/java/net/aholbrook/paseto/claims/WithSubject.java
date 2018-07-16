@@ -5,7 +5,7 @@ import net.aholbrook.paseto.exception.claims.IncorrectSubjectException;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
 import net.aholbrook.paseto.util.StringUtils;
 
-public class WithSubject implements ClaimCheck {
+public class WithSubject implements Claim {
 	public final static String NAME = "HAS_SUBJECT";
 
 	private final String subject;

@@ -5,7 +5,7 @@ import net.aholbrook.paseto.exception.claims.IncorrectIssuerException;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
 import net.aholbrook.paseto.util.StringUtils;
 
-public class IssuedBy implements ClaimCheck {
+public class IssuedBy implements Claim {
 	public final static String NAME = "ISSUED_BY";
 
 	private final String issuer;

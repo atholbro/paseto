@@ -1,7 +1,7 @@
 package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.service.Token;
-import net.aholbrook.paseto.claims.ClaimCheck;
+import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.Claims;
 import net.aholbrook.paseto.encoding.base.EncodingProvider;
 import net.aholbrook.paseto.exception.claims.ExpiredTokenException;
@@ -27,12 +27,12 @@ public abstract class ClaimVerificationTestBase {
 	protected abstract EncodingProvider getEncodingProvider();
 
 	private void standardVerification(Token token, OffsetDateTime time) {
-		ClaimCheck[] claimChecks = new ClaimCheck[] {
+		Claim[] claims = new Claim[] {
 				new IssuedInPast(time, IssuedInPast.DEFAULT_ALLOWABLE_DRIFT),
 				new CurrentlyValid(time, CurrentlyValid.DEFAULT_ALLOWABLE_DRIFT)
 		};
 
-		Claims.verify(token, claimChecks);
+		Claims.verify(token, claims);
 	}
 
 	// Check a token for expiry 5 seconds after it becomes valid. This should pass for the given token.
@@ -89,7 +89,7 @@ public abstract class ClaimVerificationTestBase {
 	@Test(expected = MissingClaimException.class)
 	public void tokenVerification_expired_missing() {
 		Token token = TokenTestVectors.TOKEN_4;
-		Claims.verify(token, new ClaimCheck[] { new CurrentlyValid()});
+		Claims.verify(token, new Claim[] { new CurrentlyValid()});
 	}
 
 	// Check a token for "issued in the future" at the exact time the token was issued. This should pass.
@@ -159,7 +159,7 @@ public abstract class ClaimVerificationTestBase {
 	@Test(expected = MissingClaimException.class)
 	public void tokenVerification_issuedAt_missing() {
 		Token token = TokenTestVectors.TOKEN_4;
-		Claims.verify(token, new ClaimCheck[] { new CurrentlyValid()});
+		Claims.verify(token, new Claim[] { new CurrentlyValid()});
 	}
 
 	// Check a token for expiry at the exact time it becomes valid. This should pass.
@@ -241,7 +241,7 @@ public abstract class ClaimVerificationTestBase {
 	public void tokenVerification_issuer() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String issuer = TokenTestVectors.TOKEN_1.getIssuer();
-		Claims.verify(token, new ClaimCheck[] { new IssuedBy(issuer)});
+		Claims.verify(token, new Claim[] { new IssuedBy(issuer)});
 	}
 
 	// Check for issuer with a mismatch, should fail with expected IncorrectIssuerException thrown.
@@ -250,7 +250,7 @@ public abstract class ClaimVerificationTestBase {
 		Token token = TokenTestVectors.TOKEN_1;
 		// wrong issuer, should fail
 		String issuer = TokenTestVectors.TOKEN_1.getSubject(); // getSubject() on intentional
-		Claims.verify(token, new ClaimCheck[] { new IssuedBy(issuer)});
+		Claims.verify(token, new Claim[] { new IssuedBy(issuer)});
 	}
 
 	// Check issuer on a token without an issuer, should fail with expected MissingClaimException thrown.
@@ -258,7 +258,7 @@ public abstract class ClaimVerificationTestBase {
 	public void tokenVerification_issuer_missing() {
 		Token token = TokenTestVectors.TOKEN_3;
 		String issuer = TokenTestVectors.TOKEN_2.getIssuer();
-		Claims.verify(token, new ClaimCheck[] { new IssuedBy(issuer)});
+		Claims.verify(token, new Claim[] { new IssuedBy(issuer)});
 	}
 
 	// Check for audience with a match, should pass.
@@ -266,7 +266,7 @@ public abstract class ClaimVerificationTestBase {
 	public void tokenVerification_audience() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String audience = TokenTestVectors.TOKEN_1.getAudience();
-		Claims.verify(token, new ClaimCheck[] { new ForAudience(audience)});
+		Claims.verify(token, new Claim[] { new ForAudience(audience)});
 	}
 
 	// Check for audience with a mismatch, should fail with expected IncorrectAudienceException thrown.
@@ -275,7 +275,7 @@ public abstract class ClaimVerificationTestBase {
 		Token token = TokenTestVectors.TOKEN_1;
 		// wrong audience, should fail
 		String audience = TokenTestVectors.TOKEN_1.getIssuer(); // getIssuer() on intentional
-		Claims.verify(token, new ClaimCheck[] { new ForAudience(audience)});
+		Claims.verify(token, new Claim[] { new ForAudience(audience)});
 	}
 
 	// Check audience on a token without an audience, should fail with expected MissingClaimException thrown.
@@ -283,7 +283,7 @@ public abstract class ClaimVerificationTestBase {
 	public void tokenVerification_audience_missing() {
 		Token token = TokenTestVectors.TOKEN_3;
 		String audience = TokenTestVectors.TOKEN_1.getAudience();
-		Claims.verify(token, new ClaimCheck[] { new IssuedBy(audience)});
+		Claims.verify(token, new Claim[] { new IssuedBy(audience)});
 	}
 
 	// Check for subject with a match, should pass.
@@ -291,7 +291,7 @@ public abstract class ClaimVerificationTestBase {
 	public void tokenVerification_subject() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String subject = TokenTestVectors.TOKEN_1.getSubject();
-		Claims.verify(token, new ClaimCheck[] { new WithSubject(subject)});
+		Claims.verify(token, new Claim[] { new WithSubject(subject)});
 	}
 
 	// Check for subject with a mismatch, should fail with expected IncorrectSubjectException thrown.
@@ -300,7 +300,7 @@ public abstract class ClaimVerificationTestBase {
 		Token token = TokenTestVectors.TOKEN_1;
 		// wrong subject, should fail
 		String subject = TokenTestVectors.TOKEN_1.getAudience(); // getAudience() is intentional
-		Claims.verify(token, new ClaimCheck[] { new WithSubject(subject)});
+		Claims.verify(token, new Claim[] { new WithSubject(subject)});
 	}
 
 	// Check subject on a token without a subject, should fail with expected MissingClaimException thrown.
@@ -308,6 +308,6 @@ public abstract class ClaimVerificationTestBase {
 	public void tokenVerification_subject_missing() {
 		Token token = TokenTestVectors.TOKEN_3;
 		String subject = TokenTestVectors.TOKEN_1.getSubject();
-		Claims.verify(token, new ClaimCheck[] { new WithSubject(subject)});
+		Claims.verify(token, new Claim[] { new WithSubject(subject)});
 	}
 }

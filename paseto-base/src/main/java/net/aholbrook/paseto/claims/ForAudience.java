@@ -5,7 +5,7 @@ import net.aholbrook.paseto.exception.claims.IncorrectAudienceException;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
 import net.aholbrook.paseto.util.StringUtils;
 
-public class ForAudience implements ClaimCheck {
+public class ForAudience implements Claim {
 	public final static String NAME = "FOR_AUDIENCE";
 
 	private final String audience;

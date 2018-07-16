@@ -8,7 +8,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 
-public class IssuedInPast implements ClaimCheck {
+public class IssuedInPast implements Claim {
 	public final static String NAME = "ISSUED_IN_PAST";
 	public final static Duration DEFAULT_ALLOWABLE_DRIFT = Duration.ofSeconds(1);
 

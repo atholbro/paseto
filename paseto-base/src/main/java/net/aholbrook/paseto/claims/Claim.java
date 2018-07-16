@@ -2,7 +2,7 @@ package net.aholbrook.paseto.claims;
 
 import net.aholbrook.paseto.service.Token;
 
-public interface ClaimCheck {
+public interface Claim {
 	/**
 	 * Name of the check.
 	 * @return rule name

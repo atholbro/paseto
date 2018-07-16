@@ -2,7 +2,7 @@ package net.aholbrook.paseto.service;
 
 import net.aholbrook.paseto.Paseto;
 import net.aholbrook.paseto.Tuple;
-import net.aholbrook.paseto.claims.ClaimCheck;
+import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.Claims;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
 
@@ -13,10 +13,10 @@ import java.time.OffsetDateTime;
 abstract class TokenService<_TokenType extends Token> {
 	final Paseto<_TokenType> paseto;
 	final Class<_TokenType> tokenClass;
-	final ClaimCheck[] claims;
+	final Claim[] claims;
 	private final Duration defaultValidityPeriod;
 
-	TokenService(Paseto<_TokenType> paseto, ClaimCheck[] claims, Class<_TokenType> tokenClass) {
+	TokenService(Paseto<_TokenType> paseto, Claim[] claims, Class<_TokenType> tokenClass) {
 		this(paseto, claims, null, tokenClass);
 	}
 
@@ -24,7 +24,7 @@ abstract class TokenService<_TokenType extends Token> {
 		this(paseto, Claims.DEFAULT_CLAIM_CHECKS, defaultValidityPeriod, tokenClass);
 	}
 
-	TokenService(Paseto<_TokenType> paseto, ClaimCheck[] claims, Duration defaultValidityPeriod,
+	TokenService(Paseto<_TokenType> paseto, Claim[] claims, Duration defaultValidityPeriod,
 			Class<_TokenType> tokenClass) {
 		this.paseto = paseto;
 		this.tokenClass = tokenClass;

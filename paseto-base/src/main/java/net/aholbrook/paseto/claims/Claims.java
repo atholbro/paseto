@@ -7,7 +7,7 @@ import net.aholbrook.paseto.exception.claims.MultipleClaimException;
 import java.util.function.Function;
 
 public class Claims {
-	public static final ClaimCheck[] DEFAULT_CLAIM_CHECKS = new ClaimCheck[] {
+	public static final Claim[] DEFAULT_CLAIM_CHECKS = new Claim[] {
 			new IssuedInPast(), new CurrentlyValid()
 	};
 
@@ -15,13 +15,13 @@ public class Claims {
 		return verify(token, DEFAULT_CLAIM_CHECKS);
 	}
 
-	public static VerificationContext verify(Token token, ClaimCheck[] claimChecks) {
+	public static VerificationContext verify(Token token, Claim[] claims) {
 		VerificationContext context = new VerificationContext(token);
 		MultipleClaimException mre = new MultipleClaimException(token);
 
-		for (ClaimCheck claimCheck : claimChecks) {
+		for (Claim claim : claims) {
 			try {
-				claimCheck.check(token, context);
+				claim.check(token, context);
 			} catch (ClaimException re) {
 				mre.add(re);
 			}
@@ -36,9 +36,9 @@ public class Claims {
 		return callback.apply(context);
 	}
 
-	public static <_ReturnType> _ReturnType verify(Token token, ClaimCheck[] claimChecks,
+	public static <_ReturnType> _ReturnType verify(Token token, Claim[] claims,
 			Function<VerificationContext, _ReturnType> callback) {
-		VerificationContext context = verify(token, claimChecks);
+		VerificationContext context = verify(token, claims);
 		return callback.apply(context);
 	}
 }
