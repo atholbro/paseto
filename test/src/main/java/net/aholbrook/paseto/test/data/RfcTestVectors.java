@@ -416,44 +416,35 @@ public class RfcTestVectors {
 			RFC_TEST_VECTOR_V2_S_2_PAYLOAD, RfcToken.class, RFC_TEST_VECTOR_V2_S_2_FOOTER,
 			RFC_TEST_VECTOR_V2_S_2_TOKEN);
 
-	// since java byte is unsigned
-	private static byte[] convertToByteArray(short[] shortArray) {
-		byte key[] = new byte[shortArray.length];
-		for (int i = 0; i < key.length; ++i) {
-			key[i] = (byte) shortArray[i];
-		}
-		return key;
-	}
-
 	public static byte[] rfcTestKey() {
-		return convertToByteArray(RFC_TEST_KEY);
+		return ByteArrayTestUtil.convertToByteArray(RFC_TEST_KEY);
 	}
 
 	public static byte[] rfcTestNonce1() {
-		return convertToByteArray(RFC_TEST_NONCE_1);
+		return ByteArrayTestUtil.convertToByteArray(RFC_TEST_NONCE_1);
 	}
 
 	public static byte[] rfcTestNonceV1() {
-		return convertToByteArray(RFC_TEST_NONCE_V1);
+		return ByteArrayTestUtil.convertToByteArray(RFC_TEST_NONCE_V1);
 	}
 
 	public static byte[] rfcTestNonceV2() {
-		return convertToByteArray(RFC_TEST_NONCE_V2);
+		return ByteArrayTestUtil.convertToByteArray(RFC_TEST_NONCE_V2);
 	}
 
 	public static byte[] rfcTestV1PrivateKey() {
-		return convertToByteArray(RFC_TEST_RSA_PRIVATE_KEY);
+		return ByteArrayTestUtil.convertToByteArray(RFC_TEST_RSA_PRIVATE_KEY);
 	}
 
 	public static byte[] rfcTestV1PublicKey() {
-		return convertToByteArray(RFC_TEST_RSA_PUBLIC_KEY);
+		return ByteArrayTestUtil.convertToByteArray(RFC_TEST_RSA_PUBLIC_KEY);
 	}
 
 	public static byte[] rfcTestV2SecretKey() {
-		return convertToByteArray(RFC_TEST_SK);
+		return ByteArrayTestUtil.convertToByteArray(RFC_TEST_SK);
 	}
 
 	public static byte[] rfcTestV2PublicKey() {
-		return convertToByteArray(RFC_TEST_PK);
+		return ByteArrayTestUtil.convertToByteArray(RFC_TEST_PK);
 	}
 }
