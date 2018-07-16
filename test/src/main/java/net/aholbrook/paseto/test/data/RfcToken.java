@@ -17,11 +17,14 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.test.data;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import net.aholbrook.paseto.service.Token;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+// only needed for testing as we store the result as a string, so the field order must match
+@JsonPropertyOrder({"data", "exp"})
 public class RfcToken extends Token {
 	private String data;
 
