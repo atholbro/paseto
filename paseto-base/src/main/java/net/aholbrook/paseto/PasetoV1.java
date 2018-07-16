@@ -177,4 +177,9 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 		// Convert from JSON
 		return decode(m, payloadClass);
 	}
+
+	@Override
+	public Tuple<byte[], byte[]> generateKeyPair() {
+		throw new UnsupportedOperationException();
+	}
 }

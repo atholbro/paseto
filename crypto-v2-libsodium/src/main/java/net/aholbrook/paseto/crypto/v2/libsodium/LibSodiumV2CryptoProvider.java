@@ -108,4 +108,9 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 			throw new CryptoProviderException("Unable to extract PK from SK.", e);
 		}
 	}
+
+	@Override
+	public void ed25519Generate(byte[] pk, byte[] sk) {
+		sodium.cryptoSignKeypair(pk, sk);
+	}
 }

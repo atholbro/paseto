@@ -149,4 +149,14 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 		// Convert from JSON
 		return decode(m, payloadClass);
 	}
+
+	@Override
+	public Tuple<byte[], byte[]> generateKeyPair() {
+		byte[] sk = new byte[cryptoProvider.ed25519SignSecretKeyBytes()];
+		byte[] pk = new byte[cryptoProvider.ed25519SignPublicKeyBytes()];
+
+		cryptoProvider.ed25519Generate(pk, sk);
+
+		return new Tuple<>(sk, pk);
+	}
 }

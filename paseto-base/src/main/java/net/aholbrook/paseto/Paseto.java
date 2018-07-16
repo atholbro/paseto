@@ -48,6 +48,7 @@ public abstract class Paseto<_Payload> {
 	public abstract _Payload decrypt(String token, byte[] key, String footer, Class<_Payload> payloadClass);
 	public abstract String sign(_Payload payload, byte[] key, String footer);
 	public abstract _Payload verify(String token, byte[] pk, String footer, Class<_Payload> payloadClass);
+	public abstract Tuple<byte[], byte[]> generateKeyPair();
 
 	public String encrypt(_Payload payload, byte[] key) {
 		return encrypt(payload, key, null);
