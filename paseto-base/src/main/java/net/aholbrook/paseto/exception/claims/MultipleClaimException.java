@@ -1,22 +1,22 @@
-package net.aholbrook.paseto.exception.verification.rules;
+package net.aholbrook.paseto.exception.claims;
 
 import net.aholbrook.paseto.Token;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class MultipleRuleException extends RuleException {
-	private final List<RuleException> exceptions = new LinkedList<>();
+public class MultipleClaimException extends ClaimException {
+	private final List<ClaimException> exceptions = new LinkedList<>();
 
-	public MultipleRuleException(Token token) {
+	public MultipleClaimException(Token token) {
 		super("Multiple verification errors.", "", token);
 	}
 
-	public void add(RuleException e) {
+	public void add(ClaimException e) {
 		exceptions.add(e);
 	}
 
-	public List<RuleException> getExceptions() {
+	public List<ClaimException> getExceptions() {
 		return exceptions;
 	}
 
@@ -33,11 +33,11 @@ public class MultipleRuleException extends RuleException {
 		}
 	}
 
-	private static String message(List<RuleException> exceptions) {
+	private static String message(List<ClaimException> exceptions) {
 		StringBuilder sb = new StringBuilder("Multiple verification errors: ");
 
 		String delim = "";
-		for (RuleException re : exceptions) {
+		for (ClaimException re : exceptions) {
 			sb.append(delim).append(re.getRuleName()).append(": ").append(re.getMessage());
 			delim = "\n";
 		}

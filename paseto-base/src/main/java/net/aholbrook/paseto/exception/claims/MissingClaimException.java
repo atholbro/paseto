@@ -1,9 +1,9 @@
-package net.aholbrook.paseto.exception.verification.rules;
+package net.aholbrook.paseto.exception.claims;
 
 import net.aholbrook.paseto.Token;
 import net.aholbrook.paseto.util.StringUtils;
 
-public class MissingClaimException extends RuleException {
+public class MissingClaimException extends ClaimException {
 	private final String claim;
 
 	public MissingClaimException(String claim, String ruleName, Token token) {

@@ -1,10 +1,10 @@
-package net.aholbrook.paseto.exception.verification.rules;
+package net.aholbrook.paseto.exception.claims;
 
 import net.aholbrook.paseto.Token;
 
 import java.time.OffsetDateTime;
 
-public class ExpiredTokenException extends RuleException {
+public class ExpiredTokenException extends ClaimException {
 	public ExpiredTokenException(OffsetDateTime time, String ruleName, Token token) {
 		super(message(time), ruleName, token);
 	}

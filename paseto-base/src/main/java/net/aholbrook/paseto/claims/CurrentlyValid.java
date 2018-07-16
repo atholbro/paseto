@@ -1,16 +1,15 @@
-package net.aholbrook.paseto.verification.rules;
+package net.aholbrook.paseto.claims;
 
 import net.aholbrook.paseto.Token;
-import net.aholbrook.paseto.exception.verification.rules.ExpiredTokenException;
-import net.aholbrook.paseto.exception.verification.rules.MissingClaimException;
-import net.aholbrook.paseto.exception.verification.rules.NotYetValidTokenException;
-import net.aholbrook.paseto.verification.PasetoVerificationContext;
+import net.aholbrook.paseto.exception.claims.ExpiredTokenException;
+import net.aholbrook.paseto.exception.claims.MissingClaimException;
+import net.aholbrook.paseto.exception.claims.NotYetValidTokenException;
 
 import java.time.Clock;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 
-public class CurrentlyValid implements Rule {
+public class CurrentlyValid implements ClaimCheck {
 	public final static String NAME = "CURRENTLY_VALID";
 	public final static Duration DEFAULT_ALLOWABLE_DRIFT = Duration.ofSeconds(1);
 
@@ -67,7 +66,7 @@ public class CurrentlyValid implements Rule {
 	}
 
 	@Override
-	public void check(Token token, PasetoVerificationContext context) {
+	public void check(Token token, VerificationContext context) {
 		// If no expiry time was set, then we treat the token as expired.
 		if (token.getExpiration() == null) {
 			throw new MissingClaimException(Token.CLAIM_EXPIRATION, NAME, token);

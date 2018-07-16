@@ -1,12 +1,11 @@
-package net.aholbrook.paseto.verification.rules;
+package net.aholbrook.paseto.claims;
 
 import net.aholbrook.paseto.Token;
-import net.aholbrook.paseto.exception.verification.rules.IncorrectAudienceException;
-import net.aholbrook.paseto.exception.verification.rules.MissingClaimException;
+import net.aholbrook.paseto.exception.claims.IncorrectAudienceException;
+import net.aholbrook.paseto.exception.claims.MissingClaimException;
 import net.aholbrook.paseto.util.StringUtils;
-import net.aholbrook.paseto.verification.PasetoVerificationContext;
 
-public class ForAudience implements Rule {
+public class ForAudience implements ClaimCheck {
 	public final static String NAME = "FOR_AUDIENCE";
 
 	private final String audience;
@@ -25,7 +24,7 @@ public class ForAudience implements Rule {
 	}
 
 	@Override
-	public void check(Token token, PasetoVerificationContext context) {
+	public void check(Token token, VerificationContext context) {
 		if (StringUtils.isEmpty(token.getAudience())) {
 			throw new MissingClaimException(Token.CLAIM_AUDIENCE, NAME, token);
 		}

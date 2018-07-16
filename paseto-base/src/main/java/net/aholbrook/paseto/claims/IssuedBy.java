@@ -1,12 +1,11 @@
-package net.aholbrook.paseto.verification.rules;
+package net.aholbrook.paseto.claims;
 
 import net.aholbrook.paseto.Token;
-import net.aholbrook.paseto.exception.verification.rules.IncorrectIssuerException;
-import net.aholbrook.paseto.exception.verification.rules.MissingClaimException;
+import net.aholbrook.paseto.exception.claims.IncorrectIssuerException;
+import net.aholbrook.paseto.exception.claims.MissingClaimException;
 import net.aholbrook.paseto.util.StringUtils;
-import net.aholbrook.paseto.verification.PasetoVerificationContext;
 
-public class IssuedBy implements Rule {
+public class IssuedBy implements ClaimCheck {
 	public final static String NAME = "ISSUED_BY";
 
 	private final String issuer;
@@ -26,7 +25,7 @@ public class IssuedBy implements Rule {
 	}
 
 	@Override
-	public void check(Token token, PasetoVerificationContext context) {
+	public void check(Token token, VerificationContext context) {
 		if (StringUtils.isEmpty(token.getIssuer())) {
 			throw new MissingClaimException(Token.CLAIM_ISSUER, NAME, token);
 		}

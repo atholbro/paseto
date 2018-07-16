@@ -1,4 +1,4 @@
-package net.aholbrook.paseto.verification;
+package net.aholbrook.paseto.claims;
 
 import net.aholbrook.paseto.Token;
 import net.aholbrook.paseto.util.StringUtils;
@@ -6,11 +6,11 @@ import net.aholbrook.paseto.util.StringUtils;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PasetoVerificationContext {
+public class VerificationContext {
 	private final Token token;
 	private final Set<String> verifiedClaims = new HashSet<>();
 
-	public PasetoVerificationContext(Token token) {
+	public VerificationContext(Token token) {
 		this.token = token;
 	}
 

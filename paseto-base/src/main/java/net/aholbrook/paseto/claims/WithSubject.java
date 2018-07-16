@@ -1,12 +1,11 @@
-package net.aholbrook.paseto.verification.rules;
+package net.aholbrook.paseto.claims;
 
 import net.aholbrook.paseto.Token;
-import net.aholbrook.paseto.exception.verification.rules.IncorrectSubjectException;
-import net.aholbrook.paseto.exception.verification.rules.MissingClaimException;
+import net.aholbrook.paseto.exception.claims.IncorrectSubjectException;
+import net.aholbrook.paseto.exception.claims.MissingClaimException;
 import net.aholbrook.paseto.util.StringUtils;
-import net.aholbrook.paseto.verification.PasetoVerificationContext;
 
-public class WithSubject implements Rule {
+public class WithSubject implements ClaimCheck {
 	public final static String NAME = "HAS_SUBJECT";
 
 	private final String subject;
@@ -25,7 +24,7 @@ public class WithSubject implements Rule {
 	}
 
 	@Override
-	public void check(Token token, PasetoVerificationContext context) {
+	public void check(Token token, VerificationContext context) {
 		if (StringUtils.isEmpty(token.getSubject())) {
 			throw new MissingClaimException(Token.CLAIM_SUBJECT, NAME, token);
 		}

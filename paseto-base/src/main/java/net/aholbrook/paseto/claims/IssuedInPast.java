@@ -1,15 +1,14 @@
-package net.aholbrook.paseto.verification.rules;
+package net.aholbrook.paseto.claims;
 
 import net.aholbrook.paseto.Token;
-import net.aholbrook.paseto.exception.verification.rules.IssuedInFutureException;
-import net.aholbrook.paseto.exception.verification.rules.MissingClaimException;
-import net.aholbrook.paseto.verification.PasetoVerificationContext;
+import net.aholbrook.paseto.exception.claims.IssuedInFutureException;
+import net.aholbrook.paseto.exception.claims.MissingClaimException;
 
 import java.time.Clock;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 
-public class IssuedInPast implements Rule {
+public class IssuedInPast implements ClaimCheck {
 	public final static String NAME = "ISSUED_IN_PAST";
 	public final static Duration DEFAULT_ALLOWABLE_DRIFT = Duration.ofSeconds(1);
 
@@ -76,7 +75,7 @@ public class IssuedInPast implements Rule {
 	}
 
 	@Override
-	public void check(Token token, PasetoVerificationContext context) {
+	public void check(Token token, VerificationContext context) {
 		if (token.getIssuedAt() == null) {
 			throw new MissingClaimException(Token.CLAIM_ISSUED_AT, NAME, token);
 		}

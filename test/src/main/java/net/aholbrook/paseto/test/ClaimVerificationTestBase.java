@@ -1,38 +1,38 @@
 package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Token;
+import net.aholbrook.paseto.claims.ClaimCheck;
+import net.aholbrook.paseto.claims.Claims;
 import net.aholbrook.paseto.encoding.base.EncodingProvider;
-import net.aholbrook.paseto.exception.verification.rules.ExpiredTokenException;
-import net.aholbrook.paseto.exception.verification.rules.IncorrectAudienceException;
-import net.aholbrook.paseto.exception.verification.rules.IncorrectIssuerException;
-import net.aholbrook.paseto.exception.verification.rules.IncorrectSubjectException;
-import net.aholbrook.paseto.exception.verification.rules.IssuedInFutureException;
-import net.aholbrook.paseto.exception.verification.rules.MissingClaimException;
-import net.aholbrook.paseto.exception.verification.rules.MultipleRuleException;
-import net.aholbrook.paseto.exception.verification.rules.NotYetValidTokenException;
+import net.aholbrook.paseto.exception.claims.ExpiredTokenException;
+import net.aholbrook.paseto.exception.claims.IncorrectAudienceException;
+import net.aholbrook.paseto.exception.claims.IncorrectIssuerException;
+import net.aholbrook.paseto.exception.claims.IncorrectSubjectException;
+import net.aholbrook.paseto.exception.claims.IssuedInFutureException;
+import net.aholbrook.paseto.exception.claims.MissingClaimException;
+import net.aholbrook.paseto.exception.claims.MultipleClaimException;
+import net.aholbrook.paseto.exception.claims.NotYetValidTokenException;
 import net.aholbrook.paseto.test.data.TokenTestVectors;
-import net.aholbrook.paseto.verification.PasetoVerification;
-import net.aholbrook.paseto.verification.rules.CurrentlyValid;
-import net.aholbrook.paseto.verification.rules.ForAudience;
-import net.aholbrook.paseto.verification.rules.IssuedBy;
-import net.aholbrook.paseto.verification.rules.IssuedInPast;
-import net.aholbrook.paseto.verification.rules.Rule;
-import net.aholbrook.paseto.verification.rules.WithSubject;
+import net.aholbrook.paseto.claims.CurrentlyValid;
+import net.aholbrook.paseto.claims.ForAudience;
+import net.aholbrook.paseto.claims.IssuedBy;
+import net.aholbrook.paseto.claims.IssuedInPast;
+import net.aholbrook.paseto.claims.WithSubject;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.OffsetDateTime;
 
-public abstract class TokenVerificationTestBase {
+public abstract class ClaimVerificationTestBase {
 	protected abstract EncodingProvider getEncodingProvider();
 
 	private void standardVerification(Token token, OffsetDateTime time) {
-		Rule[] rules = new Rule[] {
+		ClaimCheck[] claimChecks = new ClaimCheck[] {
 				new IssuedInPast(time, IssuedInPast.DEFAULT_ALLOWABLE_DRIFT),
 				new CurrentlyValid(time, CurrentlyValid.DEFAULT_ALLOWABLE_DRIFT)
 		};
 
-		PasetoVerification.verify(token, rules);
+		Claims.verify(token, claimChecks);
 	}
 
 	// Check a token for expiry 5 seconds after it becomes valid. This should pass for the given token.
@@ -89,7 +89,7 @@ public abstract class TokenVerificationTestBase {
 	@Test(expected = MissingClaimException.class)
 	public void tokenVerification_expired_missing() {
 		Token token = TokenTestVectors.TOKEN_4;
-		PasetoVerification.verify(token, new Rule[] { new CurrentlyValid()});
+		Claims.verify(token, new ClaimCheck[] { new CurrentlyValid()});
 	}
 
 	// Check a token for "issued in the future" at the exact time the token was issued. This should pass.
@@ -135,7 +135,7 @@ public abstract class TokenVerificationTestBase {
 	}
 
 	// Check a token for "issued in the future" 2 seconds before it was issued. This should fail and throw a
-	// MultipleRuleException which contains both a IssuedInFutureException and a NotYetValidTokenException.
+	// MultipleClaimException which contains both a IssuedInFutureException and a NotYetValidTokenException.
 	@Test
 	public void tokenVerification_issuedAt_beforeIssued() {
 		Token token = TokenTestVectors.TOKEN_1;
@@ -144,14 +144,14 @@ public abstract class TokenVerificationTestBase {
 
 		try {
 			standardVerification(token, time);
-		} catch (MultipleRuleException mre) {
+		} catch (MultipleClaimException mre) {
 			Assert.assertEquals(mre.getExceptions().size(), 2);
 			Assert.assertEquals(mre.getExceptions().get(0).getClass(), IssuedInFutureException.class);
 			Assert.assertEquals(mre.getExceptions().get(1).getClass(), NotYetValidTokenException.class);
 			return;
 		}
 
-		Assert.fail("Required MultipleRuleException not thrown.");
+		Assert.fail("Required MultipleClaimException not thrown.");
 	}
 
 	// Check a token for "issued in the future" which has no issued time set. This should fail with a thrown
@@ -159,7 +159,7 @@ public abstract class TokenVerificationTestBase {
 	@Test(expected = MissingClaimException.class)
 	public void tokenVerification_issuedAt_missing() {
 		Token token = TokenTestVectors.TOKEN_4;
-		PasetoVerification.verify(token, new Rule[] { new CurrentlyValid()});
+		Claims.verify(token, new ClaimCheck[] { new CurrentlyValid()});
 	}
 
 	// Check a token for expiry at the exact time it becomes valid. This should pass.
@@ -241,7 +241,7 @@ public abstract class TokenVerificationTestBase {
 	public void tokenVerification_issuer() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String issuer = TokenTestVectors.TOKEN_1.getIssuer();
-		PasetoVerification.verify(token, new Rule[] { new IssuedBy(issuer)});
+		Claims.verify(token, new ClaimCheck[] { new IssuedBy(issuer)});
 	}
 
 	// Check for issuer with a mismatch, should fail with expected IncorrectIssuerException thrown.
@@ -250,7 +250,7 @@ public abstract class TokenVerificationTestBase {
 		Token token = TokenTestVectors.TOKEN_1;
 		// wrong issuer, should fail
 		String issuer = TokenTestVectors.TOKEN_1.getSubject(); // getSubject() on intentional
-		PasetoVerification.verify(token, new Rule[] { new IssuedBy(issuer)});
+		Claims.verify(token, new ClaimCheck[] { new IssuedBy(issuer)});
 	}
 
 	// Check issuer on a token without an issuer, should fail with expected MissingClaimException thrown.
@@ -258,7 +258,7 @@ public abstract class TokenVerificationTestBase {
 	public void tokenVerification_issuer_missing() {
 		Token token = TokenTestVectors.TOKEN_3;
 		String issuer = TokenTestVectors.TOKEN_2.getIssuer();
-		PasetoVerification.verify(token, new Rule[] { new IssuedBy(issuer)});
+		Claims.verify(token, new ClaimCheck[] { new IssuedBy(issuer)});
 	}
 
 	// Check for audience with a match, should pass.
@@ -266,7 +266,7 @@ public abstract class TokenVerificationTestBase {
 	public void tokenVerification_audience() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String audience = TokenTestVectors.TOKEN_1.getAudience();
-		PasetoVerification.verify(token, new Rule[] { new ForAudience(audience)});
+		Claims.verify(token, new ClaimCheck[] { new ForAudience(audience)});
 	}
 
 	// Check for audience with a mismatch, should fail with expected IncorrectAudienceException thrown.
@@ -275,7 +275,7 @@ public abstract class TokenVerificationTestBase {
 		Token token = TokenTestVectors.TOKEN_1;
 		// wrong audience, should fail
 		String audience = TokenTestVectors.TOKEN_1.getIssuer(); // getIssuer() on intentional
-		PasetoVerification.verify(token, new Rule[] { new ForAudience(audience)});
+		Claims.verify(token, new ClaimCheck[] { new ForAudience(audience)});
 	}
 
 	// Check audience on a token without an audience, should fail with expected MissingClaimException thrown.
@@ -283,7 +283,7 @@ public abstract class TokenVerificationTestBase {
 	public void tokenVerification_audience_missing() {
 		Token token = TokenTestVectors.TOKEN_3;
 		String audience = TokenTestVectors.TOKEN_1.getAudience();
-		PasetoVerification.verify(token, new Rule[] { new IssuedBy(audience)});
+		Claims.verify(token, new ClaimCheck[] { new IssuedBy(audience)});
 	}
 
 	// Check for subject with a match, should pass.
@@ -291,7 +291,7 @@ public abstract class TokenVerificationTestBase {
 	public void tokenVerification_subject() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String subject = TokenTestVectors.TOKEN_1.getSubject();
-		PasetoVerification.verify(token, new Rule[] { new WithSubject(subject)});
+		Claims.verify(token, new ClaimCheck[] { new WithSubject(subject)});
 	}
 
 	// Check for subject with a mismatch, should fail with expected IncorrectSubjectException thrown.
@@ -300,7 +300,7 @@ public abstract class TokenVerificationTestBase {
 		Token token = TokenTestVectors.TOKEN_1;
 		// wrong subject, should fail
 		String subject = TokenTestVectors.TOKEN_1.getAudience(); // getAudience() is intentional
-		PasetoVerification.verify(token, new Rule[] { new WithSubject(subject)});
+		Claims.verify(token, new ClaimCheck[] { new WithSubject(subject)});
 	}
 
 	// Check subject on a token without a subject, should fail with expected MissingClaimException thrown.
@@ -308,6 +308,6 @@ public abstract class TokenVerificationTestBase {
 	public void tokenVerification_subject_missing() {
 		Token token = TokenTestVectors.TOKEN_3;
 		String subject = TokenTestVectors.TOKEN_1.getSubject();
-		PasetoVerification.verify(token, new Rule[] { new WithSubject(subject)});
+		Claims.verify(token, new ClaimCheck[] { new WithSubject(subject)});
 	}
 }

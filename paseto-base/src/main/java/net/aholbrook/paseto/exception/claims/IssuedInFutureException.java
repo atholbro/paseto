@@ -1,10 +1,10 @@
-package net.aholbrook.paseto.exception.verification.rules;
+package net.aholbrook.paseto.exception.claims;
 
 import net.aholbrook.paseto.Token;
 
 import java.time.OffsetDateTime;
 
-public class IssuedInFutureException extends RuleException {
+public class IssuedInFutureException extends ClaimException {
 	public IssuedInFutureException(OffsetDateTime checkTime, OffsetDateTime issuedAt, String ruleName, Token token) {
 		super(message(checkTime, issuedAt), ruleName, token);
 	}
