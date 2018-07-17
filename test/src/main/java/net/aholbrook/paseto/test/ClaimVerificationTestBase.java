@@ -159,7 +159,7 @@ public abstract class ClaimVerificationTestBase {
 	@Test(expected = MissingClaimException.class)
 	public void tokenVerification_issuedAt_missing() {
 		Token token = TokenTestVectors.TOKEN_4;
-		Claims.verify(token, new Claim[] { new CurrentlyValid()});
+		Claims.verify(token, new Claim[] { new IssuedInPast()});
 	}
 
 	// Check a token for expiry at the exact time it becomes valid. This should pass.
@@ -283,7 +283,7 @@ public abstract class ClaimVerificationTestBase {
 	public void tokenVerification_audience_missing() {
 		Token token = TokenTestVectors.TOKEN_3;
 		String audience = TokenTestVectors.TOKEN_1.getAudience();
-		Claims.verify(token, new Claim[] { new IssuedBy(audience)});
+		Claims.verify(token, new Claim[] { new ForAudience(audience)});
 	}
 
 	// Check for subject with a match, should pass.
