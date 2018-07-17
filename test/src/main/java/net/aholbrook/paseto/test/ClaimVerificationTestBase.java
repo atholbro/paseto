@@ -92,6 +92,11 @@ public abstract class ClaimVerificationTestBase {
 		Claims.verify(token, new Claim[] { new CurrentlyValid()});
 	}
 
+	@Test
+	public void tokenVerification_expired_name() {
+		Assert.assertEquals("claim name",  CurrentlyValid.NAME, new CurrentlyValid().name());
+	}
+
 	// Check a token for "issued in the future" at the exact time the token was issued. This should pass.
 	@Test(expected = NotYetValidTokenException.class)
 	public void tokenVerification_issuedAt() {
@@ -170,6 +175,11 @@ public abstract class ClaimVerificationTestBase {
 		OffsetDateTime time = token.getNotBefore();
 
 		standardVerification(token, time);
+	}
+
+	@Test
+	public void tokenVerification_issuedAt_name() {
+		Assert.assertEquals("claim name",  IssuedInPast.NAME, new IssuedInPast().name());
 	}
 
 	// Check a token for expiry 1 second after it becomes valid. This should pass.
@@ -261,6 +271,12 @@ public abstract class ClaimVerificationTestBase {
 		Claims.verify(token, new Claim[] { new IssuedBy(issuer)});
 	}
 
+	// Make sure the claim name is correct.
+	@Test
+	public void tokenVerification_issuer_name() {
+		Assert.assertEquals("claim name",  IssuedBy.NAME, new IssuedBy(null).name());
+	}
+
 	// Check for audience with a match, should pass.
 	@Test
 	public void tokenVerification_audience() {
@@ -286,6 +302,12 @@ public abstract class ClaimVerificationTestBase {
 		Claims.verify(token, new Claim[] { new ForAudience(audience)});
 	}
 
+	// Make sure the claim name is correct.
+	@Test
+	public void tokenVerification_audience_name() {
+		Assert.assertEquals("claim name",  ForAudience.NAME, new ForAudience(null).name());
+	}
+
 	// Check for subject with a match, should pass.
 	@Test
 	public void tokenVerification_subject() {
@@ -309,5 +331,11 @@ public abstract class ClaimVerificationTestBase {
 		Token token = TokenTestVectors.TOKEN_3;
 		String subject = TokenTestVectors.TOKEN_1.getSubject();
 		Claims.verify(token, new Claim[] { new WithSubject(subject)});
+	}
+
+	// Make sure the claim name is correct.
+	@Test
+	public void tokenVerification_subject_name() {
+		Assert.assertEquals("claim name",  WithSubject.NAME, new WithSubject(null).name());
 	}
 }
