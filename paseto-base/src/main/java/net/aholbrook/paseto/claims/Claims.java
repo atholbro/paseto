@@ -30,15 +30,4 @@ public class Claims {
 		mre.throwIfNotEmpty();
 		return context;
 	}
-
-	public static <_ReturnType> _ReturnType verify(Token token, Function<VerificationContext, _ReturnType> callback) {
-		VerificationContext context = verify(token);
-		return callback.apply(context);
-	}
-
-	public static <_ReturnType> _ReturnType verify(Token token, Claim[] claims,
-			Function<VerificationContext, _ReturnType> callback) {
-		VerificationContext context = verify(token, claims);
-		return callback.apply(context);
-	}
 }
