@@ -18,10 +18,17 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.test.data.TestVector;
+import net.aholbrook.paseto.test.data.TokenTestVectors;
+import net.aholbrook.paseto.util.StringUtils;
 import org.junit.Assert;
+import org.junit.Test;
+
+import java.nio.charset.Charset;
 
 public abstract class PasetoTestBase {
+	protected abstract  <_Payload> Paseto<_Payload> createPaseto();
 	protected abstract  <_Payload> Paseto<_Payload> createPaseto(byte[] nonce);
 
 	protected <_Payload, _Footer> void encryptTestVector(TestVector<_Payload, _Footer> tv) {
@@ -96,5 +103,13 @@ public abstract class PasetoTestBase {
 		}
 
 		Assert.assertEquals("Verified payload does not match test vector.", tv.getPayload(), payload);
+	}
+
+	protected String modify(String token, int[] indices) {
+		byte[] tokenBytes = StringUtils.getBytesUtf8(token);
+		for (int i : indices) {
+			tokenBytes[i] ^= 1;
+		}
+		return new String(tokenBytes, Charset.forName("UTF-8"));
 	}
 }

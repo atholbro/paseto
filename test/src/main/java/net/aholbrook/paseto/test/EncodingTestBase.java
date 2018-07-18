@@ -2,6 +2,7 @@ package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.encoding.base.EncodingProvider;
 import net.aholbrook.paseto.service.Token;
+import net.aholbrook.paseto.test.data.CustomToken;
 import net.aholbrook.paseto.test.data.TokenTestVectors;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public abstract class EncodingTestBase {
 	public void token_encodeDecode2() {
 		EncodingProvider encodingProvider = getEncodingProvider();
 		String s = encodingProvider.toJson(TokenTestVectors.TOKEN_2);
-		TokenTestVectors.CustomToken token2 = encodingProvider.fromJson(s, TokenTestVectors.CustomToken.class);
+		CustomToken token2 = encodingProvider.fromJson(s, CustomToken.class);
 		Assert.assertEquals("decoded token", TokenTestVectors.TOKEN_2, token2);
 	}
 
@@ -39,8 +40,8 @@ public abstract class EncodingTestBase {
 	@Test
 	public void token_decode2() {
 		EncodingProvider encodingProvider = getEncodingProvider();
-		TokenTestVectors.CustomToken token = encodingProvider.fromJson(TokenTestVectors.TOKEN_2_STRING,
-				TokenTestVectors.CustomToken.class);
+		CustomToken token = encodingProvider.fromJson(TokenTestVectors.TOKEN_2_STRING,
+				CustomToken.class);
 		Assert.assertEquals("decoded token", TokenTestVectors.TOKEN_2, token);
 	}
 }

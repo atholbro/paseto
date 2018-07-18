@@ -420,15 +420,15 @@ public class RfcTestVectors {
 		return ByteArrayTestUtil.convertToByteArray(RFC_TEST_KEY);
 	}
 
-	public static byte[] rfcTestNonce1() {
+	private static byte[] rfcTestNonce1() {
 		return ByteArrayTestUtil.convertToByteArray(RFC_TEST_NONCE_1);
 	}
 
-	public static byte[] rfcTestNonceV1() {
+	private static byte[] rfcTestNonceV1() {
 		return ByteArrayTestUtil.convertToByteArray(RFC_TEST_NONCE_V1);
 	}
 
-	public static byte[] rfcTestNonceV2() {
+	private static byte[] rfcTestNonceV2() {
 		return ByteArrayTestUtil.convertToByteArray(RFC_TEST_NONCE_V2);
 	}
 

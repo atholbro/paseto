@@ -1,25 +1,24 @@
 package net.aholbrook.paseto.test.data;
 
+import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Objects;
 
 public class TokenTestVectors {
-	// q9Rq3FfaAyN8JWyVJhphybm9DaFNLVt2FqHqvZJuUrD3uPEU
+	// q9Rq3FfaAyN8JWyVJhphybm9DaFNLVt2
 	private static short[] TEST_KEY = new short[] {
 			0x71, 0x39, 0x52, 0x71, 0x33, 0x46, 0x66, 0x61, 0x41, 0x79, 0x4e, 0x38, 0x4a, 0x57, 0x79, 0x56,
-			0x4a, 0x68, 0x70, 0x68, 0x79, 0x62, 0x6d, 0x39, 0x44, 0x61, 0x46, 0x4e, 0x4c, 0x56, 0x74, 0x32,
-			0x46, 0x71, 0x48, 0x71, 0x76, 0x5a, 0x4a, 0x75, 0x55, 0x72, 0x44, 0x33, 0x75, 0x50, 0x45, 0x55
+			0x4a, 0x68, 0x70, 0x68, 0x79, 0x62, 0x6d, 0x39, 0x44, 0x61, 0x46, 0x4e, 0x4c, 0x56, 0x74, 0x32
 	};
 
 	// SmpF7Y5DeSJFJxjMrnDSwnUv
 	private static short[] TEST_NONCE = new short[] {
 			0x53, 0x6d, 0x70, 0x46, 0x37, 0x59, 0x35, 0x44, 0x65, 0x53, 0x4a, 0x46,
-			0x4a, 0x78, 0x6a, 0x4d, 0x72, 0x6e, 0x44, 0x53, 0x77, 0x6e, 0x55, 0x76,
+			0x4a, 0x78, 0x6a, 0x4d, 0x72, 0x6e, 0x44, 0x53, 0x77, 0x6e, 0x55, 0x76
 	};
 
 	private static short[] TEST_SK = new short[] {
@@ -149,11 +148,73 @@ public class TokenTestVectors {
 			.setIssuedAt(OffsetDateTime.of(LocalDate.of(2038, 3, 17),
 				LocalTime.of(0, 0, 0), ZoneOffset.UTC))
 			.setTokenId("87IFSGFgPNtQNNuw0AtuLttP");
+	private final static KeyId TOKEN_1_FOOTER = new KeyId().setKeyId("key-1");
 	public final static String TOKEN_1_STRING = "{\"exp\":\"2039-01-01T00:00:00+00:00\",\"iss\":\"paragonie.com\","
 			+ "\"sub\":\"test\",\"aud\":\"pie-hosted.com\",\"jti\":\"87IFSGFgPNtQNNuw0AtuLttP\","
 			+ "\"nbf\":\"2038-04-01T00:00:00+00:00\",\"iat\":\"2038-03-17T00:00:00+00:00\"}";
+	private final static String TOKEN_1_V1_LOCAL
+			= "v1.local.m6N_QKd4XTRmXT-q2VJbh2A4QqVy2Cp26f3kx837_wsZI16E44Fpz1ha_ze2T2obkEfp--ZbCRCc5GFJxiHk-X99BGUrQXc"
+			+ "-S1Zu5TUVBqPMh5dcLqhD41AccpGKGKI0DPGgLSrf0euLlJIhwDsxR2WdPRCRMa46hZ9aUZw9We2gFjM12cfH9qDc4dFq7AMyEsYvUML"
+			+ "VDV5xuapW12-C3m1AgDQaeQUUC0Lcl6f-UGrR0VCszpZtzfw1aNSofS7yHkGE0G6ENZ1WgdzdWiXQn97qi18YD756_Vsv5VJVuVOBFXs"
+			+ "mcluDcDhVh11010OWK858NNN4u1z8UORAv1e3Gzuz5ZdcX3-GmQQv7OuVv6UAEg";
+	private final static String TOKEN_1_V1_LOCAL_WITH_FOOTER
+			= "v1.local.m6N_QKd4XTRmXT-q2VJbh2A4QqVy2Cp26f3kx837_wsZI16E44Fpz1ha_ze2T2obkEfp--ZbCRCc5GFJxiHk-X99BGUrQXc"
+			+ "-S1Zu5TUVBqPMh5dcLqhD41AccpGKGKI0DPGgLSrf0euLlJIhwDsxR2WdPRCRMa46hZ9aUZw9We2gFjM12cfH9qDc4dFq7AMyEsYvUML"
+			+ "VDV5xuapW12-C3m1AgDQaeQUUC0Lcl6f-UGrR0VCszpZtzfw1aNSofS7yHkGE0G6ENZ1WgdzdWiXQn97qi18YD756_Vsv5VJVuVOBFQN"
+			+ "tZ4EF_vCbxUlY87KndoN-ilJDQDd-WK4yqAVHcVW3uYNGgD1OZLw9Ases7jUqAw.eyJraWQiOiJrZXktMSJ9";
+	private final static String TOKEN_1_V1_PUBLIC
+			= "v1.public.eyJleHAiOiIyMDM5LTAxLTAxVDAwOjAwOjAwKzAwOjAwIiwiaXNzIjoicGFyYWdvbmllLmNvbSIsInN1YiI6InRlc3QiLC"
+			+ "JhdWQiOiJwaWUtaG9zdGVkLmNvbSIsIm5iZiI6IjIwMzgtMDQtMDFUMDA6MDA6MDArMDA6MDAiLCJpYXQiOiIyMDM4LTAzLTE3VDAwOj"
+			+ "AwOjAwKzAwOjAwIiwianRpIjoiODdJRlNHRmdQTnRRTk51dzBBdHVMdHRQIn0OUAoUC1JXZRCAk3RGxnpVdH1fB0nN5_wBa9Z7F0aBVA"
+			+ "dKBQCUkB5OwNcUNlE7R_MR1D1seWFgj0xTSIBQHEFhatBpBpO2QUT16FR0VdxG-coTLReCN5d_TvYzSsKCA2I1H9UXlQBfJIfNXJHeQ9"
+			+ "tnZZKXhkq93Jxg6tStBTpL1vFpvvzcxTgacLUobGllKetDn9mdtbq_SOQ2fM840T0BXeGaEFrWYDO9WPf8t9aAGKYwV1lh7tYTl9B5Zt"
+			+ "GVzdPJdljvsyCKTTwRxhvWDL3e6Jy02H_1cZjOkoH8fLpqmeyEQA5-swzVwTaaGpgYGU_gZWMgofFWjQeQ-BTaL6VA";
+	private final static String TOKEN_1_V1_PUBLIC_WITH_FOOTER
+			= "v1.public.eyJleHAiOiIyMDM5LTAxLTAxVDAwOjAwOjAwKzAwOjAwIiwiaXNzIjoicGFyYWdvbmllLmNvbSIsInN1YiI6InRlc3QiLC"
+			+ "JhdWQiOiJwaWUtaG9zdGVkLmNvbSIsIm5iZiI6IjIwMzgtMDQtMDFUMDA6MDA6MDArMDA6MDAiLCJpYXQiOiIyMDM4LTAzLTE3VDAwOj"
+			+ "AwOjAwKzAwOjAwIiwianRpIjoiODdJRlNHRmdQTnRRTk51dzBBdHVMdHRQIn1DMRW-gRvx5db1UFNWzxZVJDZjVD4cmkSWPsdAnXzzjo"
+			+ "Yn1JccSIWllUz5mKvvCoYMoJbY3iXORq2M3Unct9C9GaTM2eGp6c9C5vSZ7OIMFU3crZ3y_6k2XGx_qcLbQSs2jPtfi5mKIT0qIIVkDy"
+			+ "78lDG3muQP4ox3f0zJpqhZnRaU4gA9Ht4n4-yUm8jZMw85R2NOJ2a7nMlZPtuUPtAcOeWzr0EaHLFrqNhtvwakT-kATj_DWHaUgP8mUj"
+			+ "Dj_dH0mxLV9xyDeV14aUg92Jh-ddMxE7dNVoBZxWQ2qwoV0UEUgzTu6Eg-m1etuFMb9HopeYRBJrLvB0loyxo5boHi.eyJraWQiOiJrZ"
+			+ "XktMSJ9";
+	private final static String TOKEN_1_V2_LOCAL
+			= "v2.local.3kYO_Lnf8Ff8l-R5MDUE6OHeS5TrBjl4Hc3Z8bJDMDzuOCjFHpzkjB135N7hcYs6RmwknxD5ziidhQKexbVxYYFAOW6QSQb"
+			+ "v9Mdrd4KSRKXIXMfAIB_QFVKPb2-u3NREHsBAgooPVv5qezQJEObCgEpRuUizbJhmx4BbJ2yZ_GRpnOZpwfPdViC7hWULo19K2uhnVX2"
+			+ "72pzIKQY5BJBTfExlsFuYF0zb_a3t5rFds_AOz4Ax9hLcpl6qHE-bubfleg2DPY0OqYKvHXgmBjnygVK7t_h7QRwASmbGPGaucITuq29"
+			+ "DaygqjvEB";
+	private final static String TOKEN_1_V2_LOCAL_WITH_FOOTER
+			= "v2.local.3kYO_Lnf8Ff8l-R5MDUE6OHeS5TrBjl4Hc3Z8bJDMDzuOCjFHpzkjB135N7hcYs6RmwknxD5ziidhQKexbVxYYFAOW6QSQb"
+			+ "v9Mdrd4KSRKXIXMfAIB_QFVKPb2-u3NREHsBAgooPVv5qezQJEObCgEpRuUizbJhmx4BbJ2yZ_GRpnOZpwfPdViC7hWULo19K2uhnVX2"
+			+ "72pzIKQY5BJBTfExlsFuYF0zb_a3t5rFds_AOz4Ax9hLcpl6qHE-bubfleg2DPY0OqYKvHXgmBjnygVK7t_h7QRwASmamxVzMUpRu-PG"
+			+ "4eB9bBWeP.eyJraWQiOiJrZXktMSJ9";
+	private final static String TOKEN_1_V2_PUBLIC
+			= "v2.public.eyJpc3MiOiJwYXJhZ29uaWUuY29tIiwic3ViIjoidGVzdCIsImF1ZCI6InBpZS1ob3N0ZWQuY29tIiwiZXhwIjoiMjAzOS"
+			+ "0wMS0wMVQwMDowMDowMCswMDowMCIsIm5iZiI6IjIwMzgtMDQtMDFUMDA6MDA6MDArMDA6MDAiLCJpYXQiOiIyMDM4LTAzLTE3VDAwOj"
+			+ "AwOjAwKzAwOjAwIiwianRpIjoiODdJRlNHRmdQTnRRTk51dzBBdHVMdHRQIn3esDcxyrLvjdUVc4qJJdDlePpvR6meN9eQYbHCigSL8j"
+			+ "kJi6fTfeyzL2kRBfwuIro50vE3iqrQVIHhXTA_mNIK";
+	private final static String TOKEN_1_V2_PUBLIC_WITH_FOOTER
+			= "v2.public.eyJpc3MiOiJwYXJhZ29uaWUuY29tIiwic3ViIjoidGVzdCIsImF1ZCI6InBpZS1ob3N0ZWQuY29tIiwiZXhwIjoiMjAzOS"
+			+ "0wMS0wMVQwMDowMDowMCswMDowMCIsIm5iZiI6IjIwMzgtMDQtMDFUMDA6MDA6MDArMDA6MDAiLCJpYXQiOiIyMDM4LTAzLTE3VDAwOj"
+			+ "AwOjAwKzAwOjAwIiwianRpIjoiODdJRlNHRmdQTnRRTk51dzBBdHVMdHRQIn2xoKvT1qvd3J2tLSWXepCJl7TJNiPBobAfU8OQtsU9qF"
+			+ "o_K0TZVmdOB-mDFAbv6VXsgercqOAoIK0o3Fa-JA8D.eyJraWQiOiJrZXktMSJ9";
+	public final static TestVector<Token, Void> TV_1_V1_LOCAL = new TestVector<>(testKey(), testNonce(), TOKEN_1,
+			Token.class, null, TOKEN_1_V1_LOCAL);
+	public final static TestVector<Token, KeyId> TV_1_V1_LOCAL_WITH_FOOTER = new TestVector<>(testKey(), testNonce(),
+			TOKEN_1, Token.class, TOKEN_1_FOOTER, TOKEN_1_V1_LOCAL_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_1_V1_PUBLIC = new TestVector<>(testV1PrivateKey(), testV1PublicKey(),
+			TOKEN_1, Token.class, null, TOKEN_1_V1_PUBLIC);
+	public final static TestVector<Token, KeyId> TV_1_V1_PUBLIC_WITH_FOOTER = new TestVector<>(testV1PrivateKey(),
+			testV1PublicKey(), TOKEN_1, Token.class, TOKEN_1_FOOTER, TOKEN_1_V1_PUBLIC_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_1_V2_LOCAL = new TestVector<>(testKey(), testNonce(), TOKEN_1,
+			Token.class, null, TOKEN_1_V2_LOCAL);
+	public final static TestVector<Token, KeyId> TV_1_V2_LOCAL_WITH_FOOTER = new TestVector<>(testKey(), testNonce(),
+			TOKEN_1, Token.class, TOKEN_1_FOOTER, TOKEN_1_V2_LOCAL_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_1_V2_PUBLIC = new TestVector<>(testV2SecretKey(), testV2PublicKey(),
+			TOKEN_1, Token.class, null, TOKEN_1_V2_PUBLIC);
+	public final static TestVector<Token, KeyId> TV_1_V2_PUBLIC_WITH_FOOTER = new TestVector<>(testV2SecretKey(),
+			testV2PublicKey(), TOKEN_1, Token.class, TOKEN_1_FOOTER, TOKEN_1_V2_PUBLIC_WITH_FOOTER);
 
-	public final static Token TOKEN_2 = new CustomToken()
+	public final static CustomToken TOKEN_2 = (CustomToken) new CustomToken()
 			.setUserId(100L)
 			.setIssuer("auth.example.com")
 			.setSubject("user-auth")
@@ -164,60 +225,181 @@ public class TokenTestVectors {
 					LocalTime.of(17, 18, 44), ZoneOffset.UTC))
 			.setNotBefore(OffsetDateTime.of(LocalDate.of(2018, 1, 1),
 					LocalTime.of(17, 18, 44), ZoneOffset.UTC));
+	private final static KeyId TOKEN_2_FOOTER = new KeyId().setKeyId("key-1");
 	public final static String TOKEN_2_STRING = "{\"userId\":100,\"exp\":\"2018-01-01T17:23:44+00:00\","
 			+ "\"sub\":\"user-auth\",\"iss\":\"auth.example.com\",\"aud\":\"internal-service.example.com\","
 			+ "\"jti\":null,\"nbf\":\"2018-01-01T17:18:44+00:00\",\"iat\":\"2018-01-01T17:18:44+00:00\"}";
-
+	private final static String TOKEN_2_V1_LOCAL
+			= "v1.local.1Y6hP7JezXKcufqg4wG88Zn8WeijDUYRAv-w-iqRfvVE5BWegNkdXDItmzlyAxv5_kYzTULJ7KcNDADSuwb59DaYyYWW3f8"
+			+ "U4M0WTt_zEBC30mdf1PWZe-ET6HnZHdQ7cZSmSJjAS69s2PJF9Sugj_8IZEusVmeIoUdO1cDgog4UOb287YafnF73un3j-NstSXcBFWX"
+			+ "x-yUm9dzvh7EeZ-rIZrpZO4lLmuYkUaFGlCiiKrjCyGWaVG-EsnGcxUR_LKC_RF9Zf5MSd5vED7hPMXxqqsCLT_Kp04suk7wFgsKe6dO"
+			+ "SKnVOk6BvTUElLh6zXLSrxZtBDrXxXQihqKyewMnCCqasx5RU-Sj0YvcXRvwHmnAT";
+	private final static String TOKEN_2_V1_LOCAL_WITH_FOOTER
+			= "v1.local.1Y6hP7JezXKcufqg4wG88Zn8WeijDUYRAv-w-iqRfvVE5BWegNkdXDItmzlyAxv5_kYzTULJ7KcNDADSuwb59DaYyYWW3f8"
+			+ "U4M0WTt_zEBC30mdf1PWZe-ET6HnZHdQ7cZSmSJjAS69s2PJF9Sugj_8IZEusVmeIoUdO1cDgog4UOb287YafnF73un3j-NstSXcBFWX"
+			+ "x-yUm9dzvh7EeZ-rIZrpZO4lLmuYkUaFGlCiiKrjCyGWaVG-EsnGcxUR_LKC_RF9Zf5MSd5vED7hPMXxqqsCLT_Kp04suk7wFgsKe6dO"
+			+ "SYsXpzLVjiQg1uWWUbSZCgYu90pbaZ9pZ8qBB5XDTTgZ9quaaEKt2RhtF3Dbr9ThE.eyJraWQiOiJrZXktMSJ9";
+	private final static String TOKEN_2_V1_PUBLIC
+			= "v1.public.eyJ1c2VySWQiOjEwMCwiZXhwIjoiMjAxOC0wMS0wMVQxNzoyMzo0NCswMDowMCIsImlzcyI6ImF1dGguZXhhbXBsZS5jb2"
+			+ "0iLCJzdWIiOiJ1c2VyLWF1dGgiLCJhdWQiOiJpbnRlcm5hbC1zZXJ2aWNlLmV4YW1wbGUuY29tIiwibmJmIjoiMjAxOC0wMS0wMVQxNz"
+			+ "oxODo0NCswMDowMCIsImlhdCI6IjIwMTgtMDEtMDFUMTc6MTg6NDQrMDA6MDAifTk_6iNDYl4u-G-1vlfDlLbcLjBb-eyn76TJsovnVd"
+			+ "aFHcjKMd7z-KH7pkE-VXSwof-F08gvVTstNqDEXbJsNsylqQ3XxvDmgBGY8S6Jtz8EC9baYumITHfKUjPTi9yVBQiH-cre03565Ioe9B"
+			+ "fsksWDP6mPHpDAibI9FDVTponvJ2FYA4p4UKHxQW2vaIzPZSIb9qvy5Vs5sv9u_skuMliD1mir_vgLYK_7YjncHqq5TyNgwwO6Xnx7qZ"
+			+ "9ADS-ut9tje89NzFZzGBeW_vQTcgJCoE_r82YawXwLforxpnv1VV0HaLxFWzCx5WJc02udWeVOmhmpPBCAQyuV5JsQFlM";
+	private final static String TOKEN_2_V1_PUBLIC_WITH_FOOTER
+			= "v1.public.eyJ1c2VySWQiOjEwMCwiZXhwIjoiMjAxOC0wMS0wMVQxNzoyMzo0NCswMDowMCIsImlzcyI6ImF1dGguZXhhbXBsZS5jb2"
+			+ "0iLCJzdWIiOiJ1c2VyLWF1dGgiLCJhdWQiOiJpbnRlcm5hbC1zZXJ2aWNlLmV4YW1wbGUuY29tIiwibmJmIjoiMjAxOC0wMS0wMVQxNz"
+			+ "oxODo0NCswMDowMCIsImlhdCI6IjIwMTgtMDEtMDFUMTc6MTg6NDQrMDA6MDAifZHKYq5llXY3dUuAaUvc9IOcqsoJIDqs8ygrwAHiNs"
+			+ "2GDsvozdEGz-07CKOk7mB3LHQdJuk5SGCwBlEwVbg-db15JT4cVPJkJVxGqFCZ_M1kjIasiVmoyJqrI-hF4SYDhsb6qVf6ymmWYZX5jz"
+			+ "R8T-ekAVz8OGEHNQiHtlGR2RZRwhIfG1t5lyQtiniD8gMFd3bM6Wa6fuNQeXqjn-GC53w9JZGUyNZNLgWd5ouGJlWfU8Ar2m5E5HeLxa"
+			+ "pLlXL5gb002ELnTgPxxoT_N6EAslXh1tAmH2fVOT729veD2R8uXgXMCiG2Q0JT_aJl9PpAwhmbm4KUQ1mpVa9sS5ro5X4.eyJraWQiOi"
+			+ "JrZXktMSJ9";
+	private final static String TOKEN_2_V2_LOCAL
+			= "v2.local.WZ4x3NRzj5zuA5fjnaCAmaCgD-gdFDM9yUvoRnqyhGG1wt44Xh1BjWMx1jx8rVH1My5xB66KfSgG1RFiyJz9iyamU76DMyh"
+			+ "6sn_a_c3dqmqWSsiF7_3Sbbv8v9AeJfs7sREiBX4QpJxbzpP-CLDSOyOF0fBBpZ3DrigrOBf21bzYdcFL93NpmCCgejttW-MTiLc1a7A"
+			+ "IJJLSxYrk_D2VARx1oXO5Vg6bq904ev6zcIfgYHepYk2y_evZgLs_kEFmhKWQZvs1otGoqwDsY5Balpx1rs20T1X8MJDQFzAJaa2Jq9q"
+			+ "tUqSrM65dPd8";
+	private final static String TOKEN_2_V2_LOCAL_WITH_FOOTER
+			= "v2.local.WZ4x3NRzj5zuA5fjnaCAmaCgD-gdFDM9yUvoRnqyhGG1wt44Xh1BjWMx1jx8rVH1My5xB66KfSgG1RFiyJz9iyamU76DMyh"
+			+ "6sn_a_c3dqmqWSsiF7_3Sbbv8v9AeJfs7sREiBX4QpJxbzpP-CLDSOyOF0fBBpZ3DrigrOBf21bzYdcFL93NpmCCgejttW-MTiLc1a7A"
+			+ "IJJLSxYrk_D2VARx1oXO5Vg6bq904ev6zcIfgYHepYk2y_evZgLs_kEFmhKWQZvs1otGoqwDsY5Balpx1rs20T1X8MJDQF5VqZYxzd_U"
+			+ "Qurq-rrRQvNM.eyJraWQiOiJrZXktMSJ9";
+	private final static String TOKEN_2_V2_PUBLIC
+			= "v2.public.eyJpc3MiOiJhdXRoLmV4YW1wbGUuY29tIiwic3ViIjoidXNlci1hdXRoIiwiYXVkIjoiaW50ZXJuYWwtc2VydmljZS5leG"
+			+ "FtcGxlLmNvbSIsImV4cCI6IjIwMTgtMDEtMDFUMTc6MjM6NDQrMDA6MDAiLCJuYmYiOiIyMDE4LTAxLTAxVDE3OjE4OjQ0KzAwOjAwIi"
+			+ "wiaWF0IjoiMjAxOC0wMS0wMVQxNzoxODo0NCswMDowMCIsInVzZXJJZCI6MTAwfa9DoJyOKE8e82Gh6zwdd99D5ogKl97aEzhQkRuyAd"
+			+ "dwDYEMd6QNOVnlfad2P7x9nerI9JyTCiBMIbn7Fj6pWwk";
+	private final static String TOKEN_2_V2_PUBLIC_WITH_FOOTER
+			= "v2.public.eyJpc3MiOiJhdXRoLmV4YW1wbGUuY29tIiwic3ViIjoidXNlci1hdXRoIiwiYXVkIjoiaW50ZXJuYWwtc2VydmljZS5leG"
+			+ "FtcGxlLmNvbSIsImV4cCI6IjIwMTgtMDEtMDFUMTc6MjM6NDQrMDA6MDAiLCJuYmYiOiIyMDE4LTAxLTAxVDE3OjE4OjQ0KzAwOjAwIi"
+			+ "wiaWF0IjoiMjAxOC0wMS0wMVQxNzoxODo0NCswMDowMCIsInVzZXJJZCI6MTAwfYYK_N5BU15ZdZhive3TkI_NiyikpPQJHmeWKM7rZX"
+			+ "a9Z2jEIczWmjt2sd_vntk6UnpW3IoZSh82xN9DFZdyKgY.eyJraWQiOiJrZXktMSJ9";
+	public final static TestVector<CustomToken, Void> TV_2_V1_LOCAL = new TestVector<>(testKey(), testNonce(), TOKEN_2,
+			CustomToken.class, null, TOKEN_2_V1_LOCAL);
+	public final static TestVector<CustomToken, KeyId> TV_2_V1_LOCAL_WITH_FOOTER = new TestVector<>(testKey(),
+			testNonce(), TOKEN_2, CustomToken.class, TOKEN_2_FOOTER, TOKEN_2_V1_LOCAL_WITH_FOOTER);
+	public final static TestVector<CustomToken, Void> TV_2_V1_PUBLIC = new TestVector<>(testV1PrivateKey(),
+			testV1PublicKey(), TOKEN_2, CustomToken.class, null, TOKEN_2_V1_PUBLIC);
+	public final static TestVector<CustomToken, KeyId> TV_2_V1_PUBLIC_WITH_FOOTER = new TestVector<>(testV1PrivateKey(),
+			testV1PublicKey(), TOKEN_2, CustomToken.class, TOKEN_2_FOOTER, TOKEN_2_V1_PUBLIC_WITH_FOOTER);
+	public final static TestVector<CustomToken, Void> TV_2_V2_LOCAL = new TestVector<>(testKey(), testNonce(), TOKEN_2,
+			CustomToken.class, null, TOKEN_2_V2_LOCAL);
+	public final static TestVector<CustomToken, KeyId> TV_2_V2_LOCAL_WITH_FOOTER = new TestVector<>(testKey(),
+			testNonce(), TOKEN_2, CustomToken.class, TOKEN_2_FOOTER, TOKEN_2_V2_LOCAL_WITH_FOOTER);
+	public final static TestVector<CustomToken, Void> TV_2_V2_PUBLIC = new TestVector<>(testV2SecretKey(),
+			testV2PublicKey(), TOKEN_2, CustomToken.class, null, TOKEN_2_V2_PUBLIC);
+	public final static TestVector<CustomToken, KeyId> TV_2_V2_PUBLIC_WITH_FOOTER = new TestVector<>(testV2SecretKey(),
+			testV2PublicKey(), TOKEN_2, CustomToken.class, TOKEN_2_FOOTER, TOKEN_2_V2_PUBLIC_WITH_FOOTER);
+	
 	// Minimal token, only iss and exp set.
 	public final static Token TOKEN_3 = new Token()
 			.setExpiration(OffsetDateTime.of(LocalDate.of(2018, 1, 1),
 					LocalTime.of(17, 23, 44), ZoneOffset.UTC))
 			.setIssuedAt(OffsetDateTime.of(LocalDate.of(2018, 1, 1),
 					LocalTime.of(17, 18, 44), ZoneOffset.UTC));
+	private final static KeyId TOKEN_3_FOOTER = new KeyId().setKeyId("key-2");
+	public final static String TOKEN_3_STRING
+			= "";
+	private final static String TOKEN_3_V1_LOCAL
+			= "v1.local.wpuFMg8zTfqtfL2wiGv9aDSg3TFH6r-viT6sbfY6Kxm3v4YM5gkmqybuFKIEXj5i-uIlW4hnZi0OXSAr1r5XEBG-p6gSuYp"
+			+ "2YeD7Q-wGFPW862hH4XpI4Lityp_3toa_HZ4GsgkQLiFFw7JNxCKqOvaj-KYQ2_0Kitu7N6PiGziA0L-Yz0KpBPe9ihHc-ShrdpDelh"
+			+ "E";
+	private final static String TOKEN_3_V1_LOCAL_WITH_FOOTER
+			= "v1.local.wpuFMg8zTfqtfL2wiGv9aDSg3TFH6r-viT6sbfY6Kxm3v4YM5gkmqybuFKIEXj5i-uIlW4hnZi0OXSAr1r5XEBG-p6gSuYp"
+			+ "2YeD7Q-wGFPW862hH4XpI4Lityp_3toa_HZ4Gsgk0C7QFJRO_zyNgClnog8ItJ2HJt-5aJN8HjfyX7fPJQiebQirEwb8B4x2sD3RVoU0"
+			+ ".eyJraWQiOiJrZXktMiJ9";
+	private final static String TOKEN_3_V1_PUBLIC
+			= "v1.public.eyJleHAiOiIyMDE4LTAxLTAxVDE3OjIzOjQ0KzAwOjAwIiwiaWF0IjoiMjAxOC0wMS0wMVQxNzoxODo0NCswMDowMCJ9l3"
+			+ "B_DToj3-jCi-agwSyb2cyjZALQP43qVSDbTofKwaZRN_a9xv-XaemGIrdYt6MaVk7IqUUkvOiaCpJgjqiR4f53UbrnPLCiworEiRSxY2"
+			+ "T2mUOZhf99c2BcQ6fmEkSU8aTtjgQxDLWdHzUtsaxqun-jlCQsQnX27UoIe9iiCHD5CxznR2yEGbq2UhvIZouzFOAVJKxl-G9mMPVqs1"
+			+ "mmfSRGYS39rgGmljW7y964nZ3B40NkXMgD10_eK2RNg2WeTbfrKGSkyArgOoZLembGUd2F-YCms4yqyqtH7Prf7EMVLNR8ISloWHptoL"
+			+ "lYoxd319ed8VMluDz-uqSzoVUBpA";
+	private final static String TOKEN_3_V1_PUBLIC_WITH_FOOTER
+			= "v1.public.eyJleHAiOiIyMDE4LTAxLTAxVDE3OjIzOjQ0KzAwOjAwIiwiaWF0IjoiMjAxOC0wMS0wMVQxNzoxODo0NCswMDowMCJ9eI"
+			+ "lEjS5-0-Kl0lHBLrGdFI59wEVkoqLalmSqcJxrWAC6vW5OoN8KPCUBR73P689i30IDsNc7gDNyTTiKJJPefwoPjhCAkXV5Wa_UN40sUG"
+			+ "LUGw_jTd9BVZ5hbSsRP_zljm7RGjnh32mOjQZ4I3q-RPbsiL7qoW5SD8pSkjC_-DTsDtMO7yie3YALPnu7X_-M8QZYN0akkwQZ2I6iVC"
+			+ "IMWT5nrCjsYtOIzK7ZYrLgEpksuYjCdtk0ZjLfhbiwsBL2L9jKj2VHqNeby9veNmQruWqB48dbczq11QbXIPcAABecWGa7Ayn1-u4XDE"
+			+ "lt4IoKDBIt2GrA0lB67fKn4pAI-g.eyJraWQiOiJrZXktMiJ9";
+	private final static String TOKEN_3_V2_LOCAL
+			= "v2.local.s_IagepBKqxJs4l6e47StVzIDI4P_b2BX1Wqtr-IyyhkUrguLTQT2p7X4bWATXdWQazJtwOQnGm7GHRX90UZFtH505NP0kd"
+			+ "5SuE_cyfeSOzFGgG4aFPPxHaQXZeZGPmSKMaF1wsW5jfraa9H5Q";
+	private final static String TOKEN_3_V2_LOCAL_WITH_FOOTER
+			= "v2.local.s_IagepBKqxJs4l6e47StVzIDI4P_b2BX1Wqtr-IyyhkUrguLTQT2p7X4bWATXdWQazJtwOQnGm7GHRX90UZFtH505NP0kd"
+			+ "5SuE_cyfeSOzFGgG4aFPPxHaQXZeZNyYXhSZz9IhSwoIl7jQamw.eyJraWQiOiJrZXktMiJ9";
+	private final static String TOKEN_3_V2_PUBLIC
+			= "v2.public.eyJleHAiOiIyMDE4LTAxLTAxVDE3OjIzOjQ0KzAwOjAwIiwiaWF0IjoiMjAxOC0wMS0wMVQxNzoxODo0NCswMDowMCJ9du"
+			+ "vMylS5Zt48Mlu9206iswmp3pNarZya1JHuM4sI8yIOSlB6_LtukHaDjMCfN1jzKqp13jyoVqcIHm1H7RyiBw";
+	private final static String TOKEN_3_V2_PUBLIC_WITH_FOOTER
+			= "v2.public.eyJleHAiOiIyMDE4LTAxLTAxVDE3OjIzOjQ0KzAwOjAwIiwiaWF0IjoiMjAxOC0wMS0wMVQxNzoxODo0NCswMDowMCJ9gc"
+			+ "TyYa__QR6HuqU5Kcbl1cmXZDCEGdFy2xCO4MFnP8teHUfLs_vcY3Dfq3KjgfSAYXxEktCwpxhk3eQwg14yCQ.eyJraWQiOiJrZXktMiJ"
+			+ "9";
+	public final static TestVector<Token, Void> TV_3_V1_LOCAL = new TestVector<>(testKey(), testNonce(), TOKEN_3,
+			Token.class, null, TOKEN_3_V1_LOCAL);
+	public final static TestVector<Token, KeyId> TV_3_V1_LOCAL_WITH_FOOTER = new TestVector<>(testKey(), testNonce(),
+			TOKEN_3, Token.class, TOKEN_3_FOOTER, TOKEN_3_V1_LOCAL_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_3_V1_PUBLIC = new TestVector<>(testV1PrivateKey(), testV1PublicKey(),
+			TOKEN_3, Token.class, null, TOKEN_3_V1_PUBLIC);
+	public final static TestVector<Token, KeyId> TV_3_V1_PUBLIC_WITH_FOOTER = new TestVector<>(testV1PrivateKey(),
+			testV1PublicKey(), TOKEN_3, Token.class, TOKEN_3_FOOTER, TOKEN_3_V1_PUBLIC_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_3_V2_LOCAL = new TestVector<>(testKey(), testNonce(), TOKEN_3,
+			Token.class, null, TOKEN_3_V2_LOCAL);
+	public final static TestVector<Token, KeyId> TV_3_V2_LOCAL_WITH_FOOTER = new TestVector<>(testKey(), testNonce(),
+			TOKEN_3, Token.class, TOKEN_3_FOOTER, TOKEN_3_V2_LOCAL_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_3_V2_PUBLIC = new TestVector<>(testV2SecretKey(), testV2PublicKey(),
+			TOKEN_3, Token.class, null, TOKEN_3_V2_PUBLIC);
+	public final static TestVector<Token, KeyId> TV_3_V2_PUBLIC_WITH_FOOTER = new TestVector<>(testV2SecretKey(),
+			testV2PublicKey(), TOKEN_3, Token.class, TOKEN_3_FOOTER, TOKEN_3_V2_PUBLIC_WITH_FOOTER);
 
 	// Empty token
 	public final static Token TOKEN_4 = new Token();
-
-	public static class CustomToken extends Token {
-		private Long userId;
-
-		public Long getUserId() {
-			return userId;
-		}
-
-		public CustomToken setUserId(Long userId) {
-			this.userId = userId;
-			return this;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			if (!super.equals(o)) return false;
-			CustomToken that = (CustomToken) o;
-			return Objects.equals(userId, that.userId);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(super.hashCode(), userId);
-		}
-
-		@Override
-		public String toString() {
-			return "CustomToken{"
-					+ "userId=" + userId
-					+ ", token='" + super.toString() + '\''
-					+ '}';
-		}
-	}
+	private final static KeyId TOKEN_4_FOOTER = new KeyId().setKeyId("key-1");
+	private final static String TOKEN_4_V1_LOCAL
+			= "v1.local.--TLHXMWiZYc9aTQma_NiYLMqRDN69tSdiqpU6V-dsNeDhIDqBxyneNGy4bSvNHeNkca_39GwyZdxUx0sOQ8EOQUEAhSrnd"
+			+ "EuX2JDwQFsWUUMw";
+	private final static String TOKEN_4_V1_LOCAL_WITH_FOOTER
+			= "v1.local.--TLHXMWiZYc9aTQma_NiYLMqRDN69tSdiqpU6V-dsNeDhph1Ij5pSdhLuRhJlpQSPuQh4U_fRBFAmZU5ZhfhTnBsrHvR-q"
+			+ "8Gs8GnoUO1hr9lA.eyJraWQiOiJrZXktMSJ9";
+	private final static String TOKEN_4_V1_PUBLIC
+			= "v1.public.e30hJtxCLP0n-WZyvdSqYApXpdaTVFNoYiFRy-GLDM7tSTQM5rl-xCRVyCAgF1xZ1a-2EzVSkZongX2hE9e55VowPse8jI"
+			+ "GvT9oYNx0Xmu5OyNMBCV1LpO45lDqi5Ulw4wq-UEmlewq4cf8ERVI1UbfrysPC8Ie-6sh1v77sbEajzlOydJMq2KB4qWG-W0qFL0nJ6p"
+			+ "4hNRHPQajokFgdNsCdJW9fZ9JGSXPkkRnBX8hl4qm_prKVMLsx-9YwpLnEagW7ZM73RdaEY65aOCL5uuUGCkhLcOTBywdknEv3Vytdpg"
+			+ "cRKpaIzvpE_KMwuK-UnSeNhYhruXbbeChE9qPIfzMh";
+	private final static String TOKEN_4_V1_PUBLIC_WITH_FOOTER
+			= "v1.public.e31S5itjTRTcxHALKCdpUxyMNr15pEMxZZiDYiulJStAa_n7MtEJbqddYHsuZyGz7PlpYuTYfmiH_dziAj7FPwQ4d_tTcS"
+			+ "sTq8cT6IUpA5et7W55iVSUoGUoRSBMEM5CepNq4yc0KR4ryvPv2KQ2RQHF9BnCbH8LyHyiTGO_6UHRHeLZrlaCUyJG3AUrFJPQ6Oehbe"
+			+ "6vMBTfHqPL-f6j4ldvS7ki9gHL_iN3EMoy2-v6bNkRpoYDLATZbwsje1aR7Vhk2v_Aiop2pAoqO8VWs6U4KVSN5gukUW2-6h97btmdfM"
+			+ "5DZkpYhQVHGdqsOFCBB5txZSNjDtpfCo-oGAHkBIA2.eyJraWQiOiJrZXktMSJ9";
+	private final static String TOKEN_4_V2_LOCAL
+			= "v2.local.iX9JhHZ4_OW6GHqAbSPP23VAGg5RnEeuGgVksnbXKVHrlWaTU18JRP9I";
+	private final static String TOKEN_4_V2_LOCAL_WITH_FOOTER
+			= "v2.local.iX9JhHZ4_OW6GHqAbSPP23VAGg5RnEeuGgWaTY-bgw1FO-EuJhIaUJp2.eyJraWQiOiJrZXktMSJ9";
+	private final static String TOKEN_4_V2_PUBLIC
+			= "v2.public.e31M63YrD2PTNGHzBHHeLhYooCXgT2KxLBmPdFSlLr-7poFIEaxqGD7w2XCwcdJkSjagz2o7Gtwh9VYTRHGtYMEM";
+	private final static String TOKEN_4_V2_PUBLIC_WITH_FOOTER
+			= "v2.public.e30RItbv4bN4XIzyLFapaMll5aOnuqcmttzAH4-pFf8vHrK8COU0EeGwlt-1tfR3OkUxTyoQdlE2dlOtbLxlbrEO.eyJra"
+			+ "WQiOiJrZXktMSJ9";
+	public final static TestVector<Token, Void> TV_4_V1_LOCAL = new TestVector<>(testKey(), testNonce(), TOKEN_4,
+			Token.class, null, TOKEN_4_V1_LOCAL);
+	public final static TestVector<Token, KeyId> TV_4_V1_LOCAL_WITH_FOOTER = new TestVector<>(testKey(), testNonce(),
+			TOKEN_4, Token.class, TOKEN_4_FOOTER, TOKEN_4_V1_LOCAL_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_4_V1_PUBLIC = new TestVector<>(testV1PrivateKey(), testV1PublicKey(),
+			TOKEN_4, Token.class, null, TOKEN_4_V1_PUBLIC);
+	public final static TestVector<Token, KeyId> TV_4_V1_PUBLIC_WITH_FOOTER = new TestVector<>(testV1PrivateKey(),
+			testV1PublicKey(), TOKEN_4, Token.class, TOKEN_4_FOOTER, TOKEN_4_V1_PUBLIC_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_4_V2_LOCAL = new TestVector<>(testKey(), testNonce(), TOKEN_4,
+			Token.class, null, TOKEN_4_V2_LOCAL);
+	public final static TestVector<Token, KeyId> TV_4_V2_LOCAL_WITH_FOOTER = new TestVector<>(testKey(), testNonce(),
+			TOKEN_4, Token.class, TOKEN_4_FOOTER, TOKEN_4_V2_LOCAL_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_4_V2_PUBLIC = new TestVector<>(testV2SecretKey(), testV2PublicKey(),
+			TOKEN_4, Token.class, null, TOKEN_4_V2_PUBLIC);
+	public final static TestVector<Token, KeyId> TV_4_V2_PUBLIC_WITH_FOOTER = new TestVector<>(testV2SecretKey(),
+			testV2PublicKey(), TOKEN_4, Token.class, TOKEN_4_FOOTER, TOKEN_4_V2_PUBLIC_WITH_FOOTER);
 
 	public static byte[] testKey() {
 		return ByteArrayTestUtil.convertToByteArray(TEST_KEY);
 	}
 
-	public static byte[] testNonce() {
+	private static byte[] testNonce() {
 		return ByteArrayTestUtil.convertToByteArray(TEST_NONCE);
 	}
 

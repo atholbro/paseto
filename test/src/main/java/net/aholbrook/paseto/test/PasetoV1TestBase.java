@@ -17,10 +17,24 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.test;
 
+import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.exception.InvalidFooterException;
+import net.aholbrook.paseto.exception.InvalidHeaderException;
+import net.aholbrook.paseto.exception.PasetoStringException;
+import net.aholbrook.paseto.exception.SignatureVerificationException;
+import net.aholbrook.paseto.service.KeyId;
+import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.test.data.RfcTestVectors;
+import net.aholbrook.paseto.test.data.TestVector;
+import net.aholbrook.paseto.test.data.TokenTestVectors;
+import net.aholbrook.paseto.util.StringUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.charset.Charset;
+
 public abstract class PasetoV1TestBase extends PasetoTestBase {
+	// RFC test vectors
 	// Encryption tests
 	@Test
 	public void v1_RfcVectorE1() {
@@ -103,5 +117,338 @@ public abstract class PasetoV1TestBase extends PasetoTestBase {
 	@Test
 	public void v1_RfcVectorS2Verify() {
 		verifyTestVector(RfcTestVectors.RFC_TEST_VECTOR_V1_S_2);
+	}
+
+	// Other test vectors
+	// Encryption tests
+	@Test
+	public void v1_token1Local() {
+		encryptTestVector(TokenTestVectors.TV_1_V1_LOCAL);
+	}
+
+	@Test
+	public void v1_token1LocalWithFooter() {
+		encryptTestVector(TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER);
+	}
+
+	@Test
+	public void v1_token2Local() {
+		encryptTestVector(TokenTestVectors.TV_2_V1_LOCAL);
+	}
+
+	@Test
+	public void v1_token2LocalWithFooter() {
+		encryptTestVector(TokenTestVectors.TV_2_V1_LOCAL_WITH_FOOTER);
+	}
+
+	@Test
+	public void v1_token3Local() {
+		encryptTestVector(TokenTestVectors.TV_3_V1_LOCAL);
+	}
+
+	@Test
+	public void v1_token3LocalWithFooter() {
+		encryptTestVector(TokenTestVectors.TV_3_V1_LOCAL_WITH_FOOTER);
+	}
+
+	@Test
+	public void v1_token4Local() {
+		encryptTestVector(TokenTestVectors.TV_4_V1_LOCAL);
+	}
+
+	@Test
+	public void v1_token4LocalWithFooter() {
+		encryptTestVector(TokenTestVectors.TV_4_V1_LOCAL_WITH_FOOTER);
+	}
+
+	// Decryption tests
+	@Test
+	public void v1_token1LocalDecrypt() {
+		decryptTestVector(TokenTestVectors.TV_1_V1_LOCAL);
+	}
+
+	@Test
+	public void v1_token1LocalWithFooterDecrypt() {
+		decryptTestVector(TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER);
+	}
+
+	@Test
+	public void v1_token2LocalDecrypt() {
+		decryptTestVector(TokenTestVectors.TV_2_V1_LOCAL);
+	}
+
+	@Test
+	public void v1_token2LocalWithFooterDecrypt() {
+		decryptTestVector(TokenTestVectors.TV_2_V1_LOCAL_WITH_FOOTER);
+	}
+
+	@Test
+	public void v1_token3LocalDecrypt() {
+		decryptTestVector(TokenTestVectors.TV_3_V1_LOCAL);
+	}
+
+	@Test
+	public void v1_token3LocalWithFooterDecrypt() {
+		decryptTestVector(TokenTestVectors.TV_3_V1_LOCAL_WITH_FOOTER);
+	}
+
+	@Test
+	public void v1_token4LocalDecrypt() {
+		decryptTestVector(TokenTestVectors.TV_4_V1_LOCAL);
+	}
+
+	@Test
+	public void v1_token4LocalWithFooterDecrypt() {
+		decryptTestVector(TokenTestVectors.TV_4_V1_LOCAL_WITH_FOOTER);
+	}
+
+	// Sign tests
+	@Test
+	public void v1_token1Public() {
+		signTestVector(TokenTestVectors.TV_1_V1_PUBLIC, false);
+	}
+
+	@Test
+	public void v1_token1PublicWithFooter() {
+		signTestVector(TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER, false);
+	}
+
+	@Test
+	public void v1_token2Public() {
+		signTestVector(TokenTestVectors.TV_2_V1_PUBLIC, false);
+	}
+
+	@Test
+	public void v1_token2PublicWithFooter() {
+		signTestVector(TokenTestVectors.TV_2_V1_PUBLIC_WITH_FOOTER, false);
+	}
+
+	@Test
+	public void v1_token3Public() {
+		signTestVector(TokenTestVectors.TV_3_V1_PUBLIC, false);
+	}
+
+	@Test
+	public void v1_token3PublicWithFooter() {
+		signTestVector(TokenTestVectors.TV_3_V1_PUBLIC_WITH_FOOTER, false);
+	}
+
+	@Test
+	public void v1_token4Public() {
+		signTestVector(TokenTestVectors.TV_4_V1_PUBLIC, false);
+	}
+
+	@Test
+	public void v1_token4PublicWithFooter() {
+		signTestVector(TokenTestVectors.TV_4_V1_PUBLIC_WITH_FOOTER, false);
+	}
+
+	// Verify tests
+	@Test
+	public void v1_token1PublicVerify() {
+		verifyTestVector(TokenTestVectors.TV_1_V1_PUBLIC);
+	}
+
+	@Test
+	public void v1_token1PublicWithFooterVerify() {
+		verifyTestVector(TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER);
+	}
+
+	@Test
+	public void v1_token2PublicVerify() {
+		verifyTestVector(TokenTestVectors.TV_2_V1_PUBLIC);
+	}
+
+	@Test
+	public void v1_token2PublicWithFooterVerify() {
+		verifyTestVector(TokenTestVectors.TV_2_V1_PUBLIC_WITH_FOOTER);
+	}
+
+	@Test
+	public void v1_token3PublicVerify() {
+		verifyTestVector(TokenTestVectors.TV_3_V1_PUBLIC);
+	}
+
+	@Test
+	public void v1_token3PublicWithFooterVerify() {
+		verifyTestVector(TokenTestVectors.TV_3_V1_PUBLIC_WITH_FOOTER);
+	}
+
+	@Test
+	public void v1_token4PublicVerify() {
+		verifyTestVector(TokenTestVectors.TV_4_V1_PUBLIC);
+	}
+
+	@Test
+	public void v1_token4PublicWithFooterVerify() {
+		verifyTestVector(TokenTestVectors.TV_4_V1_PUBLIC_WITH_FOOTER);
+	}
+
+	// Modification / tampering tests
+	// Modify the token contents after encryption, then try to decrypt, should produce a SignatureVerificationException.
+	@Test(expected = SignatureVerificationException.class)
+	public void v1_token1_modifyPayload() {
+		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+
+		// encrypt and modify
+		String token = paseto.encrypt(tv.getPayload(), tv.getA());
+		token = modify(token, new int[] { 20, 15, 20 });
+
+		// attempt to decrypt
+		paseto.decrypt(token, tv.getA(), tv.getPayloadClass());
+	}
+
+	// Modify the token footer after encryption, then try to decrypt, should produce a SignatureVerificationException.
+	@Test(expected = SignatureVerificationException.class)
+	public void v1_token1_modifyFooter() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+
+		// encrypt and modify
+		String token = paseto.encrypt(tv.getPayload(), tv.getA());
+		token = modify(token, new int[] { token.length() - 1, token.length() - 4, token.length() - 6 });
+
+		// attempt to decrypt
+		paseto.decrypt(token, tv.getA(), tv.getPayloadClass());
+	}
+
+	// Attempt to decrypt A V2 local token with as V1 local token, should fail with a InvalidHeaderException.
+	@Test(expected = InvalidHeaderException.class)
+	public void v1_token1_v2LocalAsV1Local() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
+
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass());
+	}
+
+	// Attempt to decrypt A V2 local token with as V1 public token, should fail with a InvalidHeaderException.
+	@Test(expected = InvalidHeaderException.class)
+	public void v1_token1_v2LocalAsV1Public() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
+
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass());
+	}
+
+	// Attempt to decrypt A V2 public token with a V1 local token, should fail with a InvalidHeaderException.
+	@Test(expected = InvalidHeaderException.class)
+	public void v1_token1_v2PublicAsV1Local() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
+
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass());
+	}
+
+	// Attempt to decrypt A V2 public token with a V1 public token, should fail with a InvalidHeaderException.
+	@Test(expected = InvalidHeaderException.class)
+	public void v1_token1_v2PublicAsV1Public() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
+
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass());
+	}
+
+	// Attempt to verify A V1 local token as a V1 public token, should fail with a InvalidHeaderException.
+	@Test(expected = InvalidHeaderException.class)
+	public void v1_token1_publicAsLocal() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
+
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass());
+	}
+
+	// Attempt to verify A V1 public token as a V1 local token, should fail with a InvalidHeaderException.
+	@Test(expected = InvalidHeaderException.class)
+	public void v1_token1_localAsPublic() {
+		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
+
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass());
+	}
+
+	// Attempt to verify local token with a missing footer, should fail with a InvalidFooterException.
+	@Test(expected = InvalidFooterException.class)
+	public void v1_token1_localMissingFooter() {
+		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
+
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.decrypt(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+	}
+
+	// Attempt to verify public token with a missing footer, should fail with a InvalidFooterException.
+	@Test(expected = InvalidFooterException.class)
+	public void v1_token1_publicMissingFooter() {
+		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_PUBLIC;
+
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.verify(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+	}
+
+	// Attempt to verify local token with an incorrect footer, should fail with a InvalidFooterException.
+	@Test(expected = InvalidFooterException.class)
+	public void v1_token1_localWrongFooter() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
+
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.decrypt(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+	}
+
+	// Attempt to verify public token with an incorrect footer, should fail with a InvalidFooterException.
+	@Test(expected = InvalidFooterException.class)
+	public void v1_token1_publicWrongFooter() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
+
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.verify(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+	}
+
+	// Errors
+	@Test(expected = PasetoStringException.class)
+	public void v1_badInput() {
+		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.decrypt("junk", tv.getA(), tv.getPayloadClass());
+	}
+
+	@Test(expected = PasetoStringException.class)
+	public void v1_badToken() {
+		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.decrypt("v1.local.", tv.getA(), tv.getPayloadClass());
+	}
+
+	@Test(expected = PasetoStringException.class)
+	public void v1_shortTokenLocal() {
+		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.decrypt("v1.local.c29tZXRoaW5n", tv.getA(), tv.getPayloadClass());
+	}
+
+	@Test(expected = PasetoStringException.class)
+	public void v1_shortTokenPublic() {
+		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_PUBLIC;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.verify("v1.public.c29tZXRoaW5n", tv.getA(), tv.getPayloadClass());
+	}
+
+	// Nonce tests
+	// Generates a V1 Local token twice, the results should be different due to nonce rng.
+	@Test
+	public void v1_token1_localNonce() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
+		Paseto<Token> paseto = createPaseto();
+		String token1 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
+		String token2 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
+		Assert.assertNotEquals("nonce failed, 2 tokens have same contents", token1, token2);
+	}
+
+	@Test
+	public void v1_token1_publicNonce() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
+		Paseto<Token> paseto = createPaseto();
+		String token1 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
+		String token2 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
+		Assert.assertNotEquals("nonce failed, 2 tokens have same contents", token1, token2);
 	}
 }
