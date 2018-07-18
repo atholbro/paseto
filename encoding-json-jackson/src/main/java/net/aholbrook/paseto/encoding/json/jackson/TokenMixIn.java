@@ -1,9 +1,11 @@
 package net.aholbrook.paseto.encoding.json.jackson;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.time.OffsetDateTime;
 
+@JsonPropertyOrder({"iss", "sub", "aud", "exp", "nbf", "iat", "jti"})
 public abstract class TokenMixIn {
 	@JsonProperty("iss") abstract String getIssuer();
 	@JsonProperty("iss") abstract void setIssuer(String issuer);
