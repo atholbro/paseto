@@ -15,24 +15,24 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.aholbrook.paseto.java.jvm8;
+package net.aholbrook.paseto.meta;
 
 import net.aholbrook.paseto.Paseto;
-import net.aholbrook.paseto.jvm8.PasetoBuilders;
-import net.aholbrook.paseto.test.PasetoV2TestBase;
+import net.aholbrook.paseto.test.PasetoV1TestBase;
 import net.aholbrook.paseto.test.crypto.TestNonceGenerator;
 
-public class PasetoV2Test extends PasetoV2TestBase {
+public class PasetoV1Test extends PasetoV1TestBase {
 	@Override
 	protected <_Payload> Paseto<_Payload> createPaseto() {
-		return PasetoBuilders.V2.<_Payload>paseto()
+		return PasetoBuilders.V1.<_Payload>paseto()
 				.build();
 	}
 
 	@Override
 	protected <_Payload> Paseto<_Payload> createPaseto(byte[] nonce) {
-		return PasetoBuilders.V2.<_Payload>paseto()
+		return PasetoBuilders.V1.<_Payload>paseto()
 				.withTestingNonceGenerator(new TestNonceGenerator(nonce))
 				.build();
+
 	}
 }
