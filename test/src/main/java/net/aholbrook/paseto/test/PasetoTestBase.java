@@ -64,7 +64,7 @@ public abstract class PasetoTestBase {
 
 	protected <_Payload, _Footer> void signTestVector(TestVector<_Payload, _Footer> tv, boolean assertSigned) {
 		// A: sk, B: pk
-		Paseto<_Payload> paseto = createPaseto(null);
+		Paseto<_Payload> paseto = createPaseto();
 		Assert.assertNotNull("paseto V1 instance", paseto);
 
 		String token;
@@ -92,7 +92,7 @@ public abstract class PasetoTestBase {
 
 	protected <_Payload, _Footer> void verifyTestVector(TestVector<_Payload, _Footer> tv) {
 		// A: sk, B: pk
-		Paseto<_Payload> paseto = createPaseto(null);
+		Paseto<_Payload> paseto = createPaseto();
 		Assert.assertNotNull("paseto V1 instance", paseto);
 
 		_Payload payload;
