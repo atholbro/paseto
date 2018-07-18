@@ -17,7 +17,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.util;
 
-import net.aholbrook.paseto.Tuple;
+import net.aholbrook.paseto.crypto.base.Tuple;
 import net.aholbrook.paseto.exception.Pkcs12LoadException;
 
 import java.io.FileInputStream;

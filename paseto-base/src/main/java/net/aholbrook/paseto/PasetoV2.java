@@ -19,6 +19,7 @@ package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.base64.base.Base64Provider;
 import net.aholbrook.paseto.crypto.base.NonceGenerator;
+import net.aholbrook.paseto.crypto.base.Tuple;
 import net.aholbrook.paseto.crypto.v2.base.V2CryptoProvider;
 import net.aholbrook.paseto.encoding.base.EncodingProvider;
 import net.aholbrook.paseto.exception.DecryptionException;
