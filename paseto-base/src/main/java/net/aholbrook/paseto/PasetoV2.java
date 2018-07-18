@@ -161,11 +161,6 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 
 	@Override
 	public Tuple<byte[], byte[]> generateKeyPair() {
-		byte[] sk = new byte[cryptoProvider.ed25519SignSecretKeyBytes()];
-		byte[] pk = new byte[cryptoProvider.ed25519SignPublicKeyBytes()];
-
-		cryptoProvider.ed25519Generate(pk, sk);
-
-		return new Tuple<>(sk, pk);
+		return cryptoProvider.ed25519Generate();
 	}
 }

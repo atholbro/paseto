@@ -21,6 +21,7 @@ import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
 import com.goterl.lazycode.lazysodium.LazySodiumJava;
 import com.goterl.lazycode.lazysodium.SodiumJava;
 import net.aholbrook.paseto.crypto.base.NonceGenerator;
+import net.aholbrook.paseto.crypto.base.Tuple;
 import net.aholbrook.paseto.crypto.base.exception.ByteArrayLengthException;
 import net.aholbrook.paseto.crypto.base.exception.ByteArrayRangeException;
 import net.aholbrook.paseto.crypto.base.exception.CryptoProviderException;
@@ -92,7 +93,10 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 	}
 
 	@Override
-	public void ed25519Generate(byte[] pk, byte[] sk) {
+	public Tuple<byte[], byte[]> ed25519Generate() {
+		byte[] sk = new byte[ed25519SignSecretKeyBytes()];
+		byte[] pk = new byte[ed25519SignPublicKeyBytes()];
 		sodium.cryptoSignKeypair(pk, sk);
+		return new Tuple<>(sk, pk);
 	}
 }
