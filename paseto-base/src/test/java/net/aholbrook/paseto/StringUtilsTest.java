@@ -46,7 +46,16 @@ public class StringUtilsTest {
 		AssertUtils.assertEquals(new byte[] {}, StringUtils.getBytesUtf8(""));
 		AssertUtils.assertEquals(new byte[] {0x41}, StringUtils.getBytesUtf8("A"));
 		AssertUtils.assertEquals(new byte[] {0x74, 0x65, 0x73, 0x74}, StringUtils.getBytesUtf8("test"));
-		AssertUtils.assertEquals(new short[] {0xE2, 0x99, 0xA0}, StringUtils.getBytesUtf8("\u2660"));
+		AssertUtils.assertEquals(new byte[] {-0x1E, -0x67, -0x60}, StringUtils.getBytesUtf8("\u2660"));
+	}
+
+	@Test
+	public void stringUtils_fromUtf8Bytes() {
+		Assert.assertEquals("", StringUtils.fromUtf8Bytes(null));
+		Assert.assertEquals("", StringUtils.fromUtf8Bytes(new byte[] {}));
+		Assert.assertEquals("A", StringUtils.fromUtf8Bytes(new byte[] {0x41}));
+		Assert.assertEquals("test", StringUtils.fromUtf8Bytes(new byte[] {0x74, 0x65, 0x73, 0x74}));
+		Assert.assertEquals("\u2660", StringUtils.fromUtf8Bytes(new byte[] {-0x1E, -0x67, -0x60}));
 	}
 
 	@Test
