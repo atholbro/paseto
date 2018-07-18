@@ -412,10 +412,17 @@ public abstract class PasetoV2TestBase extends PasetoTestBase {
 	}
 
 	@Test(expected = PasetoStringException.class)
-	public void v2_badToken() {
+	public void v2_badTokenDecrypt() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
 		Paseto<Token> paseto = createPaseto(tv.getB());
 		paseto.decrypt("v2.local.", tv.getA(), tv.getPayloadClass());
+	}
+
+	@Test(expected = PasetoStringException.class)
+	public void v2_badTokenVerify() {
+		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+		paseto.verify("v2.local.", tv.getA(), tv.getPayloadClass());
 	}
 
 	@Test(expected = PasetoStringException.class)
