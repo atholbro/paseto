@@ -116,7 +116,8 @@ public abstract class Paseto<_Payload> {
 	public <_Footer> _Footer extractFooter(String token, Class<_Footer> footerClass) {
 		String footer = extractFooter(token);
 		if (!StringUtils.isEmpty(footer)) {
-			return encodingProvider.fromJson(extractFooter(token), footerClass);
+			footer = StringUtils.fromUtf8Bytes(base64Provider.decodeFromString(footer));
+			return encodingProvider.fromJson(footer, footerClass);
 		} else {
 			return null;
 		}
