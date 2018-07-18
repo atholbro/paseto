@@ -18,6 +18,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.crypto.base.Tuple;
 import net.aholbrook.paseto.exception.InvalidFooterException;
 import net.aholbrook.paseto.exception.InvalidHeaderException;
 import net.aholbrook.paseto.exception.PasetoStringException;
@@ -470,5 +471,18 @@ public abstract class PasetoV1TestBase extends PasetoTestBase {
 		String token1 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
 		String token2 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
 		Assert.assertNotEquals("nonce failed, 2 tokens have same contents", token1, token2);
+	}
+
+	// Key pair generation tests
+	@Test
+	public void v1_token1_generateKeyPair() {
+		Paseto<Token> paseto = createPaseto();
+		Tuple<byte[], byte[]> keyPair = paseto.generateKeyPair();
+
+		// encrypt with new key
+		String token = paseto.sign(TokenTestVectors.TOKEN_1, keyPair.a);
+		// now decrypt, should work
+		Token payload = paseto.verify(token, keyPair.b, Token.class);
+		Assert.assertEquals("decrypted payload != original payload", TokenTestVectors.TOKEN_1, payload);
 	}
 }

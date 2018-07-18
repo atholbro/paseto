@@ -18,6 +18,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.crypto.base.Tuple;
 import net.aholbrook.paseto.exception.DecryptionException;
 import net.aholbrook.paseto.exception.InvalidFooterException;
 import net.aholbrook.paseto.exception.InvalidHeaderException;
@@ -25,6 +26,7 @@ import net.aholbrook.paseto.exception.PasetoStringException;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
 import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
+import net.aholbrook.paseto.test.data.CustomToken;
 import net.aholbrook.paseto.test.data.RfcTestVectors;
 import net.aholbrook.paseto.test.data.TestVector;
 import net.aholbrook.paseto.test.data.TokenTestVectors;
@@ -448,5 +450,18 @@ public abstract class PasetoV2TestBase extends PasetoTestBase {
 		String token1 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
 		String token2 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
 		Assert.assertNotEquals("nonce failed, 2 tokens have same contents", token1, token2);
+	}
+
+	// Key pair generation tests
+	@Test
+	public void v2_token2_generateKeyPair() {
+		Paseto<CustomToken> paseto = createPaseto();
+		Tuple<byte[], byte[]> keyPair = paseto.generateKeyPair();
+
+		// encrypt with new key
+		String token = paseto.sign(TokenTestVectors.TOKEN_2, keyPair.a);
+		// now decrypt, should work
+		CustomToken payload = paseto.verify(token, keyPair.b, CustomToken.class);
+		Assert.assertEquals("decrypted payload != original payload", TokenTestVectors.TOKEN_2, payload);
 	}
 }
