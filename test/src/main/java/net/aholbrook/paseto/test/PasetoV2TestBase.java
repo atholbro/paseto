@@ -313,6 +313,26 @@ public abstract class PasetoV2TestBase extends PasetoTestBase {
 		paseto.decrypt(token, tv.getA(), tv.getPayloadClass());
 	}
 
+	// Decrypt with a different key, should fail with a DecryptionException
+	@Test(expected = DecryptionException.class)
+	public void v2_token1_decryptWrongKey() {
+		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+
+		// attempt to decrypt
+		paseto.decrypt(tv.getToken(), RfcTestVectors.rfcTestKey(), tv.getPayloadClass());
+	}
+
+	// Verify with a different public key, should fail with a SignatureVerificationException
+	@Test(expected = SignatureVerificationException.class)
+	public void v2_token1_verifyWrongKey() {
+		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_PUBLIC;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+
+		// attempt to decrypt
+		paseto.verify(tv.getToken(), RfcTestVectors.rfcTestV2PublicKey(), tv.getPayloadClass());
+	}
+
 	// Attempt to decrypt A V1 local token with as V2 local token, should fail with a InvalidHeaderException.
 	@Test(expected = InvalidHeaderException.class)
 	public void v2_token1_v1LocalAsV2Local() {
