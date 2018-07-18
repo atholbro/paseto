@@ -72,7 +72,7 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 		// Split token into sections
 		String[] sections = split(token);
 		if (sections == null) {
-			throw new TokenParseException(token);
+			throw new TokenParseException(TokenParseException.Reason.MISSING_SECTIONS, token);
 		}
 
 		// Check header
@@ -84,6 +84,10 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 		// Decrypt
 		byte[] nc = base64Provider.decodeFromString(sections[2]);
 		byte[] n = new byte[cryptoProvider.xChaCha20Poly1305IetfNpubbytes()];
+		// verify length
+		if (nc.length < n.length + 1) {
+			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token);
+		}
 		byte[] c = new byte[nc.length - n.length];
 		System.arraycopy(nc, 0, n, 0, n.length);
 		System.arraycopy(nc, n.length, c, 0, c.length);
@@ -125,7 +129,7 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 		// Split token into sections
 		String[] sections = split(token);
 		if (sections == null) {
-			throw new TokenParseException(token);
+			throw new TokenParseException(TokenParseException.Reason.MISSING_SECTIONS, token);
 		}
 
 		// Check header
@@ -137,6 +141,10 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 		// Verify
 		byte[] msig = base64Provider.decodeFromString(sections[2]);
 		byte[] s = new byte[cryptoProvider.ed25519SignBytes()];
+		// verify length
+		if (msig.length < s.length + 1) {
+			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token);
+		}
 		byte[] m = new byte[msig.length - s.length];
 		System.arraycopy(msig, msig.length - s.length, s, 0, s.length);
 		System.arraycopy(msig, 0, m, 0, m.length);
