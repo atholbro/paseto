@@ -189,6 +189,6 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 
 	@Override
 	public Tuple<byte[], byte[]> generateKeyPair() {
-		throw new UnsupportedOperationException();
+		return cryptoProvider.rsaGenerate();
 	}
 }
