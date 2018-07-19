@@ -15,7 +15,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.aholbrook.paseto;
+package net.aholbrook.paseto.test;
 
 import org.junit.Assert;
 
@@ -36,6 +36,16 @@ public class AssertUtils {
 		for (int i = 0; i < actual.length; ++i) {
 			Assert.assertEquals("array index " + Integer.toString(i),
 					(byte) expected[i],
+					actual[i]);
+		}
+	}
+
+	public static void assertNotEquals(byte[] expected, byte[] actual) {
+		Assert.assertNotNull("result not null", actual);
+		Assert.assertEquals("result length", expected.length, actual.length);
+		for (int i = 0; i < actual.length; ++i) {
+			Assert.assertNotEquals("array index " + Integer.toString(i),
+					expected[i],
 					actual[i]);
 		}
 	}
