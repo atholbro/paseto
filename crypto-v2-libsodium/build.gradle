@@ -23,7 +23,7 @@ publishing {
 sourceCompatibility = 1.8
 
 dependencies {
-	implementation project(":crypto-v2-base")
+	implementation project(":crypto-v2")
 
 	implementation "com.goterl.lazycode:lazysodium-java:2.5.0"
 }
