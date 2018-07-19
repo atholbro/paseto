@@ -30,4 +30,8 @@ public class HmacException extends CryptoProviderException {
 	public HmacException(String msg, InvalidKeyException cause) {
 		super(msg, cause);
 	}
+
+	public HmacException(String msg, IllegalArgumentException cause) {
+		super(msg, cause);
+	}
 }

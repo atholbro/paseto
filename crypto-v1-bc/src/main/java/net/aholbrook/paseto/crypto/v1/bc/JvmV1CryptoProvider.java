@@ -89,6 +89,8 @@ public class JvmV1CryptoProvider implements V1CryptoProvider {
 			Mac mac = Mac.getInstance("HmacSHA384");
 			mac.init(sks);
 			return mac.doFinal(m);
+		} catch (IllegalArgumentException e) {
+			throw new HmacException("Unable to calculate MAC - empty key.", e);
 		} catch (NoSuchAlgorithmException e) {
 			throw new HmacException("Unable to calculate MAC - HmacSHA384 not found.", e);
 		} catch (InvalidKeyException e) {
