@@ -10,45 +10,45 @@ public class KeyIdTest {
 	@Test
 	public void keyId_encodeDecode1() {
 		EncodingProvider encodingProvider = TestBuilders.find().encodingProvider();
-		String s = encodingProvider.toJson(KeyIdTestVectors.KEY_ID_1);
-		KeyId keyId = encodingProvider.fromJson(s, KeyId.class);
+		String s = encodingProvider.encode(KeyIdTestVectors.KEY_ID_1);
+		KeyId keyId = encodingProvider.decode(s, KeyId.class);
 		Assert.assertEquals("decoded token", KeyIdTestVectors.KEY_ID_1, keyId);
 	}
 
 	@Test
 	public void keyId_encodeDecode2() {
 		EncodingProvider encodingProvider = TestBuilders.find().encodingProvider();
-		String s = encodingProvider.toJson(KeyIdTestVectors.KEY_ID_2);
-		KeyId keyId = encodingProvider.fromJson(s, KeyId.class);
+		String s = encodingProvider.encode(KeyIdTestVectors.KEY_ID_2);
+		KeyId keyId = encodingProvider.decode(s, KeyId.class);
 		Assert.assertEquals("decoded token", KeyIdTestVectors.KEY_ID_2, keyId);
 	}
 
 	@Test
 	public void keyId_encodeDecodeFooter() {
 		EncodingProvider encodingProvider = TestBuilders.find().encodingProvider();
-		String s = encodingProvider.toJson(KeyIdTestVectors.KEY_ID_FOOTER);
-		KeyIdTestVectors.Footer keyId = encodingProvider.fromJson(s, KeyIdTestVectors.Footer.class);
+		String s = encodingProvider.encode(KeyIdTestVectors.KEY_ID_FOOTER);
+		KeyIdTestVectors.Footer keyId = encodingProvider.decode(s, KeyIdTestVectors.Footer.class);
 		Assert.assertEquals("decoded token", KeyIdTestVectors.KEY_ID_FOOTER, keyId);
 	}
 
 	@Test
 	public void keyId_decode1() {
 		EncodingProvider encodingProvider = TestBuilders.find().encodingProvider();
-		KeyId keyId = encodingProvider.fromJson(KeyIdTestVectors.KEY_ID_1_STRING, KeyId.class);
+		KeyId keyId = encodingProvider.decode(KeyIdTestVectors.KEY_ID_1_STRING, KeyId.class);
 		Assert.assertEquals("decoded token", KeyIdTestVectors.KEY_ID_1, keyId);
 	}
 
 	@Test
 	public void keyId_decode2() {
 		EncodingProvider encodingProvider = TestBuilders.find().encodingProvider();
-		KeyId keyId = encodingProvider.fromJson(KeyIdTestVectors.KEY_ID_2_STRING, KeyId.class);
+		KeyId keyId = encodingProvider.decode(KeyIdTestVectors.KEY_ID_2_STRING, KeyId.class);
 		Assert.assertEquals("decoded token", KeyIdTestVectors.KEY_ID_2, keyId);
 	}
 
 	@Test
 	public void keyId_decodeFooter() {
 		EncodingProvider encodingProvider = TestBuilders.find().encodingProvider();
-		KeyIdTestVectors.Footer keyId = encodingProvider.fromJson(KeyIdTestVectors.KEY_ID_FOOTER_STRING,
+		KeyIdTestVectors.Footer keyId = encodingProvider.decode(KeyIdTestVectors.KEY_ID_FOOTER_STRING,
 				KeyIdTestVectors.Footer.class);
 		Assert.assertEquals("decoded token", KeyIdTestVectors.KEY_ID_FOOTER, keyId);
 	}

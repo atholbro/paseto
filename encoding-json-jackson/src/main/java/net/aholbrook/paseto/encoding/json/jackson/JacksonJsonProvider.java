@@ -44,7 +44,7 @@ public class JacksonJsonProvider implements EncodingProvider {
 	}
 
 	@Override
-	public String toJson(Object o) {
+	public String encode(Object o) {
 		try {
 			return objectMapper.writeValueAsString(o);
 		} catch (JsonProcessingException e) {
@@ -53,9 +53,9 @@ public class JacksonJsonProvider implements EncodingProvider {
 	}
 
 	@Override
-	public <_Out> _Out fromJson(String json, Class<_Out> clazz) {
+	public <_Out> _Out decode(String s, Class<_Out> clazz) {
 		try {
-			return objectMapper.readValue(json, clazz);
+			return objectMapper.readValue(s, clazz);
 		} catch (IOException e) {
 			return null;
 		}

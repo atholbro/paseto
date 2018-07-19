@@ -54,7 +54,7 @@ public abstract class Paseto<_Payload> {
 	}
 
 	public String encrypt(_Payload payload, byte[] key, Object footer) {
-		return encrypt(payload, key, encodingProvider.toJson(footer));
+		return encrypt(payload, key, encodingProvider.encode(footer));
 	}
 
 	public _Payload decrypt(String token, byte[] key, Class<_Payload> payloadClass) {
@@ -62,7 +62,7 @@ public abstract class Paseto<_Payload> {
 	}
 
 	public _Payload decrypt(String token, byte[] key, Object footer, Class<_Payload> payloadClass) {
-		return decrypt(token, key, encodingProvider.toJson(footer), payloadClass);
+		return decrypt(token, key, encodingProvider.encode(footer), payloadClass);
 	}
 
 	public String sign(_Payload payload, byte[] sk) {
@@ -70,7 +70,7 @@ public abstract class Paseto<_Payload> {
 	}
 
 	public String sign(_Payload payload, byte[] sk, Object footer) {
-		return sign(payload, sk, encodingProvider.toJson(footer));
+		return sign(payload, sk, encodingProvider.encode(footer));
 	}
 
 	public _Payload verify(String token, byte[] pk, Class<_Payload> payloadClass) {
@@ -78,7 +78,7 @@ public abstract class Paseto<_Payload> {
 	}
 
 	public _Payload verify(String token, byte[] pk, Object footer, Class<_Payload> payloadClass) {
-		return verify(token, pk, encodingProvider.toJson(footer), payloadClass);
+		return verify(token, pk, encodingProvider.encode(footer), payloadClass);
 	}
 
 	public Tuple<_Payload, String> decryptWithFooter(String token, byte[] key, Class<_Payload> payloadClass) {
@@ -119,7 +119,7 @@ public abstract class Paseto<_Payload> {
 	public <_Footer> _Footer extractFooter(String token, Class<_Footer> footerClass) {
 		String footer = extractFooter(token);
 		if (!StringUtils.isEmpty(footer)) {
-			return encodingProvider.fromJson(footer, footerClass);
+			return encodingProvider.decode(footer, footerClass);
 		}
 
 		return null;
@@ -170,7 +170,7 @@ public abstract class Paseto<_Payload> {
 	}
 
 	_Payload decode(byte[] payload, Class<_Payload> payloadClass) {
-		return encodingProvider.fromJson(new String(payload, Charset.forName("UTF-8")), payloadClass);
+		return encodingProvider.decode(new String(payload, Charset.forName("UTF-8")), payloadClass);
 	}
 
 	public static class Builder<_Payload> {

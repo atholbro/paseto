@@ -308,7 +308,7 @@ public class PasetoV1Test extends PasetoTest {
 		Paseto<Token> paseto = createPaseto(null);
 
 		String footerString = paseto.extractFooter(tv.getToken());
-		KeyId footer = encodingProvider().fromJson(footerString, KeyId.class);
+		KeyId footer = encodingProvider().decode(footerString, KeyId.class);
 		Assert.assertEquals("extracted footer != footer", tv.getFooter(), footer);
 	}
 
@@ -337,7 +337,7 @@ public class PasetoV1Test extends PasetoTest {
 		Paseto<Token> paseto = createPaseto(tv.getB());
 
 		Tuple<Token, String> result = paseto.decryptWithFooter(tv.getToken(), tv.getA(), tv.getPayloadClass());
-		KeyId footer = encodingProvider().fromJson(result.b, KeyId.class);
+		KeyId footer = encodingProvider().decode(result.b, KeyId.class);
 		Assert.assertEquals("extracted footer != footer", tv.getFooter(), footer);
 	}
 
@@ -357,7 +357,7 @@ public class PasetoV1Test extends PasetoTest {
 		Paseto<Token> paseto = createPaseto(tv.getB());
 
 		Tuple<Token, String> result = paseto.verifyWithFooter(tv.getToken(), tv.getB(), tv.getPayloadClass());
-		KeyId footer = encodingProvider().fromJson(result.b, KeyId.class);
+		KeyId footer = encodingProvider().decode(result.b, KeyId.class);
 		Assert.assertEquals("extracted footer != footer", tv.getFooter(), footer);
 	}
 

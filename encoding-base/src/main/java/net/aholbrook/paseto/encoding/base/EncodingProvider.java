@@ -18,6 +18,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.encoding.base;
 
 public interface EncodingProvider {
-	String toJson(Object o);
-	<_Out> _Out fromJson(String json, Class<_Out> clazz);
+	String encode(Object o);
+	<_Out> _Out decode(String s, Class<_Out> clazz);
 }

@@ -43,7 +43,7 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 	@Override
 	public String encrypt(_Payload payload, byte[] key, String footer) {
 		footer = StringUtils.ntes(footer); // convert null to ""
-		byte[] payloadBytes = StringUtils.getBytesUtf8(encodingProvider.toJson(payload));
+		byte[] payloadBytes = StringUtils.getBytesUtf8(encodingProvider.encode(payload));
 		byte[] footerBytes = StringUtils.getBytesUtf8(footer);
 
 		byte nonce[] = nonceGenerator.generateNonce();
@@ -105,7 +105,7 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 	@Override
 	public String sign(_Payload payload, byte[] sk, String footer) {
 		footer = StringUtils.ntes(footer); // convert null to ""
-		byte[] payloadBytes = StringUtils.getBytesUtf8(encodingProvider.toJson(payload));
+		byte[] payloadBytes = StringUtils.getBytesUtf8(encodingProvider.encode(payload));
 		byte[] footerBytes = StringUtils.getBytesUtf8(footer);
 
 		byte[] m2 = PaeUtil.pae(StringUtils.getBytesUtf8(HEADER_PUBLIC), payloadBytes, footerBytes);
