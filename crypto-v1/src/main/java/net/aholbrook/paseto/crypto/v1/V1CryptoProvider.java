@@ -15,23 +15,31 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.aholbrook.paseto.crypto.v1.base.exception;
+package net.aholbrook.paseto.crypto.v1;
 
-import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
+import net.aholbrook.paseto.crypto.NonceGenerator;
+import net.aholbrook.paseto.crypto.Tuple;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+public interface V1CryptoProvider {
+	// RNG
+	byte[] randomBytes(int size);
 
-public class HmacException extends CryptoProviderException {
-	public HmacException(String msg, NoSuchAlgorithmException cause) {
-		super(msg, cause);
-	}
+	// Nonce
+	NonceGenerator getNonceGenerator();
 
-	public HmacException(String msg, InvalidKeyException cause) {
-		super(msg, cause);
-	}
+	// HKDF
+	HkdfProvider getHkdfProvider();
 
-	public HmacException(String msg, IllegalArgumentException cause) {
-		super(msg, cause);
-	}
+	// Hmac SHA 384
+	byte[] hmacSha384(byte[] m, byte[] key);
+
+	// AES-256-CTR
+	byte[] aes256Ctr(byte[] m, byte[] key, byte[] iv);
+	byte[] aes256CtrDecrypt(byte[] c, byte[] key, byte[] iv);
+
+	// RSA Signatures
+	byte[] rsaSign(byte[] m, byte[] privateKey);
+	boolean rsaVerify(byte[] m, byte[] sig, byte[] publicKey);
+	Tuple<byte[], byte[]> rsaGenerate();
+
 }

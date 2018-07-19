@@ -19,7 +19,7 @@ package net.aholbrook.paseto.crypto.v1.bc;
 
 import at.favre.lib.crypto.HKDF;
 import at.favre.lib.crypto.HkdfMacFactory;
-import net.aholbrook.paseto.crypto.v1.base.HkdfProvider;
+import net.aholbrook.paseto.crypto.v1.HkdfProvider;
 
 public class Hkdf implements HkdfProvider {
 	private final HKDF hkdf;

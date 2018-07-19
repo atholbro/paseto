@@ -20,9 +20,9 @@ package net.aholbrook.paseto.crypto.v1.bc;
 import net.aholbrook.paseto.crypto.NonceGenerator;
 import net.aholbrook.paseto.crypto.Tuple;
 import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
-import net.aholbrook.paseto.crypto.v1.base.HkdfProvider;
-import net.aholbrook.paseto.crypto.v1.base.V1CryptoProvider;
-import net.aholbrook.paseto.crypto.v1.base.exception.HmacException;
+import net.aholbrook.paseto.crypto.v1.HkdfProvider;
+import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
+import net.aholbrook.paseto.crypto.v1.exception.HmacException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.BadPaddingException;

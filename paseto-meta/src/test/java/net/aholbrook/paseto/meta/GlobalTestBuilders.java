@@ -1,7 +1,7 @@
 package net.aholbrook.paseto.meta;
 
 import net.aholbrook.paseto.Paseto;
-import net.aholbrook.paseto.crypto.v1.base.V1CryptoProvider;
+import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import net.aholbrook.paseto.crypto.v1.bc.JvmV1CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.base.V2CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.libsodium.LibSodiumV2CryptoProvider;
