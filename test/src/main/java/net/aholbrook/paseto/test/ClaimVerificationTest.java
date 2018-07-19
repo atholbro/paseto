@@ -39,12 +39,6 @@ public class ClaimVerificationTest {
 		return Claims.verify(token, claims);
 	}
 
-	@Test
-	public void testProvided() {
-		TestBuilders builders = TestBuilders.find();
-		Assert.assertNotNull(builders);
-	}
-
 	// Check a token for expiry 5 seconds after it becomes valid. This should pass for the given token.
 	@Test
 	public void tokenVerification_valid() {
