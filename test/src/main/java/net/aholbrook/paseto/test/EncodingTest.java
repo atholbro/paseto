@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.test;
 
-import net.aholbrook.paseto.encoding.base.EncodingProvider;
+import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.test.data.CustomToken;
 import net.aholbrook.paseto.test.data.TokenTestVectors;

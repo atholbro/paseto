@@ -4,7 +4,6 @@ import net.aholbrook.paseto.claims.VerificationContext;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.Claims;
-import net.aholbrook.paseto.encoding.base.EncodingProvider;
 import net.aholbrook.paseto.exception.claims.ExpiredTokenException;
 import net.aholbrook.paseto.exception.claims.IncorrectAudienceException;
 import net.aholbrook.paseto.exception.claims.IncorrectIssuerException;
@@ -22,7 +21,6 @@ import net.aholbrook.paseto.claims.WithSubject;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Set;
 

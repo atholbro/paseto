@@ -20,7 +20,7 @@ package net.aholbrook.paseto;
 import net.aholbrook.paseto.crypto.NonceGenerator;
 import net.aholbrook.paseto.crypto.Tuple;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
-import net.aholbrook.paseto.encoding.base.EncodingProvider;
+import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
 import net.aholbrook.paseto.exception.TokenParseException;
 import net.aholbrook.paseto.util.Base64;

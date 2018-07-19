@@ -18,13 +18,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Paseto;
-import net.aholbrook.paseto.encoding.base.EncodingProvider;
-import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.test.data.TestVector;
-import net.aholbrook.paseto.test.data.TokenTestVectors;
 import net.aholbrook.paseto.util.StringUtils;
 import org.junit.Assert;
-import org.junit.Test;
 
 import java.nio.charset.Charset;
 
