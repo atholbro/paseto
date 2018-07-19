@@ -104,23 +104,27 @@ public abstract class Paseto<_Payload> {
 
 	public <_Footer> Tuple<_Payload, _Footer> verifyWithFooter(String token, byte[] pk, Class<_Payload> payloadClass,
 			Class<_Footer> footerClass) {
-		_Payload payload = decrypt(token, pk, payloadClass);
+		_Payload payload = verify(token, pk, payloadClass);
 		_Footer footer = extractFooter(token, footerClass);
 		return new Tuple<>(payload, footer);
 	}
 
 	public String extractFooter(String token) {
-		return split(token)[3];
+		String footer = split(token)[3];
+		if (!StringUtils.isEmpty(footer)) {
+			return StringUtils.fromUtf8Bytes(base64Provider.decodeFromString(footer));
+		}
+
+		return null;
 	}
 
 	public <_Footer> _Footer extractFooter(String token, Class<_Footer> footerClass) {
 		String footer = extractFooter(token);
 		if (!StringUtils.isEmpty(footer)) {
-			footer = StringUtils.fromUtf8Bytes(base64Provider.decodeFromString(footer));
 			return encodingProvider.fromJson(footer, footerClass);
-		} else {
-			return null;
 		}
+
+		return null;
 	}
 
 	/**
