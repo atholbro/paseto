@@ -284,6 +284,25 @@ public abstract class PasetoV2TestBase extends PasetoTestBase {
 		verifyTestVector(TokenTestVectors.TV_4_V2_PUBLIC_WITH_FOOTER);
 	}
 
+	// Footer extraction tests
+	@Test
+	public void v2_token1_localExtractFooter() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+
+		KeyId footer = paseto.extractFooter(tv.getToken(), KeyId.class);
+		Assert.assertEquals("extracted footer != footer", tv.getFooter(), footer);
+	}
+
+	@Test
+	public void v2_token1_publicExtractFooter() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
+		Paseto<Token> paseto = createPaseto();
+
+		KeyId footer = paseto.extractFooter(tv.getToken(), KeyId.class);
+		Assert.assertEquals("extracted footer != footer", tv.getFooter(), footer);
+	}
+
 	// Modification / tampering tests
 	// Modify the token contents after encryption, then try to decrypt, should produce a DecryptionException.
 	@Test(expected = DecryptionException.class)
