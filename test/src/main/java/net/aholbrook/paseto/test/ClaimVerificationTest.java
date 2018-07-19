@@ -1,5 +1,6 @@
 package net.aholbrook.paseto.test;
 
+import net.aholbrook.paseto.claims.VerificationContext;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.Claims;
@@ -22,17 +23,26 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.OffsetDateTime;
+import java.util.Set;
 
-public abstract class ClaimVerificationTestBase {
-	protected abstract EncodingProvider getEncodingProvider();
+public class ClaimVerificationTest {
+	private VerificationContext defaultVerification(Token token) {
+		return Claims.verify(token);
+	}
 
-	private void standardVerification(Token token, OffsetDateTime time) {
+	private VerificationContext standardVerification(Token token, OffsetDateTime time) {
 		Claim[] claims = new Claim[] {
 				new IssuedInPast(time, IssuedInPast.DEFAULT_ALLOWABLE_DRIFT),
 				new CurrentlyValid(time, CurrentlyValid.DEFAULT_ALLOWABLE_DRIFT)
 		};
 
-		Claims.verify(token, claims);
+		return Claims.verify(token, claims);
+	}
+
+	@Test
+	public void testProvided() {
+		TestBuilders builders = TestBuilders.find();
+		Assert.assertNotNull(builders);
 	}
 
 	// Check a token for expiry 5 seconds after it becomes valid. This should pass for the given token.
@@ -337,5 +347,22 @@ public abstract class ClaimVerificationTestBase {
 	@Test
 	public void tokenVerification_subject_name() {
 		Assert.assertEquals("claim name",  WithSubject.NAME, new WithSubject(null).name());
+	}
+
+	// Check verification context
+	@Test
+	public void tokenVerificationContext() {
+		Token token = TokenTestVectors.TOKEN_1;
+		OffsetDateTime time = token.getNotBefore().plusSeconds(5);
+
+		VerificationContext context = standardVerification(token, time);
+		Assert.assertTrue(context.hasClaim(IssuedInPast.NAME));
+		Assert.assertTrue(context.hasClaim(CurrentlyValid.NAME));
+
+		Set<String> names = context.getVerifiedClaims();
+		Assert.assertTrue(names.contains(IssuedInPast.NAME));
+		Assert.assertTrue(names.contains(CurrentlyValid.NAME));
+
+		Assert.assertEquals(token, context.getToken());
 	}
 }

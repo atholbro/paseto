@@ -17,21 +17,12 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.test;
 
-import net.aholbrook.paseto.service.LocalTokenService;
-import net.aholbrook.paseto.service.PublicTokenService;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.service.TokenService;
-import net.aholbrook.paseto.test.data.RfcToken;
 import net.aholbrook.paseto.test.data.TestVector;
 import org.junit.Assert;
 
-public abstract class PasetoServiceTestBase {
-	protected abstract LocalTokenService.KeyProvider localKeyProvider();
-	protected abstract PublicTokenService.KeyProvider publicKeyProvider();
-
-	protected abstract TokenService<RfcToken> createRfcLocal(byte[] nonce);
-	protected abstract TokenService<RfcToken> createRfcPublic();
-
+public abstract class PasetoServiceTest {
 	protected <_TokenType extends Token, _Footer> void encodeTestVector(TokenService<_TokenType> tokenService,
 			TestVector<_TokenType, _Footer> tv) {
 		Assert.assertNotNull("paseto token service", tokenService);

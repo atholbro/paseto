@@ -19,6 +19,7 @@ package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Paseto;
 import net.aholbrook.paseto.crypto.base.Tuple;
+import net.aholbrook.paseto.encoding.base.EncodingProvider;
 import net.aholbrook.paseto.exception.DecryptionException;
 import net.aholbrook.paseto.exception.InvalidFooterException;
 import net.aholbrook.paseto.exception.InvalidHeaderException;
@@ -33,7 +34,16 @@ import net.aholbrook.paseto.test.data.TokenTestVectors;
 import org.junit.Assert;
 import org.junit.Test;
 
-public abstract class PasetoV2TestBase extends PasetoTestBase {
+public class PasetoV2Test extends PasetoTest {
+	@Override
+	protected <_TokenType> Paseto<_TokenType> createPaseto(byte[] nonce) {
+		return TestBuilders.find().<_TokenType>pasetoBuilderV2(nonce).build();
+	}
+
+	private EncodingProvider encodingProvider() {
+		return TestBuilders.find().encodingProvider();
+	}
+	
 	// RFC test vectors
 	// Encryption tests
 	@Test
@@ -288,7 +298,7 @@ public abstract class PasetoV2TestBase extends PasetoTestBase {
 	@Test
 	public void v2_token1_extractFooter() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto();
+		Paseto<Token> paseto = createPaseto(null);
 
 		KeyId footer = paseto.extractFooter(tv.getToken(), KeyId.class);
 		Assert.assertEquals("extracted footer != footer", tv.getFooter(), footer);
@@ -297,7 +307,7 @@ public abstract class PasetoV2TestBase extends PasetoTestBase {
 	@Test
 	public void v2_token1_extractFooterString() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto();
+		Paseto<Token> paseto = createPaseto(null);
 
 		String footerString = paseto.extractFooter(tv.getToken());
 		KeyId footer = encodingProvider().fromJson(footerString, KeyId.class);
@@ -307,7 +317,7 @@ public abstract class PasetoV2TestBase extends PasetoTestBase {
 	@Test
 	public void v2_token1_extractMissingFooter() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_PUBLIC;
-		Paseto<Token> paseto = createPaseto();
+		Paseto<Token> paseto = createPaseto(null);
 
 		KeyId footer = paseto.extractFooter(tv.getToken(), KeyId.class);
 		Assert.assertNull("footer not null", footer);
@@ -533,7 +543,7 @@ public abstract class PasetoV2TestBase extends PasetoTestBase {
 	@Test
 	public void v2_token1_localNonce() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto();
+		Paseto<Token> paseto = createPaseto(null);
 		String token1 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
 		String token2 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
 		Assert.assertNotEquals("nonce failed, 2 tokens have same contents", token1, token2);
@@ -542,7 +552,7 @@ public abstract class PasetoV2TestBase extends PasetoTestBase {
 	@Test
 	public void v2_token1_publicNonce() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto();
+		Paseto<Token> paseto = createPaseto(null);
 		String token1 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
 		String token2 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
 		Assert.assertNotEquals("nonce failed, 2 tokens have same contents", token1, token2);
@@ -551,7 +561,7 @@ public abstract class PasetoV2TestBase extends PasetoTestBase {
 	// Key pair generation tests
 	@Test
 	public void v2_token2_generateKeyPair() {
-		Paseto<CustomToken> paseto = createPaseto();
+		Paseto<CustomToken> paseto = createPaseto(null);
 		Tuple<byte[], byte[]> keyPair = paseto.generateKeyPair();
 
 		// encrypt with new key
