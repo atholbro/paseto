@@ -16,14 +16,6 @@ public abstract class TokenService<_TokenType extends Token> {
 	final Claim[] claims;
 	private final Duration defaultValidityPeriod;
 
-	TokenService(Paseto<_TokenType> paseto, Claim[] claims, Class<_TokenType> tokenClass) {
-		this(paseto, claims, null, tokenClass);
-	}
-
-	TokenService(Paseto<_TokenType> paseto, Duration defaultValidityPeriod, Class<_TokenType> tokenClass) {
-		this(paseto, Claims.DEFAULT_CLAIM_CHECKS, defaultValidityPeriod, tokenClass);
-	}
-
 	TokenService(Paseto<_TokenType> paseto, Claim[] claims, Duration defaultValidityPeriod,
 			Class<_TokenType> tokenClass) {
 		this.paseto = paseto;
