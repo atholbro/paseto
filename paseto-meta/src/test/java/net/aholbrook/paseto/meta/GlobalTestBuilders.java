@@ -3,7 +3,7 @@ package net.aholbrook.paseto.meta;
 import net.aholbrook.paseto.Paseto;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import net.aholbrook.paseto.crypto.v1.bc.JvmV1CryptoProvider;
-import net.aholbrook.paseto.crypto.v2.base.V2CryptoProvider;
+import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.libsodium.LibSodiumV2CryptoProvider;
 import net.aholbrook.paseto.encoding.base.EncodingProvider;
 import net.aholbrook.paseto.encoding.json.jackson.JacksonJsonProvider;

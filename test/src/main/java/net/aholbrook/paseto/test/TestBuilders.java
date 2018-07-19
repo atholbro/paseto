@@ -3,7 +3,7 @@ package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Paseto;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
-import net.aholbrook.paseto.crypto.v2.base.V2CryptoProvider;
+import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.encoding.base.EncodingProvider;
 import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;

@@ -22,7 +22,7 @@ import com.goterl.lazycode.lazysodium.LazySodiumJava;
 import com.goterl.lazycode.lazysodium.SodiumJava;
 import net.aholbrook.paseto.crypto.Tuple;
 import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
-import net.aholbrook.paseto.crypto.v2.base.V2CryptoProvider;
+import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 
 public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 	private final LazySodiumJava sodium;
