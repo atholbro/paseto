@@ -24,7 +24,7 @@ sourceCompatibility = 1.8
 
 dependencies {
 	implementation project(':encoding-base')
-	implementation project(':paseto-base')
+	implementation project(':paseto-core')
 
 	implementation "com.fasterxml.jackson.core:jackson-databind:2.9.5"
 }

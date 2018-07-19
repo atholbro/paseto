@@ -23,7 +23,7 @@ publishing {
 sourceCompatibility = 1.8
 
 dependencies {
-	api project(':paseto-base')
+	api project(':paseto-core')
 	api project(':crypto-v1-bc')
 	api project(':crypto-v2-libsodium')
 	api project(':encoding-json-jackson')
