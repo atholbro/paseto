@@ -19,7 +19,7 @@ package net.aholbrook.paseto.exception;
 
 import net.aholbrook.paseto.util.StringUtils;
 
-public class InvalidHeaderException extends PasetoException {
+public class InvalidHeaderException extends PasetoStringException {
 	private final String given, expected;
 
 	public InvalidHeaderException(String given, String expected, String token) {

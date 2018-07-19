@@ -19,6 +19,7 @@ package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.base64.base.Base64Provider;
 import net.aholbrook.paseto.crypto.base.NonceGenerator;
+import net.aholbrook.paseto.crypto.base.Tuple;
 import net.aholbrook.paseto.crypto.v1.base.V1CryptoProvider;
 import net.aholbrook.paseto.encoding.base.EncodingProvider;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
@@ -86,7 +87,7 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 		// Split token into sections
 		String[] sections = split(token);
 		if (sections == null) {
-			throw new TokenParseException(token);
+			throw new TokenParseException(TokenParseException.Reason.MISSING_SECTIONS, token);
 		}
 
 		// Check header
@@ -99,6 +100,10 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 		byte[] nct = base64Provider.decodeFromString(sections[2]);
 		byte[] n = new byte[32];
 		byte[] t = new byte[48];
+		// verify length
+		if (nct.length < n.length + t.length + 1) {
+			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token);
+		}
 		byte[] c = new byte[nct.length - n.length - t.length];
 		System.arraycopy(nct, 0, n, 0, n.length);
 		System.arraycopy(nct, n.length, c, 0, c.length);
@@ -153,7 +158,7 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 		// Split token into sections
 		String[] sections = split(token);
 		if (sections == null) {
-			throw new TokenParseException(token);
+			throw new TokenParseException(TokenParseException.Reason.MISSING_SECTIONS, token);
 		}
 
 		// Check header
@@ -165,6 +170,10 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 		// Verify
 		byte[] msig = base64Provider.decodeFromString(sections[2]);
 		byte[] s = new byte[256];
+		// verify length
+		if (msig.length < s.length + 1) {
+			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token);
+		}
 		byte[] m = new byte[msig.length - s.length];
 		System.arraycopy(msig, msig.length - s.length, s, 0, s.length);
 		System.arraycopy(msig, 0, m, 0, m.length);
@@ -176,5 +185,10 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 
 		// Convert from JSON
 		return decode(m, payloadClass);
+	}
+
+	@Override
+	public Tuple<byte[], byte[]> generateKeyPair() {
+		return cryptoProvider.rsaGenerate();
 	}
 }

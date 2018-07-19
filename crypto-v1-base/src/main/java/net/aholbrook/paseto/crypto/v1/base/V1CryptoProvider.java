@@ -18,6 +18,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.crypto.v1.base;
 
 import net.aholbrook.paseto.crypto.base.NonceGenerator;
+import net.aholbrook.paseto.crypto.base.Tuple;
 
 public interface V1CryptoProvider {
 	// RNG
@@ -39,4 +40,6 @@ public interface V1CryptoProvider {
 	// RSA Signatures
 	byte[] rsaSign(byte[] m, byte[] privateKey);
 	boolean rsaVerify(byte[] m, byte[] sig, byte[] publicKey);
+	Tuple<byte[], byte[]> rsaGenerate();
+
 }

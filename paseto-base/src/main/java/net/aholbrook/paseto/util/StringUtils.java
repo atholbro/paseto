@@ -53,6 +53,18 @@ public class StringUtils {
 	}
 
 	/**
+	 * Decodes a string from a sequence of bytes using the UTF-8 charset.
+	 *
+	 * This is the inverse of getBytesUtf8().
+	 * @param bytes Array of UTF-8 bytes.
+	 * @return String
+	 */
+	public static String fromUtf8Bytes(byte[] bytes) {
+		if (bytes == null || bytes.length == 0) { return ""; }
+		return new String(bytes, Charset.forName("UTF-8"));
+	}
+
+	/**
 	 * Compares all bytes in the given strings for equivalence ensuring that all bytes are checked for constant timing.
 	 *
 	 * If the two given strings are of different length, then the user string is compared with itself before

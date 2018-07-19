@@ -17,16 +17,50 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.exception;
 
-public class TokenParseException extends PasetoException {
-	public TokenParseException(String token) {
-		super(message(token), token);
+public class TokenParseException extends PasetoStringException {
+	private final Reason reason;
+	private int minLength = 0;
+
+	public TokenParseException(Reason reason, String token) {
+		super(message(reason, token), token);
+		this.reason = reason;
 	}
 
-	public static String message(String token) {
+	public Reason getReason() {
+		return reason;
+	}
+
+	public int getMinLength() {
+		return minLength;
+	}
+
+	public TokenParseException setMinLength(int minLength) {
+		this.minLength = minLength;
+		return this;
+	}
+
+	public enum Reason {
+		MISSING_SECTIONS,
+		PAYLOAD_LENGTH
+	}
+
+	public static String message(Reason reason, String token) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Invalid token: \"")
-				.append(token)
-				.append("\" unable to locate 3-4 paseto sections.");
+
+		switch (reason) {
+			case MISSING_SECTIONS:
+				sb.append("Invalid token: \"")
+						.append(token)
+						.append("\" unable to locate 3-4 paseto sections.");
+				break;
+
+			case PAYLOAD_LENGTH:
+				sb.append("Invalid token: \"")
+						.append(token)
+						.append("\" payload section does not meet minimum length requirements.");
+				break;
+		}
+
 		return sb.toString();
 	}
 }

@@ -19,7 +19,7 @@ package net.aholbrook.paseto.exception;
 
 import net.aholbrook.paseto.util.StringUtils;
 
-public class InvalidFooterException extends PasetoException {
+public class InvalidFooterException extends PasetoStringException {
 	private final String given, expected;
 
 	public InvalidFooterException(String given, String expected, String token) {

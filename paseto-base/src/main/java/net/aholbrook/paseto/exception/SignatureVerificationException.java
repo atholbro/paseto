@@ -17,7 +17,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.exception;
 
-public class SignatureVerificationException extends PasetoException {
+public class SignatureVerificationException extends PasetoStringException {
 	public SignatureVerificationException(String token) {
 		super("Failed to verify token signature.", token);
 	}

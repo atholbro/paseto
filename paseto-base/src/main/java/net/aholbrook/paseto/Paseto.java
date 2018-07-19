@@ -19,6 +19,7 @@ package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.base64.base.Base64Provider;
 import net.aholbrook.paseto.crypto.base.NonceGenerator;
+import net.aholbrook.paseto.crypto.base.Tuple;
 import net.aholbrook.paseto.crypto.v1.base.V1CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.base.V2CryptoProvider;
 import net.aholbrook.paseto.encoding.base.EncodingProvider;
@@ -48,6 +49,7 @@ public abstract class Paseto<_Payload> {
 	public abstract _Payload decrypt(String token, byte[] key, String footer, Class<_Payload> payloadClass);
 	public abstract String sign(_Payload payload, byte[] key, String footer);
 	public abstract _Payload verify(String token, byte[] pk, String footer, Class<_Payload> payloadClass);
+	public abstract Tuple<byte[], byte[]> generateKeyPair();
 
 	public String encrypt(_Payload payload, byte[] key) {
 		return encrypt(payload, key, null);
@@ -102,22 +104,27 @@ public abstract class Paseto<_Payload> {
 
 	public <_Footer> Tuple<_Payload, _Footer> verifyWithFooter(String token, byte[] pk, Class<_Payload> payloadClass,
 			Class<_Footer> footerClass) {
-		_Payload payload = decrypt(token, pk, payloadClass);
+		_Payload payload = verify(token, pk, payloadClass);
 		_Footer footer = extractFooter(token, footerClass);
 		return new Tuple<>(payload, footer);
 	}
 
 	public String extractFooter(String token) {
-		return split(token)[3];
+		String footer = split(token)[3];
+		if (!StringUtils.isEmpty(footer)) {
+			return StringUtils.fromUtf8Bytes(base64Provider.decodeFromString(footer));
+		}
+
+		return null;
 	}
 
 	public <_Footer> _Footer extractFooter(String token, Class<_Footer> footerClass) {
 		String footer = extractFooter(token);
 		if (!StringUtils.isEmpty(footer)) {
-			return encodingProvider.fromJson(extractFooter(token), footerClass);
-		} else {
-			return null;
+			return encodingProvider.fromJson(footer, footerClass);
 		}
+
+		return null;
 	}
 
 	/**
@@ -151,24 +158,14 @@ public abstract class Paseto<_Payload> {
 	}
 
 	String decodeFooter(String token, String[] sections, String expectedFooter) {
-		String decodedFooter = "";
+		String userFooter = StringUtils.ntes(sections[3]);
+		String decodedFooter = new String(base64Provider.decodeFromString(userFooter), Charset.forName("UTF-8"));
 
-		// Check footer if given, must match.
-		boolean footerRequired = !StringUtils.isEmpty(expectedFooter);
-		// both must either be present or not present
-		if (!StringUtils.isEmpty(sections[3]) == footerRequired) {
-			// only decode if the footer is required
-			if (footerRequired) {
-				String userFooter = StringUtils.ntes(sections[3]);
-				decodedFooter = new String(base64Provider.decodeFromString(userFooter), Charset.forName("UTF-8"));
-
-				// StringUtils.isEqual compares all bytes
-				if (!StringUtils.isEqual(decodedFooter, expectedFooter)) {
-					throw new InvalidFooterException(decodedFooter, expectedFooter, token);
-				}
-			}
-		} else {
-			throw new InvalidFooterException(StringUtils.ntes(sections[3]), StringUtils.ntes(expectedFooter), token);
+		// Check the footer if expected footer is not empty, otherwise we just return the footer without checking. This
+		// is find though, as the footer is covered by the token PAE signature. This check exists for proper error
+		// reporting, and is not a requirement for security.
+		if (!StringUtils.isEmpty(expectedFooter) && !StringUtils.isEqual(decodedFooter, expectedFooter)) {
+			throw new InvalidFooterException(decodedFooter, expectedFooter, token);
 		}
 
 		return decodedFooter;
