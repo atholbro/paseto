@@ -22,6 +22,7 @@ public class Claims {
 		for (Claim claim : claims) {
 			try {
 				claim.check(token, context);
+				context.addVerifiedClaim(claim.name());
 			} catch (ClaimException re) {
 				mre.add(re);
 			}

@@ -18,6 +18,10 @@ public class VerificationContext {
 		return token;
 	}
 
+	void addVerifiedClaim(String name) {
+		verifiedClaims.add(name);
+	}
+
 	public Set<String> getVerifiedClaims() {
 		return verifiedClaims;
 	}
