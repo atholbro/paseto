@@ -286,20 +286,70 @@ public abstract class PasetoV2TestBase extends PasetoTestBase {
 
 	// Footer extraction tests
 	@Test
-	public void v2_token1_localExtractFooter() {
-		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+	public void v2_token1_extractFooter() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
+		Paseto<Token> paseto = createPaseto();
 
 		KeyId footer = paseto.extractFooter(tv.getToken(), KeyId.class);
 		Assert.assertEquals("extracted footer != footer", tv.getFooter(), footer);
 	}
 
 	@Test
-	public void v2_token1_publicExtractFooter() {
+	public void v2_token1_extractFooterString() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
 		Paseto<Token> paseto = createPaseto();
 
+		String footerString = paseto.extractFooter(tv.getToken());
+		KeyId footer = encodingProvider().fromJson(footerString, KeyId.class);
+		Assert.assertEquals("extracted footer != footer", tv.getFooter(), footer);
+	}
+
+	@Test
+	public void v2_token1_extractMissingFooter() {
+		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_PUBLIC;
+		Paseto<Token> paseto = createPaseto();
+
 		KeyId footer = paseto.extractFooter(tv.getToken(), KeyId.class);
+		Assert.assertNull("footer not null", footer);
+	}
+
+	@Test
+	public void v2_token1_localDecryptWithFooter() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+
+		Tuple<Token, KeyId> result = paseto.decryptWithFooter(tv.getToken(), tv.getA(), tv.getPayloadClass(),
+				KeyId.class);
+		Assert.assertEquals("extracted footer != footer", tv.getFooter(), result.b);
+	}
+
+	@Test
+	public void v2_token1_localDecryptWithFooterString() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+
+		Tuple<Token, String> result = paseto.decryptWithFooter(tv.getToken(), tv.getA(), tv.getPayloadClass());
+		KeyId footer = encodingProvider().fromJson(result.b, KeyId.class);
+		Assert.assertEquals("extracted footer != footer", tv.getFooter(), footer);
+	}
+
+	@Test
+	public void v1_token1_publicVerifyWithFooter() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+
+		Tuple<Token, KeyId> result = paseto.verifyWithFooter(tv.getToken(), tv.getB(), tv.getPayloadClass(),
+				KeyId.class);
+		Assert.assertEquals("extracted footer != footer", tv.getFooter(), result.b);
+	}
+
+	@Test
+	public void v2_token1_publicVerifyWithFooterString() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
+		Paseto<Token> paseto = createPaseto(tv.getB());
+
+		Tuple<Token, String> result = paseto.verifyWithFooter(tv.getToken(), tv.getB(), tv.getPayloadClass());
+		KeyId footer = encodingProvider().fromJson(result.b, KeyId.class);
 		Assert.assertEquals("extracted footer != footer", tv.getFooter(), footer);
 	}
 

@@ -18,6 +18,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.encoding.base.EncodingProvider;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.test.data.TestVector;
 import net.aholbrook.paseto.test.data.TokenTestVectors;
@@ -28,8 +29,9 @@ import org.junit.Test;
 import java.nio.charset.Charset;
 
 public abstract class PasetoTestBase {
-	protected abstract  <_Payload> Paseto<_Payload> createPaseto();
-	protected abstract  <_Payload> Paseto<_Payload> createPaseto(byte[] nonce);
+	protected abstract EncodingProvider encodingProvider();
+	protected abstract <_Payload> Paseto<_Payload> createPaseto();
+	protected abstract <_Payload> Paseto<_Payload> createPaseto(byte[] nonce);
 
 	protected <_Payload, _Footer> void encryptTestVector(TestVector<_Payload, _Footer> tv) {
 		// A: key, B: nonce
