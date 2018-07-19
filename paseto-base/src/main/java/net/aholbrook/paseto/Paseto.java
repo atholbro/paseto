@@ -154,24 +154,14 @@ public abstract class Paseto<_Payload> {
 	}
 
 	String decodeFooter(String token, String[] sections, String expectedFooter) {
-		String decodedFooter = "";
+		String userFooter = StringUtils.ntes(sections[3]);
+		String decodedFooter = new String(base64Provider.decodeFromString(userFooter), Charset.forName("UTF-8"));
 
-		// Check footer if given, must match.
-		boolean footerRequired = !StringUtils.isEmpty(expectedFooter);
-		// both must either be present or not present
-		if (!StringUtils.isEmpty(sections[3]) == footerRequired) {
-			// only decode if the footer is required
-			if (footerRequired) {
-				String userFooter = StringUtils.ntes(sections[3]);
-				decodedFooter = new String(base64Provider.decodeFromString(userFooter), Charset.forName("UTF-8"));
-
-				// StringUtils.isEqual compares all bytes
-				if (!StringUtils.isEqual(decodedFooter, expectedFooter)) {
-					throw new InvalidFooterException(decodedFooter, expectedFooter, token);
-				}
-			}
-		} else {
-			throw new InvalidFooterException(StringUtils.ntes(sections[3]), StringUtils.ntes(expectedFooter), token);
+		// Check the footer if expected footer is not empty, otherwise we just return the footer without checking. This
+		// is find though, as the footer is covered by the token PAE signature. This check exists for proper error
+		// reporting, and is not a requirement for security.
+		if (!StringUtils.isEmpty(expectedFooter) && !StringUtils.isEqual(decodedFooter, expectedFooter)) {
+			throw new InvalidFooterException(decodedFooter, expectedFooter, token);
 		}
 
 		return decodedFooter;
