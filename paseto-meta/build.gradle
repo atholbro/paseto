@@ -27,7 +27,6 @@ dependencies {
 	api project(':crypto-v1-bc')
 	api project(':crypto-v2-libsodium')
 	api project(':encoding-json-jackson')
-	api project(':base64-jvm8')
 
 	testImplementation group: 'junit', name: 'junit', version: '4.12'
 	testImplementation project(':test')

@@ -17,7 +17,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto;
 
-import net.aholbrook.paseto.base64.base.Base64Provider;
 import net.aholbrook.paseto.crypto.base.NonceGenerator;
 import net.aholbrook.paseto.crypto.base.Tuple;
 import net.aholbrook.paseto.crypto.v1.base.V1CryptoProvider;
@@ -25,6 +24,7 @@ import net.aholbrook.paseto.crypto.v2.base.V2CryptoProvider;
 import net.aholbrook.paseto.encoding.base.EncodingProvider;
 import net.aholbrook.paseto.exception.InvalidFooterException;
 import net.aholbrook.paseto.exception.InvalidHeaderException;
+import net.aholbrook.paseto.util.Base64;
 import net.aholbrook.paseto.util.StringUtils;
 
 import java.nio.charset.Charset;
@@ -37,12 +37,10 @@ public abstract class Paseto<_Payload> {
 
 	final EncodingProvider encodingProvider;
 	final NonceGenerator nonceGenerator;
-	final Base64Provider base64Provider;
 
-	Paseto(EncodingProvider encodingProvider, NonceGenerator nonceGenerator, Base64Provider base64Provider) {
+	Paseto(EncodingProvider encodingProvider, NonceGenerator nonceGenerator) {
 		this.encodingProvider = encodingProvider;
 		this.nonceGenerator = nonceGenerator;
-		this.base64Provider = base64Provider;
 	}
 
 	public abstract String encrypt(_Payload payload, byte[] key, String footer);
@@ -112,7 +110,7 @@ public abstract class Paseto<_Payload> {
 	public String extractFooter(String token) {
 		String footer = split(token)[3];
 		if (!StringUtils.isEmpty(footer)) {
-			return StringUtils.fromUtf8Bytes(base64Provider.decodeFromString(footer));
+			return StringUtils.fromUtf8Bytes(Base64.decodeFromString(footer));
 		}
 
 		return null;
@@ -159,7 +157,7 @@ public abstract class Paseto<_Payload> {
 
 	String decodeFooter(String token, String[] sections, String expectedFooter) {
 		String userFooter = StringUtils.ntes(sections[3]);
-		String decodedFooter = new String(base64Provider.decodeFromString(userFooter), Charset.forName("UTF-8"));
+		String decodedFooter = new String(Base64.decodeFromString(userFooter), Charset.forName("UTF-8"));
 
 		// Check the footer if expected footer is not empty, otherwise we just return the footer without checking. This
 		// is find though, as the footer is covered by the token PAE signature. This check exists for proper error
@@ -180,7 +178,6 @@ public abstract class Paseto<_Payload> {
 		protected EncodingProvider encodingProvider;
 		protected V1CryptoProvider v1CryptoProvider;
 		protected V2CryptoProvider v2CryptoProvider;
-		protected Base64Provider base64Provider;
 		protected NonceGenerator nonceGenerator;
 
 		public Builder<_Payload> v1(V1CryptoProvider v1CryptoProvider) {
@@ -200,11 +197,6 @@ public abstract class Paseto<_Payload> {
 			return this;
 		}
 
-		public Builder<_Payload> withBase64(Base64Provider base64Provider) {
-			this.base64Provider = base64Provider;
-			return this;
-		}
-
 		public Builder<_Payload> withTestingNonceGenerator(NonceGenerator nonceGenerator) {
 			this.nonceGenerator = nonceGenerator;
 			return this;
@@ -212,19 +204,18 @@ public abstract class Paseto<_Payload> {
 
 		public Paseto<_Payload> build() {
 			if (encodingProvider == null) { throw new NullPointerException("json implementation required."); }
-			if (base64Provider == null) { throw new NullPointerException("base64 implementation required."); }
 
 			switch (version) {
 				case 1:
 					if (v1CryptoProvider == null) { throw new NullPointerException("crypto implementation required."); }
 					if (nonceGenerator == null) { nonceGenerator = v1CryptoProvider.getNonceGenerator(); }
 
-					return new PasetoV1<>(encodingProvider, v1CryptoProvider, nonceGenerator, base64Provider);
+					return new PasetoV1<>(encodingProvider, v1CryptoProvider, nonceGenerator);
 				case 2:
 					if (v2CryptoProvider == null) { throw new NullPointerException("crypto implementation required."); }
 					if (nonceGenerator == null) { nonceGenerator = v2CryptoProvider.getNonceGenerator(); }
 
-					return new PasetoV2<>(encodingProvider, v2CryptoProvider, nonceGenerator, base64Provider);
+					return new PasetoV2<>(encodingProvider, v2CryptoProvider, nonceGenerator);
 				default:
 					return null;
 			}

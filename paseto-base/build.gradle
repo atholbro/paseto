@@ -23,7 +23,6 @@ publishing {
 sourceCompatibility = 1.8
 
 dependencies {
-	api project(':base64-base')
 	api project(':encoding-base')
 	api project(':crypto-v1-base')
 	api project(':crypto-v2-base')

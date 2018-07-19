@@ -15,9 +15,14 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.aholbrook.paseto.base64.base;
+package net.aholbrook.paseto.util;
 
-public interface Base64Provider {
-	String encodeToString(byte[] bytes);
-	byte[] decodeFromString(String s);
+public class Base64 {
+	public static String encodeToString(byte[] bytes) {
+		return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+	}
+
+	public static byte[] decodeFromString(String s) {
+		return java.util.Base64.getUrlDecoder().decode(s);
+	}
 }
