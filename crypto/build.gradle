@@ -1,7 +1,7 @@
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 
-def artifact_id = "crypto-base"
+def artifact_id = "crypto"
 
 jar {
 	baseName = generateBaseName(artifact_id)
