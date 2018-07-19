@@ -22,6 +22,7 @@ import net.aholbrook.paseto.claims.WithSubject;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
@@ -37,6 +38,14 @@ public class ClaimVerificationTest {
 		};
 
 		return Claims.verify(token, claims);
+	}
+
+	@Test
+	public void tokenVerification_default() {
+		Token token = new Token()
+				.setIssuedAt(OffsetDateTime.now())
+				.setExpiration(OffsetDateTime.now().plusSeconds(5));
+		defaultVerification(token);
 	}
 
 	// Check a token for expiry 5 seconds after it becomes valid. This should pass for the given token.
