@@ -20,11 +20,8 @@ package net.aholbrook.paseto.crypto.v2.libsodium;
 import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
 import com.goterl.lazycode.lazysodium.LazySodiumJava;
 import com.goterl.lazycode.lazysodium.SodiumJava;
-import net.aholbrook.paseto.crypto.base.NonceGenerator;
-import net.aholbrook.paseto.crypto.base.Tuple;
-import net.aholbrook.paseto.crypto.base.exception.ByteArrayLengthException;
-import net.aholbrook.paseto.crypto.base.exception.ByteArrayRangeException;
-import net.aholbrook.paseto.crypto.base.exception.CryptoProviderException;
+import net.aholbrook.paseto.crypto.Tuple;
+import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
 import net.aholbrook.paseto.crypto.v2.base.V2CryptoProvider;
 
 public class LibSodiumV2CryptoProvider extends V2CryptoProvider {

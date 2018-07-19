@@ -17,10 +17,10 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.crypto.v2.base;
 
-import net.aholbrook.paseto.crypto.base.NonceGenerator;
-import net.aholbrook.paseto.crypto.base.Tuple;
-import net.aholbrook.paseto.crypto.base.exception.ByteArrayLengthException;
-import net.aholbrook.paseto.crypto.base.exception.ByteArrayRangeException;
+import net.aholbrook.paseto.crypto.NonceGenerator;
+import net.aholbrook.paseto.crypto.Tuple;
+import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
+import net.aholbrook.paseto.crypto.exception.ByteArrayRangeException;
 
 public abstract class V2CryptoProvider implements NonceGenerator {
 	protected final static int BLAKE2B_BYTES_MIN = 16;

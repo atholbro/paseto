@@ -17,19 +17,12 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.crypto.v1.bc;
 
-import net.aholbrook.paseto.crypto.base.NonceGenerator;
-import net.aholbrook.paseto.crypto.base.Tuple;
-import net.aholbrook.paseto.crypto.base.exception.CryptoProviderException;
+import net.aholbrook.paseto.crypto.NonceGenerator;
+import net.aholbrook.paseto.crypto.Tuple;
+import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
 import net.aholbrook.paseto.crypto.v1.base.HkdfProvider;
 import net.aholbrook.paseto.crypto.v1.base.V1CryptoProvider;
 import net.aholbrook.paseto.crypto.v1.base.exception.HmacException;
-import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.KeyGenerationParameters;
-import org.bouncycastle.crypto.generators.RSAKeyPairGenerator;
-import org.bouncycastle.crypto.params.RSAKeyParameters;
-import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
-import org.bouncycastle.crypto.util.PrivateKeyInfoFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.BadPaddingException;

@@ -15,8 +15,14 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.aholbrook.paseto.crypto.base;
+package net.aholbrook.paseto.crypto.exception;
 
-public interface NonceGenerator {
-	byte[] generateNonce();
+public class CryptoProviderException extends RuntimeException {
+	public CryptoProviderException(String s) {
+		super(s);
+	}
+
+	public CryptoProviderException(String s, Throwable throwable) {
+		super(s, throwable);
+	}
 }

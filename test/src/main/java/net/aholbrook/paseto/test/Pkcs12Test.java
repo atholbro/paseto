@@ -17,7 +17,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.test;
 
-import net.aholbrook.paseto.crypto.base.Tuple;
+import net.aholbrook.paseto.crypto.Tuple;
 import net.aholbrook.paseto.util.Pkcs12;
 import org.junit.Assert;
 import org.junit.Test;

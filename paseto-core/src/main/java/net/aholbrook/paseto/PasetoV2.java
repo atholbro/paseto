@@ -17,8 +17,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto;
 
-import net.aholbrook.paseto.crypto.base.NonceGenerator;
-import net.aholbrook.paseto.crypto.base.Tuple;
+import net.aholbrook.paseto.crypto.NonceGenerator;
+import net.aholbrook.paseto.crypto.Tuple;
 import net.aholbrook.paseto.crypto.v2.base.V2CryptoProvider;
 import net.aholbrook.paseto.encoding.base.EncodingProvider;
 import net.aholbrook.paseto.exception.DecryptionException;

@@ -17,7 +17,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.crypto.v1.base.exception;
 
-import net.aholbrook.paseto.crypto.base.exception.CryptoProviderException;
+import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

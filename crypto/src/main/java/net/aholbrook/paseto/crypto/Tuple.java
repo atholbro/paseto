@@ -15,42 +15,30 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.aholbrook.paseto.crypto.base.exception;
+package net.aholbrook.paseto.crypto;
 
-public class ByteArrayRangeException extends CryptoProviderException {
-	private final String arg;
-	private final int minBound;
-	private final int maxBound;
+import java.util.Objects;
 
-	public ByteArrayRangeException(String arg, int minBound, int maxBound) {
-		this(arg, minBound, maxBound, null);
+public class Tuple<_A, _B> {
+	public final _A a;
+	public final _B b;
+
+	public Tuple(_A a, _B b) {
+		this.a = a;
+		this.b = b;
 	}
 
-	public ByteArrayRangeException(String arg, int minBound, int maxBound, Throwable throwable) {
-		super(message(arg, minBound, maxBound), throwable);
-		this.arg = arg;
-		this.minBound = minBound;
-		this.maxBound = maxBound;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Tuple<?, ?> tuple = (Tuple<?, ?>) o;
+		return Objects.equals(a, tuple.a) &&
+				Objects.equals(b, tuple.b);
 	}
 
-	public String getArg() {
-		return arg;
-	}
-
-	public int getMinBound() {
-		return minBound;
-	}
-
-	public int getMaxBound() {
-		return maxBound;
-	}
-
-	private static String message(String arg, int minBound, int maxBound) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(arg)
-				.append(": length outside of range ")
-				.append(minBound).append("..").append(maxBound)
-				.append(".");
-		return sb.toString();
+	@Override
+	public int hashCode() {
+		return Objects.hash(a, b);
 	}
 }

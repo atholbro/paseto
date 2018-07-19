@@ -15,14 +15,42 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.aholbrook.paseto.crypto.base.exception;
+package net.aholbrook.paseto.crypto.exception;
 
-public class CryptoProviderException extends RuntimeException {
-	public CryptoProviderException(String s) {
-		super(s);
+public class ByteArrayRangeException extends CryptoProviderException {
+	private final String arg;
+	private final int minBound;
+	private final int maxBound;
+
+	public ByteArrayRangeException(String arg, int minBound, int maxBound) {
+		this(arg, minBound, maxBound, null);
 	}
 
-	public CryptoProviderException(String s, Throwable throwable) {
-		super(s, throwable);
+	public ByteArrayRangeException(String arg, int minBound, int maxBound, Throwable throwable) {
+		super(message(arg, minBound, maxBound), throwable);
+		this.arg = arg;
+		this.minBound = minBound;
+		this.maxBound = maxBound;
+	}
+
+	public String getArg() {
+		return arg;
+	}
+
+	public int getMinBound() {
+		return minBound;
+	}
+
+	public int getMaxBound() {
+		return maxBound;
+	}
+
+	private static String message(String arg, int minBound, int maxBound) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(arg)
+				.append(": length outside of range ")
+				.append(minBound).append("..").append(maxBound)
+				.append(".");
+		return sb.toString();
 	}
 }

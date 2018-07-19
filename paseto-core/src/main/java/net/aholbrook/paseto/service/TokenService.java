@@ -1,9 +1,8 @@
 package net.aholbrook.paseto.service;
 
 import net.aholbrook.paseto.Paseto;
-import net.aholbrook.paseto.crypto.base.Tuple;
+import net.aholbrook.paseto.crypto.Tuple;
 import net.aholbrook.paseto.claims.Claim;
-import net.aholbrook.paseto.claims.Claims;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
 
 import java.time.Clock;
