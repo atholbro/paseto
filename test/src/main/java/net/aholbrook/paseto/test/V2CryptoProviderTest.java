@@ -33,6 +33,23 @@ public class V2CryptoProviderTest {
 		return TestContext.builders().v2CryptoProvider();
 	}
 
+	private void assertByteArrayRangeException(ByteArrayRangeException e, String arg, int len, int lower, int upper) {
+		Assert.assertEquals("arg", arg, e.getArg());
+		Assert.assertEquals("len", len, e.getLen());
+		Assert.assertEquals("minBound", lower, e.getMinBound());
+		Assert.assertEquals("maxBound", upper, e.getMaxBound());
+		throw e;
+	}
+
+	private void assertByteArrayLengthException(ByteArrayLengthException e, String arg, int len, int required,
+			boolean exact) {
+		Assert.assertEquals(arg, e.getArg());
+		Assert.assertEquals(len, e.getLen());
+		Assert.assertEquals(required, e.getRequired());
+		Assert.assertEquals(exact, e.isExact());
+		throw e;
+	}
+
 	@Test
 	public void crypto_v2_randomBytes() {
 		byte[] r1 = v2CryptoProvider().randomBytes(24);
@@ -67,23 +84,42 @@ public class V2CryptoProviderTest {
 
 	@Test(expected = ByteArrayRangeException.class)
 	public void crypto_v2_blake2b_outShort() {
-		v2CryptoProvider().blake2b(new byte[V2CryptoProvider.BLAKE2B_BYTES_MIN - 1], BLAKE2B_IN, BLAKE2B_KEY);
+		try {
+			v2CryptoProvider().blake2b(new byte[V2CryptoProvider.BLAKE2B_BYTES_MIN - 1], BLAKE2B_IN, BLAKE2B_KEY);
+		} catch (ByteArrayRangeException e) {
+			assertByteArrayRangeException(e, "out", V2CryptoProvider.BLAKE2B_BYTES_MIN - 1,
+					V2CryptoProvider.BLAKE2B_BYTES_MIN, V2CryptoProvider.BLAKE2B_BYTES_MAX);
+		}
 	}
 
 	@Test(expected = ByteArrayRangeException.class)
 	public void crypto_v2_blake2b_outLong() {
-		v2CryptoProvider().blake2b(new byte[V2CryptoProvider.BLAKE2B_BYTES_MAX + 1], BLAKE2B_IN, BLAKE2B_KEY);
+		try {
+			v2CryptoProvider().blake2b(new byte[V2CryptoProvider.BLAKE2B_BYTES_MAX + 1], BLAKE2B_IN, BLAKE2B_KEY);
+		} catch (ByteArrayRangeException e) {
+			assertByteArrayRangeException(e, "out", V2CryptoProvider.BLAKE2B_BYTES_MAX + 1,
+					V2CryptoProvider.BLAKE2B_BYTES_MIN, V2CryptoProvider.BLAKE2B_BYTES_MAX);
+		}
 	}
 
 	@Test(expected = ByteArrayRangeException.class)
 	public void crypto_v2_blake2b_keyShort() {
-		v2CryptoProvider().blake2b(BLAKE2B_OUT, BLAKE2B_IN, new byte[V2CryptoProvider.BLAKE2B_KEYBYTES_MIN - 1]);
+		try {
+			v2CryptoProvider().blake2b(BLAKE2B_OUT, BLAKE2B_IN, new byte[V2CryptoProvider.BLAKE2B_KEYBYTES_MIN - 1]);
+		} catch (ByteArrayRangeException e) {
+			assertByteArrayRangeException(e, "key", V2CryptoProvider.BLAKE2B_KEYBYTES_MIN - 1,
+					V2CryptoProvider.BLAKE2B_KEYBYTES_MIN, V2CryptoProvider.BLAKE2B_KEYBYTES_MAX);
+		}
 	}
 
 	@Test(expected = ByteArrayRangeException.class)
 	public void crypto_v2_blake2b_keyLong() {
-		byte[] key = new byte[V2CryptoProvider.BLAKE2B_KEYBYTES_MAX + 1];
-		v2CryptoProvider().blake2b(BLAKE2B_OUT, BLAKE2B_IN, new byte[V2CryptoProvider.BLAKE2B_KEYBYTES_MAX + 1]);
+		try {
+			v2CryptoProvider().blake2b(BLAKE2B_OUT, BLAKE2B_IN, new byte[V2CryptoProvider.BLAKE2B_KEYBYTES_MAX + 1]);
+		} catch (ByteArrayRangeException e) {
+			assertByteArrayRangeException(e, "key", V2CryptoProvider.BLAKE2B_KEYBYTES_MAX + 1,
+					V2CryptoProvider.BLAKE2B_KEYBYTES_MIN, V2CryptoProvider.BLAKE2B_KEYBYTES_MAX);
+		}
 	}
 
 	// AeadXChaCha20Poly1305IetfEncrypt
@@ -120,50 +156,82 @@ public class V2CryptoProviderTest {
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_aeadXChaCha20Poly1305IetfEncrypt_shortOut() {
-		v2CryptoProvider().aeadXChaCha20Poly1305IetfEncrypt(
-				new byte[XCHACHA20_POLY1305_IETF_OUT.length - 1],
-				XCHACHA20_POLY1305_IETF_IN, XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE,
-				XCHACHA20_POLY1305_IETF_KEY);
+		try {
+			v2CryptoProvider().aeadXChaCha20Poly1305IetfEncrypt(
+					new byte[XCHACHA20_POLY1305_IETF_OUT.length - 1],
+					XCHACHA20_POLY1305_IETF_IN, XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE,
+					XCHACHA20_POLY1305_IETF_KEY);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "out", XCHACHA20_POLY1305_IETF_OUT.length - 1,
+					XCHACHA20_POLY1305_IETF_OUT.length, true);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_aeadXChaCha20Poly1305IetfEncrypt_longOut() {
-		v2CryptoProvider().aeadXChaCha20Poly1305IetfEncrypt(
-				new byte[XCHACHA20_POLY1305_IETF_OUT.length + 1],
-				XCHACHA20_POLY1305_IETF_IN, XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE,
-				XCHACHA20_POLY1305_IETF_KEY);
+		try {
+			v2CryptoProvider().aeadXChaCha20Poly1305IetfEncrypt(
+					new byte[XCHACHA20_POLY1305_IETF_OUT.length + 1],
+					XCHACHA20_POLY1305_IETF_IN, XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE,
+					XCHACHA20_POLY1305_IETF_KEY);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "out", XCHACHA20_POLY1305_IETF_OUT.length + 1,
+					XCHACHA20_POLY1305_IETF_OUT.length, true);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_aeadXChaCha20Poly1305IetfEncrypt_shortIn() {
-		v2CryptoProvider().aeadXChaCha20Poly1305IetfEncrypt(XCHACHA20_POLY1305_IETF_OUT, new byte[0],
-				XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE, XCHACHA20_POLY1305_IETF_KEY);
+		try {
+			v2CryptoProvider().aeadXChaCha20Poly1305IetfEncrypt(XCHACHA20_POLY1305_IETF_OUT, new byte[0],
+					XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE, XCHACHA20_POLY1305_IETF_KEY);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "in", 0, 1, false);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_aeadXChaCha20Poly1305IetfEncrypt_shortAd() {
-		v2CryptoProvider().aeadXChaCha20Poly1305IetfEncrypt(XCHACHA20_POLY1305_IETF_OUT, XCHACHA20_POLY1305_IETF_IN,
-				new byte[0], XCHACHA20_POLY1305_IETF_NONCE, XCHACHA20_POLY1305_IETF_KEY);
+		try {
+			v2CryptoProvider().aeadXChaCha20Poly1305IetfEncrypt(XCHACHA20_POLY1305_IETF_OUT, XCHACHA20_POLY1305_IETF_IN,
+					new byte[0], XCHACHA20_POLY1305_IETF_NONCE, XCHACHA20_POLY1305_IETF_KEY);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "ad", 0, 1, false);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_aeadXChaCha20Poly1305IetfEncrypt_shortNonce() {
-		v2CryptoProvider().aeadXChaCha20Poly1305IetfEncrypt(XCHACHA20_POLY1305_IETF_OUT,
-				XCHACHA20_POLY1305_IETF_IN, XCHACHA20_POLY1305_IETF_AD,
-				new byte[XCHACHA20_POLY1305_IETF_NONCE.length - 1], XCHACHA20_POLY1305_IETF_KEY);
+		try {
+			v2CryptoProvider().aeadXChaCha20Poly1305IetfEncrypt(XCHACHA20_POLY1305_IETF_OUT,
+					XCHACHA20_POLY1305_IETF_IN, XCHACHA20_POLY1305_IETF_AD,
+					new byte[XCHACHA20_POLY1305_IETF_NONCE.length - 1], XCHACHA20_POLY1305_IETF_KEY);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "nonce", XCHACHA20_POLY1305_IETF_NONCE.length - 1,
+					XCHACHA20_POLY1305_IETF_NONCE.length, true);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_aeadXChaCha20Poly1305IetfEncrypt_longNonce() {
-		v2CryptoProvider().aeadXChaCha20Poly1305IetfEncrypt(XCHACHA20_POLY1305_IETF_OUT,
-				XCHACHA20_POLY1305_IETF_IN, XCHACHA20_POLY1305_IETF_AD,
-				new byte[XCHACHA20_POLY1305_IETF_NONCE.length + 1], XCHACHA20_POLY1305_IETF_KEY);
+		try {
+			v2CryptoProvider().aeadXChaCha20Poly1305IetfEncrypt(XCHACHA20_POLY1305_IETF_OUT,
+					XCHACHA20_POLY1305_IETF_IN, XCHACHA20_POLY1305_IETF_AD,
+					new byte[XCHACHA20_POLY1305_IETF_NONCE.length + 1], XCHACHA20_POLY1305_IETF_KEY);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "nonce", XCHACHA20_POLY1305_IETF_NONCE.length + 1,
+					XCHACHA20_POLY1305_IETF_NONCE.length, true);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_aeadXChaCha20Poly1305IetfEncrypt_shortKey() {
+		try {
 		v2CryptoProvider().aeadXChaCha20Poly1305IetfEncrypt(XCHACHA20_POLY1305_IETF_OUT, XCHACHA20_POLY1305_IETF_IN,
 				XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE, new byte[0]);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "key", 0, 1, false);
+		}
 	}
 
 	// AeadXChaCha20Poly1305IetfDecrypt
@@ -200,50 +268,38 @@ public class V2CryptoProviderTest {
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_aeadXChaCha20Poly1305IetfDecrypt_shortOut() {
-		v2CryptoProvider().aeadXChaCha20Poly1305IetfDecrypt(
-				new byte[XCHACHA20_POLY1305_IETF_OUT_DECRYPT.length - 1],
-				XCHACHA20_POLY1305_IETF_IN_DECRYPT, XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE,
-				XCHACHA20_POLY1305_IETF_KEY);
+		try {
+			v2CryptoProvider().aeadXChaCha20Poly1305IetfDecrypt(
+					new byte[XCHACHA20_POLY1305_IETF_OUT_DECRYPT.length - 1],
+					XCHACHA20_POLY1305_IETF_IN_DECRYPT, XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE,
+					XCHACHA20_POLY1305_IETF_KEY);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "out", XCHACHA20_POLY1305_IETF_OUT_DECRYPT.length - 1,
+					XCHACHA20_POLY1305_IETF_OUT_DECRYPT.length, true);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_aeadXChaCha20Poly1305IetfDecrypt_longOut() {
-		v2CryptoProvider().aeadXChaCha20Poly1305IetfDecrypt(
-				new byte[XCHACHA20_POLY1305_IETF_OUT_DECRYPT.length + 1],
-				XCHACHA20_POLY1305_IETF_IN_DECRYPT, XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE,
-				XCHACHA20_POLY1305_IETF_KEY);
+		try {
+			v2CryptoProvider().aeadXChaCha20Poly1305IetfDecrypt(
+					new byte[XCHACHA20_POLY1305_IETF_OUT_DECRYPT.length + 1],
+					XCHACHA20_POLY1305_IETF_IN_DECRYPT, XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE,
+					XCHACHA20_POLY1305_IETF_KEY);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "out", XCHACHA20_POLY1305_IETF_OUT_DECRYPT.length + 1,
+					XCHACHA20_POLY1305_IETF_OUT_DECRYPT.length, true);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_aeadXChaCha20Poly1305IetfDecrypt_shortIn() {
-		v2CryptoProvider().aeadXChaCha20Poly1305IetfDecrypt(XCHACHA20_POLY1305_IETF_OUT_DECRYPT, new byte[0],
-				XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE, XCHACHA20_POLY1305_IETF_KEY);
-	}
-
-	@Test(expected = ByteArrayLengthException.class)
-	public void crypto_v2_aeadXChaCha20Poly1305IetfDecrypt_shortAd() {
-		v2CryptoProvider().aeadXChaCha20Poly1305IetfDecrypt(XCHACHA20_POLY1305_IETF_OUT_DECRYPT,
-				XCHACHA20_POLY1305_IETF_IN_DECRYPT, new byte[0], XCHACHA20_POLY1305_IETF_NONCE, XCHACHA20_POLY1305_IETF_KEY);
-	}
-
-	@Test(expected = ByteArrayLengthException.class)
-	public void crypto_v2_aeadXChaCha20Poly1305IetfDecrypt_shortNonce() {
-		v2CryptoProvider().aeadXChaCha20Poly1305IetfDecrypt(XCHACHA20_POLY1305_IETF_OUT_DECRYPT,
-				XCHACHA20_POLY1305_IETF_IN_DECRYPT, XCHACHA20_POLY1305_IETF_AD,
-				new byte[XCHACHA20_POLY1305_IETF_NONCE.length - 1], XCHACHA20_POLY1305_IETF_KEY);
-	}
-
-	@Test(expected = ByteArrayLengthException.class)
-	public void crypto_v2_aeadXChaCha20Poly1305IetfDecrypt_longNonce() {
-		v2CryptoProvider().aeadXChaCha20Poly1305IetfDecrypt(XCHACHA20_POLY1305_IETF_OUT_DECRYPT,
-				XCHACHA20_POLY1305_IETF_IN_DECRYPT, XCHACHA20_POLY1305_IETF_AD,
-				new byte[XCHACHA20_POLY1305_IETF_NONCE.length + 1], XCHACHA20_POLY1305_IETF_KEY);
-	}
-
-	@Test(expected = ByteArrayLengthException.class)
-	public void crypto_v2_aeadXChaCha20Poly1305IetfDecrypt_shortKey() {
-		v2CryptoProvider().aeadXChaCha20Poly1305IetfDecrypt(XCHACHA20_POLY1305_IETF_OUT_DECRYPT,
-				XCHACHA20_POLY1305_IETF_IN_DECRYPT, XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE, new byte[0]);
+		try {
+			v2CryptoProvider().aeadXChaCha20Poly1305IetfDecrypt(XCHACHA20_POLY1305_IETF_OUT_DECRYPT, new byte[0],
+					XCHACHA20_POLY1305_IETF_AD, XCHACHA20_POLY1305_IETF_NONCE, XCHACHA20_POLY1305_IETF_KEY);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "in", 0, 1, false);
+		}
 	}
 
 	// ed25519Sign
@@ -265,27 +321,47 @@ public class V2CryptoProviderTest {
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519Sign_shortSig() {
-		v2CryptoProvider().ed25519Sign(new byte[ED25519S_SIG.length - 1], ED25519S_M, ED25519S_SK);
+		try {
+			v2CryptoProvider().ed25519Sign(new byte[ED25519S_SIG.length - 1], ED25519S_M, ED25519S_SK);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "sig", ED25519S_SIG.length - 1, ED25519S_SIG.length, true);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519Sign_longSig() {
-		v2CryptoProvider().ed25519Sign(new byte[ED25519S_SIG.length + 1], ED25519S_M, ED25519S_SK);
+		try {
+			v2CryptoProvider().ed25519Sign(new byte[ED25519S_SIG.length + 1], ED25519S_M, ED25519S_SK);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "sig", ED25519S_SIG.length + 1, ED25519S_SIG.length, true);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519Sign_shortM() {
-		v2CryptoProvider().ed25519Sign(ED25519S_SIG, new byte[0], ED25519S_SK);
+		try {
+			v2CryptoProvider().ed25519Sign(ED25519S_SIG, new byte[0], ED25519S_SK);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "m", 0, 1, false);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519Sign_shortSk() {
-		v2CryptoProvider().ed25519Sign(ED25519S_SIG, ED25519S_M, new byte[ED25519S_SK.length - 1]);
+		try {
+			v2CryptoProvider().ed25519Sign(ED25519S_SIG, ED25519S_M, new byte[ED25519S_SK.length - 1]);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "sk", ED25519S_SK.length - 1, ED25519S_SK.length, true);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519Sign_longSk() {
-		v2CryptoProvider().ed25519Sign(ED25519S_SIG, ED25519S_M, new byte[ED25519S_SK.length + 1]);
+		try {
+			v2CryptoProvider().ed25519Sign(ED25519S_SIG, ED25519S_M, new byte[ED25519S_SK.length + 1]);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "sk", ED25519S_SK.length + 1, ED25519S_SK.length, true);
+		}
 	}
 
 	// ed25519Verify
@@ -307,27 +383,47 @@ public class V2CryptoProviderTest {
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519Verify_shortSig() {
-		v2CryptoProvider().ed25519Verify(new byte[ED25519S_SIG.length - 1], ED25519S_M, ED25519S_PK);
+		try {
+			v2CryptoProvider().ed25519Verify(new byte[ED25519S_SIG.length - 1], ED25519S_M, ED25519S_PK);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "sig", ED25519S_SIG.length - 1, ED25519S_SIG.length, true);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519Verify_longSig() {
-		v2CryptoProvider().ed25519Verify(new byte[ED25519S_SIG.length + 1], ED25519S_M, ED25519S_PK);
+		try {
+			v2CryptoProvider().ed25519Verify(new byte[ED25519S_SIG.length + 1], ED25519S_M, ED25519S_PK);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "sig", ED25519S_SIG.length + 1, ED25519S_SIG.length, true);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519Verify_shortM() {
-		v2CryptoProvider().ed25519Verify(ED25519S_SIG, new byte[0], ED25519S_PK);
+		try {
+			v2CryptoProvider().ed25519Verify(ED25519S_SIG, new byte[0], ED25519S_PK);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "m", 0, 1, false);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519Verify_shortPk() {
-		v2CryptoProvider().ed25519Verify(ED25519S_SIG, ED25519S_M, new byte[ED25519S_PK.length - 1]);
+		try {
+			v2CryptoProvider().ed25519Verify(ED25519S_SIG, ED25519S_M, new byte[ED25519S_PK.length - 1]);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "pk", ED25519S_PK.length - 1, ED25519S_PK.length, true);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519Verify_longPk() {
-		v2CryptoProvider().ed25519Verify(ED25519S_SIG, ED25519S_M, new byte[ED25519S_PK.length + 1]);
+		try {
+			v2CryptoProvider().ed25519Verify(ED25519S_SIG, ED25519S_M, new byte[ED25519S_PK.length + 1]);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "pk", ED25519S_PK.length + 1, ED25519S_PK.length, true);
+		}
 	}
 
 	// ed25519PublicKey
@@ -339,12 +435,20 @@ public class V2CryptoProviderTest {
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519PublicKey_shortSk() {
-		v2CryptoProvider().ed25519PublicKey(new byte[ED25519S_SK.length - 1]);
+		try {
+			v2CryptoProvider().ed25519PublicKey(new byte[ED25519S_SK.length - 1]);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "sk", ED25519S_SK.length - 1, ED25519S_SK.length, true);
+		}
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519PublicKey_longSk() {
-		v2CryptoProvider().ed25519PublicKey(new byte[ED25519S_SK.length + 1]);
+		try {
+			v2CryptoProvider().ed25519PublicKey(new byte[ED25519S_SK.length + 1]);
+		} catch (ByteArrayLengthException e) {
+			assertByteArrayLengthException(e, "sk", ED25519S_SK.length + 1, ED25519S_SK.length, true);
+		}
 	}
 
 
