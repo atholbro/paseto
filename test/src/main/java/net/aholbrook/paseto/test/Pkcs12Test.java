@@ -39,7 +39,7 @@ public class Pkcs12Test {
 	public void pkcs12_load() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException, InvalidKeySpecException {
 		System.out.println("dir: " + System.getProperty("user.dir"));
 
-		Tuple<PrivateKey, PublicKey> keys = Pkcs12.load("rfc_v1_rsa.p12", "testtest", "test");
+		Tuple<PrivateKey, PublicKey> keys = Pkcs12.load("../test/p12/rfc_v1_rsa.p12", "testtest", "test");
 		Assert.assertNotNull(keys);
 		Assert.assertNotNull(keys.a);
 		Assert.assertNotNull(keys.b);
@@ -59,7 +59,7 @@ public class Pkcs12Test {
 	public void pkcs12_load2() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException, InvalidKeySpecException {
 		System.out.println("dir: " + System.getProperty("user.dir"));
 
-		Tuple<PrivateKey, PublicKey> keys = Pkcs12.load("test_v1_rsa.p12", "password", "test");
+		Tuple<PrivateKey, PublicKey> keys = Pkcs12.load("../test/p12/test_v1_rsa.p12", "password", "test");
 		Assert.assertNotNull(keys);
 		Assert.assertNotNull(keys.a);
 		Assert.assertNotNull(keys.b);

@@ -40,7 +40,7 @@ sourceSets {
 		// This is kinda hack, but we need gradle to find the tests from the base test project. The only reason we're
 		// doing this is so that we can later supply a paseto-gson (for example) project which also runs all the unit
 		// tests.
-		java.srcDirs = ['../test/src/test/java', 'src/test/java']
+		java.srcDirs = ['../test/src/main/java', 'src/test/java']
 	}
 }
 
