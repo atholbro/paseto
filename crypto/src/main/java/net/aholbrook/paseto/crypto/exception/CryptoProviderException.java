@@ -18,10 +18,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.crypto.exception;
 
 public class CryptoProviderException extends RuntimeException {
-	public CryptoProviderException(String s) {
-		super(s);
-	}
-
 	public CryptoProviderException(String s, Throwable throwable) {
 		super(s, throwable);
 	}

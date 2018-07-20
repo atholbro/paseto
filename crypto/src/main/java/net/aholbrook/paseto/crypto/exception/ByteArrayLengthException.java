@@ -31,10 +31,6 @@ public class ByteArrayLengthException extends CryptoProviderException {
 		this(arg, len, required, min, null);
 	}
 
-	public ByteArrayLengthException(String arg, int len, int required, Throwable cause) {
-		this(arg, len, required, false, cause);
-	}
-
 	public ByteArrayLengthException(String arg, int len, int required, boolean min, Throwable cause) {
 		super(message(arg, len, required, min), cause);
 		this.arg = arg;
