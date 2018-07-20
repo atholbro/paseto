@@ -2,6 +2,8 @@ package net.aholbrook.paseto.service;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Objects;
 
 public class Token {
@@ -67,6 +69,12 @@ public class Token {
 
 	public Token setExpiration(OffsetDateTime expiration) {
 		this.exp = expiration;
+
+		// Cut off mills/nanos. The formatter does this too, but only after output.
+		if (this.exp != null) {
+			this.exp = this.exp.truncatedTo(ChronoUnit.SECONDS);
+		}
+
 		return this;
 	}
 
@@ -76,6 +84,12 @@ public class Token {
 
 	public Token setNotBefore(OffsetDateTime notBefore) {
 		this.nbf = notBefore;
+
+		// Cut off mills/nanos. The formatter does this too, but only after output.
+		if (this.nbf != null) {
+			this.nbf = this.nbf.truncatedTo(ChronoUnit.SECONDS);
+		}
+
 		return this;
 	}
 
@@ -85,6 +99,12 @@ public class Token {
 
 	public Token setIssuedAt(OffsetDateTime issuedAt) {
 		this.iat = issuedAt;
+
+		// Cut off mills/nanos. The formatter does this too, but only after output.
+		if (this.iat != null) {
+			this.iat = this.iat.truncatedTo(ChronoUnit.SECONDS);
+		}
+
 		return this;
 	}
 
