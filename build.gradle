@@ -49,5 +49,5 @@ task allDependencies {
 }
 
 task test {
-	subprojects.each { dependsOn("${it.name}:dependencies") }
+	subprojects.each { dependsOn("${it.name}:test") }
 }
