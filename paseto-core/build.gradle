@@ -26,6 +26,4 @@ dependencies {
 	api project(':encoding')
 	api project(':crypto-v1')
 	api project(':crypto-v2')
-
-	testCompile group: 'junit', name: 'junit', version: '4.12'
 }

@@ -1,6 +1,5 @@
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
-apply plugin: 'jacoco'
 
 def artifact_id = "meta"
 
@@ -29,7 +28,6 @@ dependencies {
 	api project(':crypto-v2-libsodium')
 	api project(':encoding-json-jackson')
 
-	testImplementation group: 'junit', name: 'junit', version: '4.12'
 	testImplementation project(':test')
 	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.6'
 	testImplementation 'org.reflections:reflections:0.9.9'
@@ -43,12 +41,3 @@ sourceSets {
 		java.srcDirs = ['../test/src/main/java', 'src/test/java']
 	}
 }
-
-jacocoTestReport {
-	reports {
-		xml.enabled true
-		html.enabled false
-	}
-}
-
-check.dependsOn jacocoTestReport

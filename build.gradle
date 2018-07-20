@@ -23,7 +23,9 @@ def generateBaseName(artifact_id) {
 }
 
 allprojects {
+	apply plugin: 'java-library'
 	apply plugin: 'com.github.gradle-git-version-calculator'
+	apply plugin: 'jacoco'
 
 	gitVersionCalculator {
 		prefix = 'release@'
@@ -44,6 +46,46 @@ allprojects {
 	}
 }
 
+subprojects {
+	dependencies {
+		testImplementation 'junit:junit:4.12'
+	}
+
+	jacocoTestReport {
+		additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
+		sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+		classDirectories =  files(sourceSets.main.output)
+		reports {
+			html.enabled = true
+			xml.enabled = true
+			csv.enabled = false
+		}
+	}
+}
+
 task allDependencies {
 	subprojects.each { dependsOn("${it.name}:dependencies") }
 }
+
+task jacocoRootReport(type: JacocoReport) {
+	dependsOn = subprojects.test
+	additionalSourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs)
+	sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+	classDirectories = files(subprojects.sourceSets.main.output)
+	executionData = files(subprojects.jacocoTestReport.executionData)
+	reports {
+		html.enabled = true
+		xml.enabled = true
+		csv.enabled = false
+	}
+	onlyIf = {
+		true
+	}
+	doFirst {
+		executionData = files(executionData.findAll {
+			it.exists()
+		})
+	}
+}
+
+check.dependsOn jacocoRootReport
