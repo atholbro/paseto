@@ -15,12 +15,18 @@ public interface TestBuilders {
 			LocalTokenService.KeyProvider keyProvider, Class<_TokenType> tokenClass);
 	<_TokenType extends Token>PublicTokenService.Builder<_TokenType> publicServiceBuilderV1(
 			PublicTokenService.KeyProvider keyProvider, Class<_TokenType> tokenClass);
+	<_TokenType extends Token>PublicTokenService.Builder<_TokenType> publicServiceBuilderV1(
+			Paseto.Builder<_TokenType> pasetoBuilder, PublicTokenService.KeyProvider keyProvider,
+			Class<_TokenType> tokenClass);
 	
 	<_TokenType> Paseto.Builder<_TokenType> pasetoBuilderV2(byte[] nonce);
 	<_TokenType extends Token>LocalTokenService.Builder<_TokenType> localServiceBuilderV2(byte[] nonce,
 			LocalTokenService.KeyProvider keyProvider, Class<_TokenType> tokenClass);
 	<_TokenType extends Token>PublicTokenService.Builder<_TokenType> publicServiceBuilderV2(
 			PublicTokenService.KeyProvider keyProvider, Class<_TokenType> tokenClass);
+	<_TokenType extends Token>PublicTokenService.Builder<_TokenType> publicServiceBuilderV2(
+			Paseto.Builder<_TokenType> pasetoBuilder, PublicTokenService.KeyProvider keyProvider,
+			Class<_TokenType> tokenClass);
 
 	EncodingProvider encodingProvider();
 	V1CryptoProvider v1CryptoProvider();

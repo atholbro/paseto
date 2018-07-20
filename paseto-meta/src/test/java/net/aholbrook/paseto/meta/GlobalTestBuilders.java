@@ -30,13 +30,24 @@ public class GlobalTestBuilders implements TestBuilders {
 	@Override
 	public <_TokenType extends Token> LocalTokenService.Builder<_TokenType> localServiceBuilderV1(byte[] nonce,
 			LocalTokenService.KeyProvider keyProvider, Class<_TokenType> tokenClass) {
-		return PasetoBuilders.V1.localService(this.pasetoBuilderV1(nonce), keyProvider, tokenClass);
+		if (nonce != null) {
+			return PasetoBuilders.V1.localService(this.pasetoBuilderV1(nonce), keyProvider, tokenClass);
+		} else { // default is fine without nonce
+			return PasetoBuilders.V1.localService(keyProvider, tokenClass);
+		}
 	}
 
 	@Override
 	public <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicServiceBuilderV1(
 			PublicTokenService.KeyProvider keyProvider, Class<_TokenType> tokenClass) {
-		return PasetoBuilders.V1.publicService(this.pasetoBuilderV1(null), keyProvider, tokenClass);
+		return PasetoBuilders.V1.publicService(keyProvider, tokenClass);
+	}
+
+	@Override
+	public <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicServiceBuilderV1(
+			Paseto.Builder<_TokenType> pasetoBuilder, PublicTokenService.KeyProvider keyProvider,
+			Class<_TokenType> tokenClass) {
+		return PasetoBuilders.V1.publicService(pasetoBuilder, keyProvider, tokenClass);
 	}
 
 	@Override
@@ -51,13 +62,24 @@ public class GlobalTestBuilders implements TestBuilders {
 	@Override
 	public <_TokenType extends Token> LocalTokenService.Builder<_TokenType> localServiceBuilderV2(byte[] nonce,
 			LocalTokenService.KeyProvider keyProvider, Class<_TokenType> tokenClass) {
-		return PasetoBuilders.V2.localService(this.pasetoBuilderV2(nonce), keyProvider, tokenClass);
+		if (nonce == null) {
+			return PasetoBuilders.V2.localService(keyProvider, tokenClass);
+		} else {
+			return PasetoBuilders.V2.localService(this.pasetoBuilderV2(nonce), keyProvider, tokenClass);
+		}
 	}
 
 	@Override
 	public <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicServiceBuilderV2(
 			PublicTokenService.KeyProvider keyProvider, Class<_TokenType> tokenClass) {
-		return PasetoBuilders.V2.publicService(this.pasetoBuilderV2(null), keyProvider, tokenClass);
+		return PasetoBuilders.V2.publicService(keyProvider, tokenClass);
+	}
+
+	@Override
+	public <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicServiceBuilderV2(
+			Paseto.Builder<_TokenType> pasetoBuilder, PublicTokenService.KeyProvider keyProvider,
+			Class<_TokenType> tokenClass) {
+		return PasetoBuilders.V2.publicService(pasetoBuilder, keyProvider, tokenClass);
 	}
 
 	@Override
