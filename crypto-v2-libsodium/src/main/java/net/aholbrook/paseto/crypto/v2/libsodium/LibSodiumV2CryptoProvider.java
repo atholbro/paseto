@@ -28,7 +28,7 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 	private final LazySodiumJava sodium;
 
 	public LibSodiumV2CryptoProvider() {
-		sodium = new LazySodiumJava(new SodiumJava());
+		this(new LazySodiumJava(new SodiumJava()));
 	}
 
 	public LibSodiumV2CryptoProvider(LazySodiumJava sodium) {
