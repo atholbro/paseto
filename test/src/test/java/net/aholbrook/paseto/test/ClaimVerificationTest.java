@@ -1,9 +1,13 @@
 package net.aholbrook.paseto.test;
 
-import net.aholbrook.paseto.claims.VerificationContext;
-import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.Claims;
+import net.aholbrook.paseto.claims.CurrentlyValid;
+import net.aholbrook.paseto.claims.ForAudience;
+import net.aholbrook.paseto.claims.IssuedBy;
+import net.aholbrook.paseto.claims.IssuedInPast;
+import net.aholbrook.paseto.claims.VerificationContext;
+import net.aholbrook.paseto.claims.WithSubject;
 import net.aholbrook.paseto.exception.claims.ExpiredTokenException;
 import net.aholbrook.paseto.exception.claims.IncorrectAudienceException;
 import net.aholbrook.paseto.exception.claims.IncorrectIssuerException;
@@ -12,12 +16,8 @@ import net.aholbrook.paseto.exception.claims.IssuedInFutureException;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
 import net.aholbrook.paseto.exception.claims.MultipleClaimException;
 import net.aholbrook.paseto.exception.claims.NotYetValidTokenException;
+import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.test.data.TokenTestVectors;
-import net.aholbrook.paseto.claims.CurrentlyValid;
-import net.aholbrook.paseto.claims.ForAudience;
-import net.aholbrook.paseto.claims.IssuedBy;
-import net.aholbrook.paseto.claims.IssuedInPast;
-import net.aholbrook.paseto.claims.WithSubject;
 import org.junit.Assert;
 import org.junit.Test;
 

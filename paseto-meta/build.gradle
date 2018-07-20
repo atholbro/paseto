@@ -31,6 +31,17 @@ dependencies {
 
 	testImplementation group: 'junit', name: 'junit', version: '4.12'
 	testImplementation project(':test')
+	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.6'
+	testImplementation 'org.reflections:reflections:0.9.9'
+}
+
+sourceSets {
+	test {
+		// This is kinda hack, but we need gradle to find the tests from the base test project. The only reason we're
+		// doing this is so that we can later supply a paseto-gson (for example) project which also runs all the unit
+		// tests.
+		java.srcDirs = ['../test/src/test/java', 'src/test/java']
+	}
 }
 
 tasks.withType(Test) {

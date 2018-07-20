@@ -13,6 +13,8 @@ import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.test.Provided;
 import net.aholbrook.paseto.test.TestBuilders;
 import net.aholbrook.paseto.test.crypto.TestNonceGenerator;
+import org.junit.Assert;
+import org.junit.Test;
 
 @Provided
 public class GlobalTestBuilders implements TestBuilders {
@@ -71,5 +73,10 @@ public class GlobalTestBuilders implements TestBuilders {
 	@Override
 	public V2CryptoProvider v2CryptoProvider() {
 		return new LibSodiumV2CryptoProvider();
+	}
+
+	@Test
+	public void test() {
+		Assert.assertTrue(true);
 	}
 }

@@ -8,9 +8,6 @@ import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;
 import net.aholbrook.paseto.service.Token;
-import org.reflections.Reflections;
-
-import java.util.Set;
 
 public interface TestBuilders {
 	<_TokenType> Paseto.Builder<_TokenType> pasetoBuilderV1(byte[] nonce);
@@ -28,31 +25,4 @@ public interface TestBuilders {
 	EncodingProvider encodingProvider();
 	V1CryptoProvider v1CryptoProvider();
 	V2CryptoProvider v2CryptoProvider();
-
-	class Cache {
-		private static TestBuilders TEST_BUILDERS = null;
-	}
-
-	static TestBuilders find() {
-		if (Cache.TEST_BUILDERS == null) {
-			Reflections reflections = new Reflections("net.aholbrook.paseto");
-			Set<Class<?>> classes = reflections.getTypesAnnotatedWith(Provided.class);
-
-			for (Class<?> clazz : classes) {
-				if (TestBuilders.class.isAssignableFrom(clazz)) {
-					try {
-						Cache.TEST_BUILDERS = (TestBuilders) clazz.newInstance();
-						return Cache.TEST_BUILDERS;
-					} catch (Throwable e) {
-						// ignore
-					}
-				}
-			}
-
-			throw new RuntimeException("Unable to locate TestBuilders. Please create a subclass of TestBuilders and mark it"
-					+ " with @Provided.");
-		}
-
-		return Cache.TEST_BUILDERS;
-	}
 }

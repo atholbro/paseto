@@ -37,11 +37,11 @@ import org.junit.Test;
 public class PasetoV2Test extends PasetoTest {
 	@Override
 	protected <_TokenType> Paseto<_TokenType> createPaseto(byte[] nonce) {
-		return TestBuilders.find().<_TokenType>pasetoBuilderV2(nonce).build();
+		return TestContext.builders().<_TokenType>pasetoBuilderV2(nonce).build();
 	}
 
 	private EncodingProvider encodingProvider() {
-		return TestBuilders.find().encodingProvider();
+		return TestContext.builders().encodingProvider();
 	}
 	
 	// RFC test vectors
