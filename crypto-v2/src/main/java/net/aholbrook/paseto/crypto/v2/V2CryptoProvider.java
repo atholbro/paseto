@@ -23,17 +23,17 @@ import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 import net.aholbrook.paseto.crypto.exception.ByteArrayRangeException;
 
 public abstract class V2CryptoProvider implements NonceGenerator {
-	protected final static int BLAKE2B_BYTES_MIN = 16;
-	protected final static int BLAKE2B_BYTES_MAX = 64;
-	protected final static int BLAKE2B_KEYBYTES_MIN = 16;
-	protected final static int BLAKE2B_KEYBYTES_MAX = 64;
+	public final static int BLAKE2B_BYTES_MIN = 16;
+	public final static int BLAKE2B_BYTES_MAX = 64;
+	public final static int BLAKE2B_KEYBYTES_MIN = 16;
+	public final static int BLAKE2B_KEYBYTES_MAX = 64;
 
-	protected final static int XCHACHA20_POLY1305_IETF_NPUBBYTES = 24;
-	protected final static int XCHACHA20_POLY1305_IETF_ABYTES = 16;
+	public final static int XCHACHA20_POLY1305_IETF_NPUBBYTES = 24; // nonce length
+	public final static int XCHACHA20_POLY1305_IETF_ABYTES = 16;
 
-	protected final static int ED25519_BYTES = 64;
-	protected final static int ED25519_PUBLICKEYBYTES = 32;
-	protected final static int ED25519_SECRETKEYBYTES = 64;
+	public final static int ED25519_BYTES = 64;
+	public final static int ED25519_PUBLICKEYBYTES = 32;
+	public final static int ED25519_SECRETKEYBYTES = 64;
 
 	// blake2b
 	abstract public boolean blake2b(byte[] out, byte[] in, byte[] key);
