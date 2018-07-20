@@ -99,13 +99,28 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 		}
 	}
 
-	protected final void validateAeadXChaCha20Poly1305IetfEncrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce,
-			byte[] key) {
+	private final void validateAeadXChaCha20Poly1305Ietf(byte[] out, byte[] in, byte[] ad, byte[] nonce, byte[] key) {
 		// check for nulls
 		if (out == null) { throw new NullPointerException("out"); }
 		if (in == null) { throw new NullPointerException("in"); }
+		if (ad == null) { throw new NullPointerException("ad"); }
 		if (nonce == null) { throw new NullPointerException("nonce"); }
 		if (key == null) { throw new NullPointerException("key"); }
+
+		if (in.length == 0) {
+			throw new ByteArrayLengthException("in", in.length, 1);
+		}
+		if (ad.length == 0) {
+			throw new ByteArrayLengthException("in", in.length, 1);
+		}
+		if (key.length == 0) {
+			throw new ByteArrayLengthException("in", in.length, 1);
+		}
+	}
+
+	protected final void validateAeadXChaCha20Poly1305IetfEncrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce,
+			byte[] key) {
+		validateAeadXChaCha20Poly1305Ietf(out, in, ad, nonce, key);
 
 		// check lengths
 		if (out.length != in.length + XCHACHA20_POLY1305_IETF_ABYTES) {
@@ -118,11 +133,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 
 	protected final void validateAeadXChaCha20Poly1305IetfDecrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce,
 			byte[] key) {
-		// check for nulls
-		if (out == null) { throw new NullPointerException("out"); }
-		if (in == null) { throw new NullPointerException("in"); }
-		if (nonce == null) { throw new NullPointerException("nonce"); }
-		if (key == null) { throw new NullPointerException("key"); }
+		validateAeadXChaCha20Poly1305Ietf(out, in, ad, nonce, key);
 
 		// check lengths
 		if (out.length != in.length - XCHACHA20_POLY1305_IETF_ABYTES) {
