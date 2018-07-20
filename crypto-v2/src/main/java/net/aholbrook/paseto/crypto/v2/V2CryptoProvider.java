@@ -111,10 +111,10 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 			throw new ByteArrayLengthException("in", in.length, 1, false);
 		}
 		if (ad.length == 0) {
-			throw new ByteArrayLengthException("in", ad.length, 1, false);
+			throw new ByteArrayLengthException("ad", ad.length, 1, false);
 		}
 		if (key.length == 0) {
-			throw new ByteArrayLengthException("in", in.length, 1, false);
+			throw new ByteArrayLengthException("key", key.length, 1, false);
 		}
 	}
 
