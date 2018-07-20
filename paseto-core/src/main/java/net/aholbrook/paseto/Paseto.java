@@ -211,13 +211,13 @@ public abstract class Paseto<_Payload> {
 					if (nonceGenerator == null) { nonceGenerator = v1CryptoProvider.getNonceGenerator(); }
 
 					return new PasetoV1<>(encodingProvider, v1CryptoProvider, nonceGenerator);
+
 				case 2:
+				default: // default is already defined as 2 above, so default here to avoid missing return
 					if (v2CryptoProvider == null) { throw new NullPointerException("crypto implementation required."); }
 					if (nonceGenerator == null) { nonceGenerator = v2CryptoProvider.getNonceGenerator(); }
 
 					return new PasetoV2<>(encodingProvider, v2CryptoProvider, nonceGenerator);
-				default:
-					return null;
 			}
 
 		}
