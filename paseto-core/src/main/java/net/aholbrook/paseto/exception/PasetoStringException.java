@@ -8,12 +8,6 @@ public class PasetoStringException extends PasetoException {
 		this.token = token;
 	}
 
-	public PasetoStringException(String s, String token, Throwable throwable) {
-		super(s, throwable);
-		this.token = token;
-	}
-
-
 	public String getToken() {
 		return token;
 	}
