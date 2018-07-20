@@ -18,6 +18,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.exception.InvalidFooterException;
+import net.aholbrook.paseto.exception.InvalidHeaderException;
+import net.aholbrook.paseto.exception.PasetoStringException;
 import net.aholbrook.paseto.test.data.TestVector;
 import net.aholbrook.paseto.util.StringUtils;
 import org.junit.Assert;
@@ -26,6 +29,23 @@ import java.nio.charset.Charset;
 
 public abstract class PasetoTest {
 	protected abstract <_TokenType> Paseto<_TokenType> createPaseto(byte[] nonce);
+
+	protected static void assertInvalidHeaderException(InvalidHeaderException e, String given, String expected) {
+		Assert.assertEquals("given", given, e.getGiven());
+		Assert.assertEquals("expected", expected, e.getExpected());
+		throw e;
+	}
+
+	protected static void assertInvalidFooterException(InvalidFooterException e, String given, String expected) {
+		Assert.assertEquals("given", given, e.getGiven());
+		Assert.assertEquals("expected", expected, e.getExpected());
+		throw e;
+	}
+
+	protected static void assertPasetoStringException(PasetoStringException e, String token) {
+		Assert.assertEquals("token", token, e.getToken());
+		throw e;
+	}
 
 	protected <_TokenType, _Footer> void encryptTestVector(TestVector<_TokenType, _Footer> tv) {
 		// A: key, B: nonce

@@ -18,6 +18,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.PasetoV1;
+import net.aholbrook.paseto.PasetoV2;
 import net.aholbrook.paseto.crypto.Tuple;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.DecryptionException;
@@ -415,73 +417,105 @@ public class PasetoV2Test extends PasetoTest {
 	// Attempt to decrypt A V1 local token with as V2 local token, should fail with a InvalidHeaderException.
 	@Test(expected = InvalidHeaderException.class)
 	public void v2_token1_v1LocalAsV2Local() {
-		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
+		try {
+			TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
 
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass());
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass());
+		} catch (InvalidHeaderException e) {
+			assertInvalidHeaderException(e, PasetoV1.HEADER_LOCAL, PasetoV2.HEADER_LOCAL);
+		}
 	}
 
 	// Attempt to decrypt A V1 local token with as V2 public token, should fail with a InvalidHeaderException.
 	@Test(expected = InvalidHeaderException.class)
 	public void v2_token1_v1LocalAsV2Public() {
-		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
+		try {
+			TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
 
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass());
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass());
+		} catch (InvalidHeaderException e) {
+			assertInvalidHeaderException(e, PasetoV1.HEADER_LOCAL, PasetoV2.HEADER_PUBLIC);
+		}
 	}
 
 	// Attempt to decrypt A V1 public token with a V2 local token, should fail with a InvalidHeaderException.
 	@Test(expected = InvalidHeaderException.class)
 	public void v2_token1_v1PublicAsV2Local() {
-		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
+		try {
+			TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
 
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass());
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass());
+		} catch (InvalidHeaderException e) {
+			assertInvalidHeaderException(e, PasetoV1.HEADER_PUBLIC, PasetoV2.HEADER_LOCAL);
+		}
 	}
 
 	// Attempt to decrypt A V1 public token with a V2 public token, should fail with a InvalidHeaderException.
 	@Test(expected = InvalidHeaderException.class)
 	public void v2_token1_v1PublicAsV2Public() {
-		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
+		try {
+			TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
 
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass());
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass());
+		} catch (InvalidHeaderException e) {
+			assertInvalidHeaderException(e, PasetoV1.HEADER_PUBLIC, PasetoV2.HEADER_PUBLIC);
+		}
 	}
 
 	// Attempt to verify A V2 local token as a V2 public token, should fail with a InvalidHeaderException.
 	@Test(expected = InvalidHeaderException.class)
 	public void v2_token1_publicAsLocal() {
-		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
+		try {
+			TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
 
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass());
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass());
+		} catch (InvalidHeaderException e) {
+			assertInvalidHeaderException(e, PasetoV2.HEADER_PUBLIC, PasetoV2.HEADER_LOCAL);
+		}
 	}
 
 	// Attempt to verify A V2 public token as a V2 local token, should fail with a InvalidHeaderException.
 	@Test(expected = InvalidHeaderException.class)
 	public void v2_token1_localAsPublic() {
-		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
+		try {
+			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
 
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass());
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass());
+		} catch (InvalidHeaderException e) {
+			assertInvalidHeaderException(e, PasetoV2.HEADER_LOCAL, PasetoV2.HEADER_PUBLIC);
+		}
 	}
 
 	// Attempt to verify local token with a missing footer, should fail with a InvalidFooterException.
 	@Test(expected = InvalidFooterException.class)
 	public void v2_token1_localMissingFooter() {
-		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
+		try {
+			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
 
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.decrypt(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.decrypt(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+		} catch (InvalidFooterException e) {
+			assertInvalidFooterException(e, "", "not-the-footer");
+		}
 	}
 
 	// Attempt to verify public token with a missing footer, should fail with a InvalidFooterException.
 	@Test(expected = InvalidFooterException.class)
 	public void v2_token1_publicMissingFooter() {
-		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_PUBLIC;
+		try {
+			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_PUBLIC;
 
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.verify(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.verify(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+		} catch (InvalidFooterException e) {
+			assertInvalidFooterException(e, "", "not-the-footer");
+		}
 	}
 
 	// Attempt to verify local token with an incorrect footer, should fail with a InvalidFooterException.
@@ -489,8 +523,13 @@ public class PasetoV2Test extends PasetoTest {
 	public void v2_token1_localWrongFooter() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
 
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.decrypt(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+		try {
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.decrypt(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+		} catch (InvalidFooterException e) {
+			String given = encodingProvider().encode(tv.getFooter());
+			assertInvalidFooterException(e, given, "not-the-footer");
+		}
 	}
 
 	// Attempt to verify public token with an incorrect footer, should fail with a InvalidFooterException.
@@ -498,44 +537,69 @@ public class PasetoV2Test extends PasetoTest {
 	public void v2_token1_publicWrongFooter() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
 
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.verify(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+		try {
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.verify(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+		} catch (InvalidFooterException e) {
+			String given = encodingProvider().encode(tv.getFooter());
+			assertInvalidFooterException(e, given, "not-the-footer");
+		}
 	}
 
 	// Errors
 	@Test(expected = PasetoStringException.class)
 	public void v2_badInput() {
-		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.decrypt("junk", tv.getA(), tv.getPayloadClass());
+		try {
+			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.decrypt("junk", tv.getA(), tv.getPayloadClass());
+		} catch (PasetoStringException e) {
+			assertPasetoStringException(e, "junk");
+		}
 	}
 
 	@Test(expected = PasetoStringException.class)
 	public void v2_badTokenDecrypt() {
-		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.decrypt("v2.local.", tv.getA(), tv.getPayloadClass());
+		try {
+			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.decrypt("v2.local.", tv.getA(), tv.getPayloadClass());
+		} catch (PasetoStringException e) {
+			assertPasetoStringException(e, "v2.local.");
+		}
 	}
 
 	@Test(expected = PasetoStringException.class)
 	public void v2_badTokenVerify() {
-		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.verify("v2.local.", tv.getA(), tv.getPayloadClass());
+		try {
+			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.verify("v2.local.", tv.getA(), tv.getPayloadClass());
+		} catch (PasetoStringException e) {
+			assertPasetoStringException(e, "v2.local.");
+		}
 	}
 
 	@Test(expected = PasetoStringException.class)
 	public void v2_shortTokenLocal() {
-		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.decrypt("v2.local.c29tZXRoaW5n", tv.getA(), tv.getPayloadClass());
+		try {
+			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.decrypt("v2.local.c29tZXRoaW5n", tv.getA(), tv.getPayloadClass());
+		} catch (PasetoStringException e) {
+			assertPasetoStringException(e, "v2.local.c29tZXRoaW5n");
+		}
 	}
 
 	@Test(expected = PasetoStringException.class)
 	public void v2_shortTokenPublic() {
-		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_PUBLIC;
-		Paseto<Token> paseto = createPaseto(tv.getB());
-		paseto.verify("v2.public.c29tZXRoaW5n", tv.getA(), tv.getPayloadClass());
+		try {
+			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_PUBLIC;
+			Paseto<Token> paseto = createPaseto(tv.getB());
+			paseto.verify("v2.public.c29tZXRoaW5n", tv.getA(), tv.getPayloadClass());
+		} catch (PasetoStringException e) {
+			assertPasetoStringException(e, "v2.public.c29tZXRoaW5n");
+		}
 	}
 
 	// Nonce tests
