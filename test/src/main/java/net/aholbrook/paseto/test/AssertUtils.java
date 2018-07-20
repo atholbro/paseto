@@ -43,10 +43,13 @@ public class AssertUtils {
 	public static void assertNotEquals(byte[] expected, byte[] actual) {
 		Assert.assertNotNull("result not null", actual);
 		Assert.assertEquals("result length", expected.length, actual.length);
+		boolean match = true;
 		for (int i = 0; i < actual.length; ++i) {
-			Assert.assertNotEquals("array index " + Integer.toString(i),
-					expected[i],
-					actual[i]);
+			if (expected[i] != actual[i]) {
+				match = false;
+			}
 		}
+
+		Assert.assertFalse("arrays match", match);
 	}
 }
