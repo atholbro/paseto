@@ -74,9 +74,4 @@ public class GlobalTestBuilders implements TestBuilders {
 	public V2CryptoProvider v2CryptoProvider() {
 		return new LibSodiumV2CryptoProvider();
 	}
-
-	@Test
-	public void test() {
-		Assert.assertTrue(true);
-	}
 }
