@@ -19,22 +19,28 @@ package net.aholbrook.paseto.crypto.exception;
 
 public class ByteArrayRangeException extends CryptoProviderException {
 	private final String arg;
+	private final int len;
 	private final int minBound;
 	private final int maxBound;
 
-	public ByteArrayRangeException(String arg, int minBound, int maxBound) {
-		this(arg, minBound, maxBound, null);
+	public ByteArrayRangeException(String arg, int len, int minBound, int maxBound) {
+		this(arg, len, minBound, maxBound, null);
 	}
 
-	public ByteArrayRangeException(String arg, int minBound, int maxBound, Throwable throwable) {
+	public ByteArrayRangeException(String arg, int len, int minBound, int maxBound, Throwable throwable) {
 		super(message(arg, minBound, maxBound), throwable);
 		this.arg = arg;
+		this.len = len;
 		this.minBound = minBound;
 		this.maxBound = maxBound;
 	}
 
 	public String getArg() {
 		return arg;
+	}
+
+	public int getLen() {
+		return len;
 	}
 
 	public int getMinBound() {

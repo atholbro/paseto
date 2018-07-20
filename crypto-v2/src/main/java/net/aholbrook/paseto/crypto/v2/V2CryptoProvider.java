@@ -92,10 +92,10 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 
 		// check lengths
 		if (out.length < BLAKE2B_BYTES_MIN || out.length > BLAKE2B_BYTES_MAX) {
-			throw new ByteArrayRangeException("out", BLAKE2B_BYTES_MIN, BLAKE2B_BYTES_MAX);
+			throw new ByteArrayRangeException("out", out.length, BLAKE2B_BYTES_MIN, BLAKE2B_BYTES_MAX);
 		}
 		if (key.length < BLAKE2B_KEYBYTES_MIN || key.length > BLAKE2B_KEYBYTES_MAX) {
-			throw new ByteArrayRangeException("key", BLAKE2B_KEYBYTES_MIN, BLAKE2B_KEYBYTES_MAX);
+			throw new ByteArrayRangeException("key", key.length, BLAKE2B_KEYBYTES_MIN, BLAKE2B_KEYBYTES_MAX);
 		}
 	}
 
