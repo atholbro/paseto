@@ -12,11 +12,7 @@ import java.time.format.DateTimeFormatter;
 public class OffsetDateTimeSerializer extends JsonSerializer<OffsetDateTime> {
 	@Override
 	public void serialize(OffsetDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-		if (value == null) {
-			gen.writeNull();
-		} else {
-			gen.writeString(Token.DATETIME_FORMATTER.format(value));
-		}
+		gen.writeString(Token.DATETIME_FORMATTER.format(value));
 	}
 
 }
