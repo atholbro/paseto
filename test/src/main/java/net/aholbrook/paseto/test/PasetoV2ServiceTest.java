@@ -17,14 +17,19 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.test;
 
+import net.aholbrook.paseto.Paseto;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;
+import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.service.TokenService;
 import net.aholbrook.paseto.test.data.RfcTestVectors;
 import net.aholbrook.paseto.test.data.RfcToken;
 import net.aholbrook.paseto.test.data.TestVector;
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.time.OffsetDateTime;
 
 public class PasetoV2ServiceTest extends PasetoServiceTest {
 	private static LocalTokenService.KeyProvider rfcLocalKeyProvider() {
@@ -55,6 +60,39 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 		return TestContext.builders().publicServiceBuilderV2(rfcPublicKeyProvider(), RfcToken.class)
 				.checkClaims(new Claim[] {})
 				.build();
+	}
+
+	@Test
+	public void v1Service_localServiceBuilderRandomNonce() {
+		LocalTokenService<Token> service =  TestContext.builders().localServiceBuilderV2(null,
+				rfcLocalKeyProvider(), Token.class).build();
+
+		Assert.assertNotNull(service);
+
+		// Simple sign & verify to make sure the builder worked
+		Token token = new Token();
+		token.setIssuedAt(OffsetDateTime.now().minusMinutes(10));
+		token.setExpiration(OffsetDateTime.now().plusMinutes(10));
+		String s = service.encode(token);
+		Token token2 = service.decode(s);
+		Assert.assertEquals(token, token2);
+	}
+
+	@Test
+	public void v2Service_publicServiceBuilderOverride() {
+		Paseto.Builder<Token> pasetoBuilder = TestContext.builders().pasetoBuilderV2(null);
+		PublicTokenService<Token> service =  TestContext.builders().publicServiceBuilderV2(pasetoBuilder,
+				rfcPublicKeyProvider(), Token.class).build();
+
+		Assert.assertNotNull(service);
+
+		// Simple sign & verify to make sure the builder worked
+		Token token = new Token();
+		token.setIssuedAt(OffsetDateTime.now().minusMinutes(10));
+		token.setExpiration(OffsetDateTime.now().plusMinutes(10));
+		String s = service.encode(token);
+		Token token2 = service.decode(s);
+		Assert.assertEquals(token, token2);
 	}
 
 	// Encryption tests
