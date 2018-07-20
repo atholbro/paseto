@@ -33,7 +33,7 @@ public class JacksonJsonProvider implements EncodingProvider {
 	private final ObjectMapper objectMapper;
 
 	public JacksonJsonProvider() {
-		objectMapper = new ObjectMapper();
+		this(new ObjectMapper());
 		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
 		registerMixins(objectMapper);
