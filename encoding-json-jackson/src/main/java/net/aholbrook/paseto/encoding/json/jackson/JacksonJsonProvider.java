@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import net.aholbrook.paseto.encoding.exception.EncodingException;
 import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.encoding.EncodingProvider;
@@ -45,19 +46,23 @@ public class JacksonJsonProvider implements EncodingProvider {
 
 	@Override
 	public String encode(Object o) {
+		if (o == null) { return null; }
+
 		try {
 			return objectMapper.writeValueAsString(o);
 		} catch (JsonProcessingException e) {
-			return null;
+			throw new EncodingException("Error while encoding json.", e);
 		}
 	}
 
 	@Override
 	public <_Out> _Out decode(String s, Class<_Out> clazz) {
+		if (s == null) { return null; }
+
 		try {
 			return objectMapper.readValue(s, clazz);
 		} catch (IOException e) {
-			return null;
+			throw new EncodingException("Error while decoding json.", e);
 		}
 	}
 
