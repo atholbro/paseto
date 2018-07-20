@@ -86,6 +86,12 @@ task jacocoRootReport(type: JacocoReport) {
 			it.exists()
 		})
 	}
+
+	afterEvaluate {
+		classDirectories = files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: 'net/aholbrook/paseto/test/**')
+		})
+	}
 }
 
 check.dependsOn jacocoRootReport
