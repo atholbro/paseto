@@ -86,7 +86,8 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 		byte[] n = new byte[cryptoProvider.xChaCha20Poly1305IetfNpubbytes()];
 		// verify length
 		if (nc.length < n.length + 1) {
-			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token);
+			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token)
+					.setMinLength(n.length + 1);
 		}
 		byte[] c = new byte[nc.length - n.length];
 		System.arraycopy(nc, 0, n, 0, n.length);
@@ -143,7 +144,8 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 		byte[] s = new byte[cryptoProvider.ed25519SignBytes()];
 		// verify length
 		if (msig.length < s.length + 1) {
-			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token);
+			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token)
+					.setMinLength(s.length + 1);
 		}
 		byte[] m = new byte[msig.length - s.length];
 		System.arraycopy(msig, msig.length - s.length, s, 0, s.length);

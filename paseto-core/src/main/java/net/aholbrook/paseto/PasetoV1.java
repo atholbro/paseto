@@ -101,7 +101,8 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 		byte[] t = new byte[48];
 		// verify length
 		if (nct.length < n.length + t.length + 1) {
-			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token);
+			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token)
+					.setMinLength(n.length + t.length + 1);
 		}
 		byte[] c = new byte[nct.length - n.length - t.length];
 		System.arraycopy(nct, 0, n, 0, n.length);
@@ -171,7 +172,8 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 		byte[] s = new byte[256];
 		// verify length
 		if (msig.length < s.length + 1) {
-			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token);
+			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token)
+					.setMinLength(s.length + 1);
 		}
 		byte[] m = new byte[msig.length - s.length];
 		System.arraycopy(msig, msig.length - s.length, s, 0, s.length);
