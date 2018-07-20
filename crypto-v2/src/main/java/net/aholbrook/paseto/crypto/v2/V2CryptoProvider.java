@@ -58,7 +58,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 
 	@Override
 	public byte[] generateNonce() {
-		return randomBytes(32);
+		return randomBytes(XCHACHA20_POLY1305_IETF_NPUBBYTES);
 	}
 
 	// XChaCha20Poly1305
