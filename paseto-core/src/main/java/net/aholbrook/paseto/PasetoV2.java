@@ -150,7 +150,7 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 		System.arraycopy(msig, 0, m, 0, m.length);
 
 		byte[] m2 = PaeUtil.pae(StringUtils.getBytesUtf8(HEADER_PUBLIC), m, StringUtils.getBytesUtf8(decodedFooter));
-		if (!cryptoProvider.ed25519SignVerify(s, m2, pk)) {
+		if (!cryptoProvider.ed25519Verify(s, m2, pk)) {
 			throw new SignatureVerificationException(token);
 		}
 

@@ -73,14 +73,14 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 	}
 
 	@Override
-	public boolean ed25519SignVerify(byte[] sig, byte[] m, byte[] pk) {
-		validateEd25519SignVerify(sig, m, pk);
+	public boolean ed25519Verify(byte[] sig, byte[] m, byte[] pk) {
+		validateEd25519Verify(sig, m, pk);
 		return sodium.cryptoSignVerifyDetached(sig, m, m.length, pk);
 	}
 
 	@Override
-	public byte[] ed25519SignPublicKey(byte[] sk) {
-		validateEd25519SignPublicKey(sk);
+	public byte[] ed25519PublicKey(byte[] sk) {
+		validateEd25519PublicKey(sk);
 
 		try {
 			return sodium.cryptoSignSecretKeyPair(sk).getPublicKey();

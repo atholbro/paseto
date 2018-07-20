@@ -47,8 +47,8 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 
 	// Ed25519
 	abstract public boolean ed25519Sign(byte[] sig, byte[] m, byte[] sk);
-	abstract public boolean ed25519SignVerify(byte[] sig, byte[] m, byte[] pk);
-	abstract public byte[] ed25519SignPublicKey(byte[] sk);
+	abstract public boolean ed25519Verify(byte[] sig, byte[] m, byte[] pk);
+	abstract public byte[] ed25519PublicKey(byte[] sk);
 	abstract public Tuple<byte[], byte[]> ed25519Generate();
 
 	// Nonce
@@ -147,7 +147,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 		}
 	}
 
-	protected final void validateEd25519SignVerify(byte[] sig, byte[] m, byte[] pk) {
+	protected final void validateEd25519Verify(byte[] sig, byte[] m, byte[] pk) {
 		// check for nulls
 		if (sig == null) { throw new NullPointerException("sig"); }
 		if (m == null) { throw new NullPointerException("m"); }
@@ -161,7 +161,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 		}
 	}
 
-	protected final void validateEd25519SignPublicKey(byte[] sk) {
+	protected final void validateEd25519PublicKey(byte[] sk) {
 		if (sk == null) { throw new NullPointerException("sk"); }
 		if (sk.length != ED25519_SECRETKEYBYTES) {
 			throw new ByteArrayLengthException("sk", sk.length, ED25519_SECRETKEYBYTES);
