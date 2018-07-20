@@ -151,7 +151,7 @@ public abstract class Paseto<_Payload> {
 
 	void checkHeader(String token, String[] sections, String expectedHeader) {
 		if (!token.startsWith(expectedHeader)) {
-			throw new InvalidHeaderException(sections[0] + SEPARATOR + sections[1], expectedHeader, token);
+			throw new InvalidHeaderException(sections[0] + SEPARATOR + sections[1] + SEPARATOR, expectedHeader, token);
 		}
 	}
 
