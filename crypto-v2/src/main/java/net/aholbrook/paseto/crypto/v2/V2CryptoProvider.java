@@ -108,13 +108,13 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 		if (key == null) { throw new NullPointerException("key"); }
 
 		if (in.length == 0) {
-			throw new ByteArrayLengthException("in", in.length, 1);
+			throw new ByteArrayLengthException("in", in.length, 1, false);
 		}
 		if (ad.length == 0) {
-			throw new ByteArrayLengthException("in", in.length, 1);
+			throw new ByteArrayLengthException("in", ad.length, 1, false);
 		}
 		if (key.length == 0) {
-			throw new ByteArrayLengthException("in", in.length, 1);
+			throw new ByteArrayLengthException("in", in.length, 1, false);
 		}
 	}
 
@@ -152,7 +152,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 
 		// check lengths
 		if (sig.length != ED25519_BYTES) { throw new ByteArrayLengthException("sig", sig.length, ED25519_BYTES); }
-		if (m.length == 0) { throw new ByteArrayLengthException("m", 0, 1, true); }
+		if (m.length == 0) { throw new ByteArrayLengthException("m", 0, 1, false); }
 		if (sk.length != ED25519_SECRETKEYBYTES) {
 			throw new ByteArrayLengthException("sk", sk.length, ED25519_SECRETKEYBYTES);
 		}
@@ -166,7 +166,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 
 		// check lengths
 		if (sig.length != ED25519_BYTES) { throw new ByteArrayLengthException("sig", sig.length, ED25519_BYTES); }
-		if (m.length == 0) { throw new ByteArrayLengthException("m", 0, 1, true); }
+		if (m.length == 0) { throw new ByteArrayLengthException("m", 0, 1, false); }
 		if (pk.length != ED25519_PUBLICKEYBYTES) {
 			throw new ByteArrayLengthException("pk", pk.length, ED25519_PUBLICKEYBYTES);
 		}

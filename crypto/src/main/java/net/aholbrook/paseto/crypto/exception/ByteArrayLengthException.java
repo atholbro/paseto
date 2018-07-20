@@ -21,22 +21,22 @@ public class ByteArrayLengthException extends CryptoProviderException {
 	private final String arg;
 	private final int len;
 	private final int required;
-	private final boolean min;
+	private final boolean exact;
 
 	public ByteArrayLengthException(String arg, int len, int required) {
-		this(arg, len, required, false, null);
+		this(arg, len, required, true, null);
 	}
 
-	public ByteArrayLengthException(String arg, int len, int required, boolean min) {
-		this(arg, len, required, min, null);
+	public ByteArrayLengthException(String arg, int len, int required, boolean exact) {
+		this(arg, len, required, exact, null);
 	}
 
-	public ByteArrayLengthException(String arg, int len, int required, boolean min, Throwable cause) {
-		super(message(arg, len, required, min), cause);
+	public ByteArrayLengthException(String arg, int len, int required, boolean exact, Throwable cause) {
+		super(message(arg, len, required, exact), cause);
 		this.arg = arg;
 		this.len = len;
 		this.required = required;
-		this.min = min;
+		this.exact = exact;
 	}
 
 	public String getArg() {
@@ -51,8 +51,8 @@ public class ByteArrayLengthException extends CryptoProviderException {
 		return required;
 	}
 
-	public boolean isMin() {
-		return min;
+	public boolean isExact() {
+		return exact;
 	}
 
 	private static String message(String arg, int len, int required, boolean min) {
@@ -60,7 +60,7 @@ public class ByteArrayLengthException extends CryptoProviderException {
 		sb.append(arg)
 				.append(": ")
 				.append(required)
-				.append(min ? " min " : " ")
+				.append(exact ? " exact " : " ")
 				.append("bytes required, given ")
 				.append(len)
 				.append(" bytes .");
