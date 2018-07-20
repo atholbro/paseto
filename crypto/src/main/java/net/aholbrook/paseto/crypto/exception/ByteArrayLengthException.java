@@ -55,7 +55,7 @@ public class ByteArrayLengthException extends CryptoProviderException {
 		return exact;
 	}
 
-	private static String message(String arg, int len, int required, boolean min) {
+	private static String message(String arg, int len, int required, boolean exact) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(arg)
 				.append(": ")
