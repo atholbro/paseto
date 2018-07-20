@@ -116,6 +116,10 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 		if (key.length == 0) {
 			throw new ByteArrayLengthException("key", key.length, 1, false);
 		}
+
+		if (nonce.length != XCHACHA20_POLY1305_IETF_NPUBBYTES) {
+			throw new ByteArrayLengthException("nonce", nonce.length, XCHACHA20_POLY1305_IETF_NPUBBYTES);
+		}
 	}
 
 	protected final void validateAeadXChaCha20Poly1305IetfEncrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce,
@@ -126,9 +130,6 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 		if (out.length != in.length + XCHACHA20_POLY1305_IETF_ABYTES) {
 			throw new ByteArrayLengthException("out", out.length, in.length + XCHACHA20_POLY1305_IETF_ABYTES);
 		}
-		if (nonce.length != XCHACHA20_POLY1305_IETF_NPUBBYTES) {
-			throw new ByteArrayLengthException("nonce", nonce.length, XCHACHA20_POLY1305_IETF_NPUBBYTES);
-		}
 	}
 
 	protected final void validateAeadXChaCha20Poly1305IetfDecrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce,
@@ -138,9 +139,6 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 		// check lengths
 		if (out.length != in.length - XCHACHA20_POLY1305_IETF_ABYTES) {
 			throw new ByteArrayLengthException("out", out.length, in.length - XCHACHA20_POLY1305_IETF_ABYTES);
-		}
-		if (nonce.length != XCHACHA20_POLY1305_IETF_NPUBBYTES) {
-			throw new ByteArrayLengthException("nonce", nonce.length, XCHACHA20_POLY1305_IETF_NPUBBYTES);
 		}
 	}
 
