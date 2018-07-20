@@ -30,8 +30,8 @@ import net.aholbrook.paseto.util.StringUtils;
 
 public class PasetoV2<_Payload> extends Paseto<_Payload> {
 	private final static String VERSION = "v2";
-	private final static String HEADER_LOCAL = VERSION + SEPARATOR + PURPOSE_LOCAL + SEPARATOR; // v2.local.
-	private final static String HEADER_PUBLIC = VERSION + SEPARATOR + PURPOSE_PUBLIC + SEPARATOR; // v2.public.
+	public final static String HEADER_LOCAL = VERSION + SEPARATOR + PURPOSE_LOCAL + SEPARATOR; // v2.local.
+	public final static String HEADER_PUBLIC = VERSION + SEPARATOR + PURPOSE_PUBLIC + SEPARATOR; // v2.public.
 
 	private final V2CryptoProvider cryptoProvider;
 	

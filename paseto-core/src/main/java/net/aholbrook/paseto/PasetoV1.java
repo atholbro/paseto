@@ -30,8 +30,8 @@ import net.aholbrook.paseto.util.StringUtils;
 
 public class PasetoV1<_Payload> extends Paseto<_Payload> {
 	private final static String VERSION = "v1";
-	private final static String HEADER_LOCAL = VERSION + SEPARATOR + PURPOSE_LOCAL + SEPARATOR; // v1.local.
-	private final static String HEADER_PUBLIC = VERSION + SEPARATOR + PURPOSE_PUBLIC + SEPARATOR; // v1.public.
+	public final static String HEADER_LOCAL = VERSION + SEPARATOR + PURPOSE_LOCAL + SEPARATOR; // v1.local.
+	public final static String HEADER_PUBLIC = VERSION + SEPARATOR + PURPOSE_PUBLIC + SEPARATOR; // v1.public.
 
 	private final static byte[] HKDF_INFO_EK = StringUtils.getBytesUtf8("paseto-encryption-key");
 	private final static byte[] HKDF_INFO_AK = StringUtils.getBytesUtf8("paseto-auth-key-for-aead");
