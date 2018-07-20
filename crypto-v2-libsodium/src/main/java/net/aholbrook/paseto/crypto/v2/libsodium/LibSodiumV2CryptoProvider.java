@@ -85,6 +85,7 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 		try {
 			return sodium.cryptoSignSecretKeyPair(sk).getPublicKey();
 		} catch (SodiumException e) {
+			// This cannot actually occur currently as libsodium always returns 0 in crypto_sign_ed25519_sk_to_pk()
 			throw new CryptoProviderException("Unable to extract PK from SK.", e);
 		}
 	}
