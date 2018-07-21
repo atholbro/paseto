@@ -52,4 +52,20 @@ public class KeyIdTest {
 				KeyIdTestVectors.Footer.class);
 		Assert.assertEquals("decoded token", KeyIdTestVectors.KEY_ID_FOOTER, keyId);
 	}
+
+	@Test
+	public void keyId_equals() {
+		KeyId kid1 = new KeyId().setKeyId("1");
+		KeyId kid2 = new KeyId().setKeyId("1");
+		Assert.assertEquals(kid1, kid2);
+		Assert.assertEquals(kid1.hashCode(), kid2.hashCode());
+	}
+
+	@Test
+	public void keyId_notEquals() {
+		KeyId kid1 = new KeyId().setKeyId("1");
+		KeyId kid2 = new KeyId().setKeyId("2");
+		Assert.assertNotEquals(kid1, kid2);
+		Assert.assertNotEquals(kid1.hashCode(), kid2.hashCode());
+	}
 }
