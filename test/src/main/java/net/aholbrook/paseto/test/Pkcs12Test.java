@@ -17,61 +17,104 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.test;
 
-import net.aholbrook.paseto.crypto.Tuple;
+import net.aholbrook.paseto.exception.Pkcs12LoadException;
 import net.aholbrook.paseto.util.Pkcs12;
 import org.junit.Assert;
 import org.junit.Test;
+import sun.security.pkcs11.wrapper.PKCS11Exception;
 
 import java.io.IOException;
-import java.security.KeyFactory;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 
 public class Pkcs12Test {
-	@Test
-	public void pkcs12_load() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException, InvalidKeySpecException {
-		System.out.println("dir: " + System.getProperty("user.dir"));
-
-		Tuple<PrivateKey, PublicKey> keys = Pkcs12.load("../test/p12/rfc_v1_rsa.p12", "testtest", "test");
-		Assert.assertNotNull(keys);
-		Assert.assertNotNull(keys.a);
-		Assert.assertNotNull(keys.b);
-
-		byte[] privateKey = keys.a.getEncoded();
-		byte[] publicKey = keys.b.getEncoded();
-
-		KeyFactory kf = KeyFactory.getInstance("RSA");
-		PrivateKey privateKey2 = kf.generatePrivate(new PKCS8EncodedKeySpec(privateKey));
-		PublicKey publicKey2 = kf.generatePublic(new X509EncodedKeySpec(publicKey));
-
-		Assert.assertEquals(keys.a, privateKey2);
-		Assert.assertEquals(keys.b, publicKey2);
+	private static void assertPkcs12LoadException(Pkcs12LoadException e, Pkcs12LoadException.Reason reason) {
+		Assert.assertEquals("reason", reason, e.getReason());
+		throw e;
 	}
 
 	@Test
-	public void pkcs12_load2() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException, InvalidKeySpecException {
+	public void pkcs12_load() {
 		System.out.println("dir: " + System.getProperty("user.dir"));
+		Pkcs12.load("../test/p12/rfc_v1_rsa.p12", "testtest", "test");
+	}
 
-		Tuple<PrivateKey, PublicKey> keys = Pkcs12.load("../test/p12/test_v1_rsa.p12", "password", "test");
-		Assert.assertNotNull(keys);
-		Assert.assertNotNull(keys.a);
-		Assert.assertNotNull(keys.b);
+	@Test
+	public void pkcs12_load2() {
+		Pkcs12.load("../test/p12/test_v1_rsa.p12", "password", "test", "password");
+	}
 
-		byte[] privateKey = keys.a.getEncoded();
-		byte[] publicKey = keys.b.getEncoded();
+	@Test(expected = Pkcs12LoadException.class)
+	public void pkcs12_loadNotFound() {
+		try {
+			Pkcs12.load("../test/p12/notafile.p12", "testtest", "test", "testtest");
+		} catch (Pkcs12LoadException e) {
+			assertPkcs12LoadException(e, Pkcs12LoadException.Reason.FILE_NOT_FOUND);
+		}
+	}
 
-		KeyFactory kf = KeyFactory.getInstance("RSA");
-		PrivateKey privateKey2 = kf.generatePrivate(new PKCS8EncodedKeySpec(privateKey));
-		PublicKey publicKey2 = kf.generatePublic(new X509EncodedKeySpec(publicKey));
+	@Test(expected = Pkcs12LoadException.class)
+	public void pkcs12_loadWrongPassword() {
+		try {
+			Pkcs12.load("../test/p12/rfc_v1_rsa.p12", "wrong", "test", "testtest");
+		} catch (Pkcs12LoadException e) {
+			assertPkcs12LoadException(e, Pkcs12LoadException.Reason.INCORRECT_PASSWORD);
+		}
+	}
 
-		Assert.assertEquals(keys.a, privateKey2);
-		Assert.assertEquals(keys.b, publicKey2);
+	@Test(expected = Pkcs12LoadException.class)
+	public void pkcs12_loadWrongAlias() {
+		try {
+			Pkcs12.load("../test/p12/rfc_v1_rsa.p12", "testtest", "wrong", "testtest");
+		} catch (Pkcs12LoadException e) {
+			assertPkcs12LoadException(e, Pkcs12LoadException.Reason.PRIVATE_KEY_NOT_FOUND);
+		}
+	}
+
+	@Test(expected = Pkcs12LoadException.class)
+	public void pkcs12_loadWrongKeyPass() {
+		try {
+			Pkcs12.load("../test/p12/rfc_v1_rsa.p12", "testtest", "test", "wrong");
+		} catch (Pkcs12LoadException e) {
+			assertPkcs12LoadException(e, Pkcs12LoadException.Reason.UNRECOVERABLE_KEY);
+		}
+	}
+
+	// Test exception cases which are hard to test via file loading. At least we can verify that the correct reason is
+	// set in these cases.
+	@Test
+	public void pkcs12_exceptions() {
+		// No provider
+		try {
+			assertPkcs12LoadException(new Pkcs12LoadException(new KeyStoreException()),
+					Pkcs12LoadException.Reason.NO_PKCS12_PROVIDER);
+		} catch (Pkcs12LoadException e) {
+			// ignore
+		}
+
+		// No algorithm
+		try {
+			assertPkcs12LoadException(new Pkcs12LoadException(new NoSuchAlgorithmException()),
+					Pkcs12LoadException.Reason.ALGORITHM_NOT_FOUND);
+		} catch (Pkcs12LoadException e) {
+			// ignore
+		}
+
+		// cert error
+		try {
+			assertPkcs12LoadException(new Pkcs12LoadException(new CertificateException()),
+					Pkcs12LoadException.Reason.CERTIFICATE_ERROR);
+		} catch (Pkcs12LoadException e) {
+			// ignore
+		}
+
+		// io exception
+		try {
+			assertPkcs12LoadException(new Pkcs12LoadException(new IOException()),
+					Pkcs12LoadException.Reason.IO_EXCEPTION);
+		} catch (Pkcs12LoadException e) {
+			// ignore
+		}
 	}
 }

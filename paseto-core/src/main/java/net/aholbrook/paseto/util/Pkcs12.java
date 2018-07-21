@@ -46,7 +46,10 @@ public class Pkcs12 {
 			p12.load(new FileInputStream(keystoreFile), keystorePass.toCharArray());
 
 			PrivateKey privateKey = (PrivateKey) p12.getKey(alias, keyPass.toCharArray());
-			PublicKey publicKey = p12.getCertificate(alias).getPublicKey();
+			if (privateKey == null) { throw new Pkcs12LoadException(Pkcs12LoadException.Reason.PRIVATE_KEY_NOT_FOUND); }
+			Certificate cert = p12.getCertificate(alias);
+			if (cert == null) { throw new Pkcs12LoadException(Pkcs12LoadException.Reason.PUBLIC_KEY_NOT_FOUND); }
+			PublicKey publicKey = cert.getPublicKey();
 
 			return new Tuple<>(privateKey, publicKey);
 		} catch (FileNotFoundException e) {
