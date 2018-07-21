@@ -89,7 +89,10 @@ task jacocoRootReport(type: JacocoReport) {
 
 	afterEvaluate {
 		classDirectories = files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: 'net/aholbrook/paseto/test/**')
+			fileTree(dir: it, excludes: [
+					'net/aholbrook/paseto/test/**',
+					'net/aholbrook/paseto/encoding/json/jackson/mixin/**'
+			])
 		})
 	}
 }

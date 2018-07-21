@@ -1,4 +1,4 @@
-package net.aholbrook.paseto.encoding.json.jackson;
+package net.aholbrook.paseto.encoding.json.jackson.mixin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
