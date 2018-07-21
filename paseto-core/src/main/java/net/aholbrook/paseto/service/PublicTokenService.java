@@ -10,21 +10,21 @@ import java.time.Duration;
 public class PublicTokenService<_TokenType extends Token> extends TokenService<_TokenType> {
 	private final KeyProvider keyProvider;
 
-	public PublicTokenService(Paseto<_TokenType> paseto, KeyProvider keyProvider, Class<_TokenType> tokenClass) {
+	private PublicTokenService(Paseto<_TokenType> paseto, KeyProvider keyProvider, Class<_TokenType> tokenClass) {
 		this(paseto, keyProvider, Claims.DEFAULT_CLAIM_CHECKS, null, tokenClass);
 	}
 
-	public PublicTokenService(Paseto<_TokenType> paseto, KeyProvider keyProvider, Claim[] claims,
+	private PublicTokenService(Paseto<_TokenType> paseto, KeyProvider keyProvider, Claim[] claims,
 			Class<_TokenType> tokenClass) {
 		this(paseto, keyProvider, claims, null, tokenClass);
 	}
 
-	public PublicTokenService(Paseto<_TokenType> paseto, KeyProvider keyProvider, Duration defaultValidityPeriod,
+	private PublicTokenService(Paseto<_TokenType> paseto, KeyProvider keyProvider, Duration defaultValidityPeriod,
 			Class<_TokenType> tokenClass) {
 		this(paseto, keyProvider, Claims.DEFAULT_CLAIM_CHECKS, defaultValidityPeriod, tokenClass);
 	}
 
-	public PublicTokenService(Paseto<_TokenType> paseto, KeyProvider keyProvider, Claim[] claims,
+	private PublicTokenService(Paseto<_TokenType> paseto, KeyProvider keyProvider, Claim[] claims,
 			Duration defaultValidityPeriod, Class<_TokenType> tokenClass) {
 		super(paseto, claims, defaultValidityPeriod, tokenClass);
 		this.keyProvider = keyProvider;
