@@ -29,9 +29,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 
 public class Pkcs12 {
+	private Pkcs12() {}
+
 	public static Tuple<PrivateKey, PublicKey> load(String keystoreFile, String keystorePass, String alias) {
 		return load(keystoreFile, keystorePass, alias, keystorePass);
 	}

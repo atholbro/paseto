@@ -7,6 +7,8 @@ import net.aholbrook.paseto.exception.claims.MultipleClaimException;
 import java.util.function.Function;
 
 public class Claims {
+	private Claims() {}
+
 	public static final Claim[] DEFAULT_CLAIM_CHECKS = new Claim[] {
 			new IssuedInPast(), new CurrentlyValid()
 	};

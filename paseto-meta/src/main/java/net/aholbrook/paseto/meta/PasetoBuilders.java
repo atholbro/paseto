@@ -27,6 +27,8 @@ import net.aholbrook.paseto.service.PublicTokenService;
 import net.aholbrook.paseto.service.Token;
 
 public class PasetoBuilders {
+	private PasetoBuilders() {}
+
 	public static class V1 {
 		public static <_Payload> Paseto.Builder<_Payload> paseto() {
 			return new Paseto.Builder<_Payload>()

@@ -18,6 +18,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.util;
 
 public class ByteArrayUtils {
+	private ByteArrayUtils() {}
+
 	/**
 	 * Compare two byte arrays without failing fast.
 	 *

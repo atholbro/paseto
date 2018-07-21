@@ -18,6 +18,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.util;
 
 public class PaeUtil {
+	private PaeUtil() {}
+
 	private static byte[] le64(long n) {
 		byte[] result = new byte[8];
 		for (int i = 0; i < 8; ++i) {

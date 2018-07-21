@@ -20,6 +20,8 @@ package net.aholbrook.paseto.util;
 import java.nio.charset.Charset;
 
 public class StringUtils {
+	private StringUtils() {}
+
 	/**
 	 * Returns a safe string by converting a null string reference into an empty string.
 	 * @param s String reference, which may be null.
