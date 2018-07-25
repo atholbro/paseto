@@ -49,8 +49,8 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 		validateAeadXChaCha20Poly1305IetfEncrypt(out, in, ad, nonce, key);
 
 		long[] outLen = new long[] { out.length };
-		return sodium.cryptoAeadXChaCha20Poly1305IetfEncrypt(out, outLen, in, in.length, ad,
-				ad != null ? ad.length : 0, null, nonce, key);
+		return sodium.cryptoAeadXChaCha20Poly1305IetfEncrypt(out, outLen, in, in.length, ad, ad.length, null,
+				nonce, key);
 	}
 
 	@Override
@@ -58,8 +58,8 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 		validateAeadXChaCha20Poly1305IetfDecrypt(out, in, ad, nonce, key);
 
 		long[] outLen = new long[] { out.length };
-		return sodium.cryptoAeadXChaCha20Poly1305IetfDecrypt(out, outLen, null, in, in.length, ad,
-				ad != null ? ad.length : 0, nonce, key);
+		return sodium.cryptoAeadXChaCha20Poly1305IetfDecrypt(out, outLen, null, in, in.length, ad, ad.length,
+				nonce, key);
 	}
 
 	@Override
