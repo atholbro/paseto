@@ -426,17 +426,17 @@ public class V2CryptoProviderTest {
 		}
 	}
 
-	// ed25519PublicKey
+	// ed25519SkToPk
 	// Argument Testing
 	@Test(expected = NullPointerException.class)
 	public void crypto_v2_ed25519PublicKey_nullSk() {
-		v2CryptoProvider().ed25519PublicKey(null);
+		v2CryptoProvider().ed25519SkToPk(null);
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519PublicKey_shortSk() {
 		try {
-			v2CryptoProvider().ed25519PublicKey(new byte[ED25519S_SK.length - 1]);
+			v2CryptoProvider().ed25519SkToPk(new byte[ED25519S_SK.length - 1]);
 		} catch (ByteArrayLengthException e) {
 			assertByteArrayLengthException(e, "sk", ED25519S_SK.length - 1, ED25519S_SK.length, true);
 		}
@@ -445,7 +445,7 @@ public class V2CryptoProviderTest {
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v2_ed25519PublicKey_longSk() {
 		try {
-			v2CryptoProvider().ed25519PublicKey(new byte[ED25519S_SK.length + 1]);
+			v2CryptoProvider().ed25519SkToPk(new byte[ED25519S_SK.length + 1]);
 		} catch (ByteArrayLengthException e) {
 			assertByteArrayLengthException(e, "sk", ED25519S_SK.length + 1, ED25519S_SK.length, true);
 		}
@@ -454,7 +454,7 @@ public class V2CryptoProviderTest {
 
 	@Test
 	public void crypto_v2_ed25519PublicKey() {
-		byte[] pk = v2CryptoProvider().ed25519PublicKey(RfcTestVectors.rfcTestV2SecretKey());
+		byte[] pk = v2CryptoProvider().ed25519SkToPk(RfcTestVectors.rfcTestV2SecretKey());
 		AssertUtils.assertEquals(RfcTestVectors.rfcTestV2PublicKey(), pk);
 	}
 }

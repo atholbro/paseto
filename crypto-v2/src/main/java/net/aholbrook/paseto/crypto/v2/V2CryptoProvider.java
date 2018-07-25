@@ -48,7 +48,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 	// Ed25519
 	abstract public boolean ed25519Sign(byte[] sig, byte[] m, byte[] sk);
 	abstract public boolean ed25519Verify(byte[] sig, byte[] m, byte[] pk);
-	abstract public byte[] ed25519PublicKey(byte[] sk);
+	abstract public byte[] ed25519SkToPk(byte[] sk);
 	abstract public Tuple<byte[], byte[]> ed25519Generate();
 
 	// Nonce

@@ -17,11 +17,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.crypto.v2.libsodium;
 
-import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
 import com.goterl.lazycode.lazysodium.LazySodiumJava;
 import com.goterl.lazycode.lazysodium.SodiumJava;
 import net.aholbrook.paseto.crypto.Tuple;
-import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 
 public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
@@ -79,15 +77,13 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 	}
 
 	@Override
-	public byte[] ed25519PublicKey(byte[] sk) {
+	public byte[] ed25519SkToPk(byte[] sk) {
 		validateEd25519PublicKey(sk);
+		byte[] pk = new byte[ed25519SignPublicKeyBytes()];
 
-		try {
-			return sodium.cryptoSignSecretKeyPair(sk).getPublicKey();
-		} catch (SodiumException e) {
-			// This cannot actually occur currently as libsodium always returns 0 in crypto_sign_ed25519_sk_to_pk()
-			throw new CryptoProviderException("Unable to extract PK from SK.", e);
-		}
+
+		sodium.cryptoSignEd25519SkToPk(pk, sk);
+		return pk;
 	}
 
 	@Override
