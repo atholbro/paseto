@@ -29,16 +29,6 @@ public class Hkdf implements HkdfProvider {
 	}
 
 	@Override
-	public byte[] extract(byte[] salt, byte[] inputKeyingMaterial) {
-		return hkdf.extract(salt, inputKeyingMaterial);
-	}
-
-	@Override
-	public byte[] expand(byte[] pseudoRandomKey, byte[] info, int outLen) {
-		return hkdf.expand(pseudoRandomKey, info, outLen);
-	}
-
-	@Override
 	public byte[] extractAndExpand(byte[] salt, byte[] inputKeyingMaterial, byte[] info, int outLen) {
 		return hkdf.extractAndExpand(salt, inputKeyingMaterial, info, outLen);
 	}

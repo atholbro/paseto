@@ -18,7 +18,5 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.crypto.v1;
 
 public interface HkdfProvider {
-	byte[] extract(byte[] salt, byte[] inputKeyingMaterial);
-	byte[] expand(byte[] pseudoRandomKey, byte[] info, int outLen);
 	byte[] extractAndExpand(byte[] salt, byte[] inputKeyingMaterial, byte[] info, int outLen);
 }
