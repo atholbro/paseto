@@ -23,15 +23,39 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 public class HmacException extends CryptoProviderException {
-	public HmacException(String msg, NoSuchAlgorithmException cause) {
-		super(msg, cause);
+	private Reason reason;
+
+	public HmacException(NoSuchAlgorithmException cause) {
+		super(message(Reason.INTERNAL_LIBRARY_ERROR), cause);
+		this.reason = Reason.INTERNAL_LIBRARY_ERROR;
 	}
 
-	public HmacException(String msg, InvalidKeyException cause) {
-		super(msg, cause);
+	public HmacException(InvalidKeyException cause) {
+		super(message(Reason.INTERNAL_LIBRARY_ERROR), cause);
+		this.reason = Reason.INTERNAL_LIBRARY_ERROR;
 	}
 
-	public HmacException(String msg, IllegalArgumentException cause) {
-		super(msg, cause);
+	public HmacException(IllegalArgumentException cause) {
+		super(message(Reason.EMPTY_KEY), cause);
+		this.reason = Reason.EMPTY_KEY;
+	}
+
+	public Reason getReason() {
+		return reason;
+	}
+
+	public enum Reason {
+		EMPTY_KEY,
+		INTERNAL_LIBRARY_ERROR
+	}
+
+	private static String message(Reason reason) {
+		switch (reason) {
+			case EMPTY_KEY:
+				return "Empty or null key.";
+			default:
+			case INTERNAL_LIBRARY_ERROR:
+				return "Unexpected exception occurred.";
+		}
 	}
 }

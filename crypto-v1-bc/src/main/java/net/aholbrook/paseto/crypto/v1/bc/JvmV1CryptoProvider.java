@@ -48,6 +48,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 public class JvmV1CryptoProvider implements V1CryptoProvider {
+	private final static String HMAC_ALGORITHM = "HmacSHA384";
 	private final NonceGenerator nonceGenerator;
 
 	public JvmV1CryptoProvider() {
@@ -78,16 +79,19 @@ public class JvmV1CryptoProvider implements V1CryptoProvider {
 	@Override
 	public byte[] hmacSha384(byte[] m, byte[] key) {
 		try {
-			SecretKeySpec sks = new SecretKeySpec(key, "HmacSHA384");
-			Mac mac = Mac.getInstance("HmacSHA384");
+			SecretKeySpec sks = new SecretKeySpec(key, HMAC_ALGORITHM);
+			Mac mac = Mac.getInstance(HMAC_ALGORITHM, provider);
 			mac.init(sks);
 			return mac.doFinal(m);
 		} catch (IllegalArgumentException e) {
-			throw new HmacException("Unable to calculate MAC - empty key.", e);
+			throw new HmacException(e);
 		} catch (NoSuchAlgorithmException e) {
-			throw new HmacException("Unable to calculate MAC - HmacSHA384 not found.", e);
+			// Shouldn't occur unless BouncyCastle is broken. Thus we wrap in an unchecked exception and rethrow.
+			throw new HmacException(e);
 		} catch (InvalidKeyException e) {
-			throw new HmacException("Unable to calculate MAC - invalid key.", e);
+			// Basically never occurs, even if you change one of the algorithm parameters above to something else. Thus
+			// we wrap in an unchecked exception and rethrow.
+			throw new HmacException(e);
 		}
 	}
 
