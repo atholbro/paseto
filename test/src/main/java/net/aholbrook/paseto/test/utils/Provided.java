@@ -1,4 +1,4 @@
-package net.aholbrook.paseto.test;
+package net.aholbrook.paseto.test.utils;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -26,6 +26,7 @@ import net.aholbrook.paseto.service.TokenService;
 import net.aholbrook.paseto.test.data.RfcTestVectors;
 import net.aholbrook.paseto.test.data.RfcToken;
 import net.aholbrook.paseto.test.data.TestVector;
+import net.aholbrook.paseto.test.utils.TestContext;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package net.aholbrook.paseto.test;
+package net.aholbrook.paseto.test.utils;
 
 import org.reflections.Reflections;
 
@@ -7,7 +7,7 @@ import java.util.Set;
 public class TestContext {
 	private static TestBuilders TEST_BUILDERS = null;
 
-	static TestBuilders builders() {
+	public static TestBuilders builders() {
 		if (TEST_BUILDERS == null) {
 			Reflections reflections = new Reflections("net.aholbrook.paseto");
 			Set<Class<?>> classes = reflections.getTypesAnnotatedWith(Provided.class);

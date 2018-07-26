@@ -10,8 +10,8 @@ import net.aholbrook.paseto.encoding.json.jackson.JacksonJsonProvider;
 import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;
 import net.aholbrook.paseto.service.Token;
-import net.aholbrook.paseto.test.Provided;
-import net.aholbrook.paseto.test.TestBuilders;
+import net.aholbrook.paseto.test.utils.Provided;
+import net.aholbrook.paseto.test.utils.TestBuilders;
 import net.aholbrook.paseto.test.crypto.TestNonceGenerator;
 
 @Provided

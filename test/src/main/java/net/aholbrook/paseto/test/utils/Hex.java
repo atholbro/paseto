@@ -1,4 +1,4 @@
-package net.aholbrook.paseto.test;
+package net.aholbrook.paseto.test.utils;
 
 import javax.xml.bind.DatatypeConverter;
 

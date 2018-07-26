@@ -17,6 +17,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.test;
 
+import net.aholbrook.paseto.test.utils.AssertUtils;
 import net.aholbrook.paseto.util.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;

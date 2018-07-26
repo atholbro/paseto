@@ -5,12 +5,11 @@ import net.aholbrook.paseto.encoding.exception.EncodingException;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.test.data.CustomToken;
 import net.aholbrook.paseto.test.data.TokenTestVectors;
+import net.aholbrook.paseto.test.utils.TestContext;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class EncodingTest {

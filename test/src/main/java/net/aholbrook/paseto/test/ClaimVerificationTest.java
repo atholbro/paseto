@@ -8,7 +8,6 @@ import net.aholbrook.paseto.claims.IssuedBy;
 import net.aholbrook.paseto.claims.IssuedInPast;
 import net.aholbrook.paseto.claims.VerificationContext;
 import net.aholbrook.paseto.claims.WithSubject;
-import net.aholbrook.paseto.exception.claims.ClaimException;
 import net.aholbrook.paseto.exception.claims.ExpiredTokenException;
 import net.aholbrook.paseto.exception.claims.IncorrectAudienceException;
 import net.aholbrook.paseto.exception.claims.IncorrectIssuerException;
@@ -19,6 +18,7 @@ import net.aholbrook.paseto.exception.claims.MultipleClaimException;
 import net.aholbrook.paseto.exception.claims.NotYetValidTokenException;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.test.data.TokenTestVectors;
+import net.aholbrook.paseto.test.utils.AssertUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
