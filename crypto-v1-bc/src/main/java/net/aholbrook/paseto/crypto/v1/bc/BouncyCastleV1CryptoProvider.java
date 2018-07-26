@@ -17,9 +17,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.crypto.v1.bc;
 
-import net.aholbrook.paseto.crypto.NonceGenerator;
 import net.aholbrook.paseto.crypto.Tuple;
-import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import org.bouncycastle.asn1.DERNull;
@@ -33,6 +31,7 @@ import org.bouncycastle.crypto.BufferedBlockCipher;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.Digest;
+import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.digests.SHA384Digest;
 import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.engines.RSABlindedEngine;
@@ -53,23 +52,9 @@ import org.bouncycastle.jcajce.provider.asymmetric.util.KeyUtil;
 import org.bouncycastle.jcajce.provider.asymmetric.util.PrimeCertaintyCalculator;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.SecureRandom;
 
-public class BouncyCastleV1CryptoProvider implements V1CryptoProvider {
-	private final static int RSA_KEY_SIZE = 2048;
-	private final static BigInteger E = BigInteger.valueOf(65537L);
-	private final NonceGenerator nonceGenerator;
-
-	public BouncyCastleV1CryptoProvider() {
-		this(new SecureRandomNonceGenerator());
-	}
-
-	public BouncyCastleV1CryptoProvider(NonceGenerator nonceGenerator) {
-		//Security.setProperty("crypto.policy", "limited");
-		this.nonceGenerator = nonceGenerator;
-	}
-
+public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 	@Override
 	public byte[] randomBytes(int size) {
 		byte[] buffer = new byte[size];
@@ -78,28 +63,21 @@ public class BouncyCastleV1CryptoProvider implements V1CryptoProvider {
 	}
 
 	@Override
-	public NonceGenerator getNonceGenerator() {
-		return nonceGenerator;
-	}
+	public byte[] hkdfExtractAndExpand(byte[] salt, byte[] inputKeyingMaterial, byte[] info) {
+		validateHkdfExtractAndExpand(salt, inputKeyingMaterial, info);
 
-	@Override
-	public byte[] hkdfExtractAndExpand(byte[] salt, byte[] inputKeyingMaterial, byte[] info, int outLen) {
 		Digest digest = new SHA384Digest();
 		HKDFBytesGenerator hkdf = new HKDFBytesGenerator(digest);
 		hkdf.init(new HKDFParameters(inputKeyingMaterial, salt, info));
 
-		byte[] out = new byte[outLen];
+		byte[] out = new byte[HKDF_LEN];
 		hkdf.generateBytes(out, 0, out.length);
 		return out;
 	}
 
 	@Override
 	public byte[] hmacSha384(byte[] m, byte[] key) {
-		if (m == null) { throw new NullPointerException("m"); }
-		if (key == null) { throw new NullPointerException("key"); }
-
-		if (m.length < 1) { throw new ByteArrayLengthException("m", m.length, 1, false); }
-		if (key.length < 1) { throw new ByteArrayLengthException("key", key.length, 1, false); }
+		validateHmacSha384(m, key);
 
 		Digest digest = new SHA384Digest();
 		HMac hmac = new HMac(digest);
@@ -122,11 +100,7 @@ public class BouncyCastleV1CryptoProvider implements V1CryptoProvider {
 
 	@Override
 	public byte[] aes256Ctr(byte[] m, byte[] key, byte[] iv) {
-		if (key == null) { throw new NullPointerException("key"); }
-		if (iv == null) { throw new NullPointerException("iv"); }
-
-		if (key.length < 1) { throw new ByteArrayLengthException("key", key.length, 1, false); }
-		if (iv.length < 1) { throw new ByteArrayLengthException("iv", key.length, 8, false); }
+		validateAes256CtrEncrypt(m, key, iv);
 
 		try {
 			BufferedBlockCipher cipher = ase256CtrCipher(true, key, iv);
@@ -136,13 +110,16 @@ public class BouncyCastleV1CryptoProvider implements V1CryptoProvider {
 			cipher.doFinal(cipherText, len);
 
 			return cipherText;
-		} catch (Throwable e) {
-			throw new CryptoProviderException("Unable to encrypt clear text with AES-256-CTR.", e);
+		} catch (InvalidCipherTextException e) {
+			// Not possible since we're not using padding.
+			throw new CryptoProviderException("Invalid cipher text in aes256CtrEncrypt.", e);
 		}
 	}
 
 	@Override
 	public byte[] aes256CtrDecrypt(byte[] c, byte[] key, byte[] iv) {
+		validateAes256CtrDecrypt(c, key, iv);
+
 		try {
 			BufferedBlockCipher cipher = ase256CtrCipher(false, key, iv);
 
@@ -151,17 +128,19 @@ public class BouncyCastleV1CryptoProvider implements V1CryptoProvider {
 			cipher.doFinal(clearText, len);
 
 			return clearText;
-		} catch (Throwable e) {
-			throw new CryptoProviderException("Unable to decrypt cipher text with AES-256-CTR.", e);
+		} catch (InvalidCipherTextException e) {
+			// Not possible since we're not using padding.
+			throw new CryptoProviderException("Invalid cipher text in aes256CtrDecrypt.", e);
 		}
 	}
 
 	private PSSSigner pssSha384(boolean forSigning, byte[] key) {
 		try {
-			byte[] salt = new byte[48];
+			byte[] salt = new byte[SHA384_OUT_LEN];
 			new SecureRandom().nextBytes(salt);
 			// RSA-PSS, SHA-384, MGF1(SHA-384), 48 byte salt length, 0xBC trailer
-			PSSSigner pss = new PSSSigner(new RSABlindedEngine(), new SHA384Digest(), new SHA384Digest(), 48, (byte)0xBC);
+			PSSSigner pss = new PSSSigner(new RSABlindedEngine(), new SHA384Digest(), new SHA384Digest(),
+					SHA384_OUT_LEN, (byte)0xBC);
 
 			if (forSigning) {
 				pss.init(true, PrivateKeyFactory.createKey(key));
@@ -177,17 +156,22 @@ public class BouncyCastleV1CryptoProvider implements V1CryptoProvider {
 
 	@Override
 	public byte[] rsaSign(byte[] m, byte[] privateKey) {
+		validateRsaSign(m, privateKey);
+
 		try {
 			PSSSigner pss = pssSha384(true, privateKey);
 			pss.update(m, 0, m.length);
 			return pss.generateSignature();
 		} catch (CryptoException e) {
+			// Not documented
 			throw new CryptoProviderException("CryptoException", e);
 		}
 	}
 
 	@Override
 	public boolean rsaVerify(byte[] m, byte[] sig, byte[] publicKey) {
+		validateRsaVerify(m, sig, publicKey);
+
 		PSSSigner pss = pssSha384(false, publicKey);
 		pss.update(m, 0, m.length);
 		return pss.verifySignature(sig);

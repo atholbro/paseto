@@ -51,18 +51,18 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 
 		// Generate n
 		byte[] random = nonceGenerator.generateNonce();
-		byte[] n = new byte[32];
+		byte[] n = new byte[V1CryptoProvider.NONCE_SIZE];
 		System.arraycopy(cryptoProvider.hmacSha384(payloadBytes, random), 0, n, 0, n.length);
 
 		// Split N into salt/nonce
-		byte[] salt = new byte[16];
-		byte[] nonce = new byte[16];
+		byte[] salt = new byte[V1CryptoProvider.HKDF_SALT_LEN];
+		byte[] nonce = new byte[V1CryptoProvider.HKDF_SALT_LEN];
 		System.arraycopy(n, 0, salt, 0, salt.length);
 		System.arraycopy(n, salt.length, nonce, 0, nonce.length);
 
 		// Create ek/ak for AEAD
-		byte[] ek = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_EK, 32);
-		byte[] ak = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_AK, 32);
+		byte[] ek = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_EK);
+		byte[] ak = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_AK);
 
 		byte[] c = cryptoProvider.aes256Ctr(payloadBytes, ek, nonce);
 		byte[] preAuth = PaeUtil.pae(StringUtils.getBytesUtf8(HEADER_LOCAL), n, c, footerBytes);
@@ -97,8 +97,8 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 
 		// Decrypt
 		byte[] nct = Base64.decodeFromString(sections[2]);
-		byte[] n = new byte[32];
-		byte[] t = new byte[48];
+		byte[] n = new byte[V1CryptoProvider.NONCE_SIZE];
+		byte[] t = new byte[V1CryptoProvider.SHA384_OUT_LEN];
 		// verify length
 		if (nct.length < n.length + t.length + 1) {
 			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token)
@@ -110,14 +110,14 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 		System.arraycopy(nct, n.length + c.length, t, 0, t.length);
 
 		// Split N into salt/nonce
-		byte[] salt = new byte[16];
-		byte[] nonce = new byte[16];
+		byte[] salt = new byte[V1CryptoProvider.HKDF_SALT_LEN];
+		byte[] nonce = new byte[V1CryptoProvider.HKDF_SALT_LEN];
 		System.arraycopy(n, 0, salt, 0, salt.length);
 		System.arraycopy(n, salt.length, nonce, 0, nonce.length);
 
 		// Create ek/ak for AEAD
-		byte[] ek = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_EK, 32);
-		byte[] ak = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_AK, 32);
+		byte[] ek = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_EK);
+		byte[] ak = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_AK);
 
 		byte[] preAuth = PaeUtil.pae(StringUtils.getBytesUtf8(HEADER_LOCAL), n, c,
 				StringUtils.getBytesUtf8(decodedFooter));
@@ -169,7 +169,7 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 
 		// Verify
 		byte[] msig = Base64.decodeFromString(sections[2]);
-		byte[] s = new byte[256];
+		byte[] s = new byte[V1CryptoProvider.RSA_SIGNATURE_LEN];
 		// verify length
 		if (msig.length < s.length + 1) {
 			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token)
