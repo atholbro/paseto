@@ -24,7 +24,8 @@ public class TestVector<_Payload, _Footer> {
 	private final _Footer footer;
 	private final String token;
 
-	public TestVector(byte[] a, byte[] b, _Payload payload, Class<_Payload> payloadClass, _Footer footer, String token) {
+	public TestVector(byte[] a, byte[] b, _Payload payload, Class<_Payload> payloadClass, _Footer footer,
+			String token) {
 		this.a = a;
 		this.b = b;
 		this.payload = payload;

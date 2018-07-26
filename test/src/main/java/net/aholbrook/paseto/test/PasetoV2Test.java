@@ -402,7 +402,7 @@ public class PasetoV2Test extends PasetoTest {
 		Paseto paseto = createPaseto(tv.getB());
 
 		// attempt to decrypt
-		paseto.decrypt(tv.getToken(), RfcTestVectors.rfcTestKey(), tv.getPayloadClass());
+		paseto.decrypt(tv.getToken(), RfcTestVectors.RFC_TEST_KEY, tv.getPayloadClass());
 	}
 
 	// Verify with a different public key, should fail with a SignatureVerificationException
@@ -412,7 +412,7 @@ public class PasetoV2Test extends PasetoTest {
 		Paseto paseto = createPaseto(tv.getB());
 
 		// attempt to decrypt
-		paseto.verify(tv.getToken(), RfcTestVectors.rfcTestV2PublicKey(), tv.getPayloadClass());
+		paseto.verify(tv.getToken(), RfcTestVectors.RFC_TEST_PK, tv.getPayloadClass());
 	}
 
 	// Attempt to decrypt A V1 local token with as V2 local token, should fail with a InvalidHeaderException.

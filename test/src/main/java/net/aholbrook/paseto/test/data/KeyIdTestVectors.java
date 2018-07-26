@@ -15,7 +15,8 @@ public class KeyIdTestVectors {
 	public final static Footer KEY_ID_FOOTER = (Footer) new Footer()
 			.setField("testing")
 			.setKeyId("UbkK8Y6iv4GZhFp6Tx3IWLWLfNXSEvJcdT3zdR65YZxo");
-	public final static String KEY_ID_FOOTER_STRING = "{\"field\":\"testing\",\"kid\":\"UbkK8Y6iv4GZhFp6Tx3IWLWLfNXSEvJcdT3zdR65YZxo\"}";
+	public final static String KEY_ID_FOOTER_STRING = "{\"field\":\"testing\",\"kid\":\"UbkK8Y6iv4GZhFp6Tx3IWLWLfNXSEvJ"
+			+ "cdT3zdR65YZxo\"}";
 
 	public static class Footer extends KeyId {
 		private String field;

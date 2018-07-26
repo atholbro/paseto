@@ -214,13 +214,13 @@ public class V1CryptoProviderTest {
 
 	@Test(expected = NullPointerException.class)
 	public void crypto_v1_rsaSign_nullMessage() {
-		v1CryptoProvider().rsaSign(null, RfcTestVectors.rfcTestV1PrivateKey());
+		v1CryptoProvider().rsaSign(null, RfcTestVectors.RFC_TEST_RSA_PRIVATE_KEY);
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v1_rsaSign_invalidMessage() {
 		AssertUtils.assertByteArrayLengthException(() ->
-						v1CryptoProvider().rsaSign(new byte[] {}, RfcTestVectors.rfcTestV1PrivateKey()),
+						v1CryptoProvider().rsaSign(new byte[] {}, RfcTestVectors.RFC_TEST_RSA_PRIVATE_KEY),
 				"m", 0, 1, false);
 	}
 
@@ -243,20 +243,20 @@ public class V1CryptoProviderTest {
 
 	@Test(expected = NullPointerException.class)
 	public void crypto_v1_rsaVerify_nullMessage() {
-		v1CryptoProvider().rsaVerify(null, RSA_FAKE_SIGNATURE, RfcTestVectors.rfcTestV1PrivateKey());
+		v1CryptoProvider().rsaVerify(null, RSA_FAKE_SIGNATURE, RfcTestVectors.RFC_TEST_RSA_PRIVATE_KEY);
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v1_rsaVerify_invalidMessage() {
 		AssertUtils.assertByteArrayLengthException(() ->
 						v1CryptoProvider().rsaVerify(new byte[] {}, RSA_FAKE_SIGNATURE,
-								RfcTestVectors.rfcTestV1PrivateKey()),
+								RfcTestVectors.RFC_TEST_RSA_PRIVATE_KEY),
 				"m", 0, 1, false);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void crypto_v1_rsaVerify_nullSignature() {
-		v1CryptoProvider().rsaVerify(StringUtils.getBytesUtf8("test"), null, RfcTestVectors.rfcTestV1PrivateKey());
+		v1CryptoProvider().rsaVerify(StringUtils.getBytesUtf8("test"), null, RfcTestVectors.RFC_TEST_RSA_PRIVATE_KEY);
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
@@ -264,7 +264,7 @@ public class V1CryptoProviderTest {
 		AssertUtils.assertByteArrayLengthException(() ->
 						v1CryptoProvider().rsaVerify(StringUtils.getBytesUtf8("test"),
 								new byte[V1CryptoProvider.RSA_SIGNATURE_LEN - 1],
-								RfcTestVectors.rfcTestV1PrivateKey()),
+								RfcTestVectors.RFC_TEST_RSA_PRIVATE_KEY),
 				"sig", V1CryptoProvider.RSA_SIGNATURE_LEN - 1, V1CryptoProvider.RSA_SIGNATURE_LEN, true);
 	}
 
@@ -273,7 +273,7 @@ public class V1CryptoProviderTest {
 		AssertUtils.assertByteArrayLengthException(() ->
 						v1CryptoProvider().rsaVerify(StringUtils.getBytesUtf8("test"),
 								new byte[V1CryptoProvider.RSA_SIGNATURE_LEN + 1],
-								RfcTestVectors.rfcTestV1PrivateKey()),
+								RfcTestVectors.RFC_TEST_RSA_PRIVATE_KEY),
 				"sig", V1CryptoProvider.RSA_SIGNATURE_LEN + 1, V1CryptoProvider.RSA_SIGNATURE_LEN, true);
 	}
 

@@ -380,7 +380,7 @@ public class V2CryptoProviderTest {
 
 	@Test
 	public void crypto_v2_ed25519PublicKey() {
-		byte[] pk = v2CryptoProvider().ed25519SkToPk(RfcTestVectors.rfcTestV2SecretKey());
-		AssertUtils.assertEquals(RfcTestVectors.rfcTestV2PublicKey(), pk);
+		byte[] pk = v2CryptoProvider().ed25519SkToPk(RfcTestVectors.RFC_TEST_SK);
+		AssertUtils.assertEquals(RfcTestVectors.RFC_TEST_PK, pk);
 	}
 }

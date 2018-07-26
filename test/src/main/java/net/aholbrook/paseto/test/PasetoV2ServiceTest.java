@@ -33,19 +33,19 @@ import java.time.OffsetDateTime;
 
 public class PasetoV2ServiceTest extends PasetoServiceTest {
 	private static LocalTokenService.KeyProvider rfcLocalKeyProvider() {
-		return RfcTestVectors::rfcTestKey;
+		return () -> RfcTestVectors.RFC_TEST_KEY;
 	}
 
 	private static PublicTokenService.KeyProvider rfcPublicKeyProvider() {
 		return new PublicTokenService.KeyProvider() {
 			@Override
 			public byte[] getSecretKey() {
-				return RfcTestVectors.rfcTestV2SecretKey();
+				return RfcTestVectors.RFC_TEST_SK;
 			}
 
 			@Override
 			public byte[] getPublicKey() {
-				return RfcTestVectors.rfcTestV2PublicKey();
+				return RfcTestVectors.RFC_TEST_PK;
 			}
 		};
 	}

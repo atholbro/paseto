@@ -17,18 +17,11 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.test.data;
 
+import net.aholbrook.paseto.test.Hex;
+
 public class PauUtilRfcTestVectors {
-	public final static byte[] PAE_VECTOR_1 = new byte[] {
-			0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	};
-
-	public final static byte[] PAE_VECTOR_2 = new byte[] {
-			0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	};
-
-	public final static byte[] PAE_VECTOR_3 = new byte[] {
-			0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-			// test
-			0x74, 0x65, 0x73, 0x74
-	};
+	public final static byte[] PAE_VECTOR_1 = Hex.decode("0000000000000000");
+	public final static byte[] PAE_VECTOR_2 = Hex.decode("01000000000000000000000000000000");
+	// ends with test
+	public final static byte[] PAE_VECTOR_3 = Hex.decode("0100000000000000040000000000000074657374");
 }
