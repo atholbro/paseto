@@ -99,7 +99,7 @@ public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 	}
 
 	@Override
-	public byte[] aes256Ctr(byte[] m, byte[] key, byte[] iv) {
+	public byte[] aes256CtrEncrypt(byte[] m, byte[] key, byte[] iv) {
 		validateAes256CtrEncrypt(m, key, iv);
 
 		try {

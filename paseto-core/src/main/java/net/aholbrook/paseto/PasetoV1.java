@@ -64,7 +64,7 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 		byte[] ek = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_EK);
 		byte[] ak = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_AK);
 
-		byte[] c = cryptoProvider.aes256Ctr(payloadBytes, ek, nonce);
+		byte[] c = cryptoProvider.aes256CtrEncrypt(payloadBytes, ek, nonce);
 		byte[] preAuth = PaeUtil.pae(StringUtils.getBytesUtf8(HEADER_LOCAL), n, c, footerBytes);
 		byte[] t = cryptoProvider.hmacSha384(preAuth, ak);
 

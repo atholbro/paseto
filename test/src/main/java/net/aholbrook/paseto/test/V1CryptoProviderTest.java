@@ -119,7 +119,7 @@ public class V1CryptoProviderTest {
 
 	@Test
 	public void crypto_v1_aes256CtrEncrypt() {
-		byte[] c = v1CryptoProvider().aes256Ctr(Aes256CtrTestVectors.PLAINTEXT, Aes256CtrTestVectors.KEY,
+		byte[] c = v1CryptoProvider().aes256CtrEncrypt(Aes256CtrTestVectors.PLAINTEXT, Aes256CtrTestVectors.KEY,
 				Aes256CtrTestVectors.IV);
 
 		AssertUtils.assertEquals(Aes256CtrTestVectors.CIPHERTEXT, c);
@@ -127,37 +127,37 @@ public class V1CryptoProviderTest {
 
 	@Test(expected = NullPointerException.class)
 	public void crypto_v1_aes256CtrEncrypt_nullMessage() {
-		v1CryptoProvider().aes256Ctr(null, Aes256CtrTestVectors.KEY, Aes256CtrTestVectors.IV);
+		v1CryptoProvider().aes256CtrEncrypt(null, Aes256CtrTestVectors.KEY, Aes256CtrTestVectors.IV);
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v1_aes256CtrEncrypt_invalidMessage() {
 		AssertUtils.assertByteArrayLengthException(() ->
-						v1CryptoProvider().aes256Ctr(new byte[] {}, Aes256CtrTestVectors.KEY, Aes256CtrTestVectors.IV),
+						v1CryptoProvider().aes256CtrEncrypt(new byte[] {}, Aes256CtrTestVectors.KEY, Aes256CtrTestVectors.IV),
 				"m", 0, 1, false);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void crypto_v1_aes256CtrEncrypt_nullKey() {
-		v1CryptoProvider().aes256Ctr(Aes256CtrTestVectors.PLAINTEXT, null, Aes256CtrTestVectors.IV);
+		v1CryptoProvider().aes256CtrEncrypt(Aes256CtrTestVectors.PLAINTEXT, null, Aes256CtrTestVectors.IV);
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v1_aes256CtrEncrypt_invalidKey() {
 		AssertUtils.assertByteArrayLengthException(() ->
-						v1CryptoProvider().aes256Ctr(Aes256CtrTestVectors.PLAINTEXT, new byte[] {}, Aes256CtrTestVectors.IV),
+						v1CryptoProvider().aes256CtrEncrypt(Aes256CtrTestVectors.PLAINTEXT, new byte[] {}, Aes256CtrTestVectors.IV),
 				"key", 0, 1, false);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void crypto_v1_aes256CtrEncrypt_nullIv() {
-		v1CryptoProvider().aes256Ctr(Aes256CtrTestVectors.PLAINTEXT, Aes256CtrTestVectors.KEY, null);
+		v1CryptoProvider().aes256CtrEncrypt(Aes256CtrTestVectors.PLAINTEXT, Aes256CtrTestVectors.KEY, null);
 	}
 
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v1_aes256CtrEncrypt_invalidIv() {
 		AssertUtils.assertByteArrayLengthException(() ->
-						v1CryptoProvider().aes256Ctr(Aes256CtrTestVectors.PLAINTEXT, Aes256CtrTestVectors.KEY,
+						v1CryptoProvider().aes256CtrEncrypt(Aes256CtrTestVectors.PLAINTEXT, Aes256CtrTestVectors.KEY,
 								new byte[] {}),
 				"iv", 0, 8, false);
 	}
