@@ -17,8 +17,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto;
 
+import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
-import net.aholbrook.paseto.crypto.Tuple;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.encoding.EncodingProvider;
@@ -47,7 +47,7 @@ public abstract class Paseto<_Payload> {
 	public abstract _Payload decrypt(String token, byte[] key, String footer, Class<_Payload> payloadClass);
 	public abstract String sign(_Payload payload, byte[] key, String footer);
 	public abstract _Payload verify(String token, byte[] pk, String footer, Class<_Payload> payloadClass);
-	public abstract Tuple<byte[], byte[]> generateKeyPair();
+	public abstract KeyPair generateKeyPair();
 
 	public String encrypt(_Payload payload, byte[] key) {
 		return encrypt(payload, key, null);
@@ -81,30 +81,30 @@ public abstract class Paseto<_Payload> {
 		return verify(token, pk, encodingProvider.encode(footer), payloadClass);
 	}
 
-	public Tuple<_Payload, String> decryptWithFooter(String token, byte[] key, Class<_Payload> payloadClass) {
+	public TokenWithFooter<_Payload, String> decryptWithFooter(String token, byte[] key, Class<_Payload> payloadClass) {
 		_Payload payload = decrypt(token, key, payloadClass);
 		String footer = extractFooter(token);
-		return new Tuple<>(payload, footer);
+		return new TokenWithFooter<>(payload, footer);
 	}
 
-	public <_Footer> Tuple<_Payload, _Footer> decryptWithFooter(String token, byte[] key, Class<_Payload> payloadClass,
-			Class<_Footer> footerClass) {
+	public <_Footer> TokenWithFooter<_Payload, _Footer> decryptWithFooter(String token, byte[] key,
+			Class<_Payload> payloadClass, Class<_Footer> footerClass) {
 		_Payload payload = decrypt(token, key, payloadClass);
 		_Footer footer = extractFooter(token, footerClass);
-		return new Tuple<>(payload, footer);
+		return new TokenWithFooter<>(payload, footer);
 	}
 
-	public Tuple<_Payload, String> verifyWithFooter(String token, byte[] pk, Class<_Payload> payloadClass) {
+	public TokenWithFooter<_Payload, String> verifyWithFooter(String token, byte[] pk, Class<_Payload> payloadClass) {
 		_Payload payload = verify(token, pk, payloadClass);
 		String footer = extractFooter(token);
-		return new Tuple<>(payload, footer);
+		return new TokenWithFooter<>(payload, footer);
 	}
 
-	public <_Footer> Tuple<_Payload, _Footer> verifyWithFooter(String token, byte[] pk, Class<_Payload> payloadClass,
-			Class<_Footer> footerClass) {
+	public <_Footer> TokenWithFooter<_Payload, _Footer> verifyWithFooter(String token, byte[] pk,
+			Class<_Payload> payloadClass, Class<_Footer> footerClass) {
 		_Payload payload = verify(token, pk, payloadClass);
 		_Footer footer = extractFooter(token, footerClass);
-		return new Tuple<>(payload, footer);
+		return new TokenWithFooter<>(payload, footer);
 	}
 
 	public String extractFooter(String token) {

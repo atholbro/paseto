@@ -1,7 +1,7 @@
 package net.aholbrook.paseto.service;
 
 import net.aholbrook.paseto.Paseto;
-import net.aholbrook.paseto.crypto.Tuple;
+import net.aholbrook.paseto.TokenWithFooter;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
 
@@ -28,7 +28,7 @@ public abstract class TokenService<_TokenType extends Token> {
 
 	abstract public _TokenType decode(String token);
 	abstract public <_FooterType> _TokenType decode(String token, _FooterType footer);
-	abstract public <_FooterType> Tuple<_TokenType, _FooterType> decodeWithFooter(String token,
+	abstract public <_FooterType> TokenWithFooter<_TokenType, _FooterType> decodeWithFooter(String token,
 			Class<_FooterType> footerClass);
 
 	abstract public <_FooterType> _FooterType getFooter(String token, Class<_FooterType> footerClass);

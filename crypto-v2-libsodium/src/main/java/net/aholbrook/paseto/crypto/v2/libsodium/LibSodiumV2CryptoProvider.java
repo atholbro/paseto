@@ -19,7 +19,7 @@ package net.aholbrook.paseto.crypto.v2.libsodium;
 
 import com.goterl.lazycode.lazysodium.LazySodiumJava;
 import com.goterl.lazycode.lazysodium.SodiumJava;
-import net.aholbrook.paseto.crypto.Tuple;
+import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 
 public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
@@ -87,10 +87,10 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 	}
 
 	@Override
-	public Tuple<byte[], byte[]> ed25519Generate() {
+	public KeyPair ed25519Generate() {
 		byte[] sk = new byte[ed25519SignSecretKeyBytes()];
 		byte[] pk = new byte[ed25519SignPublicKeyBytes()];
 		sodium.cryptoSignKeypair(pk, sk);
-		return new Tuple<>(sk, pk);
+		return new KeyPair(sk, pk);
 	}
 }

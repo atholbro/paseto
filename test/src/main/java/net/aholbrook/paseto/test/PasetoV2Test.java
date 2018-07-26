@@ -20,7 +20,8 @@ package net.aholbrook.paseto.test;
 import net.aholbrook.paseto.Paseto;
 import net.aholbrook.paseto.PasetoV1;
 import net.aholbrook.paseto.PasetoV2;
-import net.aholbrook.paseto.crypto.Tuple;
+import net.aholbrook.paseto.TokenWithFooter;
+import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.DecryptionException;
 import net.aholbrook.paseto.exception.InvalidFooterException;
@@ -330,9 +331,9 @@ public class PasetoV2Test extends PasetoTest {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
 		Paseto<Token> paseto = createPaseto(tv.getB());
 
-		Tuple<Token, KeyId> result = paseto.decryptWithFooter(tv.getToken(), tv.getA(), tv.getPayloadClass(),
+		TokenWithFooter<Token, KeyId> result = paseto.decryptWithFooter(tv.getToken(), tv.getA(), tv.getPayloadClass(),
 				KeyId.class);
-		Assert.assertEquals("extracted footer != footer", tv.getFooter(), result.b);
+		Assert.assertEquals("extracted footer != footer", tv.getFooter(), result.getFooter());
 	}
 
 	@Test
@@ -340,8 +341,8 @@ public class PasetoV2Test extends PasetoTest {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
 		Paseto<Token> paseto = createPaseto(tv.getB());
 
-		Tuple<Token, String> result = paseto.decryptWithFooter(tv.getToken(), tv.getA(), tv.getPayloadClass());
-		KeyId footer = encodingProvider().decode(result.b, KeyId.class);
+		TokenWithFooter<Token, String> result = paseto.decryptWithFooter(tv.getToken(), tv.getA(), tv.getPayloadClass());
+		KeyId footer = encodingProvider().decode(result.getFooter(), KeyId.class);
 		Assert.assertEquals("extracted footer != footer", tv.getFooter(), footer);
 	}
 
@@ -350,9 +351,9 @@ public class PasetoV2Test extends PasetoTest {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
 		Paseto<Token> paseto = createPaseto(tv.getB());
 
-		Tuple<Token, KeyId> result = paseto.verifyWithFooter(tv.getToken(), tv.getB(), tv.getPayloadClass(),
+		TokenWithFooter<Token, KeyId> result = paseto.verifyWithFooter(tv.getToken(), tv.getB(), tv.getPayloadClass(),
 				KeyId.class);
-		Assert.assertEquals("extracted footer != footer", tv.getFooter(), result.b);
+		Assert.assertEquals("extracted footer != footer", tv.getFooter(), result.getFooter());
 	}
 
 	@Test
@@ -360,8 +361,8 @@ public class PasetoV2Test extends PasetoTest {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
 		Paseto<Token> paseto = createPaseto(tv.getB());
 
-		Tuple<Token, String> result = paseto.verifyWithFooter(tv.getToken(), tv.getB(), tv.getPayloadClass());
-		KeyId footer = encodingProvider().decode(result.b, KeyId.class);
+		TokenWithFooter<Token, String> result = paseto.verifyWithFooter(tv.getToken(), tv.getB(), tv.getPayloadClass());
+		KeyId footer = encodingProvider().decode(result.getFooter(), KeyId.class);
 		Assert.assertEquals("extracted footer != footer", tv.getFooter(), footer);
 	}
 
@@ -586,12 +587,12 @@ public class PasetoV2Test extends PasetoTest {
 	@Test
 	public void v2_token2_generateKeyPair() {
 		Paseto<CustomToken> paseto = createPaseto(null);
-		Tuple<byte[], byte[]> keyPair = paseto.generateKeyPair();
+		KeyPair keyPair = paseto.generateKeyPair();
 
 		// encrypt with new key
-		String token = paseto.sign(TokenTestVectors.TOKEN_2, keyPair.a);
+		String token = paseto.sign(TokenTestVectors.TOKEN_2, keyPair.getSecretKey());
 		// now decrypt, should work
-		CustomToken payload = paseto.verify(token, keyPair.b, CustomToken.class);
+		CustomToken payload = paseto.verify(token, keyPair.getPublicKey(), CustomToken.class);
 		Assert.assertEquals("decrypted payload != original payload", TokenTestVectors.TOKEN_2, payload);
 	}
 }

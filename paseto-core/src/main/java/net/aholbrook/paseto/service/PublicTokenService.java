@@ -1,7 +1,7 @@
 package net.aholbrook.paseto.service;
 
 import net.aholbrook.paseto.Paseto;
-import net.aholbrook.paseto.crypto.Tuple;
+import net.aholbrook.paseto.TokenWithFooter;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.Claims;
 
@@ -57,10 +57,11 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 	}
 
 	@Override
-	public <_FooterType> Tuple<_TokenType, _FooterType> decodeWithFooter(String token, Class<_FooterType> footerClass) {
-		Tuple<_TokenType, _FooterType> result
+	public <_FooterType> TokenWithFooter<_TokenType, _FooterType> decodeWithFooter(String token,
+			Class<_FooterType> footerClass) {
+		TokenWithFooter<_TokenType, _FooterType> result
 				= paseto.verifyWithFooter(token, keyProvider.getPublicKey(), tokenClass, footerClass);
-		Claims.verify(result.a, claims);
+		Claims.verify(result.getToken(), claims);
 		return result;
 	}
 

@@ -17,8 +17,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.crypto.v2;
 
+import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
-import net.aholbrook.paseto.crypto.Tuple;
 import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 import net.aholbrook.paseto.crypto.exception.ByteArrayRangeException;
 
@@ -49,7 +49,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 	abstract public boolean ed25519Sign(byte[] sig, byte[] m, byte[] sk);
 	abstract public boolean ed25519Verify(byte[] sig, byte[] m, byte[] pk);
 	abstract public byte[] ed25519SkToPk(byte[] sk);
-	abstract public Tuple<byte[], byte[]> ed25519Generate();
+	abstract public KeyPair ed25519Generate();
 
 	// Nonce
 	public NonceGenerator getNonceGenerator() {

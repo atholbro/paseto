@@ -17,8 +17,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto;
 
+import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
-import net.aholbrook.paseto.crypto.Tuple;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
@@ -189,7 +189,7 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 	}
 
 	@Override
-	public Tuple<byte[], byte[]> generateKeyPair() {
+	public KeyPair generateKeyPair() {
 		return cryptoProvider.rsaGenerate();
 	}
 }

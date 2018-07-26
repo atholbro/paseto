@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.test;
 
-import net.aholbrook.paseto.crypto.Tuple;
+import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
@@ -294,9 +294,9 @@ public class V1CryptoProviderTest {
 	@Test
 	public void crypto_v1_generateKeyPair() {
 		byte[] message = StringUtils.getBytesUtf8("test message");
-		Tuple<byte[], byte[]> keyPair = v1CryptoProvider().rsaGenerate();
-		byte[] sig = v1CryptoProvider().rsaSign(message, keyPair.a);
-		v1CryptoProvider().rsaVerify(message, sig, keyPair.b);
+		KeyPair keyPair = v1CryptoProvider().rsaGenerate();
+		byte[] sig = v1CryptoProvider().rsaSign(message, keyPair.getSecretKey());
+		v1CryptoProvider().rsaVerify(message, sig, keyPair.getPublicKey());
 	}
 
 	// https://www.ietf.org/rfc/rfc4868.txt

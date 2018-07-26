@@ -17,8 +17,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.crypto.v1;
 
+import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
-import net.aholbrook.paseto.crypto.Tuple;
 import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 
 import java.math.BigInteger;
@@ -59,7 +59,7 @@ public abstract class V1CryptoProvider implements NonceGenerator {
 	// RSA Signatures
 	abstract public byte[] rsaSign(byte[] m, byte[] privateKey);
 	abstract public boolean rsaVerify(byte[] m, byte[] sig, byte[] publicKey);
-	abstract public Tuple<byte[], byte[]> rsaGenerate();
+	abstract public KeyPair rsaGenerate();
 
 	// Validation
 	protected final void validateHkdfExtractAndExpand(byte[] salt, byte[] inputKeyingMaterial, byte[] info) {

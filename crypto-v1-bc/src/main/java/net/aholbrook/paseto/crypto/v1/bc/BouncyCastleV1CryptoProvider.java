@@ -17,7 +17,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.crypto.v1.bc;
 
-import net.aholbrook.paseto.crypto.Tuple;
+import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import org.bouncycastle.asn1.DERNull;
@@ -178,7 +178,7 @@ public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 	}
 
 	@Override
-	public Tuple<byte[], byte[]> rsaGenerate() {
+	public KeyPair rsaGenerate() {
 		RSAKeyPairGenerator keyGen = new RSAKeyPairGenerator();
 		keyGen.init(new RSAKeyGenerationParameters(E, new SecureRandom(), RSA_KEY_SIZE,
 				PrimeCertaintyCalculator.getDefaultCertainty(RSA_KEY_SIZE)));
@@ -195,6 +195,6 @@ public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 				priv.getPublicExponent(), priv.getExponent(), priv.getP(), priv.getQ(), priv.getDP(), priv.getDQ(),
 				priv.getQInv()));
 
-		return new Tuple<>(privateKey, publicKey);
+		return new KeyPair(privateKey, publicKey);
 	}
 }

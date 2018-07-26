@@ -17,7 +17,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.util;
 
-import net.aholbrook.paseto.crypto.Tuple;
+import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.exception.Pkcs12LoadException;
 
 import java.io.FileInputStream;
@@ -35,11 +35,11 @@ import java.security.cert.CertificateException;
 public class Pkcs12 {
 	private Pkcs12() {}
 
-	public static Tuple<PrivateKey, PublicKey> load(String keystoreFile, String keystorePass, String alias) {
+	public static KeyPair load(String keystoreFile, String keystorePass, String alias) {
 		return load(keystoreFile, keystorePass, alias, keystorePass);
 	}
 
-	public static Tuple<PrivateKey, PublicKey> load(String keystoreFile, String keystorePass, String alias,
+	public static KeyPair load(String keystoreFile, String keystorePass, String alias,
 			String keyPass) {
 		try {
 			KeyStore p12 = KeyStore.getInstance("PKCS12");
@@ -51,7 +51,7 @@ public class Pkcs12 {
 			if (cert == null) { throw new Pkcs12LoadException(Pkcs12LoadException.Reason.PUBLIC_KEY_NOT_FOUND); }
 			PublicKey publicKey = cert.getPublicKey();
 
-			return new Tuple<>(privateKey, publicKey);
+			return new KeyPair(privateKey.getEncoded(), publicKey.getEncoded());
 		} catch (FileNotFoundException e) {
 			throw new Pkcs12LoadException(e);
 		} catch (CertificateException e) {
