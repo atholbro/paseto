@@ -17,6 +17,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.test;
 
+import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
+import net.aholbrook.paseto.crypto.exception.ByteArrayRangeException;
 import org.junit.Assert;
 
 public class AssertUtils {
@@ -51,5 +53,30 @@ public class AssertUtils {
 		}
 
 		Assert.assertFalse("arrays match", match);
+	}
+
+	public static void assertByteArrayRangeException(Runnable r, String arg, int len, int lower, int upper) {
+		try {
+			r.run();
+		} catch (ByteArrayRangeException e) {
+			Assert.assertEquals("arg", arg, e.getArg());
+			Assert.assertEquals("len", len, e.getLen());
+			Assert.assertEquals("minBound", lower, e.getMinBound());
+			Assert.assertEquals("maxBound", upper, e.getMaxBound());
+			throw e;
+		}
+	}
+
+	public static void assertByteArrayLengthException(Runnable r, String arg, int len, int required,
+			boolean exact) {
+		try {
+			r.run();
+		} catch (ByteArrayLengthException e) {
+			Assert.assertEquals(arg, e.getArg());
+			Assert.assertEquals(len, e.getLen());
+			Assert.assertEquals(required, e.getRequired());
+			Assert.assertEquals(exact, e.isExact());
+			throw e;
+		}
 	}
 }
