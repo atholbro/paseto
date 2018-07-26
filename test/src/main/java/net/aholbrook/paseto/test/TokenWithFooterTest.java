@@ -27,6 +27,9 @@ public class TokenWithFooterTest {
 		TokenWithFooter<String, String> twf1 = new TokenWithFooter<>("test", "something else");
 		TokenWithFooter<String, String> twf2 = new TokenWithFooter<>("aaaa", "bb");
 
+		Assert.assertNotEquals(twf1, new Object());
+		Assert.assertEquals(false, twf1.equals(null));
+		Assert.assertEquals(false, twf1.equals(1));
 		Assert.assertNotEquals(twf1, twf2);
 		Assert.assertNotEquals(twf1.hashCode(), twf2.hashCode());
 	}

@@ -40,6 +40,8 @@ public class TokenTest {
 				.setTokenId(TokenTestVectors.TOKEN_1.getTokenId())
 				.setIssuer(TokenTestVectors.TOKEN_1.getIssuer());
 		Assert.assertNotEquals(token1, new Object());
+		Assert.assertEquals(false, token1.equals(null));
+		Assert.assertEquals(false, token1.equals(1));
 		Assert.assertNotEquals(TokenTestVectors.TOKEN_1, token1);
 		Assert.assertNotEquals(TokenTestVectors.TOKEN_1.hashCode(), token1.hashCode());
 	}

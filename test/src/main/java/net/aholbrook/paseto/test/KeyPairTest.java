@@ -20,6 +20,8 @@ public class KeyPairTest {
 		KeyPair kp1 = new KeyPair(RfcTestVectors.RFC_TEST_RSA_PRIVATE_KEY, RfcTestVectors.RFC_TEST_RSA_PUBLIC_KEY);
 		KeyPair kp2 = new KeyPair(RfcTestVectors.RFC_TEST_SK, RfcTestVectors.RFC_TEST_PK);
 		Assert.assertNotEquals(kp1, new Object());
+		Assert.assertEquals(false, kp1.equals(null));
+		Assert.assertEquals(false, kp1.equals(1));
 		Assert.assertNotEquals(kp1, kp2);
 		Assert.assertNotEquals(kp1.hashCode(), kp2.hashCode());
 	}
