@@ -62,7 +62,7 @@ public class JvmV1CryptoProvider implements V1CryptoProvider {
 	private final NonceGenerator nonceGenerator;
 
 	public JvmV1CryptoProvider() {
-		this(new Jvm8NonceGenerator());
+		this(new SecureRandomNonceGenerator());
 	}
 
 	public JvmV1CryptoProvider(NonceGenerator nonceGenerator) {

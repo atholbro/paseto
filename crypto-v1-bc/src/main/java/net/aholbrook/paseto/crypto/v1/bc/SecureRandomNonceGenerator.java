@@ -21,7 +21,7 @@ import net.aholbrook.paseto.crypto.NonceGenerator;
 
 import java.security.SecureRandom;
 
-public class Jvm8NonceGenerator implements NonceGenerator {
+public class SecureRandomNonceGenerator implements NonceGenerator {
 	@Override
 	public byte[] generateNonce() {
 		byte[] bytes = new byte[32];
