@@ -19,38 +19,46 @@ package net.aholbrook.paseto.crypto.v1.bc;
 
 import net.aholbrook.paseto.crypto.NonceGenerator;
 import net.aholbrook.paseto.crypto.Tuple;
+import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
+import org.bouncycastle.asn1.DERNull;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.asn1.pkcs.RSAPrivateKey;
+import org.bouncycastle.asn1.pkcs.RSAPublicKey;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.BlockCipher;
+import org.bouncycastle.crypto.BufferedBlockCipher;
+import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.SHA384Digest;
+import org.bouncycastle.crypto.engines.AESEngine;
+import org.bouncycastle.crypto.engines.RSABlindedEngine;
 import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
+import org.bouncycastle.crypto.generators.RSAKeyPairGenerator;
+import org.bouncycastle.crypto.macs.HMac;
+import org.bouncycastle.crypto.modes.SICBlockCipher;
 import org.bouncycastle.crypto.params.HKDFParameters;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.ParametersWithIV;
+import org.bouncycastle.crypto.params.RSAKeyGenerationParameters;
+import org.bouncycastle.crypto.params.RSAKeyParameters;
+import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
+import org.bouncycastle.crypto.signers.PSSSigner;
+import org.bouncycastle.crypto.util.PrivateKeyFactory;
+import org.bouncycastle.crypto.util.PublicKeyFactory;
+import org.bouncycastle.jcajce.provider.asymmetric.util.KeyUtil;
+import org.bouncycastle.jcajce.provider.asymmetric.util.PrimeCertaintyCalculator;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.io.IOException;
+import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 
 public class JvmV1CryptoProvider implements V1CryptoProvider {
-	private final static String HMAC_ALGORITHM = "HmacSHA384";
+	private final static int RSA_KEY_SIZE = 2048;
+	private final static BigInteger E = BigInteger.valueOf(65537L);
 	private final NonceGenerator nonceGenerator;
 
 	public JvmV1CryptoProvider() {
@@ -58,6 +66,7 @@ public class JvmV1CryptoProvider implements V1CryptoProvider {
 	}
 
 	public JvmV1CryptoProvider(NonceGenerator nonceGenerator) {
+		//Security.setProperty("crypto.policy", "limited");
 		this.nonceGenerator = nonceGenerator;
 	}
 
@@ -86,122 +95,122 @@ public class JvmV1CryptoProvider implements V1CryptoProvider {
 
 	@Override
 	public byte[] hmacSha384(byte[] m, byte[] key) {
-		try {
-			SecretKeySpec sks = new SecretKeySpec(key, HMAC_ALGORITHM);
-			Mac mac = Mac.getInstance(HMAC_ALGORITHM, provider);
-			mac.init(sks);
-			return mac.doFinal(m);
-		} catch (IllegalArgumentException e) {
-			throw new HmacException(e);
-		} catch (NoSuchAlgorithmException e) {
-			// Shouldn't occur unless BouncyCastle is broken. Thus we wrap in an unchecked exception and rethrow.
-			throw new HmacException(e);
-		} catch (InvalidKeyException e) {
-			// Basically never occurs, even if you change one of the algorithm parameters above to something else. Thus
-			// we wrap in an unchecked exception and rethrow.
-			throw new HmacException(e);
-		}
+		if (m == null) { throw new NullPointerException("m"); }
+		if (key == null) { throw new NullPointerException("key"); }
+
+		if (m.length < 1) { throw new ByteArrayLengthException("m", m.length, 1, false); }
+		if (key.length < 1) { throw new ByteArrayLengthException("key", key.length, 1, false); }
+
+		Digest digest = new SHA384Digest();
+		HMac hmac = new HMac(digest);
+
+		hmac.init(new KeyParameter(key));
+		byte[] out = new byte[hmac.getMacSize()];
+		hmac.update(m, 0, m.length);
+		hmac.doFinal(out, 0);
+		return out;
+	}
+
+	private BufferedBlockCipher ase256CtrCipher(boolean forEncryption, byte[] key, byte[] iv) {
+		BlockCipher engine = new AESEngine();
+		BufferedBlockCipher cipher = new BufferedBlockCipher(new SICBlockCipher(engine));
+		CipherParameters params = new ParametersWithIV(new KeyParameter(key), iv);
+
+		cipher.init(forEncryption, params);
+		return cipher;
 	}
 
 	@Override
 	public byte[] aes256Ctr(byte[] m, byte[] key, byte[] iv) {
+		if (key == null) { throw new NullPointerException("key"); }
+		if (iv == null) { throw new NullPointerException("iv"); }
+
+		if (key.length < 1) { throw new ByteArrayLengthException("key", key.length, 1, false); }
+		if (iv.length < 1) { throw new ByteArrayLengthException("iv", key.length, 8, false); }
+
 		try {
-			IvParameterSpec ivps = new IvParameterSpec(iv);
-			SecretKeySpec sks = new SecretKeySpec(key, "AES");
+			BufferedBlockCipher cipher = ase256CtrCipher(true, key, iv);
 
-			Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
-			cipher.init(Cipher.ENCRYPT_MODE, sks, ivps);
+			byte[] cipherText = new byte[cipher.getOutputSize(m.length)];
+			int len = cipher.processBytes(m, 0, m.length, cipherText, 0);
+			cipher.doFinal(cipherText, len);
 
-			return cipher.doFinal(m);
-		} catch (NoSuchPaddingException e) {
-			throw new CryptoProviderException("JVM does not implement NoPadding.", e);
-		} catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
-			throw new CryptoProviderException("JVM does not implement AES CTR.", e);
-		} catch (InvalidKeyException e) {
-			throw new CryptoProviderException("JVM does not support 256 bit encryption.", e);
-		} catch (BadPaddingException e) {
-			throw new CryptoProviderException("BadPaddingException", e);
-		} catch (IllegalBlockSizeException e) {
-			throw new CryptoProviderException("IllegalBlockSizeException", e);
+			return cipherText;
+		} catch (Throwable e) {
+			throw new CryptoProviderException("Unable to encrypt clear text with AES-256-CTR.", e);
 		}
 	}
 
 	@Override
 	public byte[] aes256CtrDecrypt(byte[] c, byte[] key, byte[] iv) {
 		try {
-			IvParameterSpec ivps = new IvParameterSpec(iv);
-			SecretKeySpec sks = new SecretKeySpec(key, "AES");
+			BufferedBlockCipher cipher = ase256CtrCipher(false, key, iv);
 
-			Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
-			cipher.init(Cipher.DECRYPT_MODE, sks, ivps);
+			byte[] clearText = new byte[cipher.getOutputSize(c.length)];
+			int len = cipher.processBytes(c, 0, c.length, clearText, 0);
+			cipher.doFinal(clearText, len);
 
-			return cipher.doFinal(c);
-		} catch (NoSuchPaddingException e) {
-			throw new CryptoProviderException("JVM does not implement NoPadding.", e);
-		} catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
-			throw new CryptoProviderException("JVM does not implement AES CTR.", e);
-		} catch (InvalidKeyException e) {
-			throw new CryptoProviderException("JVM does not support 256 bit encryption.", e);
-		} catch (BadPaddingException e) {
-			throw new CryptoProviderException("BadPaddingException", e);
-		} catch (IllegalBlockSizeException e) {
-			throw new CryptoProviderException("IllegalBlockSizeException", e);
+			return clearText;
+		} catch (Throwable e) {
+			throw new CryptoProviderException("Unable to decrypt cipher text with AES-256-CTR.", e);
+		}
+	}
+
+	private PSSSigner pssSha384(boolean forSigning, byte[] key) {
+		try {
+			byte[] salt = new byte[48];
+			new SecureRandom().nextBytes(salt);
+			// RSA-PSS, SHA-384, MGF1(SHA-384), 48 byte salt length, 0xBC trailer
+			PSSSigner pss = new PSSSigner(new RSABlindedEngine(), new SHA384Digest(), new SHA384Digest(), 48, (byte)0xBC);
+
+			if (forSigning) {
+				pss.init(true, PrivateKeyFactory.createKey(key));
+			} else {
+				pss.init(false, PublicKeyFactory.createKey(key));
+			}
+
+			return pss;
+		} catch (IOException e) {
+			throw new CryptoProviderException("IOException", e);
 		}
 	}
 
 	@Override
 	public byte[] rsaSign(byte[] m, byte[] privateKey) {
 		try {
-			KeyFactory kf = KeyFactory.getInstance("RSA");
-			PrivateKey pk = kf.generatePrivate(new PKCS8EncodedKeySpec(privateKey));
-
-			Signature signature = Signature.getInstance("SHA384withRSA/PSS", new BouncyCastleProvider());
-			signature.initSign(pk);
-			signature.update(m);
-
-			return signature.sign();
-		} catch (NoSuchAlgorithmException e) {
-			throw new CryptoProviderException("Unable to generate RSA signature - algorithm not found.", e);
-		} catch (InvalidKeySpecException e) {
-			throw new CryptoProviderException("Unable to generate RSA signature - invalid key spec.", e);
-		} catch (InvalidKeyException e) {
-			throw new CryptoProviderException("Unable to generate RSA signature - invalid key.", e);
-		} catch (SignatureException e) {
-			throw new CryptoProviderException("Unable to generate RSA signature - signature error.", e);
+			PSSSigner pss = pssSha384(true, privateKey);
+			pss.update(m, 0, m.length);
+			return pss.generateSignature();
+		} catch (CryptoException e) {
+			throw new CryptoProviderException("CryptoException", e);
 		}
 	}
 
 	@Override
 	public boolean rsaVerify(byte[] m, byte[] sig, byte[] publicKey) {
-		try {
-			KeyFactory kf = KeyFactory.getInstance("RSA");
-			PublicKey pk = kf.generatePublic(new X509EncodedKeySpec(publicKey));
-
-			Signature signature = Signature.getInstance("SHA384withRSA/PSS", new BouncyCastleProvider());
-			signature.initVerify(pk);
-			signature.update(m);
-
-			return signature.verify(sig);
-		} catch (NoSuchAlgorithmException e) {
-			throw new CryptoProviderException("Unable to generate RSA signature - algorithm not found.", e);
-		} catch (InvalidKeySpecException e) {
-			throw new CryptoProviderException("Unable to generate RSA signature - invalid key spec.", e);
-		} catch (InvalidKeyException e) {
-			throw new CryptoProviderException("Unable to generate RSA signature - invalid key.", e);
-		} catch (SignatureException e) {
-			throw new CryptoProviderException("Unable to generate RSA signature - signature error.", e);
-		}
+		PSSSigner pss = pssSha384(false, publicKey);
+		pss.update(m, 0, m.length);
+		return pss.verifySignature(sig);
 	}
 
 	@Override
 	public Tuple<byte[], byte[]> rsaGenerate() {
-		try {
-			KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA", new BouncyCastleProvider());
-			KeyPair pair = keyGen.generateKeyPair();
+		RSAKeyPairGenerator keyGen = new RSAKeyPairGenerator();
+		keyGen.init(new RSAKeyGenerationParameters(E, new SecureRandom(), RSA_KEY_SIZE,
+				PrimeCertaintyCalculator.getDefaultCertainty(RSA_KEY_SIZE)));
+		AsymmetricCipherKeyPair pair = keyGen.generateKeyPair();
 
-			return new Tuple<>(pair.getPrivate().getEncoded(), pair.getPublic().getEncoded());
-		} catch (NoSuchAlgorithmException e) {
-			throw new CryptoProviderException("Unable to create RSA Key - No algorithm", e);
-		}
+		RSAKeyParameters pub = (RSAKeyParameters)pair.getPublic();
+		RSAPrivateCrtKeyParameters priv = (RSAPrivateCrtKeyParameters)pair.getPrivate();
+
+		// As in BCRSAPrivateKey / BCRSAPublicKey
+		AlgorithmIdentifier algo = new AlgorithmIdentifier(PKCSObjectIdentifiers.rsaEncryption, DERNull.INSTANCE);
+		byte[] publicKey = KeyUtil.getEncodedSubjectPublicKeyInfo(algo, new RSAPublicKey(pub.getModulus(),
+				pub.getExponent()));
+		byte[] privateKey = KeyUtil.getEncodedPrivateKeyInfo(algo, new RSAPrivateKey(priv.getModulus(),
+				priv.getPublicExponent(), priv.getExponent(), priv.getP(), priv.getQ(), priv.getDP(), priv.getDQ(),
+				priv.getQInv()));
+
+		return new Tuple<>(privateKey, publicKey);
 	}
 }
