@@ -29,6 +29,8 @@ public class PasetoBuilders {
 	private PasetoBuilders() {}
 
 	public static class V1 {
+		private V1() {}
+
 		public static Paseto.Builder paseto() {
 			return new Paseto.Builder()
 					.v1(new BouncyCastleV1CryptoProvider())
@@ -61,6 +63,8 @@ public class PasetoBuilders {
 	}
 
 	public static class V2 {
+		private V2() {}
+
 		public static Paseto.Builder paseto() {
 			return new Paseto.Builder()
 					.v2(new LibSodiumV2CryptoProvider())
