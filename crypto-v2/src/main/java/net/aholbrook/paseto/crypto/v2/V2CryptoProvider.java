@@ -39,7 +39,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 	abstract public boolean blake2b(byte[] out, byte[] in, byte[] key);
 
 	// RNG
-	abstract public  byte[] randomBytes(int size);
+	abstract public byte[] randomBytes(int size);
 
 	// XChaCha20Poly1305
 	abstract public boolean aeadXChaCha20Poly1305IetfEncrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce, byte[] key);
