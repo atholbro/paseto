@@ -46,4 +46,9 @@ public class PaeUtilTest {
 	public void paeUtil_RfcVector4() {
 		PaeUtil.pae((byte[]) null);
 	}
+
+	@Test(expected = NullPointerException.class)
+	public void paeUtil_nullPieces() {
+		PaeUtil.pae(null);
+	}
 }
