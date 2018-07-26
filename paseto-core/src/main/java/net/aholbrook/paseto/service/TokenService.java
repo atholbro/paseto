@@ -10,12 +10,12 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 
 public abstract class TokenService<_TokenType extends Token> {
-	final Paseto<_TokenType> paseto;
+	final Paseto paseto;
 	final Class<_TokenType> tokenClass;
 	final Claim[] claims;
 	private final Duration defaultValidityPeriod;
 
-	TokenService(Paseto<_TokenType> paseto, Claim[] claims, Duration defaultValidityPeriod,
+	TokenService(Paseto paseto, Claim[] claims, Duration defaultValidityPeriod,
 			Class<_TokenType> tokenClass) {
 		this.paseto = paseto;
 		this.tokenClass = tokenClass;

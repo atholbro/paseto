@@ -39,8 +39,8 @@ import org.junit.Test;
 
 public class PasetoV2Test extends PasetoTest {
 	@Override
-	protected <_TokenType> Paseto<_TokenType> createPaseto(byte[] nonce) {
-		return TestContext.builders().<_TokenType>pasetoBuilderV2(nonce).build();
+	protected Paseto createPaseto(byte[] nonce) {
+		return TestContext.builders().pasetoBuilderV2(nonce).build();
 	}
 
 	private EncodingProvider encodingProvider() {
@@ -301,7 +301,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test
 	public void v2_token1_extractFooter() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(null);
+		Paseto paseto = createPaseto(null);
 
 		KeyId footer = paseto.extractFooter(tv.getToken(), KeyId.class);
 		Assert.assertEquals("extracted footer != footer", tv.getFooter(), footer);
@@ -310,7 +310,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test
 	public void v2_token1_extractFooterString() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(null);
+		Paseto paseto = createPaseto(null);
 
 		String footerString = paseto.extractFooter(tv.getToken());
 		KeyId footer = encodingProvider().decode(footerString, KeyId.class);
@@ -320,7 +320,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test
 	public void v2_token1_extractMissingFooter() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_PUBLIC;
-		Paseto<Token> paseto = createPaseto(null);
+		Paseto paseto = createPaseto(null);
 
 		KeyId footer = paseto.extractFooter(tv.getToken(), KeyId.class);
 		Assert.assertNull("footer not null", footer);
@@ -329,7 +329,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test
 	public void v2_token1_localDecryptWithFooter() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 
 		TokenWithFooter<Token, KeyId> result = paseto.decryptWithFooter(tv.getToken(), tv.getA(), tv.getPayloadClass(),
 				KeyId.class);
@@ -339,7 +339,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test
 	public void v2_token1_localDecryptWithFooterString() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 
 		TokenWithFooter<Token, String> result = paseto.decryptWithFooter(tv.getToken(), tv.getA(), tv.getPayloadClass());
 		KeyId footer = encodingProvider().decode(result.getFooter(), KeyId.class);
@@ -349,7 +349,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test
 	public void v1_token1_publicVerifyWithFooter() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 
 		TokenWithFooter<Token, KeyId> result = paseto.verifyWithFooter(tv.getToken(), tv.getB(), tv.getPayloadClass(),
 				KeyId.class);
@@ -359,7 +359,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test
 	public void v2_token1_publicVerifyWithFooterString() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 
 		TokenWithFooter<Token, String> result = paseto.verifyWithFooter(tv.getToken(), tv.getB(), tv.getPayloadClass());
 		KeyId footer = encodingProvider().decode(result.getFooter(), KeyId.class);
@@ -371,7 +371,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = DecryptionException.class)
 	public void v2_token1_modifyPayload() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 
 		// encrypt and modify
 		String token = paseto.encrypt(tv.getPayload(), tv.getA());
@@ -385,7 +385,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = DecryptionException.class)
 	public void v2_token1_modifyFooter() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 
 		// encrypt and modify
 		String token = paseto.encrypt(tv.getPayload(), tv.getA());
@@ -399,7 +399,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = DecryptionException.class)
 	public void v2_token1_decryptWrongKey() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 
 		// attempt to decrypt
 		paseto.decrypt(tv.getToken(), RfcTestVectors.rfcTestKey(), tv.getPayloadClass());
@@ -409,7 +409,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = SignatureVerificationException.class)
 	public void v2_token1_verifyWrongKey() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_PUBLIC;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 
 		// attempt to decrypt
 		paseto.verify(tv.getToken(), RfcTestVectors.rfcTestV2PublicKey(), tv.getPayloadClass());
@@ -419,7 +419,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = InvalidHeaderException.class)
 	public void v2_token1_v1LocalAsV2Local() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		AssertUtils.assertInvalidHeaderException(() ->
 				paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass()),
 				PasetoV1.HEADER_LOCAL, PasetoV2.HEADER_LOCAL);
@@ -429,7 +429,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = InvalidHeaderException.class)
 	public void v2_token1_v1LocalAsV2Public() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		AssertUtils.assertInvalidHeaderException(() ->
 				paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass()),
 				PasetoV1.HEADER_LOCAL, PasetoV2.HEADER_PUBLIC);
@@ -439,7 +439,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = InvalidHeaderException.class)
 	public void v2_token1_v1PublicAsV2Local() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		AssertUtils.assertInvalidHeaderException(() ->
 				paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass()),
 				PasetoV1.HEADER_PUBLIC, PasetoV2.HEADER_LOCAL);
@@ -449,7 +449,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = InvalidHeaderException.class)
 	public void v2_token1_v1PublicAsV2Public() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		AssertUtils.assertInvalidHeaderException(() ->
 				paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass()),
 				PasetoV1.HEADER_PUBLIC, PasetoV2.HEADER_PUBLIC);
@@ -459,7 +459,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = InvalidHeaderException.class)
 	public void v2_token1_publicAsLocal() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		AssertUtils.assertInvalidHeaderException(() ->
 				paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass()),
 				PasetoV2.HEADER_PUBLIC, PasetoV2.HEADER_LOCAL);
@@ -469,7 +469,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = InvalidHeaderException.class)
 	public void v2_token1_localAsPublic() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		AssertUtils.assertInvalidHeaderException(() ->
 				paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass()),
 				PasetoV2.HEADER_LOCAL, PasetoV2.HEADER_PUBLIC);
@@ -479,7 +479,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = InvalidFooterException.class)
 	public void v2_token1_localMissingFooter() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		AssertUtils.assertInvalidFooterException(() ->
 				paseto.decrypt(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass()),
 				"", "not-the-footer");
@@ -489,7 +489,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = InvalidFooterException.class)
 	public void v2_token1_publicMissingFooter() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_PUBLIC;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		AssertUtils.assertInvalidFooterException(() ->
 				paseto.verify(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass()),
 				"", "not-the-footer");
@@ -499,7 +499,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = InvalidFooterException.class)
 	public void v2_token1_localWrongFooter() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		String given = encodingProvider().encode(tv.getFooter());
 		AssertUtils.assertInvalidFooterException(() ->
 				paseto.decrypt(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass()),
@@ -510,7 +510,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = InvalidFooterException.class)
 	public void v2_token1_publicWrongFooter() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		String given = encodingProvider().encode(tv.getFooter());
 		AssertUtils.assertInvalidFooterException(() ->
 				paseto.verify(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass()),
@@ -521,7 +521,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = PasetoStringException.class)
 	public void v2_badInput() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		AssertUtils.assertPasetoStringException(() ->
 				paseto.decrypt("junk", tv.getA(), tv.getPayloadClass()),
 				"junk");
@@ -530,7 +530,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = PasetoStringException.class)
 	public void v2_badTokenDecrypt() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		AssertUtils.assertPasetoStringException(() ->
 				paseto.decrypt("v2.local.", tv.getA(), tv.getPayloadClass()),
 				"v2.local.");
@@ -539,7 +539,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = PasetoStringException.class)
 	public void v2_badTokenVerify() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		AssertUtils.assertPasetoStringException(() ->
 				paseto.verify("v2.local.", tv.getA(), tv.getPayloadClass()),
 				"v2.local.");
@@ -548,7 +548,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = PasetoStringException.class)
 	public void v2_shortTokenLocal() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_LOCAL;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		AssertUtils.assertPasetoStringException(() ->
 				paseto.decrypt("v2.local.c29tZXRoaW5n", tv.getA(), tv.getPayloadClass()),
 				"v2.local.c29tZXRoaW5n");
@@ -557,7 +557,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = PasetoStringException.class)
 	public void v2_shortTokenPublic() {
 		TestVector<Token, Void> tv = TokenTestVectors.TV_1_V2_PUBLIC;
-		Paseto<Token> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		AssertUtils.assertPasetoStringException(() ->
 				paseto.verify("v2.public.c29tZXRoaW5n", tv.getA(), tv.getPayloadClass()),
 				"v2.public.c29tZXRoaW5n");
@@ -568,7 +568,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test
 	public void v2_token1_localNonce() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(null);
+		Paseto paseto = createPaseto(null);
 		String token1 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
 		String token2 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
 		Assert.assertNotEquals("nonce failed, 2 tokens have same contents", token1, token2);
@@ -577,7 +577,7 @@ public class PasetoV2Test extends PasetoTest {
 	@Test
 	public void v2_token1_publicNonce() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
-		Paseto<Token> paseto = createPaseto(null);
+		Paseto paseto = createPaseto(null);
 		String token1 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
 		String token2 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
 		Assert.assertNotEquals("nonce failed, 2 tokens have same contents", token1, token2);
@@ -586,7 +586,7 @@ public class PasetoV2Test extends PasetoTest {
 	// Key pair generation tests
 	@Test
 	public void v2_token2_generateKeyPair() {
-		Paseto<CustomToken> paseto = createPaseto(null);
+		Paseto paseto = createPaseto(null);
 		KeyPair keyPair = paseto.generateKeyPair();
 
 		// encrypt with new key

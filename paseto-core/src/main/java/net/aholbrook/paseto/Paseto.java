@@ -30,7 +30,7 @@ import net.aholbrook.paseto.util.StringUtils;
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
-public abstract class Paseto<_Payload> {
+public abstract class Paseto {
 	final static String SEPARATOR = ".";
 	final static String PURPOSE_LOCAL = "local";
 	final static String PURPOSE_PUBLIC = "public";
@@ -43,64 +43,66 @@ public abstract class Paseto<_Payload> {
 		this.nonceGenerator = nonceGenerator;
 	}
 
-	public abstract String encrypt(_Payload payload, byte[] key, String footer);
-	public abstract _Payload decrypt(String token, byte[] key, String footer, Class<_Payload> payloadClass);
-	public abstract String sign(_Payload payload, byte[] key, String footer);
-	public abstract _Payload verify(String token, byte[] pk, String footer, Class<_Payload> payloadClass);
+	public abstract String encrypt(Object payload, byte[] key, String footer);
+	public abstract <_Payload> _Payload decrypt(String token, byte[] key, String footer, Class<_Payload> payloadClass);
+	public abstract String sign(Object payload, byte[] key, String footer);
+	public abstract <_Payload> _Payload verify(String token, byte[] pk, String footer, Class<_Payload> payloadClass);
 	public abstract KeyPair generateKeyPair();
 
-	public String encrypt(_Payload payload, byte[] key) {
+	public String encrypt(Object payload, byte[] key) {
 		return encrypt(payload, key, null);
 	}
 
-	public String encrypt(_Payload payload, byte[] key, Object footer) {
+	public String encrypt(Object payload, byte[] key, Object footer) {
 		return encrypt(payload, key, encodingProvider.encode(footer));
 	}
 
-	public _Payload decrypt(String token, byte[] key, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload decrypt(String token, byte[] key, Class<_Payload> payloadClass) {
 		return decrypt(token, key, null, payloadClass);
 	}
 
-	public _Payload decrypt(String token, byte[] key, Object footer, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload decrypt(String token, byte[] key, Object footer, Class<_Payload> payloadClass) {
 		return decrypt(token, key, encodingProvider.encode(footer), payloadClass);
 	}
 
-	public String sign(_Payload payload, byte[] sk) {
+	public String sign(Object payload, byte[] sk) {
 		return sign(payload, sk, null);
 	}
 
-	public String sign(_Payload payload, byte[] sk, Object footer) {
+	public String sign(Object payload, byte[] sk, Object footer) {
 		return sign(payload, sk, encodingProvider.encode(footer));
 	}
 
-	public _Payload verify(String token, byte[] pk, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload verify(String token, byte[] pk, Class<_Payload> payloadClass) {
 		return verify(token, pk, null, payloadClass);
 	}
 
-	public _Payload verify(String token, byte[] pk, Object footer, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload verify(String token, byte[] pk, Object footer, Class<_Payload> payloadClass) {
 		return verify(token, pk, encodingProvider.encode(footer), payloadClass);
 	}
 
-	public TokenWithFooter<_Payload, String> decryptWithFooter(String token, byte[] key, Class<_Payload> payloadClass) {
+	public <_Payload> TokenWithFooter<_Payload, String> decryptWithFooter(String token, byte[] key,
+			Class<_Payload> payloadClass) {
 		_Payload payload = decrypt(token, key, payloadClass);
 		String footer = extractFooter(token);
 		return new TokenWithFooter<>(payload, footer);
 	}
 
-	public <_Footer> TokenWithFooter<_Payload, _Footer> decryptWithFooter(String token, byte[] key,
+	public <_Payload, _Footer> TokenWithFooter<_Payload, _Footer> decryptWithFooter(String token, byte[] key,
 			Class<_Payload> payloadClass, Class<_Footer> footerClass) {
 		_Payload payload = decrypt(token, key, payloadClass);
 		_Footer footer = extractFooter(token, footerClass);
 		return new TokenWithFooter<>(payload, footer);
 	}
 
-	public TokenWithFooter<_Payload, String> verifyWithFooter(String token, byte[] pk, Class<_Payload> payloadClass) {
+	public <_Payload> TokenWithFooter<_Payload, String> verifyWithFooter(String token, byte[] pk,
+			Class<_Payload> payloadClass) {
 		_Payload payload = verify(token, pk, payloadClass);
 		String footer = extractFooter(token);
 		return new TokenWithFooter<>(payload, footer);
 	}
 
-	public <_Footer> TokenWithFooter<_Payload, _Footer> verifyWithFooter(String token, byte[] pk,
+	public <_Payload, _Footer> TokenWithFooter<_Payload, _Footer> verifyWithFooter(String token, byte[] pk,
 			Class<_Payload> payloadClass, Class<_Footer> footerClass) {
 		_Payload payload = verify(token, pk, payloadClass);
 		_Footer footer = extractFooter(token, footerClass);
@@ -169,40 +171,40 @@ public abstract class Paseto<_Payload> {
 		return decodedFooter;
 	}
 
-	_Payload decode(byte[] payload, Class<_Payload> payloadClass) {
+	<_Payload> _Payload decode(byte[] payload, Class<_Payload> payloadClass) {
 		return encodingProvider.decode(new String(payload, Charset.forName("UTF-8")), payloadClass);
 	}
 
-	public static class Builder<_Payload> {
+	public static class Builder {
 		protected int version = 2;
 		protected EncodingProvider encodingProvider;
 		protected V1CryptoProvider v1CryptoProvider;
 		protected V2CryptoProvider v2CryptoProvider;
 		protected NonceGenerator nonceGenerator;
 
-		public Builder<_Payload> v1(V1CryptoProvider v1CryptoProvider) {
+		public Builder v1(V1CryptoProvider v1CryptoProvider) {
 			this.v1CryptoProvider = v1CryptoProvider;
 			this.version = 1;
 			return this;
 		}
 
-		public Builder<_Payload> v2(V2CryptoProvider v2CryptoProvider) {
+		public Builder v2(V2CryptoProvider v2CryptoProvider) {
 			this.v2CryptoProvider = v2CryptoProvider;
 			this.version = 2;
 			return this;
 		}
 
-		public Builder<_Payload> withJson(EncodingProvider encodingProvider) {
+		public Builder withJson(EncodingProvider encodingProvider) {
 			this.encodingProvider = encodingProvider;
 			return this;
 		}
 
-		public Builder<_Payload> withTestingNonceGenerator(NonceGenerator nonceGenerator) {
+		public Builder withTestingNonceGenerator(NonceGenerator nonceGenerator) {
 			this.nonceGenerator = nonceGenerator;
 			return this;
 		}
 
-		public Paseto<_Payload> build() {
+		public Paseto build() {
 			if (encodingProvider == null) { throw new NullPointerException("json implementation required."); }
 
 			switch (version) {
@@ -210,14 +212,14 @@ public abstract class Paseto<_Payload> {
 					if (v1CryptoProvider == null) { throw new NullPointerException("crypto implementation required."); }
 					if (nonceGenerator == null) { nonceGenerator = v1CryptoProvider.getNonceGenerator(); }
 
-					return new PasetoV1<>(encodingProvider, v1CryptoProvider, nonceGenerator);
+					return new PasetoV1(encodingProvider, v1CryptoProvider, nonceGenerator);
 
 				case 2:
 				default: // default is already defined as 2 above, so default here to avoid missing return
 					if (v2CryptoProvider == null) { throw new NullPointerException("crypto implementation required."); }
 					if (nonceGenerator == null) { nonceGenerator = v2CryptoProvider.getNonceGenerator(); }
 
-					return new PasetoV2<>(encodingProvider, v2CryptoProvider, nonceGenerator);
+					return new PasetoV2(encodingProvider, v2CryptoProvider, nonceGenerator);
 			}
 
 		}

@@ -28,11 +28,11 @@ import org.junit.Assert;
 import java.nio.charset.Charset;
 
 public abstract class PasetoTest {
-	protected abstract <_TokenType> Paseto<_TokenType> createPaseto(byte[] nonce);
+	protected abstract Paseto createPaseto(byte[] nonce);
 
 	protected <_TokenType, _Footer> void encryptTestVector(TestVector<_TokenType, _Footer> tv) {
 		// A: key, B: nonce
-		Paseto<_TokenType> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		Assert.assertNotNull("paseto V1 instance", paseto);
 
 		String token;
@@ -47,7 +47,7 @@ public abstract class PasetoTest {
 
 	protected <_TokenType, _Footer> void decryptTestVector(TestVector<_TokenType, _Footer> tv) {
 		// A: key, B: nonce
-		Paseto<_TokenType> paseto = createPaseto(tv.getB());
+		Paseto paseto = createPaseto(tv.getB());
 		Assert.assertNotNull("paseto V1 instance", paseto);
 
 		_TokenType payload;
@@ -63,7 +63,7 @@ public abstract class PasetoTest {
 
 	protected <_TokenType, _Footer> void signTestVector(TestVector<_TokenType, _Footer> tv, boolean assertSigned) {
 		// A: sk, B: pk
-		Paseto<_TokenType> paseto = createPaseto(null);
+		Paseto paseto = createPaseto(null);
 		Assert.assertNotNull("paseto V1 instance", paseto);
 
 		String token;
@@ -91,7 +91,7 @@ public abstract class PasetoTest {
 
 	protected <_TokenType, _Footer> void verifyTestVector(TestVector<_TokenType, _Footer> tv) {
 		// A: sk, B: pk
-		Paseto<_TokenType> paseto = createPaseto(null);
+		Paseto paseto = createPaseto(null);
 		Assert.assertNotNull("paseto V1 instance", paseto);
 
 		_TokenType payload;

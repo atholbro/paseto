@@ -80,7 +80,7 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 
 	@Test
 	public void v2Service_publicServiceBuilderOverride() {
-		Paseto.Builder<Token> pasetoBuilder = TestContext.builders().pasetoBuilderV2(null);
+		Paseto.Builder pasetoBuilder = TestContext.builders().pasetoBuilderV2(null);
 		PublicTokenService<Token> service =  TestContext.builders().publicServiceBuilderV2(pasetoBuilder,
 				rfcPublicKeyProvider(), Token.class).build();
 

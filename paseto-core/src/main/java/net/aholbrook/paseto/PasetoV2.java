@@ -28,7 +28,7 @@ import net.aholbrook.paseto.util.Base64;
 import net.aholbrook.paseto.util.PaeUtil;
 import net.aholbrook.paseto.util.StringUtils;
 
-public class PasetoV2<_Payload> extends Paseto<_Payload> {
+public class PasetoV2 extends Paseto {
 	private final static String VERSION = "v2";
 	public final static String HEADER_LOCAL = VERSION + SEPARATOR + PURPOSE_LOCAL + SEPARATOR; // v2.local.
 	public final static String HEADER_PUBLIC = VERSION + SEPARATOR + PURPOSE_PUBLIC + SEPARATOR; // v2.public.
@@ -41,7 +41,7 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 	}
 
 	@Override
-	public String encrypt(_Payload payload, byte[] key, String footer) {
+	public String encrypt(Object payload, byte[] key, String footer) {
 		footer = StringUtils.ntes(footer); // convert null to ""
 		byte[] payloadBytes = StringUtils.getBytesUtf8(encodingProvider.encode(payload));
 		byte[] footerBytes = StringUtils.getBytesUtf8(footer);
@@ -68,7 +68,7 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 	}
 
 	@Override
-	public _Payload decrypt(String token, byte[] key, String footer, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload decrypt(String token, byte[] key, String footer, Class<_Payload> payloadClass) {
 		// Split token into sections
 		String[] sections = split(token);
 		if (sections == null) {
@@ -104,7 +104,7 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 	}
 
 	@Override
-	public String sign(_Payload payload, byte[] sk, String footer) {
+	public String sign(Object payload, byte[] sk, String footer) {
 		footer = StringUtils.ntes(footer); // convert null to ""
 		byte[] payloadBytes = StringUtils.getBytesUtf8(encodingProvider.encode(payload));
 		byte[] footerBytes = StringUtils.getBytesUtf8(footer);
@@ -126,7 +126,7 @@ public class PasetoV2<_Payload> extends Paseto<_Payload> {
 	}
 
 	@Override
-	public _Payload verify(String token, byte[] pk, String footer, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload verify(String token, byte[] pk, String footer, Class<_Payload> payloadClass) {
 		// Split token into sections
 		String[] sections = split(token);
 		if (sections == null) {
