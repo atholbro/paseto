@@ -18,7 +18,12 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.TokenWithFooter;
 import net.aholbrook.paseto.claims.Claim;
+import net.aholbrook.paseto.claims.CurrentlyValid;
+import net.aholbrook.paseto.exception.claims.ExpiredTokenException;
+import net.aholbrook.paseto.exception.claims.IssuedInFutureException;
+import net.aholbrook.paseto.exception.claims.MissingClaimException;
 import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;
 import net.aholbrook.paseto.service.Token;
@@ -26,10 +31,12 @@ import net.aholbrook.paseto.service.TokenService;
 import net.aholbrook.paseto.test.data.RfcTestVectors;
 import net.aholbrook.paseto.test.data.RfcToken;
 import net.aholbrook.paseto.test.data.TestVector;
+import net.aholbrook.paseto.test.utils.AssertUtils;
 import net.aholbrook.paseto.test.utils.TestContext;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.Duration;
 import java.time.OffsetDateTime;
 
 public class PasetoV1ServiceTest extends PasetoServiceTest {
@@ -194,5 +201,215 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 	public void v1Service_rfcVectorS2Verify() {
 		TestVector<RfcToken, ?> tv = RfcTestVectors.RFC_TEST_VECTOR_V1_S_2;
 		decodeTestVector(rfcPublicService(), tv);
+	}
+
+	// Test defaultValidityPeriod
+	@Test
+	public void v1Service_local_defaultValidityPeriod() {
+		Token token = new Token().setTokenId("id");
+		LocalTokenService<Token> service = TestContext.builders().localServiceBuilderV1(null, rfcLocalKeyProvider(),
+				Token.class).withDefaultValidityPeriod(Duration.ofMinutes(5)).build();
+		String s = service.encode(token);
+		Token token2 = service.decode(s);
+		Assert.assertNotNull(token2.getIssuedAt());
+		Assert.assertNotNull(token2.getExpiration());
+	}
+
+	@Test(expected = MissingClaimException.class)
+	public void v1Service_local_noExpiry() {
+		Token token = new Token().setTokenId("id");
+		LocalTokenService<Token> service = TestContext.builders().localServiceBuilderV1(null, rfcLocalKeyProvider(),
+				Token.class).build();
+
+		AssertUtils.assertMissingClaimException(() ->
+				service.encode(token), "TokenService", token, Token.CLAIM_EXPIRATION);
+	}
+
+	@Test
+	public void v1Service_public_defaultValidityPeriod() {
+		Token token = new Token().setTokenId("id");
+		PublicTokenService<Token> service = TestContext.builders().publicServiceBuilderV1(rfcPublicKeyProvider(),
+				Token.class).withDefaultValidityPeriod(Duration.ofMinutes(5)).build();
+		String s = service.encode(token);
+		Token token2 = service.decode(s);
+		Assert.assertNotNull(token2.getIssuedAt());
+		Assert.assertNotNull(token2.getExpiration());
+	}
+
+	@Test(expected = MissingClaimException.class)
+	public void v1Service_public_noExpiry() {
+		Token token = new Token().setTokenId("id");
+		PublicTokenService<Token> service = TestContext.builders().publicServiceBuilderV1(rfcPublicKeyProvider(),
+				Token.class).build();
+
+		AssertUtils.assertMissingClaimException(() ->
+				service.encode(token), "TokenService", token, Token.CLAIM_EXPIRATION);
+	}
+
+
+	// Constructors / Builder options
+	@Test
+	public void v1Service_local_ctors1() {
+		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
+		LocalTokenService<Token> service = new LocalTokenService.Builder<>(paseto, Token.class, rfcLocalKeyProvider())
+				.build();
+		checkDefault(service);
+	}
+
+	@Test
+	public void v1Service_local_ctors2() {
+		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
+		LocalTokenService<Token> service = new LocalTokenService.Builder<>(paseto, Token.class, rfcLocalKeyProvider())
+				.checkClaims(new Claim[] { new CurrentlyValid() })
+				.build();
+		checkOnlyCurrentlyValid(service);
+	}
+
+	@Test
+	public void v1Service_local_ctors3() {
+		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
+		LocalTokenService<Token> service = new LocalTokenService.Builder<>(paseto, Token.class, rfcLocalKeyProvider())
+				.withDefaultValidityPeriod(Duration.ofMinutes(5))
+				.build();
+		checkDefaultWithValidity(service);
+	}
+
+	@Test
+	public void v1Service_local_ctors4() {
+		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
+		LocalTokenService<Token> service = new LocalTokenService.Builder<>(paseto, Token.class, rfcLocalKeyProvider())
+				.withDefaultValidityPeriod(Duration.ofMinutes(5))
+				.checkClaims(new Claim[] { new CurrentlyValid() })
+				.build();
+		checkOnlyCurrentlyVaildWithValidity(service);
+	}
+
+	@Test
+	public void v1Service_public_ctors1() {
+		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
+		PublicTokenService<Token> service = new PublicTokenService.Builder<>(paseto, Token.class, rfcPublicKeyProvider())
+				.build();
+		checkDefault(service);
+	}
+
+	@Test
+	public void v1Service_public_ctors2() {
+		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
+		PublicTokenService<Token> service = new PublicTokenService.Builder<>(paseto, Token.class, rfcPublicKeyProvider())
+				.checkClaims(new Claim[] { new CurrentlyValid() })
+				.build();
+		checkOnlyCurrentlyValid(service);
+	}
+
+	@Test
+	public void v1Service_public_ctors3() {
+		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
+		PublicTokenService<Token> service = new PublicTokenService.Builder<>(paseto, Token.class, rfcPublicKeyProvider())
+				.withDefaultValidityPeriod(Duration.ofMinutes(5))
+				.build();
+		checkDefaultWithValidity(service);
+	}
+
+	@Test
+	public void v1Service_public_ctors4() {
+		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
+		PublicTokenService<Token> service = new PublicTokenService.Builder<>(paseto, Token.class, rfcPublicKeyProvider())
+				.withDefaultValidityPeriod(Duration.ofMinutes(5))
+				.checkClaims(new Claim[] { new CurrentlyValid() })
+				.build();
+		checkOnlyCurrentlyVaildWithValidity(service);
+	}
+
+	private void checkWithoutExpiry(TokenService<Token> service) {
+		Token token = new Token().setTokenId("id");
+		AssertUtils.assertMissingClaimException(() ->
+				service.encode(token), "TokenService", token, Token.CLAIM_EXPIRATION);
+	}
+
+	private void checkExpired(TokenService<Token> service) {
+		Token token = new Token().setTokenId("id");
+		token.setIssuedAt(OffsetDateTime.now().minusMinutes(1));
+		token.setExpiration(OffsetDateTime.now().minusSeconds(1));
+
+		service.decode(service.encode(token));
+	}
+
+	private void checkIssuedInFuture(TokenService<Token> service) {
+		Token token = new Token().setTokenId("id");
+		token.setIssuedAt(OffsetDateTime.now().plusMinutes(1));
+		token.setExpiration(OffsetDateTime.now().plusMinutes(5));
+		service.decode(service.encode(token));
+	}
+
+	private void checkDefault(TokenService<Token> service) {
+		// Default should have the default claim checks and no default expiry, so these should all fail:
+		// Encode without expiry time
+		try {
+			checkWithoutExpiry(service);
+			Assert.fail("Failed to catch expected MissingClaimException.");
+		} catch (MissingClaimException e) { /* ignore */ }
+
+		// Decode expired token
+		try {
+			checkExpired(service);
+			Assert.fail("Failed to catch expected ExpiredTokenException.");
+		} catch (ExpiredTokenException e) { /* ignore */ }
+
+		// Decode token issued in the future
+		try {
+			checkIssuedInFuture(service);
+			Assert.fail("Failed to catch expected IssuedInFutureException.");
+		} catch (IssuedInFutureException e) { /* ignore */ }
+	}
+
+	private void checkOnlyCurrentlyValid(TokenService<Token> service) {
+		// This should have only CurrentlyValid claim
+		// So encoding without a expiry should result in an error
+		try {
+			checkWithoutExpiry(service);
+			Assert.fail("Failed to catch expected MissingClaimException.");
+		} catch (MissingClaimException e) { /* ignore */ }
+
+		// Decoding an expired token should also result in an error
+		try {
+			checkExpired(service);
+			Assert.fail("Failed to catch expected ExpiredTokenException.");
+		} catch (ExpiredTokenException e) { /* ignore */ }
+
+		// But decoding a token issued in the future should work just fine
+		checkIssuedInFuture(service);
+	}
+
+	private void checkDefaultWithValidity(TokenService<Token> service) {
+		// This should have a defaultValidity set
+		// So encoding without a expiry should work, as the default will be used
+		checkWithoutExpiry(service);
+
+		// Decoding an expired token should result in an error
+		try {
+			checkExpired(service);
+			Assert.fail("Failed to catch expected ExpiredTokenException.");
+		} catch (ExpiredTokenException e) { /* ignore */ }
+
+		// And decoding a token issued in the future should fail too:
+		try {
+			checkIssuedInFuture(service);
+			Assert.fail("Failed to catch expected IssuedInFutureException.");
+		} catch (IssuedInFutureException e) { /* ignore */ }
+	}
+
+	private void checkOnlyCurrentlyVaildWithValidity(TokenService<Token> service) {
+		// This should have a defaultValidity set
+		// So encoding without a expiry should work, as the default will be used
+		checkWithoutExpiry(service);
+
+		// Decoding an expired token should result in an error
+		try {
+			checkExpired(service);
+			Assert.fail("Failed to catch expected ExpiredTokenException.");
+		} catch (ExpiredTokenException e) { /* ignore */ }
+
+		// But decoding a token issued in the future should work just fine
+		checkIssuedInFuture(service);
 	}
 }
