@@ -30,23 +30,6 @@ import java.nio.charset.Charset;
 public abstract class PasetoTest {
 	protected abstract <_TokenType> Paseto<_TokenType> createPaseto(byte[] nonce);
 
-	protected static void assertInvalidHeaderException(InvalidHeaderException e, String given, String expected) {
-		Assert.assertEquals("given", given, e.getGiven());
-		Assert.assertEquals("expected", expected, e.getExpected());
-		throw e;
-	}
-
-	protected static void assertInvalidFooterException(InvalidFooterException e, String given, String expected) {
-		Assert.assertEquals("given", given, e.getGiven());
-		Assert.assertEquals("expected", expected, e.getExpected());
-		throw e;
-	}
-
-	protected static void assertPasetoStringException(PasetoStringException e, String token) {
-		Assert.assertEquals("token", token, e.getToken());
-		throw e;
-	}
-
 	protected <_TokenType, _Footer> void encryptTestVector(TestVector<_TokenType, _Footer> tv) {
 		// A: key, B: nonce
 		Paseto<_TokenType> paseto = createPaseto(tv.getB());

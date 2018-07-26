@@ -19,6 +19,9 @@ package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 import net.aholbrook.paseto.crypto.exception.ByteArrayRangeException;
+import net.aholbrook.paseto.exception.InvalidFooterException;
+import net.aholbrook.paseto.exception.InvalidHeaderException;
+import net.aholbrook.paseto.exception.PasetoStringException;
 import org.junit.Assert;
 
 public class AssertUtils {
@@ -76,6 +79,35 @@ public class AssertUtils {
 			Assert.assertEquals(len, e.getLen());
 			Assert.assertEquals(required, e.getRequired());
 			Assert.assertEquals(exact, e.isExact());
+			throw e;
+		}
+	}
+
+	public static void assertInvalidHeaderException(Runnable r, String given, String expected) {
+		try {
+			r.run();
+		} catch (InvalidHeaderException e) {
+			Assert.assertEquals("given", given, e.getGiven());
+			Assert.assertEquals("expected", expected, e.getExpected());
+			throw e;
+		}
+	}
+
+	public static void assertInvalidFooterException(Runnable r, String given, String expected) {
+		try {
+			r.run();
+		} catch (InvalidFooterException e) {
+			Assert.assertEquals("given", given, e.getGiven());
+			Assert.assertEquals("expected", expected, e.getExpected());
+			throw e;
+		}
+	}
+
+	public static void assertPasetoStringException(Runnable r, String token) {
+		try {
+			r.run();
+		} catch (PasetoStringException e) {
+			Assert.assertEquals("token", token, e.getToken());
 			throw e;
 		}
 	}
