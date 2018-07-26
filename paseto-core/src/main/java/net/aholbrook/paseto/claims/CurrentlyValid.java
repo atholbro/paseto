@@ -39,7 +39,7 @@ public class CurrentlyValid implements Claim {
 	 *                       time.
 	 */
 	public CurrentlyValid(Duration allowableDrift) {
-		this(OffsetDateTime.now(Clock.systemUTC()), allowableDrift);
+		this(null, allowableDrift);
 	}
 
 	/**
@@ -67,6 +67,8 @@ public class CurrentlyValid implements Claim {
 
 	@Override
 	public void check(Token token, VerificationContext context) {
+		OffsetDateTime time = this.time == null ? OffsetDateTime.now(Clock.systemUTC()) : this.time;
+
 		// If no expiry time was set, then we treat the token as expired.
 		if (token.getExpiration() == null) {
 			throw new MissingClaimException(Token.CLAIM_EXPIRATION, NAME, token);

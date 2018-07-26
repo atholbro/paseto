@@ -45,7 +45,7 @@ public class IssuedInPast implements Claim {
 	 *                       drift between servers.
 	 */
 	public IssuedInPast(Duration allowableDrift) {
-		this(OffsetDateTime.now(Clock.systemUTC()), allowableDrift);
+		this(null, allowableDrift);
 	}
 
 	/**
@@ -76,6 +76,8 @@ public class IssuedInPast implements Claim {
 
 	@Override
 	public void check(Token token, VerificationContext context) {
+		OffsetDateTime time = this.time == null ? OffsetDateTime.now(Clock.systemUTC()) : this.time;
+
 		if (token.getIssuedAt() == null) {
 			throw new MissingClaimException(Token.CLAIM_ISSUED_AT, NAME, token);
 		}
