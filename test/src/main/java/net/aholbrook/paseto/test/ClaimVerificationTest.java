@@ -39,29 +39,6 @@ public class ClaimVerificationTest {
 		return Claims.verify(token, claims);
 	}
 
-	private static <_E extends ClaimException> void assertClaimException(_E e, String rule, Token token) {
-		Assert.assertEquals("rule name", rule, e.getRuleName());
-		Assert.assertEquals("token", token, e.getToken());
-		throw e;
-	}
-
-	private static void assertMissingClaimException(MissingClaimException e, String rule, Token token, String claim) {
-		Assert.assertEquals("rule name", rule, e.getRuleName());
-		Assert.assertEquals("token", token, e.getToken());
-		Assert.assertEquals("claim", claim, e.getClaim());
-		throw e;
-	}
-
-	private static void assertMultiClaimException(MultipleClaimException e, Class[] classes) {
-		Assert.assertEquals("count", e.getExceptions().size(), 2);
-
-		for (int i = 0; i < classes.length; ++i) {
-			Assert.assertEquals("index: " + Integer.toString(i),
-					e.getExceptions().get(i).getClass(), classes[i]);
-		}
-		throw e;
-	}
-
 	@Test
 	public void tokenVerification_default() {
 		Token token = new Token()
@@ -94,12 +71,8 @@ public class ClaimVerificationTest {
 	@Test(expected = ExpiredTokenException.class)
 	public void tokenVerification_expired_afterExpiry() {
 		Token token = TokenTestVectors.TOKEN_1;
-		try {
-			OffsetDateTime time = token.getExpiration().plusDays(1);
-			standardVerification(token, time);
-		} catch (ExpiredTokenException e) {
-			assertClaimException(e, CurrentlyValid.NAME, token);
-		}
+		OffsetDateTime time = token.getExpiration().plusDays(1);
+		AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 	}
 
 	// Check a token for expiry 1 second after it expires. This should fail and the test should pass with an expected
@@ -107,13 +80,8 @@ public class ClaimVerificationTest {
 	@Test(expected = ExpiredTokenException.class)
 	public void tokenVerification_expired_afterExpiry2() {
 		Token token = TokenTestVectors.TOKEN_1;
-		try {
-			// check 1 second after expiry time, should be invalid
-			OffsetDateTime time = token.getExpiration().plusSeconds(1);
-			standardVerification(token, time);
-		} catch (ExpiredTokenException e) {
-			assertClaimException(e, CurrentlyValid.NAME, token);
-		}
+		OffsetDateTime time = token.getExpiration().plusSeconds(1);
+		AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 	}
 
 	// Check a token for expiry 1 second before it expires. This should pass.
@@ -122,7 +90,6 @@ public class ClaimVerificationTest {
 		Token token = TokenTestVectors.TOKEN_1;
 		// check expiry time - 1 second, should pass
 		OffsetDateTime time = token.getExpiration().minusSeconds(1);
-
 		standardVerification(token, time);
 	}
 
@@ -130,11 +97,8 @@ public class ClaimVerificationTest {
 	@Test(expected = MissingClaimException.class)
 	public void tokenVerification_expired_missing() {
 		Token token = TokenTestVectors.TOKEN_4;
-		try {
-			Claims.verify(token, new Claim[]{new CurrentlyValid()});
-		} catch (MissingClaimException e) {
-			assertMissingClaimException(e, CurrentlyValid.NAME, token, Token.CLAIM_EXPIRATION);
-		}
+		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[]{new CurrentlyValid()}),
+				CurrentlyValid.NAME, token, Token.CLAIM_EXPIRATION);
 	}
 
 	@Test
@@ -146,39 +110,27 @@ public class ClaimVerificationTest {
 	@Test(expected = NotYetValidTokenException.class)
 	public void tokenVerification_issuedAt() {
 		Token token = TokenTestVectors.TOKEN_1;
-		try {
-			// exactly the time defined in the vector, should pass
-			OffsetDateTime time = token.getIssuedAt();
-			standardVerification(token, time);
-		} catch (NotYetValidTokenException e) {
-			assertClaimException(e, CurrentlyValid.NAME, token);
-		}
+		// exactly the time defined in the vector, should pass
+		OffsetDateTime time = token.getIssuedAt();
+		AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 	}
 
 	// Check a token for "issued in the future" 1 second after it was issued. This should pass.
 	@Test(expected = NotYetValidTokenException.class)
 	public void tokenVerification_issuedAt_afterIssued() {
 		Token token = TokenTestVectors.TOKEN_1;
-		try {
-			// +1 second, should pass
-			OffsetDateTime time = token.getIssuedAt().plusSeconds(1);
-			standardVerification(token, time);
-		} catch (NotYetValidTokenException e) {
-			assertClaimException(e, CurrentlyValid.NAME, token);
-		}
+		// +1 second, should pass
+		OffsetDateTime time = token.getIssuedAt().plusSeconds(1);
+		AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 	}
 
 	// Check a token for "issued in the future" 2 seconds after it was issued. This should pass.
 	@Test(expected = NotYetValidTokenException.class)
 	public void tokenVerification_issuedAt_afterIssued2() {
 		Token token = TokenTestVectors.TOKEN_1;
-		try {
-			// +2 seconds, should pass
-			OffsetDateTime time = token.getIssuedAt().plusSeconds(1);
-			standardVerification(token, time);
-		} catch (NotYetValidTokenException e) {
-			assertClaimException(e, CurrentlyValid.NAME, token);
-		}
+		// +2 seconds, should pass
+		OffsetDateTime time = token.getIssuedAt().plusSeconds(1);
+		AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 	}
 
 	// Check a token for "issued in the future" 1 second before it was issued. This should pass due to allowable clock
@@ -187,13 +139,9 @@ public class ClaimVerificationTest {
 	@Test(expected = NotYetValidTokenException.class)
 	public void tokenVerification_issuedAt_beforeIssuedGrace() {
 		Token token = TokenTestVectors.TOKEN_1;
-		try {
-			// -1 second, should pass (due to allowableDrift)
-			OffsetDateTime time = token.getIssuedAt().minusSeconds(1);
-			standardVerification(token, time);
-		} catch (NotYetValidTokenException e) {
-			assertClaimException(e, CurrentlyValid.NAME, token);
-		}
+		// -1 second, should pass (due to allowableDrift)
+		OffsetDateTime time = token.getIssuedAt().minusSeconds(1);
+		AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 	}
 
 	// Check a token for "issued in the future" 2 seconds before it was issued. This should fail and throw a
@@ -201,17 +149,10 @@ public class ClaimVerificationTest {
 	@Test(expected = MultipleClaimException.class)
 	public void tokenVerification_issuedAt_beforeIssued() {
 		Token token = TokenTestVectors.TOKEN_1;
-
-		try {
-			// -2 seconds, should fail
-			OffsetDateTime time = token.getIssuedAt().minusSeconds(2);
-			standardVerification(token, time);
-		} catch (MultipleClaimException e) {
-			assertMultiClaimException(e, new Class[] {
-					IssuedInFutureException.class,
-					NotYetValidTokenException.class
-			});
-		}
+		// -2 seconds, should fail
+		OffsetDateTime time = token.getIssuedAt().minusSeconds(2);
+		AssertUtils.assertMultiClaimException(() -> standardVerification(token, time),
+				new Class[] { IssuedInFutureException.class, NotYetValidTokenException.class});
 	}
 
 	// Check a token for "issued in the future" which has no issued time set. This should fail with a thrown
@@ -219,11 +160,8 @@ public class ClaimVerificationTest {
 	@Test(expected = MissingClaimException.class)
 	public void tokenVerification_issuedAt_missing() {
 		Token token = TokenTestVectors.TOKEN_4;
-		try {
-			Claims.verify(token, new Claim[]{new IssuedInPast()});
-		} catch (MissingClaimException e) {
-			assertMissingClaimException(e, IssuedInPast.NAME, token, Token.CLAIM_ISSUED_AT);
-		}
+		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[]{new IssuedInPast()}),
+				IssuedInPast.NAME, token, Token.CLAIM_ISSUED_AT);
 	}
 
 	// Check a token for expiry at the exact time it becomes valid. This should pass.
@@ -277,14 +215,9 @@ public class ClaimVerificationTest {
 	@Test(expected = NotYetValidTokenException.class)
 	public void tokenVerification_notBefore_beforeValid() {
 		Token token = TokenTestVectors.TOKEN_1;
-		try {
-			// -2 seconds, should fail
-			OffsetDateTime time = token.getNotBefore().minusSeconds(2);
-
-			standardVerification(token, time);
-		} catch (NotYetValidTokenException e) {
-			assertClaimException(e, CurrentlyValid.NAME, token);
-		}
+		// -2 seconds, should fail
+		OffsetDateTime time = token.getNotBefore().minusSeconds(2);
+		AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 	}
 
 	// Check a token for expiry at the exact time it was issued. This should fail and produce a passing test due to the
@@ -292,14 +225,9 @@ public class ClaimVerificationTest {
 	@Test(expected = NotYetValidTokenException.class)
 	public void tokenVerification_notBefore_atIssued() {
 		Token token = TokenTestVectors.TOKEN_1;
-		try {
-			// issue time, should fail for this token
-			OffsetDateTime time = token.getIssuedAt();
-
-			standardVerification(token, time);
-		} catch (NotYetValidTokenException e) {
-			assertClaimException(e, CurrentlyValid.NAME, token);
-		}
+		// issue time, should fail for this token
+		OffsetDateTime time = token.getIssuedAt();
+		AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 	}
 
 	// Check a token for expiry 1 second before it was issued. This should fail and produce a passing test due to the
@@ -307,14 +235,9 @@ public class ClaimVerificationTest {
 	@Test(expected = NotYetValidTokenException.class)
 	public void tokenVerification_notBefore_beforeIssued() {
 		Token token = TokenTestVectors.TOKEN_1;
-		try {
-			// issue time - 1 sec, should fail for this token
-			OffsetDateTime time = token.getIssuedAt().minusSeconds(1);
-
-			standardVerification(token, time);
-		} catch (NotYetValidTokenException e) {
-			assertClaimException(e, CurrentlyValid.NAME, token);
-		}
+		// issue time - 1 sec, should fail for this token
+		OffsetDateTime time = token.getIssuedAt().minusSeconds(1);
+		AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 	}
 
 	// Check for issuer with a match, should pass.
@@ -330,13 +253,12 @@ public class ClaimVerificationTest {
 	public void tokenVerification_issuer_mismatch() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String issuer = TokenTestVectors.TOKEN_1.getSubject(); // getSubject() on intentional
-		try {
-			Claims.verify(token, new Claim[]{new IssuedBy(issuer)});
-		} catch(IncorrectIssuerException e) {
-			Assert.assertEquals(issuer, e.getExpected());
-			Assert.assertEquals(token.getIssuer(), e.getIssuer());
-			assertClaimException(e, IssuedBy.NAME, token);
-		}
+		AssertUtils.assertClaimException(() -> Claims.verify(token, new Claim[]{new IssuedBy(issuer)}),
+				(e) -> {
+					Assert.assertEquals(issuer, ((IncorrectIssuerException) e).getExpected());
+					Assert.assertEquals(token.getIssuer(), ((IncorrectIssuerException) e).getIssuer());
+				},
+				IssuedBy.NAME, token);
 	}
 
 	// Check issuer on a token without an issuer, should fail with expected MissingClaimException thrown.
@@ -344,11 +266,8 @@ public class ClaimVerificationTest {
 	public void tokenVerification_issuer_missing() {
 		Token token = TokenTestVectors.TOKEN_3;
 		String issuer = TokenTestVectors.TOKEN_2.getIssuer();
-		try {
-			Claims.verify(token, new Claim[]{new IssuedBy(issuer)});
-		} catch (MissingClaimException e) {
-			assertMissingClaimException(e, IssuedBy.NAME, token, Token.CLAIM_ISSUER);
-		}
+		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[]{new IssuedBy(issuer)}),
+				IssuedBy.NAME, token, Token.CLAIM_ISSUER);
 	}
 
 	// Make sure the claim name is correct.
@@ -370,13 +289,12 @@ public class ClaimVerificationTest {
 	public void tokenVerification_audience_mismatch() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String audience = TokenTestVectors.TOKEN_1.getIssuer(); // getIssuer() on intentional
-		try {
-			Claims.verify(token, new Claim[]{new ForAudience(audience)});
-		} catch(IncorrectAudienceException e) {
-			Assert.assertEquals(audience, e.getExpected());
-			Assert.assertEquals(token.getAudience(), e.getAudience());
-			assertClaimException(e, ForAudience.NAME, token);
-		}
+		AssertUtils.assertClaimException(() -> Claims.verify(token, new Claim[]{new ForAudience(audience)}),
+				(e) -> {
+					Assert.assertEquals(audience, ((IncorrectAudienceException) e).getExpected());
+					Assert.assertEquals(token.getAudience(), ((IncorrectAudienceException) e).getAudience());
+				},
+				ForAudience.NAME, token);
 	}
 
 	// Check audience on a token without an audience, should fail with expected MissingClaimException thrown.
@@ -384,11 +302,8 @@ public class ClaimVerificationTest {
 	public void tokenVerification_audience_missing() {
 		Token token = TokenTestVectors.TOKEN_3;
 		String audience = TokenTestVectors.TOKEN_1.getAudience();
-		try {
-			Claims.verify(token, new Claim[]{new ForAudience(audience)});
-		} catch (MissingClaimException e) {
-			assertMissingClaimException(e, ForAudience.NAME, token, Token.CLAIM_AUDIENCE);
-		}
+		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[]{new ForAudience(audience)}),
+				ForAudience.NAME, token, Token.CLAIM_AUDIENCE);
 	}
 
 	// Make sure the claim name is correct.
@@ -410,13 +325,13 @@ public class ClaimVerificationTest {
 	public void tokenVerification_subject_mismatch() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String subject = TokenTestVectors.TOKEN_1.getAudience(); // getAudience() is intentional
-		try {
-			Claims.verify(token, new Claim[]{new WithSubject(subject)});
-		} catch(IncorrectSubjectException e) {
-			Assert.assertEquals(subject, e.getExpected());
-			Assert.assertEquals(token.getSubject(), e.getSubject());
-			assertClaimException(e, WithSubject.NAME, token);
-		}
+
+		AssertUtils.assertClaimException(() -> Claims.verify(token, new Claim[]{new WithSubject(subject)}),
+				(e) -> {
+					Assert.assertEquals(subject, ((IncorrectSubjectException) e).getExpected());
+					Assert.assertEquals(token.getSubject(), ((IncorrectSubjectException) e).getSubject());
+				},
+				WithSubject.NAME, token);
 	}
 
 	// Check subject on a token without a subject, should fail with expected MissingClaimException thrown.
@@ -424,11 +339,8 @@ public class ClaimVerificationTest {
 	public void tokenVerification_subject_missing() {
 		Token token = TokenTestVectors.TOKEN_3;
 		String subject = TokenTestVectors.TOKEN_1.getSubject();
-		try {
-			Claims.verify(token, new Claim[]{new WithSubject(subject)});
-		} catch (MissingClaimException e) {
-			assertMissingClaimException(e, WithSubject.NAME, token, Token.CLAIM_SUBJECT);
-		}
+		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[]{new WithSubject(subject)}),
+				WithSubject.NAME, token, Token.CLAIM_SUBJECT);
 	}
 
 	// Make sure the claim name is correct.

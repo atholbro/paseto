@@ -22,7 +22,13 @@ import net.aholbrook.paseto.crypto.exception.ByteArrayRangeException;
 import net.aholbrook.paseto.exception.InvalidFooterException;
 import net.aholbrook.paseto.exception.InvalidHeaderException;
 import net.aholbrook.paseto.exception.PasetoStringException;
+import net.aholbrook.paseto.exception.claims.ClaimException;
+import net.aholbrook.paseto.exception.claims.MissingClaimException;
+import net.aholbrook.paseto.exception.claims.MultipleClaimException;
+import net.aholbrook.paseto.service.Token;
 import org.junit.Assert;
+
+import java.util.function.Consumer;
 
 public class AssertUtils {
 	public static void assertEquals(byte[] expected, byte[] actual) {
@@ -108,6 +114,43 @@ public class AssertUtils {
 			r.run();
 		} catch (PasetoStringException e) {
 			Assert.assertEquals("token", token, e.getToken());
+			throw e;
+		}
+	}
+
+	public static void assertClaimException(Runnable r, Consumer<ClaimException> assertRunner, String rule,
+			Token token) {
+		try {
+			r.run();
+		} catch (ClaimException e) {
+			if (assertRunner != null) { assertRunner.accept(e); }
+			Assert.assertEquals("rule name", rule, e.getRuleName());
+			Assert.assertEquals("token", token, e.getToken());
+			throw e;
+		}
+	}
+
+	public static void assertMissingClaimException(Runnable r, String rule, Token token, String claim) {
+		try {
+			r.run();
+		} catch (MissingClaimException e) {
+			Assert.assertEquals("rule name", rule, e.getRuleName());
+			Assert.assertEquals("token", token, e.getToken());
+			Assert.assertEquals("claim", claim, e.getClaim());
+			throw e;
+		}
+	}
+
+	public static void assertMultiClaimException(Runnable r, Class[] classes) {
+		try {
+			r.run();
+		} catch (MultipleClaimException e) {
+			Assert.assertEquals("count", e.getExceptions().size(), 2);
+
+			for (int i = 0; i < classes.length; ++i) {
+				Assert.assertEquals("index: " + Integer.toString(i),
+						e.getExceptions().get(i).getClass(), classes[i]);
+			}
 			throw e;
 		}
 	}
