@@ -7,6 +7,14 @@ import org.junit.Test;
 
 public class TokenTest {
 	@Test
+	public void token_setNullDateTimes() {
+		Token token1 = new Token();
+		token1.setExpiration(null);
+		token1.setIssuedAt(null);
+		token1.setNotBefore(null);
+	}
+
+	@Test
 	public void token_equals() {
 		Token token1 = new Token()
 				.setExpiration(TokenTestVectors.TOKEN_1.getExpiration())
@@ -16,6 +24,7 @@ public class TokenTest {
 				.setIssuedAt(TokenTestVectors.TOKEN_1.getIssuedAt())
 				.setTokenId(TokenTestVectors.TOKEN_1.getTokenId())
 				.setIssuer(TokenTestVectors.TOKEN_1.getIssuer());
+		Assert.assertEquals(token1, token1);
 		Assert.assertEquals(TokenTestVectors.TOKEN_1, token1);
 		Assert.assertEquals(TokenTestVectors.TOKEN_1.hashCode(), token1.hashCode());
 	}
@@ -30,6 +39,7 @@ public class TokenTest {
 				.setIssuedAt(TokenTestVectors.TOKEN_1.getIssuedAt())
 				.setTokenId(TokenTestVectors.TOKEN_1.getTokenId())
 				.setIssuer(TokenTestVectors.TOKEN_1.getIssuer());
+		Assert.assertNotEquals(token1, new Object());
 		Assert.assertNotEquals(TokenTestVectors.TOKEN_1, token1);
 		Assert.assertNotEquals(TokenTestVectors.TOKEN_1.hashCode(), token1.hashCode());
 	}

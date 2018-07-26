@@ -58,6 +58,7 @@ public class KeyIdTest {
 	public void keyId_equals() {
 		KeyId kid1 = new KeyId().setKeyId("1");
 		KeyId kid2 = new KeyId().setKeyId("1");
+		Assert.assertEquals(kid1, kid1);
 		Assert.assertEquals(kid1, kid2);
 		Assert.assertEquals(kid1.hashCode(), kid2.hashCode());
 	}
@@ -66,6 +67,7 @@ public class KeyIdTest {
 	public void keyId_notEquals() {
 		KeyId kid1 = new KeyId().setKeyId("1");
 		KeyId kid2 = new KeyId().setKeyId("2");
+		Assert.assertNotEquals(kid1, new Object());
 		Assert.assertNotEquals(kid1, kid2);
 		Assert.assertNotEquals(kid1.hashCode(), kid2.hashCode());
 	}
