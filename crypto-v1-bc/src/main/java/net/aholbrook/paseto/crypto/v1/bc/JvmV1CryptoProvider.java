@@ -20,9 +20,11 @@ package net.aholbrook.paseto.crypto.v1.bc;
 import net.aholbrook.paseto.crypto.NonceGenerator;
 import net.aholbrook.paseto.crypto.Tuple;
 import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
-import net.aholbrook.paseto.crypto.v1.HkdfProvider;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
-import net.aholbrook.paseto.crypto.v1.exception.HmacException;
+import org.bouncycastle.crypto.Digest;
+import org.bouncycastle.crypto.digests.SHA384Digest;
+import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
+import org.bouncycastle.crypto.params.HKDFParameters;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.BadPaddingException;
@@ -72,8 +74,14 @@ public class JvmV1CryptoProvider implements V1CryptoProvider {
 	}
 
 	@Override
-	public HkdfProvider getHkdfProvider() {
-		return new Hkdf();
+	public byte[] hkdfExtractAndExpand(byte[] salt, byte[] inputKeyingMaterial, byte[] info, int outLen) {
+		Digest digest = new SHA384Digest();
+		HKDFBytesGenerator hkdf = new HKDFBytesGenerator(digest);
+		hkdf.init(new HKDFParameters(inputKeyingMaterial, salt, info));
+
+		byte[] out = new byte[outLen];
+		hkdf.generateBytes(out, 0, out.length);
+		return out;
 	}
 
 	@Override

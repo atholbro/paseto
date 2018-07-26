@@ -61,8 +61,8 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 		System.arraycopy(n, salt.length, nonce, 0, nonce.length);
 
 		// Create ek/ak for AEAD
-		byte[] ek = cryptoProvider.getHkdfProvider().extractAndExpand(salt, key, HKDF_INFO_EK, 32);
-		byte[] ak = cryptoProvider.getHkdfProvider().extractAndExpand(salt, key, HKDF_INFO_AK, 32);
+		byte[] ek = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_EK, 32);
+		byte[] ak = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_AK, 32);
 
 		byte[] c = cryptoProvider.aes256Ctr(payloadBytes, ek, nonce);
 		byte[] preAuth = PaeUtil.pae(StringUtils.getBytesUtf8(HEADER_LOCAL), n, c, footerBytes);
@@ -116,8 +116,8 @@ public class PasetoV1<_Payload> extends Paseto<_Payload> {
 		System.arraycopy(n, salt.length, nonce, 0, nonce.length);
 
 		// Create ek/ak for AEAD
-		byte[] ek = cryptoProvider.getHkdfProvider().extractAndExpand(salt, key, HKDF_INFO_EK, 32);
-		byte[] ak = cryptoProvider.getHkdfProvider().extractAndExpand(salt, key, HKDF_INFO_AK, 32);
+		byte[] ek = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_EK, 32);
+		byte[] ak = cryptoProvider.hkdfExtractAndExpand(salt, key, HKDF_INFO_AK, 32);
 
 		byte[] preAuth = PaeUtil.pae(StringUtils.getBytesUtf8(HEADER_LOCAL), n, c,
 				StringUtils.getBytesUtf8(decodedFooter));

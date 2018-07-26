@@ -28,7 +28,7 @@ public interface V1CryptoProvider {
 	NonceGenerator getNonceGenerator();
 
 	// HKDF
-	HkdfProvider getHkdfProvider();
+	byte[] hkdfExtractAndExpand(byte[] salt, byte[] inputKeyingMaterial, byte[] info, int outLen);
 
 	// Hmac SHA 384
 	byte[] hmacSha384(byte[] m, byte[] key);
