@@ -18,8 +18,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.meta;
 
 import net.aholbrook.paseto.Paseto;
-import net.aholbrook.paseto.util.Base64;
-import net.aholbrook.paseto.crypto.v1.bc.JvmV1CryptoProvider;
+import net.aholbrook.paseto.crypto.v1.bc.BouncyCastleV1CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.libsodium.LibSodiumV2CryptoProvider;
 import net.aholbrook.paseto.encoding.json.jackson.JacksonJsonProvider;
 import net.aholbrook.paseto.service.LocalTokenService;
@@ -32,7 +31,7 @@ public class PasetoBuilders {
 	public static class V1 {
 		public static <_Payload> Paseto.Builder<_Payload> paseto() {
 			return new Paseto.Builder<_Payload>()
-					.v1(new JvmV1CryptoProvider())
+					.v1(new BouncyCastleV1CryptoProvider())
 					.withJson(new JacksonJsonProvider());
 		}
 

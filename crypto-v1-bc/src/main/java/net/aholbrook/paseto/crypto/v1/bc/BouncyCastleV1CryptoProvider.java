@@ -56,16 +56,16 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-public class JvmV1CryptoProvider implements V1CryptoProvider {
+public class BouncyCastleV1CryptoProvider implements V1CryptoProvider {
 	private final static int RSA_KEY_SIZE = 2048;
 	private final static BigInteger E = BigInteger.valueOf(65537L);
 	private final NonceGenerator nonceGenerator;
 
-	public JvmV1CryptoProvider() {
+	public BouncyCastleV1CryptoProvider() {
 		this(new SecureRandomNonceGenerator());
 	}
 
-	public JvmV1CryptoProvider(NonceGenerator nonceGenerator) {
+	public BouncyCastleV1CryptoProvider(NonceGenerator nonceGenerator) {
 		//Security.setProperty("crypto.policy", "limited");
 		this.nonceGenerator = nonceGenerator;
 	}

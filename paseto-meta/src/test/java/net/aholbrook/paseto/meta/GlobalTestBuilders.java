@@ -2,7 +2,7 @@ package net.aholbrook.paseto.meta;
 
 import net.aholbrook.paseto.Paseto;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
-import net.aholbrook.paseto.crypto.v1.bc.JvmV1CryptoProvider;
+import net.aholbrook.paseto.crypto.v1.bc.BouncyCastleV1CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.libsodium.LibSodiumV2CryptoProvider;
 import net.aholbrook.paseto.encoding.EncodingProvider;
@@ -13,8 +13,6 @@ import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.test.Provided;
 import net.aholbrook.paseto.test.TestBuilders;
 import net.aholbrook.paseto.test.crypto.TestNonceGenerator;
-import org.junit.Assert;
-import org.junit.Test;
 
 @Provided
 public class GlobalTestBuilders implements TestBuilders {
@@ -89,7 +87,7 @@ public class GlobalTestBuilders implements TestBuilders {
 
 	@Override
 	public V1CryptoProvider v1CryptoProvider() {
-		return new JvmV1CryptoProvider();
+		return new BouncyCastleV1CryptoProvider();
 	}
 
 	@Override
