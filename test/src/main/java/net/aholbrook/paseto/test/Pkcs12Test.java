@@ -81,18 +81,28 @@ public class Pkcs12Test {
 		}
 	}
 
+	@Test(expected = Pkcs12LoadException.class)
+	public void pkcs12_loadNoCertificate() {
+		try {
+			Pkcs12.load("../test/p12/test_v1_rsa_nopub.p12", "password", "test", "password");
+		} catch (Pkcs12LoadException e) {
+			assertPkcs12LoadException(e, Pkcs12LoadException.Reason.PUBLIC_KEY_NOT_FOUND);
+		}
+	}
+
+	@Test(expected = Pkcs12LoadException.class)
+	public void pkcs12_loadCorrupt() {
+		try {
+			Pkcs12.load("../test/p12/test_v1_rsa_corrupt.p12", "password", "test", "password");
+		} catch (Pkcs12LoadException e) {
+			assertPkcs12LoadException(e, Pkcs12LoadException.Reason.IO_EXCEPTION);
+		}
+	}
+
 	// Test exception cases which are hard to test via file loading. At least we can verify that the correct reason is
 	// set in these cases.
 	@Test
 	public void pkcs12_exceptions() {
-		// No provider
-		try {
-			assertPkcs12LoadException(new Pkcs12LoadException(new KeyStoreException()),
-					Pkcs12LoadException.Reason.NO_PKCS12_PROVIDER);
-		} catch (Pkcs12LoadException e) {
-			// ignore
-		}
-
 		// No algorithm
 		try {
 			assertPkcs12LoadException(new Pkcs12LoadException(new NoSuchAlgorithmException()),
@@ -105,14 +115,6 @@ public class Pkcs12Test {
 		try {
 			assertPkcs12LoadException(new Pkcs12LoadException(new CertificateException()),
 					Pkcs12LoadException.Reason.CERTIFICATE_ERROR);
-		} catch (Pkcs12LoadException e) {
-			// ignore
-		}
-
-		// io exception
-		try {
-			assertPkcs12LoadException(new Pkcs12LoadException(new IOException()),
-					Pkcs12LoadException.Reason.IO_EXCEPTION);
 		} catch (Pkcs12LoadException e) {
 			// ignore
 		}

@@ -39,8 +39,7 @@ public class Pkcs12 {
 		return load(keystoreFile, keystorePass, alias, keystorePass);
 	}
 
-	public static KeyPair load(String keystoreFile, String keystorePass, String alias,
-			String keyPass) {
+	public static KeyPair load(String keystoreFile, String keystorePass, String alias, String keyPass) {
 		try {
 			KeyStore p12 = KeyStore.getInstance("PKCS12");
 			p12.load(new FileInputStream(keystoreFile), keystorePass.toCharArray());
@@ -55,15 +54,15 @@ public class Pkcs12 {
 		} catch (FileNotFoundException e) {
 			throw new Pkcs12LoadException(e);
 		} catch (CertificateException e) {
-			throw new Pkcs12LoadException(e);
+			throw new Pkcs12LoadException(e); // Unlikely to ever throw.
 		} catch (NoSuchAlgorithmException e) {
-			throw new Pkcs12LoadException(e);
+			throw new Pkcs12LoadException(e); // Unlikely to occur on any modern jvm.
 		} catch (UnrecoverableKeyException e) {
 			throw new Pkcs12LoadException(e);
 		} catch (IOException e) {
 			throw new Pkcs12LoadException(e);
 		} catch (KeyStoreException e) {
-			throw new Pkcs12LoadException(e);
+			throw new RuntimeException(e); // This can only occur if you forget to call load, thus this will never throw.
 		}
 	}
 }

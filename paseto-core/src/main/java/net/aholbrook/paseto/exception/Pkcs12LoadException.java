@@ -37,11 +37,6 @@ public class Pkcs12LoadException extends PasetoException {
 		reason = Reason.FILE_NOT_FOUND;
 	}
 
-	public Pkcs12LoadException(KeyStoreException e) {
-		super(message(Reason.NO_PKCS12_PROVIDER, e), e);
-		reason = Reason.NO_PKCS12_PROVIDER;
-	}
-
 	public Pkcs12LoadException(NoSuchAlgorithmException e) {
 		super(message(Reason.ALGORITHM_NOT_FOUND, e), e);
 		reason = Reason.ALGORITHM_NOT_FOUND;
@@ -72,7 +67,6 @@ public class Pkcs12LoadException extends PasetoException {
 	}
 
 	public enum Reason {
-		NO_PKCS12_PROVIDER,
 		FILE_NOT_FOUND,
 		ALGORITHM_NOT_FOUND,
 		UNRECOVERABLE_KEY,
@@ -86,8 +80,6 @@ public class Pkcs12LoadException extends PasetoException {
 	private static String message(Reason reason, Throwable e) {
 		switch (reason) {
 			default: // shouldn't happen unless more "reasons" are added
-			case NO_PKCS12_PROVIDER:
-				return "Unable to locate provider for PKCS12 files.";
 			case FILE_NOT_FOUND:
 				return "File not found.";
 			case ALGORITHM_NOT_FOUND:
