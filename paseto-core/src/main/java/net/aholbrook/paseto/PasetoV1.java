@@ -20,10 +20,9 @@ package net.aholbrook.paseto;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
-import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
-import net.aholbrook.paseto.exception.TokenParseException;
+import net.aholbrook.paseto.exception.PasetoParseException;
 import net.aholbrook.paseto.util.Base64;
 import net.aholbrook.paseto.util.ByteArrayUtils;
 import net.aholbrook.paseto.util.PaeUtil;
@@ -87,7 +86,7 @@ public class PasetoV1 extends Paseto {
 		// Split token into sections
 		String[] sections = split(token);
 		if (sections == null) {
-			throw new TokenParseException(TokenParseException.Reason.MISSING_SECTIONS, token);
+			throw new PasetoParseException(PasetoParseException.Reason.MISSING_SECTIONS, token);
 		}
 
 		// Check header
@@ -102,7 +101,7 @@ public class PasetoV1 extends Paseto {
 		byte[] t = new byte[V1CryptoProvider.SHA384_OUT_LEN];
 		// verify length
 		if (nct.length < n.length + t.length + 1) {
-			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token)
+			throw new PasetoParseException(PasetoParseException.Reason.PAYLOAD_LENGTH, token)
 					.setMinLength(n.length + t.length + 1);
 		}
 		byte[] c = new byte[nct.length - n.length - t.length];
@@ -159,7 +158,7 @@ public class PasetoV1 extends Paseto {
 		// Split token into sections
 		String[] sections = split(token);
 		if (sections == null) {
-			throw new TokenParseException(TokenParseException.Reason.MISSING_SECTIONS, token);
+			throw new PasetoParseException(PasetoParseException.Reason.MISSING_SECTIONS, token);
 		}
 
 		// Check header
@@ -173,7 +172,7 @@ public class PasetoV1 extends Paseto {
 		byte[] s = new byte[V1CryptoProvider.RSA_SIGNATURE_LEN];
 		// verify length
 		if (msig.length < s.length + 1) {
-			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token)
+			throw new PasetoParseException(PasetoParseException.Reason.PAYLOAD_LENGTH, token)
 					.setMinLength(s.length + 1);
 		}
 		byte[] m = new byte[msig.length - s.length];

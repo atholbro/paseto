@@ -17,11 +17,11 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.exception;
 
-public class TokenParseException extends PasetoStringException {
+public class PasetoParseException extends PasetoStringException {
 	private final Reason reason;
 	private int minLength = 0;
 
-	public TokenParseException(Reason reason, String token) {
+	public PasetoParseException(Reason reason, String token) {
 		super(message(reason, token), token);
 		this.reason = reason;
 	}
@@ -34,7 +34,7 @@ public class TokenParseException extends PasetoStringException {
 		return minLength;
 	}
 
-	public TokenParseException setMinLength(int minLength) {
+	public PasetoParseException setMinLength(int minLength) {
 		this.minLength = minLength;
 		return this;
 	}

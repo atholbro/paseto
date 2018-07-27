@@ -23,7 +23,7 @@ import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.DecryptionException;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
-import net.aholbrook.paseto.exception.TokenParseException;
+import net.aholbrook.paseto.exception.PasetoParseException;
 import net.aholbrook.paseto.util.Base64;
 import net.aholbrook.paseto.util.PaeUtil;
 import net.aholbrook.paseto.util.StringUtils;
@@ -72,7 +72,7 @@ public class PasetoV2 extends Paseto {
 		// Split token into sections
 		String[] sections = split(token);
 		if (sections == null) {
-			throw new TokenParseException(TokenParseException.Reason.MISSING_SECTIONS, token);
+			throw new PasetoParseException(PasetoParseException.Reason.MISSING_SECTIONS, token);
 		}
 
 		// Check header
@@ -86,7 +86,7 @@ public class PasetoV2 extends Paseto {
 		byte[] n = new byte[cryptoProvider.xChaCha20Poly1305IetfNpubbytes()];
 		// verify length
 		if (nc.length < n.length + 1) {
-			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token)
+			throw new PasetoParseException(PasetoParseException.Reason.PAYLOAD_LENGTH, token)
 					.setMinLength(n.length + 1);
 		}
 		byte[] c = new byte[nc.length - n.length];
@@ -130,7 +130,7 @@ public class PasetoV2 extends Paseto {
 		// Split token into sections
 		String[] sections = split(token);
 		if (sections == null) {
-			throw new TokenParseException(TokenParseException.Reason.MISSING_SECTIONS, token);
+			throw new PasetoParseException(PasetoParseException.Reason.MISSING_SECTIONS, token);
 		}
 
 		// Check header
@@ -144,7 +144,7 @@ public class PasetoV2 extends Paseto {
 		byte[] s = new byte[cryptoProvider.ed25519SignBytes()];
 		// verify length
 		if (msig.length < s.length + 1) {
-			throw new TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token)
+			throw new PasetoParseException(PasetoParseException.Reason.PAYLOAD_LENGTH, token)
 					.setMinLength(s.length + 1);
 		}
 		byte[] m = new byte[msig.length - s.length];
