@@ -364,5 +364,8 @@ public class ClaimVerificationTest {
 		Assert.assertTrue(names.contains(CurrentlyValid.NAME));
 
 		Assert.assertEquals(token, context.getToken());
+
+		Assert.assertFalse(context.hasClaim(null));
+		Assert.assertFalse(context.hasClaim(""));
 	}
 }
