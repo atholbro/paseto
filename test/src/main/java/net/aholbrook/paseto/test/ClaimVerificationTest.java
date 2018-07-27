@@ -368,4 +368,20 @@ public class ClaimVerificationTest {
 		Assert.assertFalse(context.hasClaim(null));
 		Assert.assertFalse(context.hasClaim(""));
 	}
+
+	// Check message format of MultipleClaimException
+	@Test(expected = MultipleClaimException.class)
+	public void multipleClaimException_message() {
+		Token token = TokenTestVectors.TOKEN_2;
+		MultipleClaimException mce = new MultipleClaimException(token);
+		mce.add(new IncorrectAudienceException("correct", "wrong", ForAudience.NAME, token));
+		mce.add(new IncorrectIssuerException("correct", "wrong", IssuedBy.NAME, token));
+
+		String message = mce.getMessage();
+
+		Assert.assertEquals("Multiple verification errors: FOR_AUDIENCE: Token audience is \"wrong\", "
+				+ "required: \"correct\"\nISSUED_BY: Token issued by \"wrong\", required: \"correct\"", message);
+
+		throw mce;
+	}
 }
