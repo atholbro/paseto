@@ -3,13 +3,16 @@ buildscript {
 		maven {
 			url "https://plugins.gradle.org/m2/"
 		}
+		mavenCentral()
 	}
 	dependencies {
+		classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
 		classpath "gradle.plugin.com.github.gradle-git-version-calculator:gradle-git-version-calculator:1.0.0"
 	}
 }
 
 plugins {
+	id 'io.codearte.nexus-staging' version '0.11.0'
 	id 'nu.studer.credentials' version '1.0.4'
 }
 
@@ -22,19 +25,20 @@ def generateBaseName(artifact_id) {
 	return "paseto-" + artifact_id
 }
 
+nexusStaging {
+	username = publish_user
+	password = publish_pass
+}
+
 allprojects {
 	apply plugin: 'java-library'
 	apply plugin: 'com.github.gradle-git-version-calculator'
 	apply plugin: 'jacoco'
 
+
 	gitVersionCalculator {
 		prefix = 'release@'
 		withSnapshot = true
-	}
-
-	ext {
-		group_id = "net.aholbrook.paseto"
-		library_version = gitVersionCalculator.calculateVersion()
 	}
 
 	repositories {
@@ -44,9 +48,75 @@ allprojects {
 			url  "https://dl.bintray.com/terl/lazysodium-maven"
 		}
 	}
+
+	jar {
+		version = gitVersionCalculator.calculateVersion()
+	}
+
+
+	if (it.name != "paseto") {
+		apply plugin: 'signing'
+		apply plugin: 'maven-publish'
+
+		afterEvaluate {
+			signing {
+				sign publishing.publications.maven
+			}
+		}
+
+		publishing {
+			publications {
+				group = "net.aholbrook.paseto"
+				version = gitVersionCalculator.calculateVersion()
+
+				maven(MavenPublication) {
+					pom {
+						url = 'https://github.com/atholbro/paseto'
+
+						licenses {
+							license {
+								name = 'The MIT License (MIT)'
+								url = 'http://opensource.org/licenses/MIT'
+							}
+						}
+
+						developers {
+							developer {
+								id = 'aholbrook'
+								name = 'Andrew Holbrook'
+								email = 'atholbro@gmail.com'
+							}
+						}
+
+						scm {
+							connection = 'scm:git:git@github.com:atholbro/paseto.git'
+							developerConnection = 'scm:git:git@github.com:atholbro/paseto.git'
+							url = 'https://github.com/atholbro/paseto'
+						}
+
+
+					}
+				}
+			}
+			repositories {
+				maven {
+					def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+					def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+					url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+					credentials {
+						username publish_user
+						password publish_pass
+					}
+				}
+			}
+		}
+	}
 }
 
 subprojects {
+	sourceCompatibility = 1.8
+
 	dependencies {
 		testImplementation 'junit:junit:4.12'
 	}
@@ -60,6 +130,16 @@ subprojects {
 			xml.enabled = true
 			csv.enabled = false
 		}
+	}
+
+	task sourcesJar(type: Jar) {
+		from sourceSets.main.allJava
+		classifier = 'sources'
+	}
+
+	task javadocJar(type: Jar) {
+		from javadoc
+		classifier = 'javadoc'
 	}
 }
 

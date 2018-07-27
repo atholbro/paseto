@@ -1,26 +1,25 @@
-apply plugin: 'java-library'
-apply plugin: 'maven-publish'
-
 def artifact_id = "core"
 
 jar {
 	baseName = generateBaseName(artifact_id)
-	version = library_version
 }
 
 publishing {
 	publications {
 		maven(MavenPublication) {
-			groupId group_id
-			artifactId 'base'
-			version library_version
+			pom {
+				name = 'Paseto'
+				description = 'Core Paseto library. Use "meta" unless overriding a provider.'
+			}
+
+			artifactId artifact_id
 
 			from components.java
+			artifact sourcesJar
+			artifact javadocJar
 		}
 	}
 }
-
-sourceCompatibility = 1.8
 
 dependencies {
 	api project(':encoding')

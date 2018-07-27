@@ -1,23 +1,23 @@
-apply plugin: 'java-library'
-apply plugin: 'maven-publish'
-
 def artifact_id = "crypto"
 
 jar {
 	baseName = generateBaseName(artifact_id)
-	version = library_version
 }
 
 publishing {
 	publications {
 		maven(MavenPublication) {
-			groupId group_id
+			pom {
+				name = 'Paseto - Crypto'
+				description = 'Basic crypto inferface required by all crypto providers.'
+			}
+
 			artifactId artifact_id
-			version library_version
 
 			from components.java
+			artifact sourcesJar
+			artifact javadocJar
 		}
 	}
 }
 
-sourceCompatibility = 1.8

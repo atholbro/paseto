@@ -1,26 +1,25 @@
-apply plugin: 'java-library'
-apply plugin: 'maven-publish'
-
 def artifact_id = "encoding-json-jackson"
 
 jar {
 	baseName = generateBaseName(artifact_id)
-	version = library_version
 }
 
 publishing {
 	publications {
 		maven(MavenPublication) {
-			groupId group_id
+			pom {
+				name = 'Encoding: Jackson'
+				description = 'JSON encoding backed by Jackson.'
+			}
+
 			artifactId artifact_id
-			version library_version
 
 			from components.java
+			artifact sourcesJar
+			artifact javadocJar
 		}
 	}
 }
-
-sourceCompatibility = 1.8
 
 dependencies {
 	implementation project(':encoding')

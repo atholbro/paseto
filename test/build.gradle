@@ -1,13 +1,25 @@
-apply plugin: 'java-library'
-
 def artifact_id = "test"
 
 jar {
 	baseName = generateBaseName(artifact_id)
-	version = library_version
 }
 
-sourceCompatibility = 1.8
+publishing {
+	publications {
+		maven(MavenPublication) {
+			pom {
+				name = 'Paseto Tests'
+				description = 'A helper library for running Paseto unit tests.'
+			}
+
+			artifactId artifact_id
+
+			from components.java
+			artifact sourcesJar
+			artifact javadocJar
+		}
+	}
+}
 
 dependencies {
 	implementation project(':paseto-core')
