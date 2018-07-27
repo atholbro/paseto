@@ -25,12 +25,16 @@ public class TokenWithFooterTest {
 	@Test
 	public void tokenWithFooter_notEquals() {
 		TokenWithFooter<String, String> twf1 = new TokenWithFooter<>("test", "something else");
-		TokenWithFooter<String, String> twf2 = new TokenWithFooter<>("aaaa", "bb");
+		TokenWithFooter<String, String> twf2 = new TokenWithFooter<>("aaaa", "something else");
+		TokenWithFooter<String, String> twf3 = new TokenWithFooter<>("test", "bb");
 
 		Assert.assertNotEquals(twf1, new Object());
 		Assert.assertEquals(false, twf1.equals(null));
 		Assert.assertEquals(false, twf1.equals(1));
 		Assert.assertNotEquals(twf1, twf2);
 		Assert.assertNotEquals(twf1.hashCode(), twf2.hashCode());
+
+		Assert.assertNotEquals(twf1, twf3);
+		Assert.assertNotEquals(twf1.hashCode(), twf3.hashCode());
 	}
 }
