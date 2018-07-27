@@ -26,12 +26,14 @@ import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.DecryptionException;
 import net.aholbrook.paseto.exception.InvalidFooterException;
 import net.aholbrook.paseto.exception.InvalidHeaderException;
+import net.aholbrook.paseto.exception.PasetoParseException;
 import net.aholbrook.paseto.exception.PasetoStringException;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
 import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.test.data.CustomToken;
 import net.aholbrook.paseto.test.data.RfcTestVectors;
+import net.aholbrook.paseto.test.data.RfcToken;
 import net.aholbrook.paseto.test.data.TestVector;
 import net.aholbrook.paseto.test.data.TokenTestVectors;
 import net.aholbrook.paseto.test.utils.AssertUtils;
@@ -606,5 +608,41 @@ public class PasetoV2Test extends PasetoTest {
 	@Test(expected = NullPointerException.class)
 	public void v2_nullCryptoProvider() {
 		new PasetoV2.Builder(TestContext.builders().encodingProvider(), null);
+	}
+
+	@Test(expected = PasetoParseException.class)
+	public void v2_local_parseException_missingSections() {
+		Paseto paseto = createPaseto(null);
+
+		AssertUtils.assertPasetoParseException(() ->
+						paseto.decrypt("", RfcTestVectors.RFC_TEST_KEY, RfcToken.class),
+				"", PasetoParseException.Reason.MISSING_SECTIONS, 0);
+	}
+
+	@Test(expected = PasetoParseException.class)
+	public void v2_public_parseException_missingSections() {
+		Paseto paseto = createPaseto(null);
+
+		AssertUtils.assertPasetoParseException(() ->
+						paseto.verify("", RfcTestVectors.RFC_TEST_PK, RfcToken.class),
+				"", PasetoParseException.Reason.MISSING_SECTIONS, 0);
+	}
+
+	@Test(expected = PasetoParseException.class)
+	public void v2_local_parseException_payloadLength() {
+		Paseto paseto = createPaseto(null);
+
+		AssertUtils.assertPasetoParseException(() ->
+						paseto.decrypt("v2.local.aa", RfcTestVectors.RFC_TEST_KEY, RfcToken.class),
+				"v2.local.aa", PasetoParseException.Reason.PAYLOAD_LENGTH, 25);
+	}
+
+	@Test(expected = PasetoParseException.class)
+	public void v2_public_parseException_payloadLength() {
+		Paseto paseto = createPaseto(null);
+
+		AssertUtils.assertPasetoParseException(() ->
+						paseto.verify("v2.public.aa", RfcTestVectors.RFC_TEST_PK, RfcToken.class),
+				"v2.public.aa", PasetoParseException.Reason.PAYLOAD_LENGTH, 65);
 	}
 }

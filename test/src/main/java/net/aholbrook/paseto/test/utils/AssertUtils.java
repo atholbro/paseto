@@ -21,6 +21,7 @@ import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 import net.aholbrook.paseto.crypto.exception.ByteArrayRangeException;
 import net.aholbrook.paseto.exception.InvalidFooterException;
 import net.aholbrook.paseto.exception.InvalidHeaderException;
+import net.aholbrook.paseto.exception.PasetoParseException;
 import net.aholbrook.paseto.exception.PasetoStringException;
 import net.aholbrook.paseto.exception.claims.ClaimException;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
@@ -151,6 +152,18 @@ public class AssertUtils {
 				Assert.assertEquals("index: " + Integer.toString(i),
 						e.getExceptions().get(i).getClass(), classes[i]);
 			}
+			throw e;
+		}
+	}
+
+	public static <_Token> void assertPasetoParseException(Runnable r, _Token token, PasetoParseException.Reason reason,
+			int minLength) {
+		try {
+			r.run();
+		} catch (PasetoParseException e) {
+			Assert.assertEquals(token, e.getToken());
+			Assert.assertEquals(reason, e.getReason());
+			Assert.assertEquals(minLength, e.getMinLength());
 			throw e;
 		}
 	}
