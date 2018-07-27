@@ -11,17 +11,17 @@ import java.time.ZoneOffset;
 
 public class TokenTestVectors {
 	// q9Rq3FfaAyN8JWyVJhphybm9DaFNLVt2
-	private static byte[] TEST_KEY = Hex.decode("713952713346666141794e384a5779564a68706879626d394461464e4c567432");
+	public static byte[] TEST_KEY = Hex.decode("713952713346666141794e384a5779564a68706879626d394461464e4c567432");
 	// SmpF7Y5DeSJFJxjMrnDSwnUv
-	private static byte[] TEST_NONCE = Hex.decode("536d70463759354465534a464a786a4d726e4453776e5576");
+	public static byte[] TEST_NONCE = Hex.decode("536d70463759354465534a464a786a4d726e4453776e5576");
 
-	private static byte[] TEST_SK = Hex.decode("452c1969ed4806c8d48ee4c670df980183f6796633787b15a03f09cb24eebe7c432" 
+	public static byte[] TEST_SK = Hex.decode("452c1969ed4806c8d48ee4c670df980183f6796633787b15a03f09cb24eebe7c432"
 			+ "fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d");
 
-	private static byte[] TEST_PK = Hex.decode("432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d");
+	public static byte[] TEST_PK = Hex.decode("432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d");
 
 	// paseto-base/test_v1_rsa
-	private static byte[] TEST_RSA_PRIVATE_KEY = Hex.decode(
+	public static byte[] TEST_RSA_PRIVATE_KEY = Hex.decode(
 			"308204bd020100300d06092a864886f70d0101010500048204a7308204a30201000282010100b282b532724e9646349947452b" 
 					+ "64b0ff1597f8428161785011e43a1187a90466c420271626909b865f2fdd1d4635a025b5a34394a2fa4bcfa963886cd0" 
 					+ "308b4911b2a702c89aa38ebd80dec7b367226ab504ec29487037d509db7e9f6bb09a83cdd2f20ac4d664ba6df7e5b7a1" 
@@ -50,7 +50,7 @@ public class TokenTestVectors {
 					+ "161a882c59403e87bda25de0a98c");
 
 	// paseto-base/test_v1_rsa.pub
-	private static byte[] TEST_RSA_PUBLIC_KEY = Hex.decode(
+	public static byte[] TEST_RSA_PUBLIC_KEY = Hex.decode(
 			"30820122300d06092a864886f70d01010105000382010f003082010a0282010100b282b532724e9646349947452b64b0ff1597"
 					+ "f8428161785011e43a1187a90466c420271626909b865f2fdd1d4635a025b5a34394a2fa4bcfa963886cd0308b4911b2"
 					+ "a702c89aa38ebd80dec7b367226ab504ec29487037d509db7e9f6bb09a83cdd2f20ac4d664ba6df7e5b7a1bb08e47297"
