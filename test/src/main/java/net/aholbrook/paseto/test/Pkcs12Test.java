@@ -4,10 +4,7 @@ import net.aholbrook.paseto.exception.Pkcs12LoadException;
 import net.aholbrook.paseto.util.Pkcs12;
 import org.junit.Assert;
 import org.junit.Test;
-import sun.security.pkcs11.wrapper.PKCS11Exception;
 
-import java.io.IOException;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 

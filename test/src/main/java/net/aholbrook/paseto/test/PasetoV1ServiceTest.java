@@ -5,8 +5,6 @@ import net.aholbrook.paseto.PasetoV1;
 import net.aholbrook.paseto.TokenWithFooter;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.CurrentlyValid;
-import net.aholbrook.paseto.exception.claims.ExpiredTokenException;
-import net.aholbrook.paseto.exception.claims.IssuedInFutureException;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
 import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.LocalTokenService;

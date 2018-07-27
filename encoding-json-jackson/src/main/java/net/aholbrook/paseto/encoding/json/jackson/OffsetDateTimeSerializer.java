@@ -7,7 +7,6 @@ import net.aholbrook.paseto.service.Token;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class OffsetDateTimeSerializer extends JsonSerializer<OffsetDateTime> {
 	@Override

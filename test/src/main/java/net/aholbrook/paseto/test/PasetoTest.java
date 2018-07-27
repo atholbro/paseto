@@ -1,9 +1,6 @@
 package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Paseto;
-import net.aholbrook.paseto.exception.InvalidFooterException;
-import net.aholbrook.paseto.exception.InvalidHeaderException;
-import net.aholbrook.paseto.exception.PasetoStringException;
 import net.aholbrook.paseto.test.data.TestVector;
 import net.aholbrook.paseto.util.StringUtils;
 import org.junit.Assert;

@@ -1,7 +1,7 @@
 package net.aholbrook.paseto.exception.claims;
 
-import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.exception.PasetoTokenException;
+import net.aholbrook.paseto.service.Token;
 
 public class ClaimException extends PasetoTokenException {
 	private final String ruleName;

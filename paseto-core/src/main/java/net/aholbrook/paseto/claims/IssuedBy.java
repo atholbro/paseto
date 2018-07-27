@@ -1,8 +1,8 @@
 package net.aholbrook.paseto.claims;
 
-import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.exception.claims.IncorrectIssuerException;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
+import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.util.StringUtils;
 
 public class IssuedBy implements Claim {

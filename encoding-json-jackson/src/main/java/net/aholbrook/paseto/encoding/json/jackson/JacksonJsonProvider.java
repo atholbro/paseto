@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.encoding.exception.EncodingException;
 import net.aholbrook.paseto.encoding.json.jackson.mixin.KeyIdMixIn;
 import net.aholbrook.paseto.encoding.json.jackson.mixin.TokenMixIn;
 import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
-import net.aholbrook.paseto.encoding.EncodingProvider;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
