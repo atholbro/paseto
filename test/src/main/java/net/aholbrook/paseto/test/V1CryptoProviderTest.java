@@ -6,7 +6,7 @@ import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import net.aholbrook.paseto.test.data.RfcTestVectors;
 import net.aholbrook.paseto.test.utils.AssertUtils;
-import net.aholbrook.paseto.test.utils.Hex;
+import net.aholbrook.paseto.util.Hex;
 import net.aholbrook.paseto.test.utils.TestContext;
 import net.aholbrook.paseto.util.StringUtils;
 import org.junit.Assert;

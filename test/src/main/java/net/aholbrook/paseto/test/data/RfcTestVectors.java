@@ -18,7 +18,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.test.data;
 
 import net.aholbrook.paseto.service.KeyId;
-import net.aholbrook.paseto.test.utils.Hex;
+import net.aholbrook.paseto.util.Hex;
 
 public class RfcTestVectors {
 	public static byte[] RFC_TEST_KEY = Hex.decode("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e"
