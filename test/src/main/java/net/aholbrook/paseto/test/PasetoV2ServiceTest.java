@@ -18,6 +18,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.PasetoV2;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;
@@ -81,7 +82,7 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 
 	@Test
 	public void v2Service_publicServiceBuilderOverride() {
-		Paseto.Builder pasetoBuilder = TestContext.builders().pasetoBuilderV2(null);
+		PasetoV2.Builder pasetoBuilder = TestContext.builders().pasetoBuilderV2(null);
 		PublicTokenService<Token> service =  TestContext.builders().publicServiceBuilderV2(pasetoBuilder,
 				rfcPublicKeyProvider(), Token.class).build();
 

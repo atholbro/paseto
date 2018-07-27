@@ -17,7 +17,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.meta;
 
-import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.PasetoV1;
+import net.aholbrook.paseto.PasetoV2;
 import net.aholbrook.paseto.crypto.v1.bc.BouncyCastleV1CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.libsodium.LibSodiumV2CryptoProvider;
 import net.aholbrook.paseto.encoding.json.jackson.JacksonJsonProvider;
@@ -31,32 +32,30 @@ public class PasetoBuilders {
 	public static class V1 {
 		private V1() {}
 
-		public static Paseto.Builder paseto() {
-			return new Paseto.Builder()
-					.v1(new BouncyCastleV1CryptoProvider())
-					.withJson(new JacksonJsonProvider());
+		public static PasetoV1.Builder paseto() {
+			return new PasetoV1.Builder(new JacksonJsonProvider(), new BouncyCastleV1CryptoProvider());
 		}
 
 		public static <_TokenType extends Token> LocalTokenService.Builder<_TokenType> localService(
 				LocalTokenService.KeyProvider keyProvider, Class<_TokenType> tokenClass) {
-			Paseto.Builder paseto = paseto();
+			PasetoV1.Builder paseto = paseto();
 			return localService(paseto, keyProvider, tokenClass);
 		}
 
 		public static <_TokenType extends Token> LocalTokenService.Builder<_TokenType> localService(
-				Paseto.Builder paseto, LocalTokenService.KeyProvider keyProvider,
+				PasetoV1.Builder paseto, LocalTokenService.KeyProvider keyProvider,
 				Class<_TokenType> tokenClass) {
 			return new LocalTokenService.Builder<>(paseto.build(), tokenClass, keyProvider);
 		}
 
 		public static <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicService(
 				PublicTokenService.KeyProvider keyProvider, Class<_TokenType> tokenClass) {
-			Paseto.Builder paseto = paseto();
+			PasetoV1.Builder paseto = paseto();
 			return publicService(paseto, keyProvider, tokenClass);
 		}
 
 		public static <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicService(
-				Paseto.Builder paseto, PublicTokenService.KeyProvider keyProvider,
+				PasetoV1.Builder paseto, PublicTokenService.KeyProvider keyProvider,
 				Class<_TokenType> tokenClass) {
 			return new PublicTokenService.Builder<>(paseto.build(), tokenClass, keyProvider);
 		}
@@ -65,20 +64,18 @@ public class PasetoBuilders {
 	public static class V2 {
 		private V2() {}
 
-		public static Paseto.Builder paseto() {
-			return new Paseto.Builder()
-					.v2(new LibSodiumV2CryptoProvider())
-					.withJson(new JacksonJsonProvider());
+		public static PasetoV2.Builder paseto() {
+			return new PasetoV2.Builder(new JacksonJsonProvider(), new LibSodiumV2CryptoProvider());
 		}
 
 		public static <_TokenType extends Token> LocalTokenService.Builder<_TokenType> localService(
 				LocalTokenService.KeyProvider keyProvider, Class<_TokenType> tokenClass) {
-			Paseto.Builder paseto = paseto();
+			PasetoV2.Builder paseto = paseto();
 			return localService(paseto, keyProvider, tokenClass);
 		}
 
 		public static <_TokenType extends Token> LocalTokenService.Builder<_TokenType> localService(
-				Paseto.Builder paseto, LocalTokenService.KeyProvider keyProvider,
+				PasetoV2.Builder paseto, LocalTokenService.KeyProvider keyProvider,
 				Class<_TokenType> tokenClass) {
 			return new LocalTokenService.Builder<>(paseto.build(), tokenClass, keyProvider);
 		}
@@ -86,12 +83,12 @@ public class PasetoBuilders {
 		public static <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicService(
 				PublicTokenService.KeyProvider keyProvider,
 				Class<_TokenType> tokenClass) {
-			Paseto.Builder paseto = paseto();
+			PasetoV2.Builder paseto = paseto();
 			return publicService(paseto, keyProvider, tokenClass);
 		}
 
 		public static <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicService(
-				Paseto.Builder paseto, PublicTokenService.KeyProvider keyProvider,
+				PasetoV2.Builder paseto, PublicTokenService.KeyProvider keyProvider,
 				Class<_TokenType> tokenClass) {
 			return new PublicTokenService.Builder<>(paseto.build(), tokenClass, keyProvider);
 		}

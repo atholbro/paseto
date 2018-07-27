@@ -1,6 +1,7 @@
 package net.aholbrook.paseto.meta;
 
-import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.PasetoV1;
+import net.aholbrook.paseto.PasetoV2;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import net.aholbrook.paseto.crypto.v1.bc.BouncyCastleV1CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
@@ -10,15 +11,15 @@ import net.aholbrook.paseto.encoding.json.jackson.JacksonJsonProvider;
 import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;
 import net.aholbrook.paseto.service.Token;
+import net.aholbrook.paseto.test.crypto.TestNonceGenerator;
 import net.aholbrook.paseto.test.utils.Provided;
 import net.aholbrook.paseto.test.utils.TestBuilders;
-import net.aholbrook.paseto.test.crypto.TestNonceGenerator;
 
 @Provided
 public class GlobalTestBuilders implements TestBuilders {
 	@Override
-	public  Paseto.Builder pasetoBuilderV1(byte[] nonce) {
-		Paseto.Builder builder = PasetoBuilders.V1.paseto();
+	public  PasetoV1.Builder pasetoBuilderV1(byte[] nonce) {
+		PasetoV1.Builder builder = PasetoBuilders.V1.paseto();
 		if (nonce != null) {
 			builder.withTestingNonceGenerator(new TestNonceGenerator(nonce));
 		}
@@ -43,14 +44,14 @@ public class GlobalTestBuilders implements TestBuilders {
 
 	@Override
 	public <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicServiceBuilderV1(
-			Paseto.Builder pasetoBuilder, PublicTokenService.KeyProvider keyProvider,
+			PasetoV1.Builder pasetoBuilder, PublicTokenService.KeyProvider keyProvider,
 			Class<_TokenType> tokenClass) {
 		return PasetoBuilders.V1.publicService(pasetoBuilder, keyProvider, tokenClass);
 	}
 
 	@Override
-	public Paseto.Builder pasetoBuilderV2(byte[] nonce) {
-		Paseto.Builder builder = PasetoBuilders.V2.paseto();
+	public PasetoV2.Builder pasetoBuilderV2(byte[] nonce) {
+		PasetoV2.Builder builder = PasetoBuilders.V2.paseto();
 		if (nonce != null) {
 			builder.withTestingNonceGenerator(new TestNonceGenerator(nonce));
 		}
@@ -75,7 +76,7 @@ public class GlobalTestBuilders implements TestBuilders {
 
 	@Override
 	public <_TokenType extends Token> PublicTokenService.Builder<_TokenType> publicServiceBuilderV2(
-			Paseto.Builder pasetoBuilder, PublicTokenService.KeyProvider keyProvider,
+			PasetoV2.Builder pasetoBuilder, PublicTokenService.KeyProvider keyProvider,
 			Class<_TokenType> tokenClass) {
 		return PasetoBuilders.V2.publicService(pasetoBuilder, keyProvider, tokenClass);
 	}

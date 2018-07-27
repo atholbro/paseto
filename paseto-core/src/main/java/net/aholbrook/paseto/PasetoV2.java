@@ -35,7 +35,7 @@ public class PasetoV2 extends Paseto {
 
 	private final V2CryptoProvider cryptoProvider;
 	
-	PasetoV2(EncodingProvider encodingProvider, V2CryptoProvider cryptoProvider, NonceGenerator nonceGenerator) {
+	private PasetoV2(EncodingProvider encodingProvider, V2CryptoProvider cryptoProvider, NonceGenerator nonceGenerator) {
 		super(encodingProvider,  nonceGenerator);
 		this.cryptoProvider = cryptoProvider;
 	}
@@ -163,5 +163,30 @@ public class PasetoV2 extends Paseto {
 	@Override
 	public KeyPair generateKeyPair() {
 		return cryptoProvider.ed25519Generate();
+	}
+
+	public static class Builder {
+		private final EncodingProvider encodingProvider;
+		private final V2CryptoProvider v2CryptoProvider;
+		private NonceGenerator nonceGenerator;
+
+		public Builder(EncodingProvider encodingProvider, V2CryptoProvider v2CryptoProvider) {
+			if (encodingProvider == null) { throw new NullPointerException("Encoding provider is required."); }
+			if (v2CryptoProvider == null) { throw new NullPointerException("V2 Crypto Provider is required."); }
+
+
+			this.encodingProvider = encodingProvider;
+			this.v2CryptoProvider = v2CryptoProvider;
+		}
+
+		public Builder withTestingNonceGenerator(NonceGenerator nonceGenerator) {
+			this.nonceGenerator = nonceGenerator;
+			return this;
+		}
+
+		public PasetoV2 build() {
+			if (nonceGenerator == null) { nonceGenerator = v2CryptoProvider.getNonceGenerator(); }
+			return new PasetoV2(encodingProvider, v2CryptoProvider, nonceGenerator);
+		}
 	}
 }

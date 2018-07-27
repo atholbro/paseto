@@ -20,6 +20,7 @@ package net.aholbrook.paseto;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
+import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
 import net.aholbrook.paseto.exception.TokenParseException;
@@ -38,7 +39,7 @@ public class PasetoV1 extends Paseto {
 
 	private final V1CryptoProvider cryptoProvider;
 
-	PasetoV1(EncodingProvider encodingProvider, V1CryptoProvider cryptoProvider, NonceGenerator nonceGenerator) {
+	private PasetoV1(EncodingProvider encodingProvider, V1CryptoProvider cryptoProvider, NonceGenerator nonceGenerator) {
 		super(encodingProvider, nonceGenerator);
 		this.cryptoProvider = cryptoProvider;
 	}
@@ -191,5 +192,30 @@ public class PasetoV1 extends Paseto {
 	@Override
 	public KeyPair generateKeyPair() {
 		return cryptoProvider.rsaGenerate();
+	}
+
+	public static class Builder {
+		private final EncodingProvider encodingProvider;
+		private final V1CryptoProvider v1CryptoProvider;
+		private NonceGenerator nonceGenerator;
+
+		public Builder(EncodingProvider encodingProvider, V1CryptoProvider v1CryptoProvider) {
+			if (encodingProvider == null) { throw new NullPointerException("Encoding provider is required."); }
+			if (v1CryptoProvider == null) { throw new NullPointerException("V1 Crypto Provider is required."); }
+
+
+			this.encodingProvider = encodingProvider;
+			this.v1CryptoProvider = v1CryptoProvider;
+		}
+
+		public Builder withTestingNonceGenerator(NonceGenerator nonceGenerator) {
+			this.nonceGenerator = nonceGenerator;
+			return this;
+		}
+
+		public PasetoV1 build() {
+			if (nonceGenerator == null) { nonceGenerator = v1CryptoProvider.getNonceGenerator(); }
+			return new PasetoV1(encodingProvider, v1CryptoProvider, nonceGenerator);
+		}
 	}
 }
