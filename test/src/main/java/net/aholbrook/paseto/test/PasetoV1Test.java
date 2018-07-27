@@ -18,6 +18,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package net.aholbrook.paseto.test;
 
 import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.PasetoV1;
 import net.aholbrook.paseto.TokenWithFooter;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.encoding.EncodingProvider;
@@ -569,5 +570,15 @@ public class PasetoV1Test extends PasetoTest {
 		// now decrypt, should work
 		Token payload = paseto.verify(token, keyPair.getPublicKey(), Token.class);
 		Assert.assertEquals("decrypted payload != original payload", TokenTestVectors.TOKEN_1, payload);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void v1_nullEncodingProvider() {
+		new PasetoV1.Builder(null, TestContext.builders().v1CryptoProvider());
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void v1_nullCryptoProvider() {
+		new PasetoV1.Builder(TestContext.builders().encodingProvider(), null);
 	}
 }

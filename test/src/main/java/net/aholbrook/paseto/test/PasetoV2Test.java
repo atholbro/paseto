@@ -597,4 +597,14 @@ public class PasetoV2Test extends PasetoTest {
 		CustomToken payload = paseto.verify(token, keyPair.getPublicKey(), CustomToken.class);
 		Assert.assertEquals("decrypted payload != original payload", TokenTestVectors.TOKEN_2, payload);
 	}
+
+	@Test(expected = NullPointerException.class)
+	public void v2_nullEncodingProvider() {
+		new PasetoV2.Builder(null, TestContext.builders().v2CryptoProvider());
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void v2_nullCryptoProvider() {
+		new PasetoV2.Builder(TestContext.builders().encodingProvider(), null);
+	}
 }
