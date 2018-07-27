@@ -49,6 +49,6 @@ public class PaeUtilTest {
 
 	@Test(expected = NullPointerException.class)
 	public void paeUtil_nullPieces() {
-		PaeUtil.pae(null);
+		PaeUtil.pae((byte[][]) null);
 	}
 }
