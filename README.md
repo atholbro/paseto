@@ -11,7 +11,16 @@ Paseto is everything you love about JOSE (JWT, JWE, JWS) without any of the
 # Contents
 * [What is Paseto?](#what-is-paseto)
   * [Key Differences between Paseto and JWT](#key-differences-between-paseto-and-jwt)
+  * [Supported Paseto Features](#supported-paseto-features)
+  * [Motivation](#motivation)
 * [Installation](#installation)
+  * [Gradle](#gradle)
+  * [Maven](#maven)
+  * [Libsodium for V2 Tokens](#libsodium-for-v2-tokens)
+* [Usage](#usage)
+  * [A note on the available APIs]
+  * [Why multiple versions?]
+  * [JsonToken API]
 
 # What is Paseto?
 
@@ -39,7 +48,7 @@ use Paseto in [an insecure way](https://auth0.com/blog/critical-vulnerabilities-
 | v2.public | ✓ |
 | JsonToken | ✓ |
 
-## About The Library / Motivation
+## Motivation
 This library was created to support all Paseto features in a plugable fashion. The JSON, and cryptography code
 for V1/V2 are separate libraries, which allows their implementation to be replaced with alternatives. For
 example: the default JSON encoding is provided via Jackson, however if you are already using GSON, then you
@@ -60,7 +69,7 @@ _Note: GSON will be officailly supported in the future as an alternative to Jack
 ### Gradle
 
 ```gradle
-compile 'net.aholbrook.paseto:meta:1.0.0'
+compile 'net.aholbrook.paseto:meta:0.3.0'
 ```
 
 ### Maven
@@ -69,7 +78,7 @@ compile 'net.aholbrook.paseto:meta:1.0.0'
 <dependency>
     <groupId>net.aholbrook.paseto</groupId>
     <artifactId>meta</artifactId>
-    <version>1.0.0</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
@@ -83,14 +92,14 @@ Typically this is as easy as installing a package, for example on Arch Linux you
 _If you only plan on using V1 Tokens, then you can skip this step._
 
 # Usage
-## A note on the available APIs
+### A note on the available APIs
 A high level wrapper around raw Paseto tokens is provided and its usage is encouraged. This high level API implements
 the Paseto `JsonToken` as described in the RFC. However since JsonToken was just recently made a requirement, other
 Paseto implementations provide access to raw Paseto tokens. As such access to the low level Paseto token API is
 available and described below should you need to work with raw tokens from another library. Most users should stick
 with the offical JsonToken (which this library allows you to extend if needed).
 
-## Why multiple versions?
+### Why multiple versions?
 If your curious as to why Paseto has V1 and V2 tokens, you can find more details in the Paseto RFC (section 3)
 (https://paseto.io/rfc). Basically version 1 tokens are a compatibility mode for legacy systems where the newer
 cryptographic primitives required by version 2 are unavailable. An example might be an Arduino.
@@ -99,11 +108,21 @@ All other systems should use the newest version, which is currently version 2. P
 compatible, therefore a token created with V1 must be verified with V1 and will fail validation if passed to a
 V2 instance.
 
+### Local and Public
+Paseto tokens come in two varieties: _local_ and _public_. The following table outlines the differences:
+
+|  Type  | Encrypted | Authentication | Asymmetric |
+|--------|:---------:|:--------------:|:----------:|
+|  local |     ✓     |        ✓       |            |
+| public |           |        ✓       |      ✓     |
+
+Both varieties are protected from modifications (authentication). Local tokens are encrypted, but require the same key for encryption and decryption. Public tokens are not encrypted, meaning that anyone can read their contents, however they can
+be verified using a public key. This allows a party to verify a public token without having the ability to create a valid
+token.
 
 ## JsonToken API (high level)
 ### Getting Started
-Lets start with an example of encrypting a basic Paseto JsonToken. The act of encrypting the token also provides
-authentication of the data stored within the token. For this example we'll use the recommended V2 token variant.
+Lets start with an example of creating a basic Paseto JsonToken. For this example we'll use a local token (encrypted) variant and the latest version (2).
 ```
 byte[] key = Hex.decode("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
 TokenService<Token> tokenService = PasetoBuilders.V2.localService(() -> key, Token.class)
@@ -143,11 +162,10 @@ the high level API will call this lambda each time a token is encoded / decoded.
 
 The type of token must also be specified as this library allows you to extend the base Token type to add your own
 data fields (provided they don't conflict with the existing fields). Due to this extensibility we have to tell the
-TokenService which type of token to instantiate when decoding a token. We're not decoding a token here, but the
-service is defined once for encoding & decoding operations, and as such the type is required.
+TokenService which type of token to instantiate when decoding a token.
 
 We then call `withDefaultValidityPeriod()` on the builder, which allows us to set a default expiration date & time. When
-set, the service will automatically set the token issue and expiration fields based of the current time, unless already
+set, the service will automatically set the token issue and expiration fields based off the current time, unless already
 set. This reduces the code requirement to create a token, as typically most tokens in an application will have a standard
 validity period. If we had excluded the call to `withDefaultValidityPeriod()` then no default would be set, and we'd be
 required to set an expiration date & time.
@@ -189,7 +207,7 @@ token.
 If the token was modified by the user, or if the token has expired, then an exception of type PasetoException will be thrown
 and the contents of the token will not be returned. The exception will contain the reason as to why the token failed to decode.
 
-## Token Footers
+### Token Footers
 If you need to store data in the token which is authenticated but not encrypted, then you can do so using the token footer. The
 typical use case for this is picking the encryption key used to sign the token, and a default Footer class (KeyId) is provided
 for this purpose. Do note, that you should never store the encryption key in the token footer, the KeyId should be set to an
@@ -204,7 +222,6 @@ __Data stored in the token footer is never encrypted and the client can easily r
 the token string. The data is protected against tampering so long as you're not using the getFooter() method.__
 
 ```
-// Lets encode the previous token again, but this time we'll add a KeyId footer with the ID of 1.
 KeyId footer = new KeyId();
 footer.setKeyId("1"); // first key we're using
 		
@@ -215,7 +232,7 @@ encoded = tokenService.encode(token, footer);
 And that's all there is to setting a token footer, just provide it to the encode() call. Any type is accepted as a footer, it
 does not have to be a KeyId. You could provide a basic string, or an object which will be encoded using JSON.
 
-## Decoding with Footers
+### Decoding with Footers
 When decoding a token that has a footer, you have 4 options:
 - Pass the expected footer value to the Paseto library.
 - Decrypt & Verify the token, and return both the Token and the decoded Footer.
@@ -224,7 +241,7 @@ When decoding a token that has a footer, you have 4 options:
 
 We'll look at each one in order:
 
-### Decode with an expected footer value
+#### Decode with an expected footer value
 Let's say you start out with a basic `Token`, then later extend it to your own `CustomToken` and only want to accept the newer
 CustomTokens. One way to approach this is to add the token type as a footer, for this example lets say that footer is the
 string "custom". In this case you only want to accept tokens that have their footer set as "custom".
@@ -241,7 +258,7 @@ decoded = tokenService.decode(encoded, footer);
 _Note that you may run into trouble if using JSON encoding for the footer as the field order may change. With Jackson you can
 define the field order by using the @JsonPropertyOrder annotation. Other libraries may not support this._
 
-### Return the token and the footer
+#### Return the token and the footer
 If you need access to the data in the footer beyond ensuring that its equal to an expected value, then you can return the footer
 with the decoded token by passing the class of the footer type to the `decodeWithFooter()` method. The Token and Footer are
 returned in a Tuple object "TokenWithFooter" which stores both values.
@@ -252,7 +269,7 @@ decoded = twf.getToken();
 footer = twf.getFooter();
 ```
 
-### Peak at the footer
+#### Peak at the footer
 If you need to check the value before decoding the token then you can use the getFooter() method.
 
 ```
@@ -261,7 +278,7 @@ footer = tokenService.getFooter(encoded, KeyId.class);
 __No authentication is performed when "peeking" at the footer, and therefore getFooter() should only be used when it
 does not matter if the value has been tampered with.__
 
-### Ignore the footer
+#### Ignore the footer
 If you don't need access to the footer, then you can use the regular `decode()` method which will silently ignore the footer.
 
 
