@@ -18,9 +18,9 @@ Paseto is everything you love about JOSE (JWT, JWE, JWS) without any of the
   * [Maven](#maven)
   * [Libsodium for V2 Tokens](#libsodium-for-v2-tokens)
 * [Usage](#usage)
-  * [A note on the available APIs]
-  * [Why multiple versions?]
-  * [JsonToken API]
+  * [A note on the available APIs](#a-note-on-the-available-apis)
+  * [V1 vs V2](#v1-vs-v2)
+  * [JsonToken API](#jsontoken-api)
 
 # What is Paseto?
 
@@ -99,7 +99,7 @@ Paseto implementations provide access to raw Paseto tokens. As such access to th
 available and described below should you need to work with raw tokens from another library. Most users should stick
 with the offical JsonToken (which this library allows you to extend if needed).
 
-### Why multiple versions?
+### V1 vs V2
 If your curious as to why Paseto has V1 and V2 tokens, you can find more details in the Paseto RFC (section 3)
 (https://paseto.io/rfc). Basically version 1 tokens are a compatibility mode for legacy systems where the newer
 cryptographic primitives required by version 2 are unavailable. An example might be an Arduino.
@@ -120,7 +120,7 @@ Both varieties are protected from modifications (authentication). Local tokens a
 be verified using a public key. This allows a party to verify a public token without having the ability to create a valid
 token.
 
-## JsonToken API (high level)
+## JsonToken API
 ### Getting Started
 Lets start with an example of creating a basic Paseto JsonToken. For this example we'll use a local token (encrypted) variant and the latest version (2).
 ```
