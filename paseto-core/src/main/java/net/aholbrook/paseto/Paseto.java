@@ -1,11 +1,11 @@
 package net.aholbrook.paseto;
 
+import net.aholbrook.paseto.crypto.Base64Provider;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.InvalidFooterException;
 import net.aholbrook.paseto.exception.InvalidHeaderException;
-import net.aholbrook.paseto.util.Base64;
 import net.aholbrook.paseto.util.StringUtils;
 
 import java.nio.charset.Charset;
@@ -16,10 +16,12 @@ public abstract class Paseto {
 	final static String PURPOSE_LOCAL = "local";
 	final static String PURPOSE_PUBLIC = "public";
 
+	final Base64Provider base64Provider;
 	final EncodingProvider encodingProvider;
 	final NonceGenerator nonceGenerator;
 
-	Paseto(EncodingProvider encodingProvider, NonceGenerator nonceGenerator) {
+	public Paseto(Base64Provider base64Provider, EncodingProvider encodingProvider, NonceGenerator nonceGenerator) {
+		this.base64Provider = base64Provider;
 		this.encodingProvider = encodingProvider;
 		this.nonceGenerator = nonceGenerator;
 	}
@@ -97,7 +99,7 @@ public abstract class Paseto {
 	public String extractFooter(String token) {
 		String footer = split(token)[3];
 		if (!StringUtils.isEmpty(footer)) {
-			return StringUtils.fromUtf8Bytes(Base64.decodeFromString(footer));
+			return StringUtils.fromUtf8Bytes(base64Provider.decodeFromString(footer));
 		}
 
 		return null;
@@ -144,7 +146,7 @@ public abstract class Paseto {
 
 	String decodeFooter(String token, String[] sections, String expectedFooter) {
 		String userFooter = StringUtils.ntes(sections[3]);
-		String decodedFooter = new String(Base64.decodeFromString(userFooter), Charset.forName("UTF-8"));
+		String decodedFooter = new String(base64Provider.decodeFromString(userFooter), Charset.forName("UTF-8"));
 
 		// Check the footer if expected footer is not empty, otherwise we just return the footer without checking. This
 		// is find though, as the footer is covered by the token PAE signature. This check exists for proper error

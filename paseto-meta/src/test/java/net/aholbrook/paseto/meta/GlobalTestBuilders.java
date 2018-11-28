@@ -2,6 +2,8 @@ package net.aholbrook.paseto.meta;
 
 import net.aholbrook.paseto.PasetoV1;
 import net.aholbrook.paseto.PasetoV2;
+import net.aholbrook.paseto.crypto.Base64Provider;
+import net.aholbrook.paseto.base64.jvm8.Jvm8Base64Provider;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import net.aholbrook.paseto.crypto.v1.bc.BouncyCastleV1CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
@@ -79,6 +81,11 @@ public class GlobalTestBuilders implements TestBuilders {
 			PasetoV2.Builder pasetoBuilder, PublicTokenService.KeyProvider keyProvider,
 			Class<_TokenType> tokenClass) {
 		return PasetoBuilders.V2.publicService(pasetoBuilder, keyProvider, tokenClass);
+	}
+
+	@Override
+	public Base64Provider base64Provider() {
+		return new Jvm8Base64Provider();
 	}
 
 	@Override

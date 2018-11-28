@@ -1,4 +1,4 @@
-def artifact_id = "core"
+def artifact_id = "base64-jvm8"
 
 jar {
 	baseName = generateBaseName(artifact_id)
@@ -8,8 +8,8 @@ publishing {
 	publications {
 		maven(MavenPublication) {
 			pom {
-				name = 'Paseto'
-				description = 'Core Paseto library. Use "meta" unless overriding a provider.'
+				name = 'Paseto - Base64 JVM8'
+				description = 'Base64 support via the Java 8 Base64 class.'
 			}
 
 			artifactId artifact_id
@@ -22,8 +22,5 @@ publishing {
 }
 
 dependencies {
-	api project(":base64")
-	api project(':encoding')
-	api project(':crypto-v1')
-	api project(':crypto-v2')
+	implementation project(":base64")
 }

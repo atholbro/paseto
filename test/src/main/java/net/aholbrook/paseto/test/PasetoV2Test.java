@@ -585,12 +585,14 @@ public class PasetoV2Test extends PasetoTest {
 
 	@Test(expected = NullPointerException.class)
 	public void v2_nullEncodingProvider() {
-		new PasetoV2.Builder(null, TestContext.builders().v2CryptoProvider());
+		new PasetoV2.Builder(TestContext.builders().base64Provider(),null,
+				TestContext.builders().v2CryptoProvider());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void v2_nullCryptoProvider() {
-		new PasetoV2.Builder(TestContext.builders().encodingProvider(), null);
+		new PasetoV2.Builder(TestContext.builders().base64Provider(),
+				TestContext.builders().encodingProvider(), null);
 	}
 
 	@Test(expected = PasetoParseException.class)

@@ -2,6 +2,7 @@ package net.aholbrook.paseto.meta;
 
 import net.aholbrook.paseto.PasetoV1;
 import net.aholbrook.paseto.PasetoV2;
+import net.aholbrook.paseto.base64.jvm8.Jvm8Base64Provider;
 import net.aholbrook.paseto.crypto.v1.bc.BouncyCastleV1CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.libsodium.LibSodiumV2CryptoProvider;
 import net.aholbrook.paseto.encoding.json.jackson.JacksonJsonProvider;
@@ -18,7 +19,8 @@ public class PasetoBuilders {
 		}
 
 		public static PasetoV1.Builder paseto() {
-			return new PasetoV1.Builder(new JacksonJsonProvider(), new BouncyCastleV1CryptoProvider());
+			return new PasetoV1.Builder(new Jvm8Base64Provider(), new JacksonJsonProvider(),
+					new BouncyCastleV1CryptoProvider());
 		}
 
 		public static <_TokenType extends Token> LocalTokenService.Builder<_TokenType> localService(
@@ -51,7 +53,8 @@ public class PasetoBuilders {
 		}
 
 		public static PasetoV2.Builder paseto() {
-			return new PasetoV2.Builder(new JacksonJsonProvider(), new LibSodiumV2CryptoProvider());
+			return new PasetoV2.Builder(new Jvm8Base64Provider(),
+					new JacksonJsonProvider(), new LibSodiumV2CryptoProvider());
 		}
 
 		public static <_TokenType extends Token> LocalTokenService.Builder<_TokenType> localService(

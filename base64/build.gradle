@@ -1,0 +1,23 @@
+def artifact_id = "base64"
+
+jar {
+	baseName = generateBaseName(artifact_id)
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			pom {
+				name = 'Paseto - Base64'
+				description = 'Basic base64 inferface.'
+			}
+
+			artifactId artifact_id
+
+			from components.java
+			artifact sourcesJar
+			artifact javadocJar
+		}
+	}
+}
+
