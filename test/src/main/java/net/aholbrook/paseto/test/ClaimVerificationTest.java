@@ -97,13 +97,13 @@ public class ClaimVerificationTest {
 	@Test(expected = MissingClaimException.class)
 	public void tokenVerification_expired_missing() {
 		Token token = TokenTestVectors.TOKEN_4;
-		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[]{new CurrentlyValid()}),
+		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[] {new CurrentlyValid()}),
 				CurrentlyValid.NAME, token, Token.CLAIM_EXPIRATION);
 	}
 
 	@Test
 	public void tokenVerification_expired_name() {
-		Assert.assertEquals("claim name",  CurrentlyValid.NAME, new CurrentlyValid().name());
+		Assert.assertEquals("claim name", CurrentlyValid.NAME, new CurrentlyValid().name());
 	}
 
 	// Check a token for "issued in the future" at the exact time the token was issued. This should pass.
@@ -152,7 +152,7 @@ public class ClaimVerificationTest {
 		// -2 seconds, should fail
 		OffsetDateTime time = token.getIssuedAt().minusSeconds(2);
 		AssertUtils.assertMultiClaimException(() -> standardVerification(token, time),
-				new Class[] { IssuedInFutureException.class, NotYetValidTokenException.class});
+				new Class[] {IssuedInFutureException.class, NotYetValidTokenException.class});
 	}
 
 	// Check a token for "issued in the future" which has no issued time set. This should fail with a thrown
@@ -160,7 +160,7 @@ public class ClaimVerificationTest {
 	@Test(expected = MissingClaimException.class)
 	public void tokenVerification_issuedAt_missing() {
 		Token token = TokenTestVectors.TOKEN_4;
-		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[]{new IssuedInPast()}),
+		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[] {new IssuedInPast()}),
 				IssuedInPast.NAME, token, Token.CLAIM_ISSUED_AT);
 	}
 
@@ -176,7 +176,7 @@ public class ClaimVerificationTest {
 
 	@Test
 	public void tokenVerification_issuedAt_name() {
-		Assert.assertEquals("claim name",  IssuedInPast.NAME, new IssuedInPast().name());
+		Assert.assertEquals("claim name", IssuedInPast.NAME, new IssuedInPast().name());
 	}
 
 	// Check a token for expiry 1 second after it becomes valid. This should pass.
@@ -245,7 +245,7 @@ public class ClaimVerificationTest {
 	public void tokenVerification_issuer() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String issuer = TokenTestVectors.TOKEN_1.getIssuer();
-		Claims.verify(token, new Claim[] { new IssuedBy(issuer)});
+		Claims.verify(token, new Claim[] {new IssuedBy(issuer)});
 	}
 
 	// Check for issuer with a mismatch, should fail with expected IncorrectIssuerException thrown.
@@ -253,7 +253,7 @@ public class ClaimVerificationTest {
 	public void tokenVerification_issuer_mismatch() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String issuer = TokenTestVectors.TOKEN_1.getSubject(); // getSubject() on intentional
-		AssertUtils.assertClaimException(() -> Claims.verify(token, new Claim[]{new IssuedBy(issuer)}),
+		AssertUtils.assertClaimException(() -> Claims.verify(token, new Claim[] {new IssuedBy(issuer)}),
 				(e) -> {
 					Assert.assertEquals(issuer, ((IncorrectIssuerException) e).getExpected());
 					Assert.assertEquals(token.getIssuer(), ((IncorrectIssuerException) e).getIssuer());
@@ -266,14 +266,14 @@ public class ClaimVerificationTest {
 	public void tokenVerification_issuer_missing() {
 		Token token = TokenTestVectors.TOKEN_3;
 		String issuer = TokenTestVectors.TOKEN_2.getIssuer();
-		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[]{new IssuedBy(issuer)}),
+		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[] {new IssuedBy(issuer)}),
 				IssuedBy.NAME, token, Token.CLAIM_ISSUER);
 	}
 
 	// Make sure the claim name is correct.
 	@Test
 	public void tokenVerification_issuer_name() {
-		Assert.assertEquals("claim name",  IssuedBy.NAME, new IssuedBy(null).name());
+		Assert.assertEquals("claim name", IssuedBy.NAME, new IssuedBy(null).name());
 	}
 
 	// Check for audience with a match, should pass.
@@ -281,7 +281,7 @@ public class ClaimVerificationTest {
 	public void tokenVerification_audience() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String audience = TokenTestVectors.TOKEN_1.getAudience();
-		Claims.verify(token, new Claim[] { new ForAudience(audience)});
+		Claims.verify(token, new Claim[] {new ForAudience(audience)});
 	}
 
 	// Check for audience with a mismatch, should fail with expected IncorrectAudienceException thrown.
@@ -289,7 +289,7 @@ public class ClaimVerificationTest {
 	public void tokenVerification_audience_mismatch() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String audience = TokenTestVectors.TOKEN_1.getIssuer(); // getIssuer() on intentional
-		AssertUtils.assertClaimException(() -> Claims.verify(token, new Claim[]{new ForAudience(audience)}),
+		AssertUtils.assertClaimException(() -> Claims.verify(token, new Claim[] {new ForAudience(audience)}),
 				(e) -> {
 					Assert.assertEquals(audience, ((IncorrectAudienceException) e).getExpected());
 					Assert.assertEquals(token.getAudience(), ((IncorrectAudienceException) e).getAudience());
@@ -302,14 +302,14 @@ public class ClaimVerificationTest {
 	public void tokenVerification_audience_missing() {
 		Token token = TokenTestVectors.TOKEN_3;
 		String audience = TokenTestVectors.TOKEN_1.getAudience();
-		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[]{new ForAudience(audience)}),
+		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[] {new ForAudience(audience)}),
 				ForAudience.NAME, token, Token.CLAIM_AUDIENCE);
 	}
 
 	// Make sure the claim name is correct.
 	@Test
 	public void tokenVerification_audience_name() {
-		Assert.assertEquals("claim name",  ForAudience.NAME, new ForAudience(null).name());
+		Assert.assertEquals("claim name", ForAudience.NAME, new ForAudience(null).name());
 	}
 
 	// Check for subject with a match, should pass.
@@ -317,7 +317,7 @@ public class ClaimVerificationTest {
 	public void tokenVerification_subject() {
 		Token token = TokenTestVectors.TOKEN_1;
 		String subject = TokenTestVectors.TOKEN_1.getSubject();
-		Claims.verify(token, new Claim[] { new WithSubject(subject)});
+		Claims.verify(token, new Claim[] {new WithSubject(subject)});
 	}
 
 	// Check for subject with a mismatch, should fail with expected IncorrectSubjectException thrown.
@@ -326,7 +326,7 @@ public class ClaimVerificationTest {
 		Token token = TokenTestVectors.TOKEN_1;
 		String subject = TokenTestVectors.TOKEN_1.getAudience(); // getAudience() is intentional
 
-		AssertUtils.assertClaimException(() -> Claims.verify(token, new Claim[]{new WithSubject(subject)}),
+		AssertUtils.assertClaimException(() -> Claims.verify(token, new Claim[] {new WithSubject(subject)}),
 				(e) -> {
 					Assert.assertEquals(subject, ((IncorrectSubjectException) e).getExpected());
 					Assert.assertEquals(token.getSubject(), ((IncorrectSubjectException) e).getSubject());
@@ -339,14 +339,14 @@ public class ClaimVerificationTest {
 	public void tokenVerification_subject_missing() {
 		Token token = TokenTestVectors.TOKEN_3;
 		String subject = TokenTestVectors.TOKEN_1.getSubject();
-		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[]{new WithSubject(subject)}),
+		AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[] {new WithSubject(subject)}),
 				WithSubject.NAME, token, Token.CLAIM_SUBJECT);
 	}
 
 	// Make sure the claim name is correct.
 	@Test
 	public void tokenVerification_subject_name() {
-		Assert.assertEquals("claim name",  WithSubject.NAME, new WithSubject(null).name());
+		Assert.assertEquals("claim name", WithSubject.NAME, new WithSubject(null).name());
 	}
 
 	// Check verification context

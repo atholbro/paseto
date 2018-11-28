@@ -7,24 +7,45 @@ import java.time.OffsetDateTime;
 
 @JsonPropertyOrder({"iss", "sub", "aud", "exp", "nbf", "iat", "jti"})
 public abstract class TokenMixIn {
-	@JsonProperty("iss") abstract String getIssuer();
-	@JsonProperty("iss") abstract void setIssuer(String issuer);
+	@JsonProperty("iss")
+	abstract String getIssuer();
 
-	@JsonProperty("sub") abstract String getSubject();
-	@JsonProperty("sub") abstract void setSubject(String subject);
+	@JsonProperty("iss")
+	abstract void setIssuer(String issuer);
 
-	@JsonProperty("aud") abstract String getAudience();
-	@JsonProperty("aud") abstract void setAudience(String audience);
+	@JsonProperty("sub")
+	abstract String getSubject();
 
-	@JsonProperty("jti") abstract String getTokenId();
-	@JsonProperty("jti") abstract void setTokenId(String tokenId);
+	@JsonProperty("sub")
+	abstract void setSubject(String subject);
 
-	@JsonProperty("exp") abstract OffsetDateTime getExpiration();
-	@JsonProperty("exp") abstract void setExpiration(OffsetDateTime expiration);
+	@JsonProperty("aud")
+	abstract String getAudience();
 
-	@JsonProperty("nbf") abstract OffsetDateTime getNotBefore();
-	@JsonProperty("nbf") abstract void setNotBefore(OffsetDateTime notBefore);
+	@JsonProperty("aud")
+	abstract void setAudience(String audience);
 
-	@JsonProperty("iat") abstract OffsetDateTime getIssuedAt();
-	@JsonProperty("iat") abstract void setIssuedAt(OffsetDateTime issuedAt);
+	@JsonProperty("jti")
+	abstract String getTokenId();
+
+	@JsonProperty("jti")
+	abstract void setTokenId(String tokenId);
+
+	@JsonProperty("exp")
+	abstract OffsetDateTime getExpiration();
+
+	@JsonProperty("exp")
+	abstract void setExpiration(OffsetDateTime expiration);
+
+	@JsonProperty("nbf")
+	abstract OffsetDateTime getNotBefore();
+
+	@JsonProperty("nbf")
+	abstract void setNotBefore(OffsetDateTime notBefore);
+
+	@JsonProperty("iat")
+	abstract OffsetDateTime getIssuedAt();
+
+	@JsonProperty("iat")
+	abstract void setIssuedAt(OffsetDateTime issuedAt);
 }

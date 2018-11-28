@@ -16,7 +16,7 @@ public abstract class PasetoTest {
 		Assert.assertNotNull("paseto V1 instance", paseto);
 
 		String token;
-		if (tv.getFooter() != null ) {
+		if (tv.getFooter() != null) {
 			token = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
 		} else {
 			token = paseto.encrypt(tv.getPayload(), tv.getA());
@@ -31,7 +31,7 @@ public abstract class PasetoTest {
 		Assert.assertNotNull("paseto V1 instance", paseto);
 
 		_TokenType payload;
-		if (tv.getFooter() != null ) {
+		if (tv.getFooter() != null) {
 			payload = paseto.decrypt(tv.getToken(), tv.getA(), tv.getFooter(),
 					tv.getPayloadClass());
 		} else {
@@ -47,7 +47,7 @@ public abstract class PasetoTest {
 		Assert.assertNotNull("paseto V1 instance", paseto);
 
 		String token;
-		if (tv.getFooter() != null ) {
+		if (tv.getFooter() != null) {
 			token = paseto.sign(tv.getPayload(), tv.getA(),
 					tv.getFooter());
 		} else {
@@ -60,7 +60,7 @@ public abstract class PasetoTest {
 
 		// Now verify the signature (we can't use the token in the test vector as the signature will change each time.
 		_TokenType decoded;
-		if (tv.getFooter() != null ) {
+		if (tv.getFooter() != null) {
 			decoded = paseto.verify(token, tv.getB(), tv.getFooter(), tv.getPayloadClass());
 		} else {
 			decoded = paseto.verify(token, tv.getB(), tv.getPayloadClass());
@@ -75,7 +75,7 @@ public abstract class PasetoTest {
 		Assert.assertNotNull("paseto V1 instance", paseto);
 
 		_TokenType payload;
-		if (tv.getFooter() != null ) {
+		if (tv.getFooter() != null) {
 			payload = paseto.verify(tv.getToken(), tv.getB(), tv.getFooter(), tv.getPayloadClass());
 		} else {
 			payload = paseto.verify(tv.getToken(), tv.getB(), tv.getPayloadClass());

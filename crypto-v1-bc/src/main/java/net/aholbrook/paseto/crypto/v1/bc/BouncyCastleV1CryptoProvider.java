@@ -123,7 +123,7 @@ public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 			new SecureRandom().nextBytes(salt);
 			// RSA-PSS, SHA-384, MGF1(SHA-384), 48 byte salt length, 0xBC trailer
 			PSSSigner pss = new PSSSigner(new RSABlindedEngine(), new SHA384Digest(), new SHA384Digest(),
-					SHA384_OUT_LEN, (byte)0xBC);
+					SHA384_OUT_LEN, (byte) 0xBC);
 
 			if (forSigning) {
 				pss.init(true, PrivateKeyFactory.createKey(key));
@@ -167,8 +167,8 @@ public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 				PrimeCertaintyCalculator.getDefaultCertainty(RSA_KEY_SIZE)));
 		AsymmetricCipherKeyPair pair = keyGen.generateKeyPair();
 
-		RSAKeyParameters pub = (RSAKeyParameters)pair.getPublic();
-		RSAPrivateCrtKeyParameters priv = (RSAPrivateCrtKeyParameters)pair.getPrivate();
+		RSAKeyParameters pub = (RSAKeyParameters) pair.getPublic();
+		RSAPrivateCrtKeyParameters priv = (RSAPrivateCrtKeyParameters) pair.getPrivate();
 
 		// As in BCRSAPrivateKey / BCRSAPublicKey
 		AlgorithmIdentifier algo = new AlgorithmIdentifier(PKCSObjectIdentifiers.rsaEncryption, DERNull.INSTANCE);

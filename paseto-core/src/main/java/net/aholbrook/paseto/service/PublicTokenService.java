@@ -57,6 +57,7 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 
 	public interface KeyProvider {
 		byte[] getSecretKey();
+
 		byte[] getPublicKey();
 	}
 

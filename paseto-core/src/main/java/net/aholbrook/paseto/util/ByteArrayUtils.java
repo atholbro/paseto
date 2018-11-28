@@ -1,7 +1,8 @@
 package net.aholbrook.paseto.util;
 
 public class ByteArrayUtils {
-	private ByteArrayUtils() {}
+	private ByteArrayUtils() {
+	}
 
 	/**
 	 * Compare two byte arrays without failing fast.

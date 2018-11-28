@@ -34,9 +34,9 @@ public class CurrentlyValid implements Claim {
 	 * This call sets the "check time" to Clock.systemUTC() and should be used in most cases.
 	 *
 	 * @param allowableDrift Time window during which a token is considered valid even if it's not before time is in
-	 *                       the future. Should be set to a small time window (default is 1 second) which allows for a
-	 *                       slight clock drift between servers. Only applies to "not before" and not the expiration
-	 *                       time.
+	 * the future. Should be set to a small time window (default is 1 second) which allows for a
+	 * slight clock drift between servers. Only applies to "not before" and not the expiration
+	 * time.
 	 */
 	public CurrentlyValid(Duration allowableDrift) {
 		this(null, allowableDrift);
@@ -51,9 +51,9 @@ public class CurrentlyValid implements Claim {
 	 *
 	 * @param time The time used for validity checks.
 	 * @param allowableDrift Time window during which a token is considered valid even if it's not before time is in
-	 *                       the future. Should be set to a small time window (default is 1 second) which allows for a
-	 *                       slight clock drift between servers. Only applies to "not before" and not the expiration
-	 *                       time.
+	 * the future. Should be set to a small time window (default is 1 second) which allows for a
+	 * slight clock drift between servers. Only applies to "not before" and not the expiration
+	 * time.
 	 */
 	public CurrentlyValid(OffsetDateTime time, Duration allowableDrift) {
 		this.time = time;

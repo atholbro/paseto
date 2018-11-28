@@ -1,7 +1,8 @@
 package net.aholbrook.paseto.util;
 
 public class PaeUtil {
-	private PaeUtil() {}
+	private PaeUtil() {
+	}
 
 	private static byte[] le64(long n) {
 		byte[] result = new byte[8];

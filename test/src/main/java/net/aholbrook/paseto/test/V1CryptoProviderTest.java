@@ -48,9 +48,9 @@ public class V1CryptoProviderTest {
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v1_hkdfExtractAndExpand_shortSalt() {
 		AssertUtils.assertByteArrayLengthException(() ->
-				v1CryptoProvider().hkdfExtractAndExpand(
-						new byte[] { 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF },
-						HmacSha384TestVectors.VECTOR_1_KEY, HmacSha384TestVectors.VECTOR_1_DATA),
+						v1CryptoProvider().hkdfExtractAndExpand(
+								new byte[] {0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF},
+								HmacSha384TestVectors.VECTOR_1_KEY, HmacSha384TestVectors.VECTOR_1_DATA),
 				"salt", 15, V1CryptoProvider.HKDF_SALT_LEN, true);
 	}
 
@@ -58,7 +58,7 @@ public class V1CryptoProviderTest {
 	public void crypto_v1_hkdfExtractAndExpand_longSalt() {
 		AssertUtils.assertByteArrayLengthException(() ->
 						v1CryptoProvider().hkdfExtractAndExpand(
-								new byte[] { 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF, 0x10, 0x11 },
+								new byte[] {0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF, 0x10, 0x11},
 								HmacSha384TestVectors.VECTOR_1_KEY, HmacSha384TestVectors.VECTOR_1_DATA),
 				"salt", 17, V1CryptoProvider.HKDF_SALT_LEN, true);
 	}
@@ -72,7 +72,7 @@ public class V1CryptoProviderTest {
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v1_hkdfExtractAndExpand_invalidIkm() {
 		AssertUtils.assertByteArrayLengthException(() ->
-				v1CryptoProvider().hkdfExtractAndExpand(HKDF_SALT, new byte[] {}, HmacSha384TestVectors.VECTOR_1_DATA),
+						v1CryptoProvider().hkdfExtractAndExpand(HKDF_SALT, new byte[] {}, HmacSha384TestVectors.VECTOR_1_DATA),
 				"inputKeyingMaterial", 0, 1, false);
 	}
 
@@ -85,7 +85,7 @@ public class V1CryptoProviderTest {
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v1_hkdfExtractAndExpand_invalidInfo() {
 		AssertUtils.assertByteArrayLengthException(() ->
-				v1CryptoProvider().hkdfExtractAndExpand(HKDF_SALT, HmacSha384TestVectors.VECTOR_1_KEY, new byte[] {}),
+						v1CryptoProvider().hkdfExtractAndExpand(HKDF_SALT, HmacSha384TestVectors.VECTOR_1_KEY, new byte[] {}),
 				"info", 0, 1, false);
 	}
 
@@ -116,7 +116,7 @@ public class V1CryptoProviderTest {
 	@Test(expected = ByteArrayLengthException.class)
 	public void crypto_v1_hmacSha384_emptyKey() {
 		AssertUtils.assertByteArrayLengthException(() ->
-						v1CryptoProvider().hmacSha384(HmacSha384TestVectors.VECTOR_1_DATA, new byte[]{}),
+						v1CryptoProvider().hmacSha384(HmacSha384TestVectors.VECTOR_1_DATA, new byte[] {}),
 				"key", 0, 1, false);
 	}
 

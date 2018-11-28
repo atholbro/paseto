@@ -26,12 +26,16 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 
 	// XChaCha20Poly1305
 	abstract public boolean aeadXChaCha20Poly1305IetfEncrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce, byte[] key);
+
 	abstract public boolean aeadXChaCha20Poly1305IetfDecrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce, byte[] key);
 
 	// Ed25519
 	abstract public boolean ed25519Sign(byte[] sig, byte[] m, byte[] sk);
+
 	abstract public boolean ed25519Verify(byte[] sig, byte[] m, byte[] pk);
+
 	abstract public byte[] ed25519SkToPk(byte[] sk);
+
 	abstract public KeyPair ed25519Generate();
 
 	// Nonce

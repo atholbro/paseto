@@ -17,9 +17,9 @@ public class PasetoV2 extends Paseto {
 	public final static String HEADER_PUBLIC = VERSION + SEPARATOR + PURPOSE_PUBLIC + SEPARATOR; // v2.public.
 
 	private final V2CryptoProvider cryptoProvider;
-	
+
 	private PasetoV2(EncodingProvider encodingProvider, V2CryptoProvider cryptoProvider, NonceGenerator nonceGenerator) {
-		super(encodingProvider,  nonceGenerator);
+		super(encodingProvider, nonceGenerator);
 		this.cryptoProvider = cryptoProvider;
 	}
 

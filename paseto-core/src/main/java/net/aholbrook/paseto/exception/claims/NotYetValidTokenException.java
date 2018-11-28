@@ -6,7 +6,7 @@ import java.time.OffsetDateTime;
 
 public class NotYetValidTokenException extends ClaimException {
 	public NotYetValidTokenException(OffsetDateTime time, String ruleName, Token token) {
-		super(message( time), ruleName, token);
+		super(message(time), ruleName, token);
 	}
 
 	private static String message(OffsetDateTime time) {

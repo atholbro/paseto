@@ -12,6 +12,7 @@ public class WithSubject implements Claim {
 
 	/**
 	 * Verifies that the token Subject (sub) claim matches the given value.
+	 *
 	 * @param subject The expected subject for the token.
 	 */
 	public WithSubject(String subject) {

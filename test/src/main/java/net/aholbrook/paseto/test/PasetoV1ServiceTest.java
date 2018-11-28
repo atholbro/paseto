@@ -27,6 +27,7 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 	private static LocalTokenService.KeyProvider rfcLocalKeyProvider() {
 		return () -> RfcTestVectors.RFC_TEST_KEY;
 	}
+
 	private static PublicTokenService.KeyProvider rfcPublicKeyProvider() {
 		return new PublicTokenService.KeyProvider() {
 			@Override
@@ -44,6 +45,7 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 	private static LocalTokenService.KeyProvider tokenLocalKeyProvider() {
 		return () -> TokenTestVectors.TEST_KEY;
 	}
+
 	private static PublicTokenService.KeyProvider tokenPublicKeyProvider() {
 		return new PublicTokenService.KeyProvider() {
 			@Override
@@ -84,7 +86,7 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 
 	@Test
 	public void v1Service_localServiceBuilderRandomNonce() {
-		LocalTokenService<Token> service =  TestContext.builders().localServiceBuilderV1(null,
+		LocalTokenService<Token> service = TestContext.builders().localServiceBuilderV1(null,
 				rfcLocalKeyProvider(), Token.class).build();
 
 		Assert.assertNotNull(service);
@@ -101,7 +103,7 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 	@Test
 	public void v1Service_publicServiceBuilderOverride() {
 		PasetoV1.Builder pasetoBuilder = TestContext.builders().pasetoBuilderV1(null);
-		PublicTokenService<Token> service =  TestContext.builders().publicServiceBuilderV1(pasetoBuilder,
+		PublicTokenService<Token> service = TestContext.builders().publicServiceBuilderV1(pasetoBuilder,
 				rfcPublicKeyProvider(), Token.class).build();
 
 		Assert.assertNotNull(service);
@@ -310,7 +312,7 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 	public void v1Service_local_ctors2() {
 		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
 		LocalTokenService<Token> service = new LocalTokenService.Builder<>(paseto, Token.class, rfcLocalKeyProvider())
-				.checkClaims(new Claim[] { new CurrentlyValid() })
+				.checkClaims(new Claim[] {new CurrentlyValid()})
 				.build();
 		checkOnlyCurrentlyValid(service);
 	}
@@ -329,7 +331,7 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
 		LocalTokenService<Token> service = new LocalTokenService.Builder<>(paseto, Token.class, rfcLocalKeyProvider())
 				.withDefaultValidityPeriod(Duration.ofMinutes(5))
-				.checkClaims(new Claim[] { new CurrentlyValid() })
+				.checkClaims(new Claim[] {new CurrentlyValid()})
 				.build();
 		checkOnlyCurrentlyVaildWithValidity(service);
 	}
@@ -346,7 +348,7 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 	public void v1Service_public_ctors2() {
 		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
 		PublicTokenService<Token> service = new PublicTokenService.Builder<>(paseto, Token.class, rfcPublicKeyProvider())
-				.checkClaims(new Claim[] { new CurrentlyValid() })
+				.checkClaims(new Claim[] {new CurrentlyValid()})
 				.build();
 		checkOnlyCurrentlyValid(service);
 	}
@@ -365,7 +367,7 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
 		PublicTokenService<Token> service = new PublicTokenService.Builder<>(paseto, Token.class, rfcPublicKeyProvider())
 				.withDefaultValidityPeriod(Duration.ofMinutes(5))
-				.checkClaims(new Claim[] { new CurrentlyValid() })
+				.checkClaims(new Claim[] {new CurrentlyValid()})
 				.build();
 		checkOnlyCurrentlyVaildWithValidity(service);
 	}

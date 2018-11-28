@@ -359,7 +359,7 @@ public class PasetoV1Test extends PasetoTest {
 
 		// encrypt and modify
 		String token = paseto.encrypt(tv.getPayload(), tv.getA());
-		token = modify(token, new int[] { 20, 15, 20 });
+		token = modify(token, new int[] {20, 15, 20});
 
 		// attempt to decrypt
 		paseto.decrypt(token, tv.getA(), tv.getPayloadClass());
@@ -373,7 +373,7 @@ public class PasetoV1Test extends PasetoTest {
 
 		// encrypt and modify
 		String token = paseto.encrypt(tv.getPayload(), tv.getA());
-		token = modify(token, new int[] { token.length() - 1, token.length() - 4, token.length() - 6 });
+		token = modify(token, new int[] {token.length() - 1, token.length() - 4, token.length() - 6});
 
 		// attempt to decrypt
 		paseto.decrypt(token, tv.getA(), tv.getPayloadClass());

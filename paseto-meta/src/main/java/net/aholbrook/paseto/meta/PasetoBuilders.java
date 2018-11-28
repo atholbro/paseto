@@ -10,10 +10,12 @@ import net.aholbrook.paseto.service.PublicTokenService;
 import net.aholbrook.paseto.service.Token;
 
 public class PasetoBuilders {
-	private PasetoBuilders() {}
+	private PasetoBuilders() {
+	}
 
 	public static class V1 {
-		private V1() {}
+		private V1() {
+		}
 
 		public static PasetoV1.Builder paseto() {
 			return new PasetoV1.Builder(new JacksonJsonProvider(), new BouncyCastleV1CryptoProvider());
@@ -45,7 +47,8 @@ public class PasetoBuilders {
 	}
 
 	public static class V2 {
-		private V2() {}
+		private V2() {
+		}
 
 		public static PasetoV2.Builder paseto() {
 			return new PasetoV2.Builder(new JacksonJsonProvider(), new LibSodiumV2CryptoProvider());

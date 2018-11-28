@@ -16,7 +16,8 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 
 public class Pkcs12 {
-	private Pkcs12() {}
+	private Pkcs12() {
+	}
 
 	public static KeyPair load(String keystoreFile, String keystorePass, String alias) {
 		return load(keystoreFile, keystorePass, alias, keystorePass);

@@ -3,10 +3,12 @@ package net.aholbrook.paseto.util;
 import java.nio.charset.Charset;
 
 public class StringUtils {
-	private StringUtils() {}
+	private StringUtils() {
+	}
 
 	/**
 	 * Returns a safe string by converting a null string reference into an empty string.
+	 *
 	 * @param s String reference, which may be null.
 	 * @return s or "" if s == null
 	 */
@@ -30,6 +32,7 @@ public class StringUtils {
 
 	/**
 	 * Encodes this String into a sequence of bytes using the UTF-8 charset, storing the result into a new byte array.
+	 *
 	 * @param s string to encode
 	 * @return The resultant byte array.
 	 */
@@ -41,6 +44,7 @@ public class StringUtils {
 	 * Decodes a string from a sequence of bytes using the UTF-8 charset.
 	 *
 	 * This is the inverse of getBytesUtf8().
+	 *
 	 * @param bytes Array of UTF-8 bytes.
 	 * @return String
 	 */

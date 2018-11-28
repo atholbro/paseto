@@ -12,6 +12,7 @@ public class ForAudience implements Claim {
 
 	/**
 	 * Verifies that the token Audience (aud) claim matches the given value.
+	 *
 	 * @param audience The expected audience for the token.
 	 */
 	public ForAudience(String audience) {

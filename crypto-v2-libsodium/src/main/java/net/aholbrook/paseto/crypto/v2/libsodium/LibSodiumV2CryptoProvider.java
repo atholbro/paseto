@@ -32,7 +32,7 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 	public boolean aeadXChaCha20Poly1305IetfEncrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce, byte[] key) {
 		validateAeadXChaCha20Poly1305IetfEncrypt(out, in, ad, nonce, key);
 
-		long[] outLen = new long[] { out.length };
+		long[] outLen = new long[] {out.length};
 		return sodium.cryptoAeadXChaCha20Poly1305IetfEncrypt(out, outLen, in, in.length, ad, ad.length, null,
 				nonce, key);
 	}
@@ -41,7 +41,7 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 	public boolean aeadXChaCha20Poly1305IetfDecrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce, byte[] key) {
 		validateAeadXChaCha20Poly1305IetfDecrypt(out, in, ad, nonce, key);
 
-		long[] outLen = new long[] { out.length };
+		long[] outLen = new long[] {out.length};
 		return sodium.cryptoAeadXChaCha20Poly1305IetfDecrypt(out, outLen, null, in, in.length, ad, ad.length,
 				nonce, key);
 	}
@@ -50,7 +50,7 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 	public boolean ed25519Sign(byte[] sig, byte[] m, byte[] sk) {
 		validateEd25519Sign(sig, m, sk);
 
-		long[] sigLen = new long[] { sig.length };
+		long[] sigLen = new long[] {sig.length};
 		return sodium.cryptoSignDetached(sig, sigLen, m, m.length, sk);
 	}
 

@@ -41,8 +41,8 @@ public class IssuedInPast implements Claim {
 	 * This call sets the "check time" to Clock.systemUTC() and should be used in most cases.
 	 *
 	 * @param allowableDrift Time window during which a token is considered valid even if it was issued in the future.
-	 *                       Should be set to a small time window (default is 1 second) which allows for a slight clock
-	 *                       drift between servers.
+	 * Should be set to a small time window (default is 1 second) which allows for a slight clock
+	 * drift between servers.
 	 */
 	public IssuedInPast(Duration allowableDrift) {
 		this(null, allowableDrift);
@@ -61,8 +61,8 @@ public class IssuedInPast implements Claim {
 	 *
 	 * @param time The time used for validity checks.
 	 * @param allowableDrift Time window during which a token is considered valid even if it was issued in the future.
-	 *                       Should be set to a small time window (default is 1 second) which allows for a slight clock
-	 *                       drift between servers.
+	 * Should be set to a small time window (default is 1 second) which allows for a slight clock
+	 * drift between servers.
 	 */
 	public IssuedInPast(OffsetDateTime time, Duration allowableDrift) {
 		this.time = time;

@@ -37,11 +37,14 @@ public abstract class V1CryptoProvider implements NonceGenerator {
 
 	// AES-256-CTR
 	abstract public byte[] aes256CtrEncrypt(byte[] m, byte[] key, byte[] iv);
+
 	abstract public byte[] aes256CtrDecrypt(byte[] c, byte[] key, byte[] iv);
 
 	// RSA Signatures
 	abstract public byte[] rsaSign(byte[] m, byte[] privateKey);
+
 	abstract public boolean rsaVerify(byte[] m, byte[] sig, byte[] publicKey);
+
 	abstract public KeyPair rsaGenerate();
 
 	// Validation

@@ -18,7 +18,7 @@ import net.aholbrook.paseto.test.utils.TestBuilders;
 @Provided
 public class GlobalTestBuilders implements TestBuilders {
 	@Override
-	public  PasetoV1.Builder pasetoBuilderV1(byte[] nonce) {
+	public PasetoV1.Builder pasetoBuilderV1(byte[] nonce) {
 		PasetoV1.Builder builder = PasetoBuilders.V1.paseto();
 		if (nonce != null) {
 			builder.withTestingNonceGenerator(new TestNonceGenerator(nonce));

@@ -25,9 +25,13 @@ public abstract class Paseto {
 	}
 
 	public abstract String encrypt(Object payload, byte[] key, String footer);
+
 	public abstract <_Payload> _Payload decrypt(String token, byte[] key, String footer, Class<_Payload> payloadClass);
+
 	public abstract String sign(Object payload, byte[] key, String footer);
+
 	public abstract <_Payload> _Payload verify(String token, byte[] pk, String footer, Class<_Payload> payloadClass);
+
 	public abstract KeyPair generateKeyPair();
 
 	public String encrypt(Object payload, byte[] key) {
@@ -125,7 +129,7 @@ public abstract class Paseto {
 			if (tokens.length == 4) {
 				return tokens;
 			} else if (tokens.length == 3) {
-				return new String[] { tokens[0], tokens[1], tokens[2], null };
+				return new String[] {tokens[0], tokens[1], tokens[2], null};
 			}
 		}
 
