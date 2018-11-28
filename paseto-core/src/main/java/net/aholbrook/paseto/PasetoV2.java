@@ -1,6 +1,6 @@
 package net.aholbrook.paseto;
 
-import net.aholbrook.paseto.crypto.Base64Provider;
+import net.aholbrook.paseto.base64.Base64Provider;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;

@@ -3,7 +3,7 @@ package net.aholbrook.paseto.test.utils;
 
 import net.aholbrook.paseto.PasetoV1;
 import net.aholbrook.paseto.PasetoV2;
-import net.aholbrook.paseto.crypto.Base64Provider;
+import net.aholbrook.paseto.base64.Base64Provider;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.encoding.EncodingProvider;

@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.base64.jvm8;
 
-import net.aholbrook.paseto.crypto.Base64Provider;
+import net.aholbrook.paseto.base64.Base64Provider;
 
 public class Jvm8Base64Provider implements Base64Provider {
 	@Override
