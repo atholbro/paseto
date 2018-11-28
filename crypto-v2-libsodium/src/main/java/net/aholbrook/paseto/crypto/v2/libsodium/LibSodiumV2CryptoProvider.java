@@ -17,19 +17,19 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package net.aholbrook.paseto.crypto.v2.libsodium;
 
-import com.goterl.lazycode.lazysodium.LazySodiumJava;
-import com.goterl.lazycode.lazysodium.SodiumJava;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
+import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
+import com.goterl.lazycode.lazysodium.SodiumAndroid;
 
 public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
-	private final LazySodiumJava sodium;
+	private final LazySodiumAndroid sodium;
 
 	public LibSodiumV2CryptoProvider() {
-		this(new LazySodiumJava(new SodiumJava()));
+		this(new LazySodiumAndroid(new SodiumAndroid()));
 	}
 
-	public LibSodiumV2CryptoProvider(LazySodiumJava sodium) {
+	public LibSodiumV2CryptoProvider(LazySodiumAndroid sodium) {
 		this.sodium = sodium;
 	}
 
