@@ -26,4 +26,6 @@ dependencies {
 	api project(':encoding')
 	api project(':crypto-v1')
 	api project(':crypto-v2')
+
+	compileOnly project(':time-jsr310')
 }

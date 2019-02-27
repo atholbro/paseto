@@ -4,10 +4,9 @@ import net.aholbrook.paseto.Paseto;
 import net.aholbrook.paseto.TokenWithFooter;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
-
-import java.time.Clock;
-import java.time.Duration;
-import java.time.OffsetDateTime;
+import net.aholbrook.paseto.time.Clock;
+import net.aholbrook.paseto.time.Duration;
+import net.aholbrook.paseto.time.OffsetDateTime;
 
 public abstract class TokenService<_TokenType extends Token> {
 	final Paseto paseto;

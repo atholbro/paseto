@@ -1,0 +1,26 @@
+def artifact_id = "time-threeten"
+
+jar {
+	baseName = generateBaseName(artifact_id)
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			pom {
+				name = 'Paseto - ThreeTen'
+				description = 'Java Time API via ThreeTen Backport.'
+			}
+
+			artifactId artifact_id
+
+			from components.java
+			artifact sourcesJar
+			artifact javadocJar
+		}
+	}
+}
+
+dependencies {
+	implementation group: 'org.threeten', name: 'threetenbp', version: '1.3.8'
+}

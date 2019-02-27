@@ -4,10 +4,10 @@ import net.aholbrook.paseto.exception.claims.ExpiredTokenException;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
 import net.aholbrook.paseto.exception.claims.NotYetValidTokenException;
 import net.aholbrook.paseto.service.Token;
+import net.aholbrook.paseto.time.Clock;
+import net.aholbrook.paseto.time.Duration;
+import net.aholbrook.paseto.time.OffsetDateTime;
 
-import java.time.Clock;
-import java.time.Duration;
-import java.time.OffsetDateTime;
 
 public class CurrentlyValid implements Claim {
 	public final static String NAME = "CURRENTLY_VALID";

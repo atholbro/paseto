@@ -1,8 +1,9 @@
 package net.aholbrook.paseto.service;
 
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+import net.aholbrook.paseto.time.OffsetDateTime;
+import net.aholbrook.paseto.time.format.DateTimeFormatter;
+import net.aholbrook.paseto.time.temporal.ChronoUnit;
+
 import java.util.Objects;
 
 public class Token {

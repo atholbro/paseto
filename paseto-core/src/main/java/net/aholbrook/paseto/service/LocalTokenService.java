@@ -4,8 +4,7 @@ import net.aholbrook.paseto.Paseto;
 import net.aholbrook.paseto.TokenWithFooter;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.Claims;
-
-import java.time.Duration;
+import net.aholbrook.paseto.time.Duration;
 
 public class LocalTokenService<_TokenType extends Token> extends TokenService<_TokenType> {
 	private final KeyProvider keyProvider;
