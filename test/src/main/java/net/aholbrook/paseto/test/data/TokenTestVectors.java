@@ -2,7 +2,7 @@ package net.aholbrook.paseto.test.data;
 
 import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
-import net.aholbrook.paseto.util.Hex;
+import net.aholbrook.paseto.test.utils.Hex;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
