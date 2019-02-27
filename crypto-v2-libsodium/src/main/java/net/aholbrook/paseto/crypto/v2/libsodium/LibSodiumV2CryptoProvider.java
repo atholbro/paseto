@@ -50,7 +50,7 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 	public boolean ed25519Sign(byte[] sig, byte[] m, byte[] sk) {
 		validateEd25519Sign(sig, m, sk);
 
-		long[] sigLen = new long[] {sig.length};
+		int[] sigLen = new int[] {sig.length};
 		return sodium.cryptoSignDetached(sig, sigLen, m, m.length, sk);
 	}
 
