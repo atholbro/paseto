@@ -3,10 +3,9 @@ package net.aholbrook.paseto.claims;
 import net.aholbrook.paseto.exception.claims.IssuedInFutureException;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
 import net.aholbrook.paseto.service.Token;
-
-import java.time.Clock;
-import java.time.Duration;
-import java.time.OffsetDateTime;
+import net.aholbrook.paseto.time.Clock;
+import net.aholbrook.paseto.time.Duration;
+import net.aholbrook.paseto.time.OffsetDateTime;
 
 public class IssuedInPast implements Claim {
 	public final static String NAME = "ISSUED_IN_PAST";
@@ -82,8 +81,10 @@ public class IssuedInPast implements Claim {
 			throw new MissingClaimException(Token.CLAIM_ISSUED_AT, NAME, token);
 		}
 
-		if (token.getIssuedAt().minus(allowableDrift).isAfter(time)) {
-			throw new IssuedInFutureException(time, token.getIssuedAt(), NAME, token);
+		OffsetDateTime issuedAt = OffsetDateTime.ofEpochSecond(token.getIssuedAt());
+
+		if (issuedAt.minus(allowableDrift).isAfter(time)) {
+			throw new IssuedInFutureException(time, issuedAt, NAME, token);
 		}
 	}
 }

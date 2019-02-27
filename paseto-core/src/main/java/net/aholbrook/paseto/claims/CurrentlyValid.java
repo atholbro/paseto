@@ -74,18 +74,22 @@ public class CurrentlyValid implements Claim {
 			throw new MissingClaimException(Token.CLAIM_EXPIRATION, NAME, token);
 		}
 
+		OffsetDateTime expiration = OffsetDateTime.ofEpochSecond(token.getExpiration());
+
 		// Check "Not Before" if provided.
 		if (token.getNotBefore() != null) {
-			if (token.getNotBefore().minus(allowableDrift).isAfter(time)) {
-				throw new NotYetValidTokenException(token.getNotBefore(), NAME, token);
+			OffsetDateTime notBefore = OffsetDateTime.ofEpochSecond(token.getNotBefore());
+
+			if (notBefore.minus(allowableDrift).isAfter(time)) {
+				throw new NotYetValidTokenException(notBefore, NAME, token);
 			}
 		}
 
 		// Note: issued at times can be checked with the IssuedInPast rule.
 
 		// Finally we check the expiration time.
-		if (token.getExpiration().isBefore(time)) {
-			throw new ExpiredTokenException(token.getExpiration(), NAME, token);
+		if (expiration.isBefore(time)) {
+			throw new ExpiredTokenException(expiration, NAME, token);
 		}
 	}
 }

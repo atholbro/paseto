@@ -69,16 +69,16 @@ public abstract class PasetoServiceTest {
 
 	void checkExpired(TokenService<Token> service) {
 		Token token = new Token().setTokenId("id");
-		token.setIssuedAt(OffsetDateTime.now().minusMinutes(1));
-		token.setExpiration(OffsetDateTime.now().minusSeconds(1));
+		token.setIssuedAt(OffsetDateTime.now().minusMinutes(1).toEpochSecond());
+		token.setExpiration(OffsetDateTime.now().minusSeconds(1).toEpochSecond());
 
 		service.decode(service.encode(token));
 	}
 
 	void checkIssuedInFuture(TokenService<Token> service) {
 		Token token = new Token().setTokenId("id");
-		token.setIssuedAt(OffsetDateTime.now().plusMinutes(1));
-		token.setExpiration(OffsetDateTime.now().plusMinutes(5));
+		token.setIssuedAt(OffsetDateTime.now().plusMinutes(1).toEpochSecond());
+		token.setExpiration(OffsetDateTime.now().plusMinutes(5).toEpochSecond());
 		service.decode(service.encode(token));
 	}
 

@@ -65,7 +65,7 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 		private final Paseto paseto;
 		private final Class<_TokenType> tokenClass;
 		private final KeyProvider keyProvider;
-		private Duration defaultValidityPeriod = null;
+		private Long defaultValidityPeriod = null;
 		private Claim[] claims = Claims.DEFAULT_CLAIM_CHECKS;
 
 		public Builder(Paseto paseto, Class<_TokenType> tokenClass, KeyProvider keyProvider) {
@@ -74,7 +74,7 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 			this.keyProvider = keyProvider;
 		}
 
-		public Builder<_TokenType> withDefaultValidityPeriod(Duration defaultValidityPeriod) {
+		public Builder<_TokenType> withDefaultValidityPeriod(Long defaultValidityPeriod) {
 			this.defaultValidityPeriod = defaultValidityPeriod;
 			return this;
 		}
@@ -85,7 +85,11 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 		}
 
 		public PublicTokenService<_TokenType> build() {
-			return new PublicTokenService<>(paseto, keyProvider, claims, defaultValidityPeriod, tokenClass);
+			return new PublicTokenService<>(paseto,
+					keyProvider,
+					claims,
+					defaultValidityPeriod != null ? Duration.ofSeconds(defaultValidityPeriod) : null,
+					tokenClass);
 		}
 	}
 }

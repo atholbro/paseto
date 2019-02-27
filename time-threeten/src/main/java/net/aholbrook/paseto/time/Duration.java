@@ -1,18 +1,18 @@
 package net.aholbrook.paseto.time;
 
 public class Duration {
-	private final java.time.Duration duration;
+	private final org.threeten.bp.Duration duration;
 
-	private Duration(java.time.Duration duration) {
+	private Duration(org.threeten.bp.Duration duration) {
 		this.duration = duration;
 	}
 
-	java.time.Duration raw() {
+	org.threeten.bp.Duration raw() {
 		return duration;
 	}
 
 	public static Duration ofSeconds(long l) {
-		return new Duration(java.time.Duration.ofSeconds(l));
+		return new Duration(org.threeten.bp.Duration.ofSeconds(l));
 	}
 
 	@Override

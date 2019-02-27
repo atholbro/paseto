@@ -1,8 +1,7 @@
 package net.aholbrook.paseto.exception.claims;
 
 import net.aholbrook.paseto.service.Token;
-
-import java.time.OffsetDateTime;
+import net.aholbrook.paseto.time.OffsetDateTime;
 
 public class IssuedInFutureException extends ClaimException {
 	public IssuedInFutureException(OffsetDateTime checkTime, OffsetDateTime issuedAt, String ruleName, Token token) {

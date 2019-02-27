@@ -2,8 +2,10 @@ package net.aholbrook.paseto.encoding.json.jackson.mixin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-import java.time.OffsetDateTime;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import net.aholbrook.paseto.encoding.json.jackson.TimeDeserializer;
+import net.aholbrook.paseto.encoding.json.jackson.TimeSerializer;
 
 @JsonPropertyOrder({"iss", "sub", "aud", "exp", "nbf", "iat", "jti"})
 public abstract class TokenMixIn {
@@ -32,20 +34,26 @@ public abstract class TokenMixIn {
 	abstract void setTokenId(String tokenId);
 
 	@JsonProperty("exp")
-	abstract OffsetDateTime getExpiration();
+	@JsonSerialize(using = TimeSerializer.class)
+	abstract Long getExpiration();
 
 	@JsonProperty("exp")
-	abstract void setExpiration(OffsetDateTime expiration);
+	@JsonDeserialize(using = TimeDeserializer.class)
+	abstract void setExpiration(Long expiration);
 
 	@JsonProperty("nbf")
-	abstract OffsetDateTime getNotBefore();
+	@JsonSerialize(using = TimeSerializer.class)
+	abstract Long getNotBefore();
 
 	@JsonProperty("nbf")
-	abstract void setNotBefore(OffsetDateTime notBefore);
+	@JsonDeserialize(using = TimeDeserializer.class)
+	abstract void setNotBefore(Long notBefore);
 
 	@JsonProperty("iat")
-	abstract OffsetDateTime getIssuedAt();
+	@JsonSerialize(using = TimeSerializer.class)
+	abstract Long getIssuedAt();
 
 	@JsonProperty("iat")
-	abstract void setIssuedAt(OffsetDateTime issuedAt);
+	@JsonDeserialize(using = TimeDeserializer.class)
+	abstract void setIssuedAt(Long issuedAt);
 }

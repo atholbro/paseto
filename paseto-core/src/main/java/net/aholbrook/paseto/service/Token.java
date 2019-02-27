@@ -63,12 +63,12 @@ public class Token {
 		return this;
 	}
 
-	public OffsetDateTime getExpiration() {
-		return exp;
+	public Long getExpiration() {
+		return exp != null ? exp.toEpochSecond() : null;
 	}
 
-	public Token setExpiration(OffsetDateTime expiration) {
-		this.exp = expiration;
+	public Token setExpiration(Long expiration) {
+		this.exp = expiration != null ? OffsetDateTime.ofEpochSecond(expiration) : null;
 
 		// Cut off mills/nanos. The formatter does this too, but only after output.
 		if (this.exp != null) {
@@ -78,12 +78,12 @@ public class Token {
 		return this;
 	}
 
-	public OffsetDateTime getNotBefore() {
-		return nbf;
+	public Long getNotBefore() {
+		return nbf != null ? nbf.toEpochSecond() : null;
 	}
 
-	public Token setNotBefore(OffsetDateTime notBefore) {
-		this.nbf = notBefore;
+	public Token setNotBefore(Long notBefore) {
+		this.nbf = notBefore != null ? OffsetDateTime.ofEpochSecond(notBefore) : null;
 
 		// Cut off mills/nanos. The formatter does this too, but only after output.
 		if (this.nbf != null) {
@@ -93,12 +93,12 @@ public class Token {
 		return this;
 	}
 
-	public OffsetDateTime getIssuedAt() {
-		return iat;
+	public Long getIssuedAt() {
+		return iat != null ? iat.toEpochSecond() : null;
 	}
 
-	public Token setIssuedAt(OffsetDateTime issuedAt) {
-		this.iat = issuedAt;
+	public Token setIssuedAt(Long issuedAt) {
+		this.iat = issuedAt != null ? OffsetDateTime.ofEpochSecond(issuedAt) : null;
 
 		// Cut off mills/nanos. The formatter does this too, but only after output.
 		if (this.iat != null) {

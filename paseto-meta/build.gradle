@@ -27,10 +27,13 @@ dependencies {
 	api project(':crypto-v1-bc')
 	api project(':crypto-v2-libsodium')
 	api project(':encoding-json-jackson')
+	
+	implementation project(':time-jsr310')
 
 	testImplementation project(':test')
 	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.6'
 	testImplementation 'org.reflections:reflections:0.9.9'
+	testImplementation project(':time-jsr310')
 }
 
 sourceSets {

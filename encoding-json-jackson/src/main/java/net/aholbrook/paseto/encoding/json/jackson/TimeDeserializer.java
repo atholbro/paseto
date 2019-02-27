@@ -8,17 +8,16 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import net.aholbrook.paseto.service.Token;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
 
-public class OffsetDateTimeDeserializer extends JsonDeserializer<OffsetDateTime> {
+public class TimeDeserializer extends JsonDeserializer<Long> {
 
 	@Override
-	public OffsetDateTime deserialize(JsonParser p, DeserializationContext ctxt)
+	public Long deserialize(JsonParser p, DeserializationContext ctxt)
 			throws IOException, JsonProcessingException {
 		JsonToken token = p.getCurrentToken();
 
 		if (token.equals(JsonToken.VALUE_STRING)) {
-			return Token.DATETIME_FORMATTER.parse(p.getValueAsString(), OffsetDateTime::from);
+			return Token.DATETIME_FORMATTER.parse(p.getValueAsString()).toEpochSecond();
 		} else {
 			return getNullValue(ctxt);
 		}

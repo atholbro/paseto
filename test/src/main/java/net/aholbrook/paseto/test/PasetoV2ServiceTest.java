@@ -93,8 +93,8 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 
 		// Simple sign & verify to make sure the builder worked
 		Token token = new Token();
-		token.setIssuedAt(OffsetDateTime.now().minusMinutes(10));
-		token.setExpiration(OffsetDateTime.now().plusMinutes(10));
+		token.setIssuedAt(OffsetDateTime.now().minusMinutes(10).toEpochSecond());
+		token.setExpiration(OffsetDateTime.now().plusMinutes(10).toEpochSecond());
 		String s = service.encode(token);
 		Token token2 = service.decode(s);
 		Assert.assertEquals(token, token2);
@@ -110,8 +110,8 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 
 		// Simple sign & verify to make sure the builder worked
 		Token token = new Token();
-		token.setIssuedAt(OffsetDateTime.now().minusMinutes(10));
-		token.setExpiration(OffsetDateTime.now().plusMinutes(10));
+		token.setIssuedAt(OffsetDateTime.now().minusMinutes(10).toEpochSecond());
+		token.setExpiration(OffsetDateTime.now().plusMinutes(10).toEpochSecond());
 		String s = service.encode(token);
 		Token token2 = service.decode(s);
 		Assert.assertEquals(token, token2);
@@ -260,7 +260,7 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 	public void v2Service_local_defaultValidityPeriod() {
 		Token token = new Token().setTokenId("id");
 		LocalTokenService<Token> service = TestContext.builders().localServiceBuilderV2(null, rfcLocalKeyProvider(),
-				Token.class).withDefaultValidityPeriod(Duration.ofMinutes(5)).build();
+				Token.class).withDefaultValidityPeriod(5L * 60L).build();
 		String s = service.encode(token);
 		Token token2 = service.decode(s);
 		Assert.assertNotNull(token2.getIssuedAt());
@@ -281,7 +281,7 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 	public void v2Service_public_defaultValidityPeriod() {
 		Token token = new Token().setTokenId("id");
 		PublicTokenService<Token> service = TestContext.builders().publicServiceBuilderV2(rfcPublicKeyProvider(),
-				Token.class).withDefaultValidityPeriod(Duration.ofMinutes(5)).build();
+				Token.class).withDefaultValidityPeriod(5L * 60L).build();
 		String s = service.encode(token);
 		Token token2 = service.decode(s);
 		Assert.assertNotNull(token2.getIssuedAt());
@@ -321,7 +321,7 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 	public void v2Service_local_ctors3() {
 		Paseto paseto = TestContext.builders().pasetoBuilderV2(null).build();
 		LocalTokenService<Token> service = new LocalTokenService.Builder<>(paseto, Token.class, rfcLocalKeyProvider())
-				.withDefaultValidityPeriod(Duration.ofMinutes(5))
+				.withDefaultValidityPeriod(5L * 60L)
 				.build();
 		checkDefaultWithValidity(service);
 	}
@@ -330,7 +330,7 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 	public void v2Service_local_ctors4() {
 		Paseto paseto = TestContext.builders().pasetoBuilderV2(null).build();
 		LocalTokenService<Token> service = new LocalTokenService.Builder<>(paseto, Token.class, rfcLocalKeyProvider())
-				.withDefaultValidityPeriod(Duration.ofMinutes(5))
+				.withDefaultValidityPeriod(5L * 60L)
 				.checkClaims(new Claim[] {new CurrentlyValid()})
 				.build();
 		checkOnlyCurrentlyVaildWithValidity(service);
@@ -357,7 +357,7 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 	public void v2Service_public_ctors3() {
 		Paseto paseto = TestContext.builders().pasetoBuilderV2(null).build();
 		PublicTokenService<Token> service = new PublicTokenService.Builder<>(paseto, Token.class, rfcPublicKeyProvider())
-				.withDefaultValidityPeriod(Duration.ofMinutes(5))
+				.withDefaultValidityPeriod(5L * 60L)
 				.build();
 		checkDefaultWithValidity(service);
 	}
@@ -366,7 +366,7 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 	public void v2Service_public_ctors4() {
 		Paseto paseto = TestContext.builders().pasetoBuilderV2(null).build();
 		PublicTokenService<Token> service = new PublicTokenService.Builder<>(paseto, Token.class, rfcPublicKeyProvider())
-				.withDefaultValidityPeriod(Duration.ofMinutes(5))
+				.withDefaultValidityPeriod(5L * 60L)
 				.checkClaims(new Claim[] {new CurrentlyValid()})
 				.build();
 		checkOnlyCurrentlyVaildWithValidity(service);

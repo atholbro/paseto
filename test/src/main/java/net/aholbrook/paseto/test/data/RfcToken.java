@@ -16,7 +16,7 @@ public class RfcToken extends Token {
 
 	public RfcToken(String data, String exp) {
 		this.data = data;
-		setExpiration(Token.DATETIME_FORMATTER.parse(exp, OffsetDateTime::from));
+		setExpiration(Token.DATETIME_FORMATTER.parse(exp).toEpochSecond());
 	}
 
 	public String getData() {

@@ -38,13 +38,14 @@ public abstract class TokenService<_TokenType extends Token> {
 	protected final void validateToken(_TokenType token) {
 		// set issued at if null and we have a defaultValidityPeriod
 		if (token.getIssuedAt() == null && defaultValidityPeriod != null) {
-			token.setIssuedAt(OffsetDateTime.now(Clock.systemUTC()));
+			token.setIssuedAt(OffsetDateTime.now(Clock.systemUTC()).toEpochSecond());
 		}
 
 		// set expiry if null and we have a default
 		if (token.getExpiration() == null) {
 			if (defaultValidityPeriod != null) {
-				token.setExpiration(token.getIssuedAt().plus(defaultValidityPeriod));
+				OffsetDateTime issuedAt = OffsetDateTime.ofEpochSecond(token.getIssuedAt());
+				token.setExpiration(issuedAt.plus(defaultValidityPeriod).toEpochSecond());
 			} else {
 				throw new MissingClaimException(Token.CLAIM_EXPIRATION, "TokenService", token);
 			}

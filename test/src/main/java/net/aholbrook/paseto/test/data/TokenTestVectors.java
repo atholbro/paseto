@@ -4,11 +4,6 @@ import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.util.Hex;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-
 public class TokenTestVectors {
 	// q9Rq3FfaAyN8JWyVJhphybm9DaFNLVt2
 	public static byte[] TEST_KEY = Hex.decode("713952713346666141794e384a5779564a68706879626d394461464e4c567432");
@@ -63,12 +58,9 @@ public class TokenTestVectors {
 			.setIssuer("paragonie.com")
 			.setSubject("test")
 			.setAudience("pie-hosted.com")
-			.setExpiration(OffsetDateTime.of(LocalDate.of(2039, 1, 1),
-					LocalTime.of(0, 0, 0), ZoneOffset.UTC))
-			.setNotBefore(OffsetDateTime.of(LocalDate.of(2038, 4, 1),
-					LocalTime.of(0, 0, 0), ZoneOffset.UTC))
-			.setIssuedAt(OffsetDateTime.of(LocalDate.of(2038, 3, 17),
-					LocalTime.of(0, 0, 0), ZoneOffset.UTC))
+			.setExpiration(2177452800L) // 2039-01-01T00:00:00+00:00
+			.setNotBefore(2153692800L) // 2038-04-01T00:00:00+00:00
+			.setIssuedAt(2152396800L) // 2038-03-17T00:00:00+00:00
 			.setTokenId("87IFSGFgPNtQNNuw0AtuLttP");
 	private final static KeyId TOKEN_1_FOOTER = new KeyId().setKeyId("key-1");
 	public final static String TOKEN_1_STRING = "{\"exp\":\"2039-01-01T00:00:00+00:00\",\"iss\":\"paragonie.com\","
@@ -141,12 +133,9 @@ public class TokenTestVectors {
 			.setIssuer("auth.example.com")
 			.setSubject("user-auth")
 			.setAudience("internal-service.example.com")
-			.setExpiration(OffsetDateTime.of(LocalDate.of(2018, 1, 1),
-					LocalTime.of(17, 23, 44), ZoneOffset.UTC))
-			.setIssuedAt(OffsetDateTime.of(LocalDate.of(2018, 1, 1),
-					LocalTime.of(17, 18, 44), ZoneOffset.UTC))
-			.setNotBefore(OffsetDateTime.of(LocalDate.of(2018, 1, 1),
-					LocalTime.of(17, 18, 44), ZoneOffset.UTC));
+			.setExpiration(1514827424L) // 2018-01-01T17:23:44+00:00
+			.setIssuedAt(1514827124L) // 2018-01-01T17:18:44+00:00
+			.setNotBefore(1514827124L); // 2018-01-01T17:18:44+00:00
 	private final static KeyId TOKEN_2_FOOTER = new KeyId().setKeyId("key-1");
 	public final static String TOKEN_2_STRING = "{\"userId\":100,\"exp\":\"2018-01-01T17:23:44+00:00\","
 			+ "\"sub\":\"user-auth\",\"iss\":\"auth.example.com\",\"aud\":\"internal-service.example.com\","
@@ -216,10 +205,8 @@ public class TokenTestVectors {
 
 	// Minimal token, only iss and exp set.
 	public final static Token TOKEN_3 = new Token()
-			.setExpiration(OffsetDateTime.of(LocalDate.of(2018, 1, 1),
-					LocalTime.of(17, 23, 44), ZoneOffset.UTC))
-			.setIssuedAt(OffsetDateTime.of(LocalDate.of(2018, 1, 1),
-					LocalTime.of(17, 18, 44), ZoneOffset.UTC));
+			.setExpiration(1514827424L) // 2018-01-01T17:23:44+00:00
+			.setIssuedAt(1514827124L); // 2018-01-01T17:18:44+00:00
 	private final static KeyId TOKEN_3_FOOTER = new KeyId().setKeyId("key-2");
 	public final static String TOKEN_3_STRING
 			= "";

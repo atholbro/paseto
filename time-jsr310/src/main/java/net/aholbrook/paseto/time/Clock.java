@@ -7,7 +7,7 @@ public class Clock {
 		this.clock = clock;
 	}
 
-	public java.time.Clock raw() {
+	java.time.Clock raw() {
 		return clock;
 	}
 
