@@ -247,6 +247,15 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 	}
 
 	@Test
+	public void v2Service_local_extractFooter_asString() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
+		TokenService<Token> service = tokenLocalService(tv.getB());
+
+		String result = service.getFooter(tv.getToken());
+		Assert.assertEquals("{\"kid\":\"key-1\"}", result);
+	}
+
+	@Test
 	public void v2Service_public_extractFooter() {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
 		TokenService<Token> service = tokenPublicService();
@@ -255,6 +264,15 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 		Assert.assertEquals(tv.getFooter(), result);
 	}
 
+	@Test
+	public void v2Service_public_extractFooter_asString() {
+		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
+		TokenService<Token> service = tokenPublicService();
+
+		String result = service.getFooter(tv.getToken());
+		Assert.assertEquals("{\"kid\":\"key-1\"}", result);
+	}
+	
 	// Test defaultValidityPeriod
 	@Test
 	public void v2Service_local_defaultValidityPeriod() {

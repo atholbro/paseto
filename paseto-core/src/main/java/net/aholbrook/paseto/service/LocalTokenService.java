@@ -51,6 +51,11 @@ public class LocalTokenService<_TokenType extends Token> extends TokenService<_T
 	}
 
 	@Override
+	public String getFooter(String token) {
+		return paseto.extractFooter(token);
+	}
+
+	@Override
 	public <_FooterType> _FooterType getFooter(String token, Class<_FooterType> footerClass) {
 		return paseto.extractFooter(token, footerClass);
 	}

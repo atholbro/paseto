@@ -34,6 +34,8 @@ public abstract class TokenService<_TokenType extends Token> {
 	abstract public <_FooterType> TokenWithFooter<_TokenType, _FooterType> decodeWithFooter(String token,
 			Class<_FooterType> footerClass);
 
+	abstract public String getFooter(String token);
+
 	abstract public <_FooterType> _FooterType getFooter(String token, Class<_FooterType> footerClass);
 
 	protected final void validateToken(_TokenType token) {
