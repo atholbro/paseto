@@ -51,6 +51,10 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 		return result;
 	}
 
+	public String getFooter(String token) {
+		return paseto.extractFooter(token);
+	}
+
 	public <_FooterType> _FooterType getFooter(String token, Class<_FooterType> footerClass) {
 		return paseto.extractFooter(token, footerClass);
 	}
