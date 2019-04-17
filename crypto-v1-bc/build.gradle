@@ -22,7 +22,7 @@ publishing {
 }
 
 dependencies {
-	implementation project(":crypto-v1")
+	api project(":crypto-v1")
 
 	implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.60'
 }

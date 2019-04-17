@@ -22,5 +22,5 @@ publishing {
 }
 
 dependencies {
-	implementation project(":base64")
+	api project(":base64")
 }

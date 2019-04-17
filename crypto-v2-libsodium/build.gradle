@@ -22,7 +22,7 @@ publishing {
 }
 
 dependencies {
-	implementation project(":crypto-v2")
+	api project(":crypto-v2")
 
 	implementation "com.goterl.lazycode:lazysodium-java:3.6.0"
 }
