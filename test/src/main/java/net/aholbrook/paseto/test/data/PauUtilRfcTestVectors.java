@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.test.data;
 
-import net.aholbrook.paseto.util.Hex;
+import net.aholbrook.paseto.test.utils.Hex;
 
 public class PauUtilRfcTestVectors {
 	public final static byte[] PAE_VECTOR_1 = Hex.decode("0000000000000000");
