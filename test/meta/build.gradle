@@ -1,0 +1,8 @@
+dependencies {
+	testImplementation project(":paseto-meta")
+	testImplementation project(':time-jsr310')
+
+	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.6'
+	testImplementation 'org.reflections:reflections:0.9.9'
+	testImplementation group: 'commons-codec', name: 'commons-codec', version: '1.12'
+}

@@ -29,18 +29,4 @@ dependencies {
 	api project(':encoding-json-jackson')
 
 	api project(':time-jsr310')
-
-	testImplementation project(':test')
-	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.6'
-	testImplementation 'org.reflections:reflections:0.9.9'
-	testImplementation project(':time-jsr310')
-}
-
-sourceSets {
-	test {
-		// This is kinda hack, but we need gradle to find the tests from the base test project. The only reason we're
-		// doing this is so that we can later supply a paseto-gson (for example) project which also runs all the unit
-		// tests.
-		java.srcDirs = ['../test/src/main/java', 'src/test/java']
-	}
 }
