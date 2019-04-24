@@ -15,10 +15,8 @@ import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.test.common.crypto.TestNonceGenerator;
-import net.aholbrook.paseto.test.common.utils.Provided;
 import net.aholbrook.paseto.test.common.utils.TestBuilders;
 
-@Provided
 public class GlobalTestBuilders implements TestBuilders {
 	@Override
 	public PasetoV1.Builder pasetoBuilderV1(byte[] nonce) {
