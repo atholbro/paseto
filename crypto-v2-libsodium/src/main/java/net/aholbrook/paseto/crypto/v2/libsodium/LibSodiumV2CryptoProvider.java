@@ -2,6 +2,7 @@ package net.aholbrook.paseto.crypto.v2.libsodium;
 
 import com.goterl.lazycode.lazysodium.Sodium;
 import com.goterl.lazycode.lazysodium.SodiumJava;
+import com.sun.jna.NativeLong;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 
@@ -52,7 +53,7 @@ public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
 		validateEd25519Sign(sig, m, sk);
 
 		int[] sigLen = new int[] {sig.length};
-		return sodium.crypto_sign_detached(sig, sigLen, m, m.length, sk) == 0;
+		return sodium.crypto_sign_detached(sig, sigLen, m, new NativeLong(m.length), sk) == 0;
 	}
 
 	@Override
