@@ -296,13 +296,13 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 
 	@Test
 	public void v2Service_public_defaultValidityPeriod() {
-//		Token token = new Token().setTokenId("id");
-//		PublicTokenService<Token> service = TestContext.builders().publicServiceBuilderV2(rfcPublicKeyProvider(),
-//				Token.class).withDefaultValidityPeriod(5L * 60L).build();
-//		String s = service.encode(token);
-//		Token token2 = service.decode(s);
-//		Assert.assertNotNull(token2.getIssuedAt());
-//		Assert.assertNotNull(token2.getExpiration());
+		Token token = new Token().setTokenId("id");
+		PublicTokenService<Token> service = TestContext.builders().publicServiceBuilderV2(rfcPublicKeyProvider(),
+				Token.class).withDefaultValidityPeriod(5L * 60L).build();
+		String s = service.encode(token);
+		Token token2 = service.decode(s);
+		Assert.assertNotNull(token2.getIssuedAt());
+		Assert.assertNotNull(token2.getExpiration());
 	}
 
 	@Test(expected = MissingClaimException.class)
