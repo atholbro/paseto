@@ -53,8 +53,8 @@ allprojects {
 		version = gitVersionCalculator.calculateVersion()
 	}
 
+	if (it.name != "paseto" && it.name != "meta" && it.name != "threeten" && it.name != "test") {
 
-	if (it.name != "paseto" && it.name != "mwta" && it.name != "threeten" && it.name != "test") {
 		apply plugin: 'signing'
 		apply plugin: 'maven-publish'
 
