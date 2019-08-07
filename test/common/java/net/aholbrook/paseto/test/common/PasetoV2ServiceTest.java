@@ -17,10 +17,11 @@ import net.aholbrook.paseto.test.common.data.TestVector;
 import net.aholbrook.paseto.test.common.data.TokenTestVectors;
 import net.aholbrook.paseto.test.common.utils.AssertUtils;
 import net.aholbrook.paseto.test.common.utils.TestContext;
+import net.aholbrook.paseto.time.Clock;
+import net.aholbrook.paseto.time.OffsetDateTime;
+
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.time.OffsetDateTime;
 
 public class PasetoV2ServiceTest extends PasetoServiceTest {
 	private static LocalTokenService.KeyProvider rfcLocalKeyProvider() {
@@ -92,8 +93,8 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 
 		// Simple sign & verify to make sure the builder worked
 		Token token = new Token();
-		token.setIssuedAt(OffsetDateTime.now().minusMinutes(10).toEpochSecond());
-		token.setExpiration(OffsetDateTime.now().plusMinutes(10).toEpochSecond());
+		token.setIssuedAt(OffsetDateTime.now(Clock.systemUTC()).minusMinutes(10).toEpochSecond());
+		token.setExpiration(OffsetDateTime.now(Clock.systemUTC()).plusMinutes(10).toEpochSecond());
 		String s = service.encode(token);
 		Token token2 = service.decode(s);
 		Assert.assertEquals(token, token2);

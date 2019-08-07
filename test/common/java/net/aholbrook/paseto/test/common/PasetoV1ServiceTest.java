@@ -17,10 +17,9 @@ import net.aholbrook.paseto.test.common.data.TestVector;
 import net.aholbrook.paseto.test.common.data.TokenTestVectors;
 import net.aholbrook.paseto.test.common.utils.AssertUtils;
 import net.aholbrook.paseto.test.common.utils.TestContext;
+import net.aholbrook.paseto.time.OffsetDateTime;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.time.OffsetDateTime;
 
 public class PasetoV1ServiceTest extends PasetoServiceTest {
 	private static LocalTokenService.KeyProvider rfcLocalKeyProvider() {

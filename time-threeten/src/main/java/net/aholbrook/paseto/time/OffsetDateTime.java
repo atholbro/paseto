@@ -13,6 +13,10 @@ public class OffsetDateTime {
 		return offsetDateTime;
 	}
 
+	public static OffsetDateTime now() {
+		return new OffsetDateTime(org.threeten.bp.OffsetDateTime.now());
+	}
+
 	public static OffsetDateTime now(Clock systemUTC) {
 		return new OffsetDateTime(org.threeten.bp.OffsetDateTime.now(systemUTC.raw()));
 	}
@@ -43,6 +47,14 @@ public class OffsetDateTime {
 
 	public OffsetDateTime minusSeconds(long l) {
 		return new OffsetDateTime(offsetDateTime.minusSeconds(l));
+	}
+
+	public OffsetDateTime plusMinutes(long l) {
+		return new OffsetDateTime(offsetDateTime.plusMinutes(l));
+	}
+
+	public OffsetDateTime minusMinutes(long l) {
+		return new OffsetDateTime(offsetDateTime.minusMinutes(l));
 	}
 
 	public long toEpochSecond() {

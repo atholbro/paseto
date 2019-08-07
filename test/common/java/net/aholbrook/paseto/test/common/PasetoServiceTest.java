@@ -7,9 +7,9 @@ import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.service.TokenService;
 import net.aholbrook.paseto.test.common.data.TestVector;
 import net.aholbrook.paseto.test.common.utils.AssertUtils;
-import org.junit.Assert;
+import net.aholbrook.paseto.time.OffsetDateTime;
 
-import java.time.OffsetDateTime;
+import org.junit.Assert;
 
 public abstract class PasetoServiceTest {
 	<_TokenType extends Token, _Footer> void encodeTestVector(TokenService<_TokenType> tokenService,
