@@ -54,7 +54,7 @@ allprojects {
 	}
 
 
-	if (it.name != "paseto") {
+	if (it.name != "paseto" && it.name != "mwta" && it.name != "threeten" && it.name != "test") {
 		apply plugin: 'signing'
 		apply plugin: 'maven-publish'
 
