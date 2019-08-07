@@ -3,5 +3,4 @@ dependencies {
 	testImplementation project(':time-jsr310')
 
 	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.6'
-	testImplementation group: 'commons-codec', name: 'commons-codec', version: '1.12'
 }
