@@ -78,7 +78,7 @@ allprojects {
 
 // Dependencies section
 dependencies {
-	compile 'net.aholbrook.paseto:meta:0.3.0'
+	compile 'net.aholbrook.paseto:meta:0.5.0'
 }
 ```
 
@@ -95,7 +95,7 @@ dependencies {
 <dependency>
 	<groupId>net.aholbrook.paseto</groupId>
 	<artifactId>meta</artifactId>
-	<version>0.3.0</version>
+	<version>0.5.0</version>
 </dependency>
 ```
 
