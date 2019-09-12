@@ -143,7 +143,7 @@ Lets start with an example of creating a basic Paseto JsonToken. For this exampl
 ```
 byte[] key = Hex.decode("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
 TokenService<Token> tokenService = PasetoBuilders.V2.localService(() -> key, Token.class)
-    .withDefaultValidityPeriod(Duration.ofDays(15))
+    .withDefaultValidityPeriod(Duration.ofDays(15).getSeconds())
     .build();
 
 Token token = new Token();
@@ -163,7 +163,7 @@ pairs.
 
 ```
 TokenService<Token> tokenService = PasetoBuilders.V2.localService(() -> key, Token.class)
-    .withDefaultValidityPeriod(Duration.ofDays(15))
+    .withDefaultValidityPeriod(Duration.ofDays(15).getSeconds())
     .build();
 ```
 Next we create an instance of the Paseto LocalTokenService. The TokenService is the interface to the interface to
