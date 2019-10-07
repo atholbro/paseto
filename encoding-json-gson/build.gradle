@@ -1,0 +1,31 @@
+def artifact_id = "encoding-json-gson"
+
+jar {
+	baseName = generateBaseName(artifact_id)
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			pom {
+				name = 'Encoding: GSON'
+				description = 'JSON encoding backed by GSON.'
+			}
+
+			artifactId artifact_id
+
+			from components.java
+			artifact sourcesJar
+			artifact javadocJar
+		}
+	}
+}
+
+dependencies {
+	api project(':encoding')
+	implementation project(':paseto-core')
+
+	implementation "com.google.code.gson:gson:2.8.5"
+
+	compileOnly project(':time-jsr310')
+}

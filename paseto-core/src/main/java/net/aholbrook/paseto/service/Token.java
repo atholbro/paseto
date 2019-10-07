@@ -22,10 +22,10 @@ public class Token {
 	private String iss; // Issuer
 	private String sub; // Subject
 	private String aud; // Audience
-	private String jti; // Token Id
 	private OffsetDateTime exp; // Expiration
 	private OffsetDateTime nbf; // Not Before
 	private OffsetDateTime iat; // Issued At
+	private String jti; // Token Id
 
 	public String getIssuer() {
 		return iss;

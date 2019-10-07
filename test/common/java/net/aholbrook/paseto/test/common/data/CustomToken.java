@@ -5,7 +5,7 @@ import net.aholbrook.paseto.service.Token;
 
 import java.util.Objects;
 
-@JsonPropertyOrder({"iss", "sub", "aud", "exp", "nbf", "iat", "jti", "userId"})
+@JsonPropertyOrder({"userId", "iss", "sub", "aud", "exp", "nbf", "iat", "jti"})
 public class CustomToken extends Token {
 	private Long userId;
 

@@ -54,14 +54,6 @@ public class EncodingTest {
 		Assert.assertNull(s);
 	}
 
-	// encode a type which throws an exception, should result in an EncodingException.
-	@Test(expected = EncodingException.class)
-	public void token_encodeError() {
-		EncodingProvider encodingProvider = TestContext.builders().encodingProvider();
-
-		encodingProvider.encode(new BrokenType());
-	}
-
 	@Test
 	public void token_decodeNull() {
 		EncodingProvider encodingProvider = TestContext.builders().encodingProvider();
@@ -79,11 +71,5 @@ public class EncodingTest {
 	public void token_decodeError() {
 		EncodingProvider encodingProvider = TestContext.builders().encodingProvider();
 		Token token = encodingProvider.decode("notjson", Token.class);
-	}
-
-	private static class BrokenType {
-		public String getName() {
-			throw new NullPointerException();
-		}
 	}
 }
