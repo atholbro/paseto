@@ -67,6 +67,10 @@ public class Token {
 		return exp != null ? exp.toEpochSecond() : null;
 	}
 
+	public OffsetDateTime getExpirationWrapped() {
+		return exp;
+	}
+
 	public Token setExpiration(Long expiration) {
 		this.exp = expiration != null ? OffsetDateTime.ofEpochSecond(expiration) : null;
 
@@ -82,6 +86,10 @@ public class Token {
 		return nbf != null ? nbf.toEpochSecond() : null;
 	}
 
+	public OffsetDateTime getNotBeforeWrapped() {
+		return nbf;
+	}
+
 	public Token setNotBefore(Long notBefore) {
 		this.nbf = notBefore != null ? OffsetDateTime.ofEpochSecond(notBefore) : null;
 
@@ -95,6 +103,10 @@ public class Token {
 
 	public Long getIssuedAt() {
 		return iat != null ? iat.toEpochSecond() : null;
+	}
+
+	public OffsetDateTime getIssuedAtWrapped() {
+		return iat;
 	}
 
 	public Token setIssuedAt(Long issuedAt) {
