@@ -1,11 +1,13 @@
 package net.aholbrook.paseto.encoding.json.jackson.mixin;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import net.aholbrook.paseto.encoding.json.jackson.TimeDeserializer;
 import net.aholbrook.paseto.encoding.json.jackson.TimeSerializer;
+import net.aholbrook.paseto.time.OffsetDateTime;
 
 @JsonPropertyOrder({"iss", "sub", "aud", "exp", "nbf", "iat", "jti"})
 public abstract class TokenMixIn {
@@ -56,4 +58,13 @@ public abstract class TokenMixIn {
 	@JsonProperty("iat")
 	@JsonDeserialize(using = TimeDeserializer.class)
 	abstract void setIssuedAt(Long issuedAt);
+
+	@JsonIgnore
+	abstract OffsetDateTime getExpirationWrapped();
+
+	@JsonIgnore
+	abstract OffsetDateTime getNotBeforeWrapped();
+
+	@JsonIgnore
+	abstract OffsetDateTime getIssuedAtWrapped();
 }
