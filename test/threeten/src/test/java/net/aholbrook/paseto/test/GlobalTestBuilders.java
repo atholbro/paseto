@@ -9,7 +9,7 @@ import net.aholbrook.paseto.crypto.v1.bc.BouncyCastleV1CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.libsodium.LibSodiumV2CryptoProvider;
 import net.aholbrook.paseto.encoding.EncodingProvider;
-import net.aholbrook.paseto.encoding.json.jackson.JacksonJsonProvider;
+import net.aholbrook.paseto.encoding.StaticEncodingProvider;
 import net.aholbrook.paseto.meta.PasetoBuilders;
 import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;
@@ -89,7 +89,7 @@ public class GlobalTestBuilders implements TestBuilders {
 
 	@Override
 	public EncodingProvider encodingProvider() {
-		return new JacksonJsonProvider();
+		return StaticEncodingProvider.newInstance();
 	}
 
 	@Override
