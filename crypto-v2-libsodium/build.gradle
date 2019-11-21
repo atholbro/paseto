@@ -1,7 +1,7 @@
 def artifact_id = "crypto-v2-libsodium"
 
 jar {
-	baseName = generateBaseName(artifact_id)
+	archiveBaseName = generateBaseName(artifact_id)
 }
 
 publishing {
@@ -24,5 +24,7 @@ publishing {
 dependencies {
 	api project(":crypto-v2")
 
-	implementation "com.goterl.lazycode:lazysodium-java:3.6.1"
+	api 'co.libly:resource-loader:1.3.6'
+	implementation 'net.java.dev.jna:jna:5.5.0'
+	implementation "com.goterl.lazycode:lazysodium-java:4.2.2"
 }

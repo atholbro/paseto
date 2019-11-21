@@ -1,7 +1,7 @@
 def artifact_id = "encoding"
 
 jar {
-	baseName = generateBaseName(artifact_id)
+	archiveBaseName = generateBaseName(artifact_id)
 }
 
 publishing {

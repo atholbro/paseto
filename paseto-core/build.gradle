@@ -1,7 +1,7 @@
 def artifact_id = "core"
 
 jar {
-	baseName = generateBaseName(artifact_id)
+	archiveBaseName = generateBaseName(artifact_id)
 }
 
 publishing {

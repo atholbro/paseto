@@ -44,13 +44,12 @@ allprojects {
 	repositories {
 		mavenLocal()
 		mavenCentral()
-		maven {
-			url  "https://dl.bintray.com/terl/lazysodium-maven"
-		}
+		maven { url "https://dl.bintray.com/libly/maven" }
+		maven { url  "https://dl.bintray.com/terl/lazysodium-maven" }
 	}
 
 	jar {
-		version = gitVersionCalculator.calculateVersion()
+		archiveVersion = gitVersionCalculator.calculateVersion()
 	}
 
 	if (it.name != "paseto" && it.name != "meta" && it.name != "threeten" && it.name != "test") {
@@ -122,9 +121,9 @@ subprojects {
 	}
 
 	jacocoTestReport {
-		additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
-		sourceDirectories = files(sourceSets.main.allSource.srcDirs)
-		classDirectories =  files(sourceSets.main.output)
+		getAdditionalClassDirs().setFrom(files(sourceSets.main.allSource.srcDirs))
+		getSourceDirectories().setFrom(files(sourceSets.main.allSource.srcDirs))
+		getClassDirectories().setFrom(files(sourceSets.main.output))
 		reports {
 			html.enabled = true
 			xml.enabled = true
@@ -149,10 +148,12 @@ task allDependencies {
 
 task jacocoRootReport(type: JacocoReport) {
 	dependsOn = subprojects.test
-	sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs).filter { File f -> !f.path.contains('threeten') }
-	additionalSourceDirs = sourceDirectories
-	classDirectories = files(subprojects.sourceSets.main.output).filter { File f -> !f.path.contains('threeten') }
-	executionData = files(subprojects.jacocoTestReport.executionData).filter { File f -> !f.path.contains('threeten') }
+
+	getSourceDirectories().setFrom(files(subprojects.sourceSets.main.allSource.srcDirs).filter { File f -> !f.path.contains('threeten') })
+	getAdditionalSourceDirs().setFrom(sourceDirectories);
+	getClassDirectories().setFrom(files(subprojects.sourceSets.main.output).filter { File f -> !f.path.contains('threeten') })
+	getExecutionData().setFrom(files(subprojects.jacocoTestReport.executionData).filter { File f -> !f.path.contains('threeten') })
+
 	reports {
 		html.enabled = true
 		xml.enabled = true
@@ -168,12 +169,12 @@ task jacocoRootReport(type: JacocoReport) {
 	}
 
 	afterEvaluate {
-		classDirectories = files(classDirectories.files.collect {
+		getClassDirectories().setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, excludes: [
 					'net/aholbrook/paseto/test/**',
 					'net/aholbrook/paseto/encoding/json/jackson/mixin/**'
 			])
-		})
+		}))
 	}
 }
 
