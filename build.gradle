@@ -163,9 +163,9 @@ task jacocoRootReport(type: JacocoReport) {
 		true
 	}
 	doFirst {
-		executionData = files(executionData.findAll {
+		getExecutionData().setFrom(files(executionData.findAll {
 			it.exists()
-		})
+		}))
 	}
 
 	afterEvaluate {
