@@ -149,7 +149,7 @@ public abstract class Paseto {
 		String decodedFooter = new String(base64Provider.decodeFromString(userFooter), Charset.forName("UTF-8"));
 
 		// Check the footer if expected footer is not empty, otherwise we just return the footer without checking. This
-		// is find though, as the footer is covered by the token PAE signature. This check exists for proper error
+		// is fine though, as the footer is covered by the token PAE signature. This check exists for proper error
 		// reporting, and is not a requirement for security.
 		if (!StringUtils.isEmpty(expectedFooter) && !StringUtils.isEqual(decodedFooter, expectedFooter)) {
 			throw new InvalidFooterException(decodedFooter, expectedFooter, token);
