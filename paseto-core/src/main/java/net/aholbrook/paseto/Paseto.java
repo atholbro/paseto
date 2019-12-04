@@ -41,7 +41,7 @@ public abstract class Paseto {
 	}
 
 	public String encrypt(Object payload, byte[] key, Object footer) {
-		return encrypt(payload, key, encodingProvider.encode(footer));
+		return encrypt(payload, key, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)));
 	}
 
 	public <_Payload> _Payload decrypt(String token, byte[] key, Class<_Payload> payloadClass) {
@@ -49,7 +49,7 @@ public abstract class Paseto {
 	}
 
 	public <_Payload> _Payload decrypt(String token, byte[] key, Object footer, Class<_Payload> payloadClass) {
-		return decrypt(token, key, encodingProvider.encode(footer), payloadClass);
+		return decrypt(token, key, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), payloadClass);
 	}
 
 	public String sign(Object payload, byte[] sk) {
@@ -57,7 +57,7 @@ public abstract class Paseto {
 	}
 
 	public String sign(Object payload, byte[] sk, Object footer) {
-		return sign(payload, sk, encodingProvider.encode(footer));
+		return sign(payload, sk, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)));
 	}
 
 	public <_Payload> _Payload verify(String token, byte[] pk, Class<_Payload> payloadClass) {
@@ -65,7 +65,7 @@ public abstract class Paseto {
 	}
 
 	public <_Payload> _Payload verify(String token, byte[] pk, Object footer, Class<_Payload> payloadClass) {
-		return verify(token, pk, encodingProvider.encode(footer), payloadClass);
+		return verify(token, pk, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), payloadClass);
 	}
 
 	public <_Payload> TokenWithFooter<_Payload, String> decryptWithFooter(String token, byte[] key,

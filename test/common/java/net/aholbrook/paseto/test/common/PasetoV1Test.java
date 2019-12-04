@@ -129,6 +129,11 @@ public class PasetoV1Test extends PasetoTest {
 	}
 
 	@Test
+	public void v1_token1LocalWithStringFooter() {
+		encryptTestVector(TokenTestVectors.TV_1_V1_LOCAL_WITH_STRING_FOOTER);
+	}
+
+	@Test
 	public void v1_token2Local() {
 		encryptTestVector(TokenTestVectors.TV_2_V1_LOCAL);
 	}
@@ -167,6 +172,11 @@ public class PasetoV1Test extends PasetoTest {
 	@Test
 	public void v1_token1LocalWithFooterDecrypt() {
 		decryptTestVector(TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER);
+	}
+
+	@Test
+	public void v1_token1LocalWithStringFooterDecrypt() {
+		decryptTestVector(TokenTestVectors.TV_1_V1_LOCAL_WITH_STRING_FOOTER);
 	}
 
 	@Test
@@ -211,6 +221,11 @@ public class PasetoV1Test extends PasetoTest {
 	}
 
 	@Test
+	public void v1_token1PublicWithStringFooter() {
+		signTestVector(TokenTestVectors.TV_1_V1_PUBLIC_WITH_STRING_FOOTER, false);
+	}
+
+	@Test
 	public void v1_token2Public() {
 		signTestVector(TokenTestVectors.TV_2_V1_PUBLIC, false);
 	}
@@ -249,6 +264,11 @@ public class PasetoV1Test extends PasetoTest {
 	@Test
 	public void v1_token1PublicWithFooterVerify() {
 		verifyTestVector(TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER);
+	}
+
+	@Test
+	public void v1_token1PublicWithStringFooterVerify() {
+		verifyTestVector(TokenTestVectors.TV_1_V1_PUBLIC_WITH_STRING_FOOTER);
 	}
 
 	@Test
