@@ -1,15 +1,3 @@
-plugins {
-	id 'jacoco'
-}
-
-jacocoTestReport {
-	reports {
-		xml.enabled false
-		csv.enabled false
-		html.destination file("${buildDir}/jacocoHtml")
-	}
-}
-
 dependencies {
 	testImplementation project(":paseto-meta")
 	testImplementation project(':time-jsr310')

@@ -33,7 +33,7 @@ nexusStaging {
 allprojects {
 	apply plugin: 'java-library'
 	apply plugin: 'com.github.gradle-git-version-calculator'
-
+	apply plugin: 'jacoco'
 
 	gitVersionCalculator {
 		prefix = 'release@'
@@ -128,8 +128,40 @@ subprojects {
 		from javadoc
 		classifier = 'javadoc'
 	}
+
+	test.useTestNG()
 }
 
 task allDependencies {
 	subprojects.each { dependsOn("${it.name}:dependencies") }
+}
+
+task codeCoverageReport(type: JacocoReport) {
+	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+	subprojects.each {
+		sourceSets it.sourceSets.main
+	}
+
+	reports {
+		xml.enabled true
+		xml.destination file("${buildDir}/reports/jacoco/report.xml")
+		html.enabled false
+		csv.enabled false
+	}
+
+	onlyIf = { true }
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'net/aholbrook/paseto/encoding/StaticEncodingProvider*',
+					'net/aholbrook/paseto/time/**'
+			])
+		}))
+	}
+}
+
+codeCoverageReport.dependsOn {
+	subprojects*.test
 }
