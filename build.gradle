@@ -33,7 +33,6 @@ nexusStaging {
 allprojects {
 	apply plugin: 'java-library'
 	apply plugin: 'com.github.gradle-git-version-calculator'
-	apply plugin: 'jacoco'
 
 
 	gitVersionCalculator {
@@ -120,17 +119,6 @@ subprojects {
 		testImplementation 'junit:junit:4.12'
 	}
 
-	jacocoTestReport {
-		getAdditionalClassDirs().setFrom(files(sourceSets.main.allSource.srcDirs))
-		getSourceDirectories().setFrom(files(sourceSets.main.allSource.srcDirs))
-		getClassDirectories().setFrom(files(sourceSets.main.output))
-		reports {
-			html.enabled = true
-			xml.enabled = true
-			csv.enabled = false
-		}
-	}
-
 	task sourcesJar(type: Jar) {
 		from sourceSets.main.allJava
 		classifier = 'sources'
@@ -145,37 +133,3 @@ subprojects {
 task allDependencies {
 	subprojects.each { dependsOn("${it.name}:dependencies") }
 }
-
-task jacocoRootReport(type: JacocoReport) {
-	dependsOn = subprojects.test
-
-	getSourceDirectories().setFrom(files(subprojects.sourceSets.main.allSource.srcDirs).filter { File f -> !f.path.contains('threeten') })
-	getAdditionalSourceDirs().setFrom(sourceDirectories);
-	getClassDirectories().setFrom(files(subprojects.sourceSets.main.output).filter { File f -> !f.path.contains('threeten') })
-	getExecutionData().setFrom(files(subprojects.jacocoTestReport.executionData).filter { File f -> !f.path.contains('threeten') })
-
-	reports {
-		html.enabled = true
-		xml.enabled = true
-		csv.enabled = false
-	}
-	onlyIf = {
-		true
-	}
-	doFirst {
-		getExecutionData().setFrom(files(executionData.findAll {
-			it.exists()
-		}))
-	}
-
-	afterEvaluate {
-		getClassDirectories().setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, excludes: [
-					'net/aholbrook/paseto/test/**',
-					'net/aholbrook/paseto/encoding/json/jackson/mixin/**'
-			])
-		}))
-	}
-}
-
-check.dependsOn jacocoRootReport
