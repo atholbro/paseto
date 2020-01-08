@@ -115,10 +115,6 @@ allprojects {
 subprojects {
 	sourceCompatibility = 1.8
 
-	dependencies {
-		testImplementation 'junit:junit:4.12'
-	}
-
 	task sourcesJar(type: Jar) {
 		from sourceSets.main.allJava
 		classifier = 'sources'
@@ -128,8 +124,6 @@ subprojects {
 		from javadoc
 		classifier = 'javadoc'
 	}
-
-	test.useTestNG()
 }
 
 task allDependencies {
