@@ -51,7 +51,7 @@ allprojects {
 		archiveVersion = gitVersionCalculator.calculateVersion()
 	}
 
-	if (it.name != "paseto" && it.name != "meta" && it.name != "threeten" && it.name != "test") {
+	if (it.name != "paseto" && it.name != "meta" && it.name != "threeten" && it.name != "test" && it.name != "gson") {
 
 		apply plugin: 'signing'
 		apply plugin: 'maven-publish'
