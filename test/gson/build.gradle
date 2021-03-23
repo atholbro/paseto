@@ -1,10 +1,10 @@
 dependencies {
-	testImplementation 'junit:junit:4.12'
+	testImplementation 'junit:junit:4.13.2'
 	testImplementation (project(":paseto-meta")) {
 		exclude module: 'encoding-json-jackson'
 	}
 	testImplementation project(':encoding-json-gson')
 	testImplementation project(':time-jsr310')
 
-	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.6'
+	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.2'
 }

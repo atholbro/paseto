@@ -6,14 +6,15 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
-		classpath "gradle.plugin.com.github.gradle-git-version-calculator:gradle-git-version-calculator:1.0.0"
+		classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.30.0"
+		classpath "gradle.plugin.com.github.gradle-git-version-calculator:gradle-git-version-calculator:1.1.0"
 	}
 }
 
 plugins {
-	id 'io.codearte.nexus-staging' version '0.11.0'
-	id 'nu.studer.credentials' version '1.0.7'
+	id 'io.codearte.nexus-staging' version '0.30.0'
+	id 'nu.studer.credentials' version '2.1'
+	id "com.github.ben-manes.versions" version "0.38.0"
 }
 
 ext {
