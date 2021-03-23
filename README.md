@@ -79,7 +79,7 @@ allprojects {
 
 // Dependencies section
 dependencies {
-	compile 'net.aholbrook.paseto:meta:0.5.0'
+	compile 'net.aholbrook.paseto:meta:0.6.1'
 }
 ```
 
