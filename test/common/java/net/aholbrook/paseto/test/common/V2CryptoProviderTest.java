@@ -2,10 +2,10 @@ package net.aholbrook.paseto.test.common;
 
 import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 import net.aholbrook.paseto.crypto.exception.ByteArrayRangeException;
+import net.aholbrook.paseto.crypto.v2.V2CryptoLoader;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.test.common.data.RfcTestVectors;
 import net.aholbrook.paseto.test.common.utils.AssertUtils;
-import net.aholbrook.paseto.test.common.utils.TestContext;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class V2CryptoProviderTest {
 	private final static byte[] ED25519S_PK = new byte[V2CryptoProvider.ED25519_PUBLICKEYBYTES];
 
 	private V2CryptoProvider v2CryptoProvider() {
-		return TestContext.builders().v2CryptoProvider();
+		return V2CryptoLoader.getProvider();
 	}
 
 	@Test

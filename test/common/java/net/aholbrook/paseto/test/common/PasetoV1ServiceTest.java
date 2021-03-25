@@ -1,6 +1,5 @@
 package net.aholbrook.paseto.test.common;
 
-import net.aholbrook.paseto.Paseto;
 import net.aholbrook.paseto.PasetoV1;
 import net.aholbrook.paseto.TokenWithFooter;
 import net.aholbrook.paseto.claims.Claim;
@@ -11,17 +10,32 @@ import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.service.TokenService;
+import net.aholbrook.paseto.test.common.crypto.TestNonceGenerator;
 import net.aholbrook.paseto.test.common.data.RfcTestVectors;
 import net.aholbrook.paseto.test.common.data.RfcToken;
 import net.aholbrook.paseto.test.common.data.TestVector;
 import net.aholbrook.paseto.test.common.data.TokenTestVectors;
 import net.aholbrook.paseto.test.common.utils.AssertUtils;
-import net.aholbrook.paseto.test.common.utils.TestContext;
 import net.aholbrook.paseto.time.OffsetDateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class PasetoV1ServiceTest extends PasetoServiceTest {
+	private static <T extends Token> LocalTokenService.Builder<T> localServiceBuilder(byte[] nonce,
+			LocalTokenService.KeyProvider keyProvider,
+			Class<T> tokenClass) {
+		PasetoV1.Builder builder = new PasetoV1.Builder();
+		if (nonce != null) { builder.withTestingNonceGenerator(new TestNonceGenerator(nonce)); }
+
+		return new LocalTokenService.Builder<>(tokenClass, keyProvider)
+				.withPaseto(builder.build());
+	}
+
+	private static <T extends Token> PublicTokenService.Builder<T> publicServiceBuilder(
+			PublicTokenService.KeyProvider keyProvider, Class<T> tokenClass) {
+		return new PublicTokenService.Builder<>(tokenClass, keyProvider).withV1();
+	}
+
 	private static LocalTokenService.KeyProvider rfcLocalKeyProvider() {
 		return () -> RfcTestVectors.RFC_TEST_KEY;
 	}
@@ -59,33 +73,32 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 	}
 
 	private static TokenService<RfcToken> rfcLocalService(byte[] nonce) {
-		return TestContext.builders().localServiceBuilderV1(nonce, rfcLocalKeyProvider(), RfcToken.class)
+		return localServiceBuilder(nonce, rfcLocalKeyProvider(), RfcToken.class)
 				.checkClaims(new Claim[] {})
 				.build();
 	}
 
 	private static TokenService<RfcToken> rfcPublicService() {
-		return TestContext.builders().publicServiceBuilderV1(rfcPublicKeyProvider(), RfcToken.class)
+		return publicServiceBuilder(rfcPublicKeyProvider(), RfcToken.class)
 				.checkClaims(new Claim[] {})
 				.build();
 	}
 
 	private static TokenService<Token> tokenLocalService(byte[] nonce) {
-		return TestContext.builders().localServiceBuilderV1(nonce, tokenLocalKeyProvider(), Token.class)
+		return localServiceBuilder(nonce, tokenLocalKeyProvider(), Token.class)
 				.checkClaims(new Claim[] {})
 				.build();
 	}
 
 	private static TokenService<Token> tokenPublicService() {
-		return TestContext.builders().publicServiceBuilderV1(tokenPublicKeyProvider(), Token.class)
+		return publicServiceBuilder(tokenPublicKeyProvider(), Token.class)
 				.checkClaims(new Claim[] {})
 				.build();
 	}
 
 	@Test
 	public void v1Service_localServiceBuilderRandomNonce() {
-		LocalTokenService<Token> service = TestContext.builders().localServiceBuilderV1(null,
-				rfcLocalKeyProvider(), Token.class).build();
+		LocalTokenService<Token> service = localServiceBuilder(null, rfcLocalKeyProvider(), Token.class).build();
 
 		Assert.assertNotNull(service);
 
@@ -100,9 +113,9 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 
 	@Test
 	public void v1Service_publicServiceBuilderOverride() {
-		PasetoV1.Builder pasetoBuilder = TestContext.builders().pasetoBuilderV1(null);
-		PublicTokenService<Token> service = TestContext.builders().publicServiceBuilderV1(pasetoBuilder,
-				rfcPublicKeyProvider(), Token.class).build();
+		PublicTokenService<Token> service = publicServiceBuilder(rfcPublicKeyProvider(), Token.class)
+				.withPaseto(new PasetoV1.Builder().build())
+				.build();
 
 		Assert.assertNotNull(service);
 
@@ -257,8 +270,9 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 	@Test
 	public void v1Service_local_defaultValidityPeriod() {
 		Token token = new Token().setTokenId("id");
-		LocalTokenService<Token> service = TestContext.builders().localServiceBuilderV1(null, rfcLocalKeyProvider(),
-				Token.class).withDefaultValidityPeriod(5L * 60L).build();
+		LocalTokenService<Token> service = localServiceBuilder(null, rfcLocalKeyProvider(), Token.class)
+				.withDefaultValidityPeriod(5L * 60L)
+				.build();
 		String s = service.encode(token);
 		Token token2 = service.decode(s);
 		Assert.assertNotNull(token2.getIssuedAt());
@@ -268,8 +282,8 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 	@Test(expected = MissingClaimException.class)
 	public void v1Service_local_noExpiry() {
 		Token token = new Token().setTokenId("id");
-		LocalTokenService<Token> service = TestContext.builders().localServiceBuilderV1(null, rfcLocalKeyProvider(),
-				Token.class).build();
+		LocalTokenService<Token> service = localServiceBuilder(null, rfcLocalKeyProvider(), Token.class)
+				.build();
 
 		AssertUtils.assertMissingClaimException(() ->
 				service.encode(token), "TokenService", token, Token.CLAIM_EXPIRATION);
@@ -278,8 +292,9 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 	@Test
 	public void v1Service_public_defaultValidityPeriod() {
 		Token token = new Token().setTokenId("id");
-		PublicTokenService<Token> service = TestContext.builders().publicServiceBuilderV1(rfcPublicKeyProvider(),
-				Token.class).withDefaultValidityPeriod(5L * 60L).build();
+		PublicTokenService<Token> service = publicServiceBuilder(rfcPublicKeyProvider(), Token.class)
+				.withDefaultValidityPeriod(5L * 60L)
+				.build();
 		String s = service.encode(token);
 		Token token2 = service.decode(s);
 		Assert.assertNotNull(token2.getIssuedAt());
@@ -289,8 +304,7 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 	@Test(expected = MissingClaimException.class)
 	public void v1Service_public_noExpiry() {
 		Token token = new Token().setTokenId("id");
-		PublicTokenService<Token> service = TestContext.builders().publicServiceBuilderV1(rfcPublicKeyProvider(),
-				Token.class).build();
+		PublicTokenService<Token> service = publicServiceBuilder(rfcPublicKeyProvider(), Token.class).build();
 
 		AssertUtils.assertMissingClaimException(() ->
 				service.encode(token), "TokenService", token, Token.CLAIM_EXPIRATION);
@@ -300,16 +314,16 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 	// Constructors / Builder options
 	@Test
 	public void v1Service_local_ctors1() {
-		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
-		LocalTokenService<Token> service = new LocalTokenService.Builder<>(paseto, Token.class, rfcLocalKeyProvider())
+		LocalTokenService<Token> service = new LocalTokenService.Builder<>(Token.class, rfcLocalKeyProvider())
+				.withV1()
 				.build();
 		checkDefault(service);
 	}
 
 	@Test
 	public void v1Service_local_ctors2() {
-		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
-		LocalTokenService<Token> service = new LocalTokenService.Builder<>(paseto, Token.class, rfcLocalKeyProvider())
+		LocalTokenService<Token> service = new LocalTokenService.Builder<>(Token.class, rfcLocalKeyProvider())
+				.withV1()
 				.checkClaims(new Claim[] {new CurrentlyValid()})
 				.build();
 		checkOnlyCurrentlyValid(service);
@@ -317,8 +331,8 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 
 	@Test
 	public void v1Service_local_ctors3() {
-		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
-		LocalTokenService<Token> service = new LocalTokenService.Builder<>(paseto, Token.class, rfcLocalKeyProvider())
+		LocalTokenService<Token> service = new LocalTokenService.Builder<>(Token.class, rfcLocalKeyProvider())
+				.withV1()
 				.withDefaultValidityPeriod(5L * 60L)
 				.build();
 		checkDefaultWithValidity(service);
@@ -326,8 +340,8 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 
 	@Test
 	public void v1Service_local_ctors4() {
-		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
-		LocalTokenService<Token> service = new LocalTokenService.Builder<>(paseto, Token.class, rfcLocalKeyProvider())
+		LocalTokenService<Token> service = new LocalTokenService.Builder<>(Token.class, rfcLocalKeyProvider())
+				.withV1()
 				.withDefaultValidityPeriod(5L * 60L)
 				.checkClaims(new Claim[] {new CurrentlyValid()})
 				.build();
@@ -336,16 +350,16 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 
 	@Test
 	public void v1Service_public_ctors1() {
-		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
-		PublicTokenService<Token> service = new PublicTokenService.Builder<>(paseto, Token.class, rfcPublicKeyProvider())
+		PublicTokenService<Token> service = new PublicTokenService.Builder<>(Token.class, rfcPublicKeyProvider())
+				.withV1()
 				.build();
 		checkDefault(service);
 	}
 
 	@Test
 	public void v1Service_public_ctors2() {
-		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
-		PublicTokenService<Token> service = new PublicTokenService.Builder<>(paseto, Token.class, rfcPublicKeyProvider())
+		PublicTokenService<Token> service = new PublicTokenService.Builder<>(Token.class, rfcPublicKeyProvider())
+				.withV1()
 				.checkClaims(new Claim[] {new CurrentlyValid()})
 				.build();
 		checkOnlyCurrentlyValid(service);
@@ -353,8 +367,8 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 
 	@Test
 	public void v1Service_public_ctors3() {
-		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
-		PublicTokenService<Token> service = new PublicTokenService.Builder<>(paseto, Token.class, rfcPublicKeyProvider())
+		PublicTokenService<Token> service = new PublicTokenService.Builder<>(Token.class, rfcPublicKeyProvider())
+				.withV1()
 				.withDefaultValidityPeriod(5L * 60L)
 				.build();
 		checkDefaultWithValidity(service);
@@ -362,8 +376,8 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 
 	@Test
 	public void v1Service_public_ctors4() {
-		Paseto paseto = TestContext.builders().pasetoBuilderV1(null).build();
-		PublicTokenService<Token> service = new PublicTokenService.Builder<>(paseto, Token.class, rfcPublicKeyProvider())
+		PublicTokenService<Token> service = new PublicTokenService.Builder<>(Token.class, rfcPublicKeyProvider())
+				.withV1()
 				.withDefaultValidityPeriod(5L * 60L)
 				.checkClaims(new Claim[] {new CurrentlyValid()})
 				.build();

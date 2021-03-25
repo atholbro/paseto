@@ -1,6 +1,8 @@
 package net.aholbrook.paseto.service;
 
 import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.PasetoV1;
+import net.aholbrook.paseto.PasetoV2;
 import net.aholbrook.paseto.TokenWithFooter;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.Claims;
@@ -64,16 +66,30 @@ public class LocalTokenService<_TokenType extends Token> extends TokenService<_T
 	}
 
 	public static class Builder<_TokenType extends Token> {
-		private final Paseto paseto;
 		private final Class<_TokenType> tokenClass;
 		private final KeyProvider keyProvider;
+		private Paseto paseto;
 		private Long defaultValidityPeriod = null;
 		private Claim[] claims = Claims.DEFAULT_CLAIM_CHECKS;
 
-		public Builder(Paseto paseto, Class<_TokenType> tokenClass, KeyProvider keyProvider) {
-			this.paseto = paseto;
+		public Builder(Class<_TokenType> tokenClass, KeyProvider keyProvider) {
 			this.tokenClass = tokenClass;
 			this.keyProvider = keyProvider;
+		}
+
+		public Builder<_TokenType> withV1() {
+			this.paseto = new PasetoV1.Builder().build();
+			return this;
+		}
+
+		public Builder<_TokenType> withV2() {
+			this.paseto = new PasetoV2.Builder().build();
+			return this;
+		}
+
+		public Builder<_TokenType> withPaseto(Paseto paseto) {
+			this.paseto = paseto;
+			return this;
 		}
 
 		public Builder<_TokenType> withDefaultValidityPeriod(Long seconds) {
@@ -87,6 +103,8 @@ public class LocalTokenService<_TokenType extends Token> extends TokenService<_T
 		}
 
 		public LocalTokenService<_TokenType> build() {
+			if (paseto == null) { withV2(); }
+
 			return new LocalTokenService<>(paseto,
 					keyProvider,
 					claims,

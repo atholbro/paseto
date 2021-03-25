@@ -3,11 +3,11 @@ package net.aholbrook.paseto.test.common;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
+import net.aholbrook.paseto.crypto.v1.V1CryptoLoader;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import net.aholbrook.paseto.test.common.data.RfcTestVectors;
 import net.aholbrook.paseto.test.common.utils.AssertUtils;
 import net.aholbrook.paseto.test.common.utils.Hex;
-import net.aholbrook.paseto.test.common.utils.TestContext;
 import net.aholbrook.paseto.util.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class V1CryptoProviderTest {
 	private static final byte[] RSA_FAKE_SIGNATURE = new byte[V1CryptoProvider.RSA_SIGNATURE_LEN];
 
 	private V1CryptoProvider v1CryptoProvider() {
-		return TestContext.builders().v1CryptoProvider();
+		return V1CryptoLoader.getProvider();
 	}
 
 	@Test

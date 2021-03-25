@@ -1,9 +1,12 @@
 package net.aholbrook.paseto;
 
+import net.aholbrook.paseto.base64.Base64Loader;
 import net.aholbrook.paseto.base64.Base64Provider;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
+import net.aholbrook.paseto.crypto.v2.V2CryptoLoader;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
+import net.aholbrook.paseto.encoding.EncodingLoader;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.DecryptionException;
 import net.aholbrook.paseto.exception.PasetoParseException;
@@ -150,19 +153,24 @@ public class PasetoV2 extends Paseto {
 	}
 
 	public static class Builder {
-		private final Base64Provider base64Provider;
-		private final EncodingProvider encodingProvider;
-		private final V2CryptoProvider v2CryptoProvider;
+		private Base64Provider base64Provider;
+		private EncodingProvider encodingProvider;
+		private V2CryptoProvider v2CryptoProvider;
 		private NonceGenerator nonceGenerator;
 
-		public Builder(Base64Provider base64Provider, EncodingProvider encodingProvider, V2CryptoProvider v2CryptoProvider) {
-			if (base64Provider == null) { throw new NullPointerException("Base64 provider is required."); }
-			if (encodingProvider == null) { throw new NullPointerException("Encoding provider is required."); }
-			if (v2CryptoProvider == null) { throw new NullPointerException("V2 Crypto Provider is required."); }
-
+		public Builder withBase64Provider(Base64Provider base64Provider) {
 			this.base64Provider = base64Provider;
+			return this;
+		}
+
+		public Builder withEncodingProvider(EncodingProvider encodingProvider) {
 			this.encodingProvider = encodingProvider;
+			return this;
+		}
+
+		public Builder withV2CryptoProvider(V2CryptoProvider v2CryptoProvider) {
 			this.v2CryptoProvider = v2CryptoProvider;
+			return this;
 		}
 
 		public Builder withTestingNonceGenerator(NonceGenerator nonceGenerator) {
@@ -171,7 +179,11 @@ public class PasetoV2 extends Paseto {
 		}
 
 		public PasetoV2 build() {
+			if (base64Provider == null) { base64Provider = Base64Loader.getProvider(); }
+			if (encodingProvider == null) { encodingProvider = EncodingLoader.getProvider(); }
+			if (v2CryptoProvider == null) { v2CryptoProvider = V2CryptoLoader.getProvider(); }
 			if (nonceGenerator == null) { nonceGenerator = v2CryptoProvider.getNonceGenerator(); }
+
 			return new PasetoV2(base64Provider, encodingProvider, v2CryptoProvider, nonceGenerator);
 		}
 	}

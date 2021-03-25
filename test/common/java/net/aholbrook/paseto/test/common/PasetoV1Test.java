@@ -4,7 +4,6 @@ import net.aholbrook.paseto.Paseto;
 import net.aholbrook.paseto.PasetoV1;
 import net.aholbrook.paseto.TokenWithFooter;
 import net.aholbrook.paseto.crypto.KeyPair;
-import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.InvalidFooterException;
 import net.aholbrook.paseto.exception.InvalidHeaderException;
 import net.aholbrook.paseto.exception.PasetoParseException;
@@ -12,23 +11,21 @@ import net.aholbrook.paseto.exception.PasetoStringException;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
 import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
+import net.aholbrook.paseto.test.common.crypto.TestNonceGenerator;
 import net.aholbrook.paseto.test.common.data.RfcTestVectors;
 import net.aholbrook.paseto.test.common.data.RfcToken;
 import net.aholbrook.paseto.test.common.data.TestVector;
 import net.aholbrook.paseto.test.common.data.TokenTestVectors;
 import net.aholbrook.paseto.test.common.utils.AssertUtils;
-import net.aholbrook.paseto.test.common.utils.TestContext;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class PasetoV1Test extends PasetoTest {
 	@Override
 	protected Paseto createPaseto(byte[] nonce) {
-		return TestContext.builders().pasetoBuilderV1(nonce).build();
-	}
-
-	private EncodingProvider encodingProvider() {
-		return TestContext.builders().encodingProvider();
+		PasetoV1.Builder builder = new PasetoV1.Builder();
+		if (nonce != null) { builder.withTestingNonceGenerator(new TestNonceGenerator(nonce)); }
+		return builder.build();
 	}
 
 	// RFC test vectors
@@ -576,18 +573,6 @@ public class PasetoV1Test extends PasetoTest {
 		// now decrypt, should work
 		Token payload = paseto.verify(token, keyPair.getPublicKey(), Token.class);
 		Assert.assertEquals("decrypted payload != original payload", TokenTestVectors.TOKEN_1, payload);
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void v1_nullEncodingProvider() {
-		new PasetoV1.Builder(TestContext.builders().base64Provider(), null,
-				TestContext.builders().v1CryptoProvider());
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void v1_nullCryptoProvider() {
-		new PasetoV1.Builder(TestContext.builders().base64Provider(),
-				TestContext.builders().encodingProvider(), null);
 	}
 
 	@Test(expected = PasetoParseException.class)

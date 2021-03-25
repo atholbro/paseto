@@ -1,6 +1,8 @@
 package net.aholbrook.paseto.test.common;
 
 import net.aholbrook.paseto.Paseto;
+import net.aholbrook.paseto.encoding.EncodingLoader;
+import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.test.common.data.TestVector;
 import net.aholbrook.paseto.util.StringUtils;
 import org.junit.Assert;
@@ -9,6 +11,10 @@ import java.nio.charset.Charset;
 
 public abstract class PasetoTest {
 	protected abstract Paseto createPaseto(byte[] nonce);
+
+	protected final EncodingProvider encodingProvider() {
+		return EncodingLoader.getProvider();
+	}
 
 	protected <_TokenType, _Footer> void encryptTestVector(TestVector<_TokenType, _Footer> tv) {
 		// A: key, B: nonce
