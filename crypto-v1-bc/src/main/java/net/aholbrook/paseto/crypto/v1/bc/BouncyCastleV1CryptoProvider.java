@@ -38,10 +38,12 @@ import java.io.IOException;
 import java.security.SecureRandom;
 
 public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
+	private final SecureRandom rng = new SecureRandom();
+
 	@Override
 	public byte[] randomBytes(int size) {
 		byte[] buffer = new byte[size];
-		new SecureRandom().nextBytes(buffer);
+		rng.nextBytes(buffer);
 		return buffer;
 	}
 
@@ -120,7 +122,7 @@ public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 	private PSSSigner pssSha384(boolean forSigning, byte[] key) {
 		try {
 			byte[] salt = new byte[SHA384_OUT_LEN];
-			new SecureRandom().nextBytes(salt);
+			rng.nextBytes(salt);
 			// RSA-PSS, SHA-384, MGF1(SHA-384), 48 byte salt length, 0xBC trailer
 			PSSSigner pss = new PSSSigner(new RSABlindedEngine(), new SHA384Digest(), new SHA384Digest(),
 					SHA384_OUT_LEN, (byte) 0xBC);
@@ -163,7 +165,7 @@ public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 	@Override
 	public KeyPair rsaGenerate() {
 		RSAKeyPairGenerator keyGen = new RSAKeyPairGenerator();
-		keyGen.init(new RSAKeyGenerationParameters(E, new SecureRandom(), RSA_KEY_SIZE,
+		keyGen.init(new RSAKeyGenerationParameters(E, rng, RSA_KEY_SIZE,
 				PrimeCertaintyCalculator.getDefaultCertainty(RSA_KEY_SIZE)));
 		AsymmetricCipherKeyPair pair = keyGen.generateKeyPair();
 
