@@ -1,0 +1,28 @@
+def artifact_id = "crypto-v2-bc"
+
+jar {
+	archiveBaseName = generateBaseName(artifact_id)
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			pom {
+				name = 'Paseto - Crypto V2: Bouncy Castle'
+				description = 'Cryptographic primitives required for Paseto V2 tokens via Bouncy Castle.'
+			}
+
+			artifactId artifact_id
+
+			from components.java
+			artifact sourcesJar
+			artifact javadocJar
+		}
+	}
+}
+
+dependencies {
+	api project(":crypto-v2")
+
+	implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.68'
+}
