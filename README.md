@@ -72,31 +72,15 @@ _Note: GSON will be officailly supported in the future as an alternative to Jack
 // Top level build file
 allprojects {
 	repositories {
+		jcenter()
 		maven { url  "https://dl.bintray.com/terl/lazysodium-maven" }
 	}
 }
 
 // Dependencies section
 dependencies {
-	compile 'net.aholbrook.paseto:meta:0.5.0'
+	compile 'net.aholbrook.paseto:meta:0.6.1'
 }
-```
-
-### Maven
-
-```xml
-<repositories>
-	<repository>
-		<id>lazysodium</id>
-		<url>https://dl.bintray.com/terl/lazysodium-maven</url>
-	</repository>
-</repositories>
-
-<dependency>
-	<groupId>net.aholbrook.paseto</groupId>
-	<artifactId>meta</artifactId>
-	<version>0.5.0</version>
-</dependency>
 ```
 
 ### Libsodium for V2 Tokens
