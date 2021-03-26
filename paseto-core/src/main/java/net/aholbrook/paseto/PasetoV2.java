@@ -154,7 +154,7 @@ public class PasetoV2 extends Paseto {
 	}
 
 	public static class Builder extends Paseto.Builder {
-		private V2CryptoProvider v2CryptoProvider;
+		V2CryptoProvider v2CryptoProvider;
 
 		public Builder withV2CryptoProvider(V2CryptoProvider v2CryptoProvider) {
 			this.v2CryptoProvider = v2CryptoProvider;

@@ -10,10 +10,8 @@ import net.aholbrook.paseto.service.Token;
 import java.io.IOException;
 
 public class TimeDeserializer extends JsonDeserializer<Long> {
-
 	@Override
-	public Long deserialize(JsonParser p, DeserializationContext ctxt)
-			throws IOException, JsonProcessingException {
+	public Long deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
 		JsonToken token = p.getCurrentToken();
 
 		if (token.equals(JsonToken.VALUE_STRING)) {
@@ -22,5 +20,4 @@ public class TimeDeserializer extends JsonDeserializer<Long> {
 			return getNullValue(ctxt);
 		}
 	}
-
 }

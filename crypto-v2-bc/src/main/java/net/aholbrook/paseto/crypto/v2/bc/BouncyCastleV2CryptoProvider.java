@@ -22,7 +22,7 @@ public class BouncyCastleV2CryptoProvider extends V2CryptoProvider {
 		try {
 			digest.doFinal(out, 0);
 		} catch (Throwable e) {
-			throw e;
+			return false; // Should basically never happen do to our validations.
 		}
 		return true;
 	}
@@ -58,7 +58,7 @@ public class BouncyCastleV2CryptoProvider extends V2CryptoProvider {
 			System.arraycopy(result, 0, sig, 0, sig.length);
 			return true;
 		} catch (Throwable e) {
-			return false;
+			return false; // Should basically never happen do to our validations.
 		}
 	}
 
@@ -72,7 +72,7 @@ public class BouncyCastleV2CryptoProvider extends V2CryptoProvider {
 			ed25519.update(m, 0, m.length);
 			return ed25519.verifySignature(sig);
 		} catch (Throwable e) {
-			return false;
+			return false; // Should basically never happen do to our validations.
 		}
 	}
 

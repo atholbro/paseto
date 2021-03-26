@@ -14,10 +14,10 @@ public class OffsetDateTimeDeserializer implements JsonDeserializer<OffsetDateTi
 	public OffsetDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
 			throws JsonParseException {
 
-		if (json.isJsonNull()) {
-			return null;
-		} else {
+		if (json.isJsonPrimitive() && json.getAsJsonPrimitive().isString()) {
 			return Token.DATETIME_FORMATTER.parse(json.getAsString());
+		} else {
+			return null;
 		}
 	}
 }

@@ -1,8 +1,10 @@
 package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.data.KeyIdTestVectors;
+import net.aholbrook.paseto.data.TokenTestVectors;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.service.KeyId;
+import net.aholbrook.paseto.service.Token;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -73,5 +75,11 @@ public class KeyIdTest {
 		Assertions.assertFalse(kid1.equals(1));
 		Assertions.assertNotEquals(kid1, kid2);
 		Assertions.assertNotEquals(kid1.hashCode(), kid2.hashCode());
+	}
+
+	@Test
+	public void keyId_toString() {
+		KeyId kid = KeyIdTestVectors.KEY_ID_1;
+		Assertions.assertEquals(kid.getKeyId(), kid.toString());
 	}
 }

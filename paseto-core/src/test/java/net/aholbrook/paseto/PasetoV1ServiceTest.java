@@ -15,6 +15,7 @@ import net.aholbrook.paseto.service.TokenService;
 import net.aholbrook.paseto.time.OffsetDateTime;
 import net.aholbrook.paseto.utils.AssertUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -393,5 +394,17 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 				.checkClaims(new Claim[] {new CurrentlyValid()})
 				.build();
 		checkOnlyCurrentlyValidWithValidity(service);
+	}
+
+	@Test
+	public void v1Service_local_builder_withV1() {
+		Assertions.assertNotNull(new LocalTokenService.Builder<>(Token.class,
+				tokenLocalKeyProvider()).withV1().build());
+	}
+
+	@Test
+	public void v1Service_public_builder_withV1() {
+		Assertions.assertNotNull(new PublicTokenService.Builder<>(Token.class,
+				tokenPublicKeyProvider()).withV1().build());
 	}
 }

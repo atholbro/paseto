@@ -1,7 +1,11 @@
 package net.aholbrook.paseto;
 
+import net.aholbrook.paseto.base64.Base64Provider;
+import net.aholbrook.paseto.base64.jvm8.Jvm8Base64Provider;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.TestNonceGenerator;
+import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
+import net.aholbrook.paseto.crypto.v2.bc.BouncyCastleV2CryptoProvider;
 import net.aholbrook.paseto.data.CustomToken;
 import net.aholbrook.paseto.data.RfcTestVectors;
 import net.aholbrook.paseto.data.RfcToken;
@@ -17,6 +21,7 @@ import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.utils.AssertUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -755,5 +760,21 @@ public class PasetoV2Test extends PasetoTest {
 							paseto.verify("v2.public.aa", RfcTestVectors.RFC_TEST_PK, RfcToken.class),
 					"v2.public.aa", PasetoParseException.Reason.PAYLOAD_LENGTH, 65);
 		});
+	}
+
+	@Test
+	public void v2_builder_withBase64Provider() {
+		Base64Provider provider = new Jvm8Base64Provider();
+		PasetoV2.Builder builder = new PasetoV2.Builder();
+		builder.withBase64Provider(provider);
+		Assertions.assertEquals(provider, builder.base64Provider);
+	}
+
+	@Test
+	public void v2_builder_withV1CryptoProvider() {
+		V2CryptoProvider provider = new BouncyCastleV2CryptoProvider();
+		PasetoV2.Builder builder = new PasetoV2.Builder();
+		builder.withV2CryptoProvider(provider);
+		Assertions.assertEquals(provider, builder.v2CryptoProvider);
 	}
 }

@@ -33,8 +33,6 @@ public class KeyId {
 
 	@Override
 	public String toString() {
-		return "KeyId{"
-				+ "kid='" + kid + '\''
-				+ '}';
+		return kid;
 	}
 }

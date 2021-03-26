@@ -75,4 +75,12 @@ public class EncodingTest {
 		Assertions.assertThrows(EncodingException.class,
 				() -> encodingProvider.decode("notjson", Token.class));
 	}
+
+	@ParameterizedTest(name = "{displayName} with {0}")
+	@MethodSource("net.aholbrook.paseto.Sources#encodingProviders")
+	public void token_expiryAsUnixTimestamp(EncodingProvider encodingProvider) {
+		Token token = encodingProvider.decode("{\"exp\":0}", Token.class);
+		Assertions.assertNotNull(token);
+		Assertions.assertNull(token.getExpiration());
+	}
 }
