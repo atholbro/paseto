@@ -29,6 +29,7 @@ dependencies {
 
 	compileOnly project(':time-jsr310')
 
+	// Tests -- pull in all project libs
 	testImplementation project(':base64-jvm8')
 	testImplementation project(':crypto-v1-bc')
 	testImplementation project(':crypto-v2-bc')
@@ -38,6 +39,8 @@ dependencies {
 	testImplementation project(':time-jsr310')
 	testImplementation project(':time-threeten')
 	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.2'
+
+	// Test frameworks
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
 	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.1'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'

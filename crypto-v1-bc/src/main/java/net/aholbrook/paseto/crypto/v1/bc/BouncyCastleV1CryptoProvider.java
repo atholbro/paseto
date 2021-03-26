@@ -74,7 +74,7 @@ public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 		return out;
 	}
 
-	private BufferedBlockCipher ase256CtrCipher(boolean forEncryption, byte[] key, byte[] iv) {
+	BufferedBlockCipher aes256CtrCipher(boolean forEncryption, byte[] key, byte[] iv) {
 		BlockCipher engine = new AESEngine();
 		BufferedBlockCipher cipher = new BufferedBlockCipher(new SICBlockCipher(engine));
 		CipherParameters params = new ParametersWithIV(new KeyParameter(key), iv);
@@ -88,7 +88,7 @@ public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 		validateAes256CtrEncrypt(m, key, iv);
 
 		try {
-			BufferedBlockCipher cipher = ase256CtrCipher(true, key, iv);
+			BufferedBlockCipher cipher = aes256CtrCipher(true, key, iv);
 
 			byte[] cipherText = new byte[cipher.getOutputSize(m.length)];
 			int len = cipher.processBytes(m, 0, m.length, cipherText, 0);
@@ -106,7 +106,7 @@ public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 		validateAes256CtrDecrypt(c, key, iv);
 
 		try {
-			BufferedBlockCipher cipher = ase256CtrCipher(false, key, iv);
+			BufferedBlockCipher cipher = aes256CtrCipher(false, key, iv);
 
 			byte[] clearText = new byte[cipher.getOutputSize(c.length)];
 			int len = cipher.processBytes(c, 0, c.length, clearText, 0);
@@ -119,7 +119,7 @@ public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 		}
 	}
 
-	private PSSSigner pssSha384(boolean forSigning, byte[] key) {
+	PSSSigner pssSha384(boolean forSigning, byte[] key) {
 		try {
 			byte[] salt = new byte[SHA384_OUT_LEN];
 			rng.nextBytes(salt);
