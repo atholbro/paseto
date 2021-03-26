@@ -28,4 +28,17 @@ dependencies {
 	api project(':crypto-v2')
 
 	compileOnly project(':time-jsr310')
+
+	testImplementation project(':base64-jvm8')
+	testImplementation project(':crypto-v1-bc')
+	testImplementation project(':crypto-v2-bc')
+	testImplementation project(':crypto-v2-libsodium')
+	testImplementation project(':encoding-json-jackson')
+	testImplementation project(':encoding-json-gson')
+	testImplementation project(':time-jsr310')
+	testImplementation project(':time-threeten')
+	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.2'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.1'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
 }

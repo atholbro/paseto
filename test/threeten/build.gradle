@@ -1,9 +1,0 @@
-dependencies {
-	testImplementation 'junit:junit:4.13.2'
-	testImplementation project(":paseto-meta")
-	testImplementation project(':time-threeten')
-	
-	testImplementation group: 'org.threeten', name: 'threetenbp', version: '1.5.0'
-
-	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.2'
-}

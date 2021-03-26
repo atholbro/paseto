@@ -1,4 +1,21 @@
 rootProject.name = 'paseto'
 
-include ":base64", ":base64-jvm8", ":time-jsr310", ":time-threeten", ":crypto", ":crypto-v1", ":crypto-v2", ":crypto-v1-bc", ":crypto-v2-libsodium", ":crypto-v2-bc", ":encoding", ":encoding-json-jackson", ":encoding-json-gson", ":paseto-core", ":paseto-meta", ":test:meta", ":test:threeten", ":test:gson"
+include ":base64"
+include ":base64-jvm8"
 
+include ":time-jsr310"
+include ":time-threeten"
+
+include ":crypto"
+include ":crypto-v1"
+include ":crypto-v2"
+include ":crypto-v1-bc"
+include ":crypto-v2-libsodium"
+include ":crypto-v2-bc"
+
+include ":encoding"
+include ":encoding-json-jackson"
+include ":encoding-json-gson"
+
+include ":paseto-core"
+include ":paseto-meta"

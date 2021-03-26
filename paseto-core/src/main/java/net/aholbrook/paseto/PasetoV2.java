@@ -4,6 +4,7 @@ import net.aholbrook.paseto.base64.Base64Loader;
 import net.aholbrook.paseto.base64.Base64Provider;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
+import net.aholbrook.paseto.crypto.v1.V1CryptoLoader;
 import net.aholbrook.paseto.crypto.v2.V2CryptoLoader;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.encoding.EncodingLoader;
@@ -152,38 +153,33 @@ public class PasetoV2 extends Paseto {
 		return cryptoProvider.ed25519Generate();
 	}
 
-	public static class Builder {
-		private Base64Provider base64Provider;
-		private EncodingProvider encodingProvider;
+	public static class Builder extends Paseto.Builder {
 		private V2CryptoProvider v2CryptoProvider;
-		private NonceGenerator nonceGenerator;
-
-		public Builder withBase64Provider(Base64Provider base64Provider) {
-			this.base64Provider = base64Provider;
-			return this;
-		}
-
-		public Builder withEncodingProvider(EncodingProvider encodingProvider) {
-			this.encodingProvider = encodingProvider;
-			return this;
-		}
 
 		public Builder withV2CryptoProvider(V2CryptoProvider v2CryptoProvider) {
 			this.v2CryptoProvider = v2CryptoProvider;
 			return this;
 		}
 
-		public Builder withTestingNonceGenerator(NonceGenerator nonceGenerator) {
-			this.nonceGenerator = nonceGenerator;
-			return this;
+		@Override
+		protected String versionName() {
+			return "v2";
+		}
+
+		@Override
+		protected String cryptoProviderName() {
+			return v2CryptoProvider.getClass().getSimpleName();
+		}
+
+		@Override
+		protected void fillInDefaults() {
+			super.fillInDefaults();
+			if (v2CryptoProvider == null) { v2CryptoProvider = V2CryptoLoader.getProvider(); }
+			if (nonceGenerator == null) { nonceGenerator = v2CryptoProvider.getNonceGenerator(); }
 		}
 
 		public PasetoV2 build() {
-			if (base64Provider == null) { base64Provider = Base64Loader.getProvider(); }
-			if (encodingProvider == null) { encodingProvider = EncodingLoader.getProvider(); }
-			if (v2CryptoProvider == null) { v2CryptoProvider = V2CryptoLoader.getProvider(); }
-			if (nonceGenerator == null) { nonceGenerator = v2CryptoProvider.getNonceGenerator(); }
-
+			fillInDefaults();
 			return new PasetoV2(base64Provider, encodingProvider, v2CryptoProvider, nonceGenerator);
 		}
 	}

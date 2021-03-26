@@ -1,7 +1,0 @@
-dependencies {
-	testImplementation 'junit:junit:4.13.2'
-	testImplementation project(":paseto-meta")
-	testImplementation project(':time-jsr310')
-
-	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.2'
-}

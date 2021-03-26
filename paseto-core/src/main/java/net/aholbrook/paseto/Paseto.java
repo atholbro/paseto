@@ -1,8 +1,12 @@
 package net.aholbrook.paseto;
 
+import net.aholbrook.paseto.base64.Base64Loader;
 import net.aholbrook.paseto.base64.Base64Provider;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
+import net.aholbrook.paseto.crypto.v1.V1CryptoLoader;
+import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
+import net.aholbrook.paseto.encoding.EncodingLoader;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.InvalidFooterException;
 import net.aholbrook.paseto.exception.InvalidHeaderException;
@@ -160,5 +164,50 @@ public abstract class Paseto {
 
 	<_Payload> _Payload decode(byte[] payload, Class<_Payload> payloadClass) {
 		return encodingProvider.decode(new String(payload, Charset.forName("UTF-8")), payloadClass);
+	}
+
+	public abstract static class Builder {
+		protected Base64Provider base64Provider;
+		protected EncodingProvider encodingProvider;
+		protected NonceGenerator nonceGenerator;
+
+		abstract protected String versionName();
+		abstract protected String cryptoProviderName();
+
+		protected void fillInDefaults() {
+			if (base64Provider == null) { base64Provider = Base64Loader.getProvider(); }
+			if (encodingProvider == null) { encodingProvider = EncodingLoader.getProvider(); }
+		}
+
+		public Builder withBase64Provider(Base64Provider base64Provider) {
+			this.base64Provider = base64Provider;
+			return this;
+		}
+
+		public Builder withEncodingProvider(EncodingProvider encodingProvider) {
+			this.encodingProvider = encodingProvider;
+			return this;
+		}
+
+		public Builder withNonceGenerator(NonceGenerator nonceGenerator) {
+			this.nonceGenerator = nonceGenerator;
+			return this;
+		}
+
+		public abstract Paseto build();
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+
+			fillInDefaults();
+			sb.append("(Paseto.Builder ");
+			sb.append(versionName()).append(", ");
+			sb.append("b64: ").append(base64Provider.getClass().getSimpleName()).append(", ");
+			sb.append("encoding: ").append(encodingProvider.getClass().getSimpleName()).append(", ");
+			sb.append("crypto: ").append(cryptoProviderName());
+			sb.append(")");
+			return sb.toString();
+		}
 	}
 }
