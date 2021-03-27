@@ -19,11 +19,7 @@ public class BouncyCastleV2CryptoProvider extends V2CryptoProvider {
 		validateBlake2b(out, in, key);
 		Digest digest = new Blake2bDigest(key, 24, null, null);
 		digest.update(in, 0, in.length);
-		try {
-			digest.doFinal(out, 0);
-		} catch (Throwable e) {
-			return false; // Should basically never happen do to our validations.
-		}
+		digest.doFinal(out, 0);
 		return true;
 	}
 
@@ -49,31 +45,23 @@ public class BouncyCastleV2CryptoProvider extends V2CryptoProvider {
 	@Override
 	public boolean ed25519Sign(byte[] sig, byte[] m, byte[] sk) {
 		validateEd25519Sign(sig, m, sk);
-		try {
-			CipherParameters params = new Ed25519PrivateKeyParameters(sk, 0);
-			Ed25519Signer ed25519 = new Ed25519Signer();
-			ed25519.init(true, params);
-			ed25519.update(m, 0, m.length);
-			byte[] result = ed25519.generateSignature();
-			System.arraycopy(result, 0, sig, 0, sig.length);
-			return true;
-		} catch (Throwable e) {
-			return false; // Should basically never happen do to our validations.
-		}
+		CipherParameters params = new Ed25519PrivateKeyParameters(sk, 0);
+		Ed25519Signer ed25519 = new Ed25519Signer();
+		ed25519.init(true, params);
+		ed25519.update(m, 0, m.length);
+		byte[] result = ed25519.generateSignature();
+		System.arraycopy(result, 0, sig, 0, sig.length);
+		return true;
 	}
 
 	@Override
 	public boolean ed25519Verify(byte[] sig, byte[] m, byte[] pk) {
 		validateEd25519Verify(sig, m, pk);
-		try {
-			CipherParameters params = new Ed25519PublicKeyParameters(pk, 0);
-			Ed25519Signer ed25519 = new Ed25519Signer();
-			ed25519.init(false, params);
-			ed25519.update(m, 0, m.length);
-			return ed25519.verifySignature(sig);
-		} catch (Throwable e) {
-			return false; // Should basically never happen do to our validations.
-		}
+		CipherParameters params = new Ed25519PublicKeyParameters(pk, 0);
+		Ed25519Signer ed25519 = new Ed25519Signer();
+		ed25519.init(false, params);
+		ed25519.update(m, 0, m.length);
+		return ed25519.verifySignature(sig);
 	}
 
 	@Override
