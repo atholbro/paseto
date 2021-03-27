@@ -28,6 +28,7 @@ dependencies {
 	implementation 'net.java.dev.jna:jna:5.8.0'
 	implementation "com.goterl.lazycode:lazysodium-java:4.3.4"
 
+	testImplementation 'org.mockito:mockito-core:3.8.0'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
 }

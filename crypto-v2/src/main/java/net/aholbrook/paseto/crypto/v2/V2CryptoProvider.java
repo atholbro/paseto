@@ -71,7 +71,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 	}
 
 	// Validation
-	protected final void validateBlake2b(byte[] out, byte[] in, byte[] key) {
+	protected void validateBlake2b(byte[] out, byte[] in, byte[] key) {
 		// check for nulls
 		if (out == null) { throw new NullPointerException("out"); }
 		if (in == null) { throw new NullPointerException("in"); }
@@ -86,7 +86,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 		}
 	}
 
-	private final void validateAeadXChaCha20Poly1305Ietf(byte[] out, byte[] in, byte[] ad, byte[] nonce, byte[] key) {
+	protected void validateAeadXChaCha20Poly1305Ietf(byte[] out, byte[] in, byte[] ad, byte[] nonce, byte[] key) {
 		// check for nulls
 		if (out == null) { throw new NullPointerException("out"); }
 		if (in == null) { throw new NullPointerException("in"); }
@@ -109,7 +109,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 		}
 	}
 
-	protected final void validateAeadXChaCha20Poly1305IetfEncrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce,
+	protected void validateAeadXChaCha20Poly1305IetfEncrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce,
 			byte[] key) {
 		validateAeadXChaCha20Poly1305Ietf(out, in, ad, nonce, key);
 
@@ -119,7 +119,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 		}
 	}
 
-	protected final void validateAeadXChaCha20Poly1305IetfDecrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce,
+	protected void validateAeadXChaCha20Poly1305IetfDecrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce,
 			byte[] key) {
 		validateAeadXChaCha20Poly1305Ietf(out, in, ad, nonce, key);
 
@@ -129,7 +129,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 		}
 	}
 
-	protected final void validateEd25519Sign(byte[] sig, byte[] m, byte[] sk) {
+	protected void validateEd25519Sign(byte[] sig, byte[] m, byte[] sk) {
 		// check for nulls
 		if (sig == null) { throw new NullPointerException("sig"); }
 		if (m == null) { throw new NullPointerException("m"); }
@@ -143,7 +143,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 		}
 	}
 
-	protected final void validateEd25519Verify(byte[] sig, byte[] m, byte[] pk) {
+	protected void validateEd25519Verify(byte[] sig, byte[] m, byte[] pk) {
 		// check for nulls
 		if (sig == null) { throw new NullPointerException("sig"); }
 		if (m == null) { throw new NullPointerException("m"); }
@@ -157,7 +157,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 		}
 	}
 
-	protected final void validateEd25519PublicKey(byte[] sk) {
+	protected void validateEd25519PublicKey(byte[] sk) {
 		if (sk == null) { throw new NullPointerException("sk"); }
 		if (sk.length != ED25519_SECRETKEYBYTES) {
 			throw new ByteArrayLengthException("sk", sk.length, ED25519_SECRETKEYBYTES);
