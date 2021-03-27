@@ -159,16 +159,6 @@ public class PasetoV2 extends Paseto {
 		}
 
 		@Override
-		protected String versionName() {
-			return "v2";
-		}
-
-		@Override
-		protected String cryptoProviderName() {
-			return v2CryptoProvider.getClass().getSimpleName();
-		}
-
-		@Override
 		protected void fillInDefaults() {
 			super.fillInDefaults();
 			if (v2CryptoProvider == null) { v2CryptoProvider = V2CryptoLoader.getProvider(); }

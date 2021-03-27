@@ -8,6 +8,7 @@ import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.signers.PSSSigner;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -16,6 +17,7 @@ import java.util.function.Consumer;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 
+@DisplayName("Crypto :: v1 :: BouncyCastle")
 public class BouncyCastleV1CryptoProviderTests {
 	private byte[] m = new byte[16];
 	private byte[] key = new byte[16];
@@ -41,6 +43,7 @@ public class BouncyCastleV1CryptoProviderTests {
 	}
 
 	@Test
+	@DisplayName("aes256CtrEncrypt correctly handles an InvalidCipherTextException if thrown.")
 	public void aes256CtrEncrypt_InvalidCipherTextException() {
 		withAse256CtrCipherMocks((provider) -> {
 			Assertions.assertThrows(CryptoProviderException.class, () -> provider.aes256CtrEncrypt(m, key, iv));
@@ -48,6 +51,7 @@ public class BouncyCastleV1CryptoProviderTests {
 	}
 
 	@Test
+	@DisplayName("aes256CtrDecrypt correctly handles an InvalidCipherTextException if thrown.")
 	public void aes256CtrDecrypt_InvalidCipherTextException() {
 		withAse256CtrCipherMocks((provider) -> {
 			Assertions.assertThrows(CryptoProviderException.class, () -> provider.aes256CtrDecrypt(m, key, iv));
@@ -72,6 +76,7 @@ public class BouncyCastleV1CryptoProviderTests {
 	}
 
 	@Test
+	@DisplayName("rsaSign correctly handles a CryptoException if thrown.")
 	public void rsaSign_CryptoProviderException() {
 		withPssSha384Mocks((provider) -> {
 			Assertions.assertThrows(CryptoProviderException.class, () -> provider.rsaSign(m, keyPair.getSecretKey()));
@@ -79,13 +84,7 @@ public class BouncyCastleV1CryptoProviderTests {
 	}
 
 	@Test
-	public void rsaVerify_CryptoProviderException() {
-		withPssSha384Mocks((provider) -> {
-			Assertions.assertThrows(CryptoProviderException.class, () -> provider.rsaVerify(m, m, keyPair.getPublicKey()));
-		});
-	}
-
-	@Test
+	@DisplayName("Can load BouncyCastleV1CryptoProvider via the ServiceLoader.")
 	public void serviceLoader() {
 		Assertions.assertNotNull(V1CryptoLoader.getProvider(), "get provider");
 	}

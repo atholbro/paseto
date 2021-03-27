@@ -12,15 +12,16 @@ import org.mockito.internal.junit.MockitoTestListener;
 
 import java.lang.reflect.Method;
 
+@DisplayName("Crypto :: v2 :: libsodium")
 public class LibSodiumV2CryptoProviderTests {
 	@Test
-	@DisplayName("Can load LibSodiumV2CryptoProvider via the ServiceLoader")
+	@DisplayName("Can load LibSodiumV2CryptoProvider via the ServiceLoader.")
 	public void serviceLoader() {
 		Assertions.assertNotNull(V2CryptoLoader.getProvider(), "get provider");
 	}
 
 	@Test
-	@DisplayName("blake2b fails if validation is wrong")
+	@DisplayName("blake2b fails if validation is wrong.")
 	public void blake2b_fail() {
 		byte[] bytes = new byte[1];
 
@@ -33,7 +34,7 @@ public class LibSodiumV2CryptoProviderTests {
 	}
 
 	@Test
-	@DisplayName("aeadXChaCha20Poly1305IetfEncrypt fails if validation is wrong")
+	@DisplayName("aeadXChaCha20Poly1305IetfEncrypt fails if validation is wrong.")
 	public void aeadXChaCha20Poly1305IetfEncrypt_fail() {
 		byte[] bytes = new byte[1];
 
@@ -47,7 +48,7 @@ public class LibSodiumV2CryptoProviderTests {
 	}
 
 	@Test
-	@DisplayName("aeadXChaCha20Poly1305IetfDecrypt fails if validation is wrong")
+	@DisplayName("aeadXChaCha20Poly1305IetfDecrypt fails if validation is wrong.")
 	public void aeadXChaCha20Poly1305IetfDecrypt_fail() {
 		byte[] bytes = new byte[1];
 
@@ -61,7 +62,7 @@ public class LibSodiumV2CryptoProviderTests {
 	}
 
 	@Test
-	@DisplayName("ed25519Sign fails with invalid inputs if validation is wrong")
+	@DisplayName("ed25519Sign fails with invalid inputs if validation is wrong.")
 	public void ed25519Sign_fail() {
 		byte[] bytes = new byte[1];
 
@@ -75,7 +76,7 @@ public class LibSodiumV2CryptoProviderTests {
 	}
 
 	@Test
-	@DisplayName("ed25519Verify fails if validation is wrong")
+	@DisplayName("ed25519Verify fails if validation is wrong.")
 	public void ed25519Verify_fail() {
 		byte[] bytes = new byte[1];
 

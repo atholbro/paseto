@@ -12,16 +12,33 @@ import net.aholbrook.paseto.encoding.json.jackson.JacksonJsonProvider;
 import java.util.stream.Stream;
 
 public class Sources {
-	private Sources() {}
+	private Sources() {
+	}
 
 	static Stream<EncodingProvider> encodingProviders() {
-		return Stream.of(new JacksonJsonProvider(), new GsonJsonProvider());
+		return Stream.of(
+				new JacksonJsonProvider() {
+					@Override
+					public String toString() {
+						return "jackson";
+					}
+				},
+				new GsonJsonProvider() {
+					@Override
+					public String toString() {
+						return "gson";
+					}
+				});
 	}
 
 	static Stream<Paseto.Builder> pasetoV1Builders() {
 		return Stream.of(
-				new PasetoV1.Builder().withEncodingProvider(new JacksonJsonProvider()),
-				new PasetoV1.Builder().withEncodingProvider(new GsonJsonProvider())
+				new PasetoV1.Builder()
+						.withEncodingProvider(new JacksonJsonProvider())
+						.withName("v1/jackson"),
+				new PasetoV1.Builder()
+						.withEncodingProvider(new GsonJsonProvider())
+						.withName("v1/gson")
 		);
 	}
 
@@ -30,31 +47,56 @@ public class Sources {
 				// BouncyCastle
 				new PasetoV2.Builder()
 						.withV2CryptoProvider(new BouncyCastleV2CryptoProvider())
-						.withEncodingProvider(new JacksonJsonProvider()),
+						.withEncodingProvider(new JacksonJsonProvider())
+						.withName("v2/bc/jackson"),
 				new PasetoV2.Builder()
 						.withV2CryptoProvider(new BouncyCastleV2CryptoProvider())
-						.withEncodingProvider(new GsonJsonProvider()),
+						.withEncodingProvider(new GsonJsonProvider())
+						.withName("v2/bc/gson"),
 
 				// LibSodium
 				new PasetoV2.Builder()
 						.withV2CryptoProvider(new LibSodiumV2CryptoProvider())
-						.withEncodingProvider(new JacksonJsonProvider()),
+						.withEncodingProvider(new JacksonJsonProvider())
+						.withName("v2/libsodium/jackson"),
 				new PasetoV2.Builder()
 						.withV2CryptoProvider(new LibSodiumV2CryptoProvider())
 						.withEncodingProvider(new GsonJsonProvider())
+						.withName("v2/libsodium/gson")
 		);
 	}
 
 	static Stream<V1CryptoProvider> v1CryptoProviders() {
 		return Stream.of(
-				new BouncyCastleV1CryptoProvider()
+				new NamedBouncyCastleV1CryptoProvider()
 		);
 	}
 
 	static Stream<V2CryptoProvider> v2CryptoProviders() {
 		return Stream.of(
-				new BouncyCastleV2CryptoProvider(),
-				new LibSodiumV2CryptoProvider()
+				new NamedBouncyCastleV2CryptoProvider(),
+				new NamedLibSodiumV2CryptoProvider()
 		);
+	}
+
+	private static class NamedBouncyCastleV1CryptoProvider extends BouncyCastleV1CryptoProvider {
+		@Override
+		public String toString() {
+			return "v1/bc";
+		}
+	}
+
+	private static class NamedBouncyCastleV2CryptoProvider extends BouncyCastleV2CryptoProvider {
+		@Override
+		public String toString() {
+			return "v2/bc";
+		}
+	}
+
+	private static class NamedLibSodiumV2CryptoProvider extends LibSodiumV2CryptoProvider {
+		@Override
+		public String toString() {
+			return "v2/libsodium";
+		}
 	}
 }

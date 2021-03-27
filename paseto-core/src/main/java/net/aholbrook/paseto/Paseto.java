@@ -168,9 +168,7 @@ public abstract class Paseto {
 		protected Base64Provider base64Provider;
 		protected EncodingProvider encodingProvider;
 		protected NonceGenerator nonceGenerator;
-
-		abstract protected String versionName();
-		abstract protected String cryptoProviderName();
+		private String name = null;
 
 		protected void fillInDefaults() {
 			if (base64Provider == null) { base64Provider = Base64Loader.getProvider(); }
@@ -187,8 +185,15 @@ public abstract class Paseto {
 			return this;
 		}
 
-		public Builder withNonceGenerator(NonceGenerator nonceGenerator) {
+		// For testing
+		Builder withNonceGenerator(NonceGenerator nonceGenerator) {
 			this.nonceGenerator = nonceGenerator;
+			return this;
+		}
+
+		// For testing
+		Builder withName(String name) {
+			this.name = name;
 			return this;
 		}
 
@@ -196,16 +201,7 @@ public abstract class Paseto {
 
 		@Override
 		public String toString() {
-			StringBuilder sb = new StringBuilder();
-
-			fillInDefaults();
-			sb.append("(Paseto.Builder ");
-			sb.append(versionName()).append(", ");
-			sb.append("b64: ").append(base64Provider.getClass().getSimpleName()).append(", ");
-			sb.append("encoding: ").append(encodingProvider.getClass().getSimpleName()).append(", ");
-			sb.append("crypto: ").append(cryptoProviderName());
-			sb.append(")");
-			return sb.toString();
+			return name == null ? super.toString() : name;
 		}
 	}
 }
