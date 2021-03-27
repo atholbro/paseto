@@ -2,12 +2,17 @@ package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.exception.Pkcs12LoadException;
 import net.aholbrook.paseto.util.Pkcs12;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.mockito.ArgumentMatchers;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Pkcs12Test {
 	private static void assertPkcs12LoadException(Pkcs12LoadException e, Pkcs12LoadException.Reason reason) {
 		Assertions.assertEquals(reason, e.getReason(), "reason");
@@ -88,6 +93,73 @@ public class Pkcs12Test {
 			} catch (Pkcs12LoadException e) {
 				assertPkcs12LoadException(e, Pkcs12LoadException.Reason.IO_EXCEPTION);
 			}
+		});
+	}
+
+	private void pkcs12_mock_load(Throwable ex, Runnable test) {
+		try {
+			try (MockedStatic<KeyStore> keyStoreStatic = Mockito.mockStatic(KeyStore.class)) {
+				KeyStore keyStore = Mockito.mock(KeyStore.class);
+
+				Mockito.doThrow(ex)
+						.when(keyStore)
+						.load(ArgumentMatchers.any(), ArgumentMatchers.nullable(char[].class));
+				keyStoreStatic.when(() -> KeyStore.getInstance("PKCS12"))
+						.thenReturn(keyStore);
+
+				Assertions.assertNotNull(keyStore, "Failed to mock KeyStore.load().");
+				test.run();
+			}
+		} catch (Throwable e) {
+			Assertions.fail("Failed to mock KeyStore.load().", e);
+		}
+	}
+
+	private void pkcs12_mock_getKey(Throwable ex, Runnable test) {
+		try {
+			try (MockedStatic<KeyStore> keyStoreStatic = Mockito.mockStatic(KeyStore.class)) {
+				KeyStore keyStore = Mockito.mock(KeyStore.class);
+				Mockito.doThrow(ex)
+						.when(keyStore)
+						.getKey(ArgumentMatchers.any(), ArgumentMatchers.any());
+				keyStoreStatic.when(() -> KeyStore.getInstance("PKCS12"))
+						.thenReturn(keyStore);
+
+				Assertions.assertNotNull(keyStore, "Failed to mock KeyStore.getKey().");
+				test.run();
+			}
+		} catch (Throwable e) {
+			Assertions.fail("Failed to mock KeyStore.getKey().", e);
+		}
+	}
+
+	@Test
+	@Order(value = Integer.MAX_VALUE)
+	public void pkcs12_loadCertificateException() {
+		pkcs12_mock_load(new CertificateException("mocked"), () -> {
+			Throwable e = Assertions.assertThrows(Pkcs12LoadException.class,
+					() -> Pkcs12.load("../test-data/p12/rfc_v1_rsa.p12", "testtest", "test"));
+			Assertions.assertEquals("Certificate error - mocked", e.getMessage());
+		});
+	}
+
+	@Test
+	@Order(value = Integer.MAX_VALUE)
+	public void pkcs12_loadNoSuchAlgorithmException() {
+		pkcs12_mock_load(new NoSuchAlgorithmException("mocked"), () -> {
+			Throwable e = Assertions.assertThrows(Pkcs12LoadException.class,
+					() -> Pkcs12.load("../test-data/p12/rfc_v1_rsa.p12", "testtest", "test"));
+			Assertions.assertEquals("Key algorithm not found - mocked", e.getMessage());
+		});
+	}
+
+	@Test
+	@Order(value = Integer.MAX_VALUE)
+	public void pkcs12_loadKeyStoreException() {
+		pkcs12_mock_getKey(new KeyStoreException("mocked"), () -> {
+			Throwable e = Assertions.assertThrows(RuntimeException.class,
+					() -> Pkcs12.load("../test-data/p12/rfc_v1_rsa.p12", "testtest", "test"));
+			Assertions.assertEquals("java.security.KeyStoreException: mocked", e.getMessage());
 		});
 	}
 
