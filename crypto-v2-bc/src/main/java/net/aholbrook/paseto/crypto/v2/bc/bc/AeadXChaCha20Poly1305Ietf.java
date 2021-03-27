@@ -11,6 +11,8 @@ import org.bouncycastle.util.Pack;
 public class AeadXChaCha20Poly1305Ietf {
 	private static final int[] SIGMA = new int[] { 0x61707865, 0x3320646E, 0x79622D32, 0x6B206574 };
 
+	private AeadXChaCha20Poly1305Ietf() {}
+	
 	public static boolean encrypt(byte[] out, byte[] in, byte[] ad, byte[] nonce, byte[] key) {
 		return chaCha20Poly1305(true, out, in, ad, nonce, key);
 	}
