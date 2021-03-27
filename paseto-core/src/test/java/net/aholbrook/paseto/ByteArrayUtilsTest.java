@@ -2,10 +2,14 @@ package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.util.ByteArrayUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("ByteArrayUtils")
 public class ByteArrayUtilsTest {
 	@Test
+	@DisplayName("isEqual works as expected.")
+	// TODO split these into individual test cases.
 	public void byteArrayUtils_isEqual() {
 		// empty strings / nulls
 		Assertions.assertTrue(ByteArrayUtils.isEqual(new byte[] {}, new byte[] {}));

@@ -19,44 +19,52 @@ import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.utils.AssertUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+@DisplayName("Paseto V1 Test Vectors")
 public class PasetoV1Test extends PasetoTest {
 	// RFC test vectors
 	// Encryption tests
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Encrypt RFC Vector E1")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorE1(Paseto.Builder builder) {
 		encryptTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_E_1);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Encrypt RFC Vector E2")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorE2(Paseto.Builder builder) {
 		encryptTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_E_2);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Encrypt RFC Vector E3")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorE3(Paseto.Builder builder) {
 		encryptTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_E_3);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Encrypt RFC Vector E4")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorE4(Paseto.Builder builder) {
 		encryptTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_E_4);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Encrypt RFC Vector E5")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorE5(Paseto.Builder builder) {
 		encryptTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_E_5);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Encrypt RFC Vector E6")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorE6(Paseto.Builder builder) {
 		encryptTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_E_6);
@@ -64,36 +72,42 @@ public class PasetoV1Test extends PasetoTest {
 
 	// Decryption tests
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Decrypt RFC Vector E1")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorE1Decrypt(Paseto.Builder builder) {
 		decryptTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_E_1);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Decrypt RFC Vector E2")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorE2Decrypt(Paseto.Builder builder) {
 		decryptTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_E_2);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Decrypt RFC Vector E3")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorE3Decrypt(Paseto.Builder builder) {
 		decryptTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_E_3);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Decrypt RFC Vector E4")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorE4Decrypt(Paseto.Builder builder) {
 		decryptTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_E_4);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Decrypt RFC Vector E5")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorE5Decrypt(Paseto.Builder builder) {
 		decryptTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_E_5);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Decrypt RFC Vector E6")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorE6Decrypt(Paseto.Builder builder) {
 		decryptTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_E_6);
@@ -101,12 +115,14 @@ public class PasetoV1Test extends PasetoTest {
 
 	// Sign tests
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Sign RFC Vector S1")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorS1Sign(Paseto.Builder builder) {
 		signTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_S_1, false);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Sign RFC Vector S2")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorS2Sign(Paseto.Builder builder) {
 		signTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_S_2, false);
@@ -114,12 +130,14 @@ public class PasetoV1Test extends PasetoTest {
 
 	// Verify tests
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Verify RFC Vector S1")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorS1Verify(Paseto.Builder builder) {
 		verifyTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_S_1);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
+	@DisplayName("Sign RFC Vector S2")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_RfcVectorS2Verify(Paseto.Builder builder) {
 		verifyTestVector(builder, RfcTestVectors.RFC_TEST_VECTOR_V1_S_2);
