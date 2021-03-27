@@ -1,7 +1,7 @@
 package net.aholbrook.paseto;
 
-import net.aholbrook.paseto.base64.Base64Provider;
-import net.aholbrook.paseto.base64.jvm8.Jvm8Base64Provider;
+import net.aholbrook.paseto.base64.jvm8.Base64Provider;
+import net.aholbrook.paseto.base64.jvm8.jvm8.Jvm8Base64Provider;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.TestNonceGenerator;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;

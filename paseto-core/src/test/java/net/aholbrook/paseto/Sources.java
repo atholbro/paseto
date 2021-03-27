@@ -2,9 +2,9 @@ package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import net.aholbrook.paseto.crypto.v1.bc.BouncyCastleV1CryptoProvider;
-import net.aholbrook.paseto.crypto.v2.bc.V2CryptoProvider;
-import net.aholbrook.paseto.crypto.v2.bc.bc.BouncyCastleV2CryptoProvider;
-import net.aholbrook.paseto.crypto.v2.bc.libsodium.LibSodiumV2CryptoProvider;
+import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
+import net.aholbrook.paseto.crypto.v2.bc.BouncyCastleV2CryptoProvider;
+import net.aholbrook.paseto.crypto.v2.libsodium.LibSodiumV2CryptoProvider;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.encoding.json.gson.GsonJsonProvider;
 import net.aholbrook.paseto.encoding.json.jackson.JacksonJsonProvider;

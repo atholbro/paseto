@@ -1,10 +1,10 @@
 package net.aholbrook.paseto;
 
-import net.aholbrook.paseto.base64.Base64Provider;
+import net.aholbrook.paseto.base64.jvm8.Base64Provider;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
-import net.aholbrook.paseto.crypto.v2.bc.V2CryptoLoader;
-import net.aholbrook.paseto.crypto.v2.bc.V2CryptoProvider;
+import net.aholbrook.paseto.crypto.v2.V2CryptoLoader;
+import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.DecryptionException;
 import net.aholbrook.paseto.exception.PasetoParseException;
