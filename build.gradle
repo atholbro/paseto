@@ -163,6 +163,7 @@ task codeCoverageReport(type: JacocoReport) {
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
+					'net/aholbrook/paseto/time/**',
 					'net/aholbrook/paseto/encoding/json/jackson/mixin/**'
 			])
 		}))
