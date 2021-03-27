@@ -2,10 +2,10 @@ package net.aholbrook.paseto.encoding.json.jackson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.aholbrook.paseto.encoding.EncodingLoader;
 import net.aholbrook.paseto.encoding.exception.EncodingException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import org.mockito.Mockito;
 
 public class JacksonJsonProviderTests {
@@ -19,5 +19,10 @@ public class JacksonJsonProviderTests {
 			JacksonJsonProvider provider = new JacksonJsonProvider(objectMapper);
 			provider.encode("");
 		});
+	}
+
+	@Test
+	public void serviceLoader() {
+		Assertions.assertNotNull(EncodingLoader.getProvider(), "get provider");
 	}
 }

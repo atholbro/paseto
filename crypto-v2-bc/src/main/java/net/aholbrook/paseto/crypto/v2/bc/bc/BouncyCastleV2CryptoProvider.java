@@ -1,7 +1,7 @@
-package net.aholbrook.paseto.crypto.v2.bc;
+package net.aholbrook.paseto.crypto.v2.bc.bc;
 
 import net.aholbrook.paseto.crypto.KeyPair;
-import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
+import net.aholbrook.paseto.crypto.v2.bc.V2CryptoProvider;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.Blake2bDigest;

@@ -1,4 +1,4 @@
-package net.aholbrook.paseto.crypto.v2;
+package net.aholbrook.paseto.crypto.v2.bc;
 
 import java.util.ServiceLoader;
 

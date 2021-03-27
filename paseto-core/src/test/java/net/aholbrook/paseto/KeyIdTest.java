@@ -1,10 +1,8 @@
 package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.data.KeyIdTestVectors;
-import net.aholbrook.paseto.data.TokenTestVectors;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.service.KeyId;
-import net.aholbrook.paseto.service.Token;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

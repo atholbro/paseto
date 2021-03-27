@@ -1,4 +1,4 @@
-package net.aholbrook.paseto.crypto.v2.bc;
+package net.aholbrook.paseto.crypto.v2.bc.bc;
 
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.modes.ChaCha20Poly1305;

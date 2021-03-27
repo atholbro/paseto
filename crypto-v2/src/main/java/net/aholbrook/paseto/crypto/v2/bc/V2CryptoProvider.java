@@ -1,4 +1,4 @@
-package net.aholbrook.paseto.crypto.v2;
+package net.aholbrook.paseto.crypto.v2.bc;
 
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;

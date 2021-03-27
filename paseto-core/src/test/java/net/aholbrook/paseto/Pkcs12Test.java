@@ -2,7 +2,11 @@ package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.exception.Pkcs12LoadException;
 import net.aholbrook.paseto.util.Pkcs12;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.ArgumentMatchers;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;

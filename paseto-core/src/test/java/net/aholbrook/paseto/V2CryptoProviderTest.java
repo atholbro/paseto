@@ -2,7 +2,7 @@ package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 import net.aholbrook.paseto.crypto.exception.ByteArrayRangeException;
-import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
+import net.aholbrook.paseto.crypto.v2.bc.V2CryptoProvider;
 import net.aholbrook.paseto.data.RfcTestVectors;
 import net.aholbrook.paseto.utils.AssertUtils;
 import org.junit.jupiter.api.Assertions;

@@ -86,7 +86,7 @@ public class BouncyCastleV1CryptoProviderTests {
 	}
 
 	@Test
-	public void testServiceLoader() {
+	public void serviceLoader() {
 		Assertions.assertNotNull(V1CryptoLoader.getProvider(), "get provider");
 	}
 }
