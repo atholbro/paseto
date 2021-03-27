@@ -2,6 +2,7 @@ package net.aholbrook.paseto.crypto.v1.bc;
 
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
+import net.aholbrook.paseto.crypto.v1.V1CryptoLoader;
 import org.bouncycastle.crypto.BufferedBlockCipher;
 import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.InvalidCipherTextException;
@@ -82,5 +83,10 @@ public class BouncyCastleV1CryptoProviderTests {
 		withPssSha384Mocks((provider) -> {
 			Assertions.assertThrows(CryptoProviderException.class, () -> provider.rsaVerify(m, m, keyPair.getPublicKey()));
 		});
+	}
+
+	@Test
+	public void testServiceLoader() {
+		Assertions.assertNotNull(V1CryptoLoader.getProvider(), "get provider");
 	}
 }
