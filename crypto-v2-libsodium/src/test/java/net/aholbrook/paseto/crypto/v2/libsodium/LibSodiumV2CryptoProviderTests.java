@@ -1,16 +1,11 @@
 package net.aholbrook.paseto.crypto.v2.libsodium;
 
-import com.goterl.lazycode.lazysodium.Sodium;
+import com.goterl.lazysodium.Sodium;
 import net.aholbrook.paseto.crypto.v2.V2CryptoLoader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.util.ReflectionUtils;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.mockito.internal.junit.MockitoTestListener;
-
-import java.lang.reflect.Method;
 
 @DisplayName("Crypto :: v2 :: libsodium")
 public class LibSodiumV2CryptoProviderTests {
