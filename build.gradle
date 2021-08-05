@@ -52,7 +52,11 @@ allprojects {
 		archiveVersion = gitVersionCalculator.calculateVersion()
 	}
 
-	if (it.name != "paseto" && it.name != "meta" && it.name != "threeten" && it.name != "test" && it.name != "gson") {
+	jacoco {
+		toolVersion = "0.8.6"
+	}
+
+	if (it.name != "paseto") {
 
 		apply plugin: 'signing'
 		apply plugin: 'maven-publish'

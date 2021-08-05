@@ -757,6 +757,15 @@ public class PasetoV1Test extends PasetoTest {
 	}
 
 	@Test
+	@DisplayName("V1 Builder has a default base 64 provider.")
+	public void v1_builder_withDefaultBase64Provider() {
+		PasetoV1.Builder builder = new PasetoV1.Builder();
+		builder.build();
+		Assertions.assertNotNull(builder.base64Provider);
+	}
+
+	@Test
+	@DisplayName("V1 Builder can override base 64 provider.")
 	public void v1_builder_withBase64Provider() {
 		Base64Provider provider = new Jvm8Base64Provider();
 		PasetoV1.Builder builder = new PasetoV1.Builder();
@@ -765,6 +774,15 @@ public class PasetoV1Test extends PasetoTest {
 	}
 
 	@Test
+	@DisplayName("V1 Builder has a default crypto provider.")
+	public void v1_builder_withDefaultV1CryptoProvider() {
+		PasetoV1.Builder builder = new PasetoV1.Builder();
+		builder.build();
+		Assertions.assertNotNull(builder.v1CryptoProvider);
+	}
+
+	@Test
+	@DisplayName("V1 Builder can override crypto provider.")
 	public void v1_builder_withV1CryptoProvider() {
 		V1CryptoProvider provider = new BouncyCastleV1CryptoProvider();
 		PasetoV1.Builder builder = new PasetoV1.Builder();

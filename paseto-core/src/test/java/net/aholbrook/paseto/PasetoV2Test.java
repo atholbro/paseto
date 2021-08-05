@@ -21,6 +21,7 @@ import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.utils.AssertUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -763,6 +764,15 @@ public class PasetoV2Test extends PasetoTest {
 	}
 
 	@Test
+	@DisplayName("V2 Builder has a default base 64 provider.")
+	public void v2_builder_withDefaultBase64Provider() {
+		PasetoV2.Builder builder = new PasetoV2.Builder();
+		builder.build();
+		Assertions.assertNotNull(builder.base64Provider);
+	}
+
+	@Test
+	@DisplayName("V2 Builder can override base 64 provider.")
 	public void v2_builder_withBase64Provider() {
 		Base64Provider provider = new Jvm8Base64Provider();
 		PasetoV2.Builder builder = new PasetoV2.Builder();
@@ -771,7 +781,16 @@ public class PasetoV2Test extends PasetoTest {
 	}
 
 	@Test
-	public void v2_builder_withV1CryptoProvider() {
+	@DisplayName("V2 Builder has a default crypto provider.")
+	public void v2_builder_withDefaultV2CryptoProvider() {
+		PasetoV2.Builder builder = new PasetoV2.Builder();
+		builder.build();
+		Assertions.assertNotNull(builder.v2CryptoProvider);
+	}
+
+	@Test
+	@DisplayName("V2 Builder can override crypto provider.")
+	public void v2_builder_withV2CryptoProvider() {
 		V2CryptoProvider provider = new BouncyCastleV2CryptoProvider();
 		PasetoV2.Builder builder = new PasetoV2.Builder();
 		builder.withV2CryptoProvider(provider);
