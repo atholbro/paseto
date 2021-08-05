@@ -1,16 +1,11 @@
 package net.aholbrook.paseto.crypto.v2.libsodium;
 
-import com.goterl.lazycode.lazysodium.Sodium;
+import com.goterl.lazysodium.SodiumJava;
 import net.aholbrook.paseto.crypto.v2.V2CryptoLoader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.util.ReflectionUtils;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.mockito.internal.junit.MockitoTestListener;
-
-import java.lang.reflect.Method;
 
 @DisplayName("Crypto :: v2 :: libsodium")
 public class LibSodiumV2CryptoProviderTests {
@@ -25,7 +20,7 @@ public class LibSodiumV2CryptoProviderTests {
 	public void blake2b_fail() {
 		byte[] bytes = new byte[1];
 
-		Sodium sodium = Mockito.mock(Sodium.class);
+		SodiumJava sodium = Mockito.mock(SodiumJava.class);
 		Mockito.when(sodium.crypto_generichash(bytes, bytes.length, bytes, bytes.length, bytes, bytes.length))
 				.thenReturn(1);
 		LibSodiumV2CryptoProvider provider = new NoValidationLibSodiumV2CryptoProvider(sodium);
@@ -38,7 +33,7 @@ public class LibSodiumV2CryptoProviderTests {
 	public void aeadXChaCha20Poly1305IetfEncrypt_fail() {
 		byte[] bytes = new byte[1];
 
-		Sodium sodium = Mockito.mock(Sodium.class);
+		SodiumJava sodium = Mockito.mock(SodiumJava.class);
 		Mockito.when(sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(
 				bytes, null, bytes, bytes.length, bytes, bytes.length, null, bytes, bytes))
 				.thenReturn(1);
@@ -52,7 +47,7 @@ public class LibSodiumV2CryptoProviderTests {
 	public void aeadXChaCha20Poly1305IetfDecrypt_fail() {
 		byte[] bytes = new byte[1];
 
-		Sodium sodium = Mockito.mock(Sodium.class);
+		SodiumJava sodium = Mockito.mock(SodiumJava.class);
 		Mockito.when(sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(
 				bytes, null, null, bytes, bytes.length, bytes, bytes.length, bytes, bytes))
 				.thenReturn(1);
@@ -66,7 +61,7 @@ public class LibSodiumV2CryptoProviderTests {
 	public void ed25519Sign_fail() {
 		byte[] bytes = new byte[1];
 
-		Sodium sodium = Mockito.mock(Sodium.class);
+		SodiumJava sodium = Mockito.mock(SodiumJava.class);
 		Mockito.when(sodium.crypto_sign_detached(
 				bytes, null, bytes, bytes.length, bytes))
 				.thenReturn(1);
@@ -80,7 +75,7 @@ public class LibSodiumV2CryptoProviderTests {
 	public void ed25519Verify_fail() {
 		byte[] bytes = new byte[1];
 
-		Sodium sodium = Mockito.mock(Sodium.class);
+		SodiumJava sodium = Mockito.mock(SodiumJava.class);
 		Mockito.when(sodium.crypto_sign_verify_detached(
 				bytes, bytes, bytes.length, bytes))
 				.thenReturn(1);
@@ -90,7 +85,7 @@ public class LibSodiumV2CryptoProviderTests {
 	}
 
 	private static class NoValidationLibSodiumV2CryptoProvider extends LibSodiumV2CryptoProvider {
-		public NoValidationLibSodiumV2CryptoProvider(Sodium sodium) {
+		public NoValidationLibSodiumV2CryptoProvider(SodiumJava sodium) {
 			super(sodium);
 		}
 

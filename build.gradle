@@ -46,8 +46,6 @@ allprojects {
 	repositories {
 		mavenLocal()
 		mavenCentral()
-		maven { url "https://dl.bintray.com/libly/maven" }
-		maven { url  "https://dl.bintray.com/terl/lazysodium-maven" }
 	}
 
 	jar {

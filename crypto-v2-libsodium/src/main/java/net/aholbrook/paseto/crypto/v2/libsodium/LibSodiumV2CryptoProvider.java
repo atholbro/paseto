@@ -1,18 +1,17 @@
 package net.aholbrook.paseto.crypto.v2.libsodium;
 
-import com.goterl.lazycode.lazysodium.Sodium;
-import com.goterl.lazycode.lazysodium.SodiumJava;
+import com.goterl.lazysodium.SodiumJava;
 import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 
 public class LibSodiumV2CryptoProvider extends V2CryptoProvider {
-	protected final Sodium sodium;
+	protected final SodiumJava sodium;
 
 	public LibSodiumV2CryptoProvider() {
 		this(new SodiumJava());
 	}
 
-	public LibSodiumV2CryptoProvider(Sodium sodium) {
+	public LibSodiumV2CryptoProvider(SodiumJava sodium) {
 		this.sodium = sodium;
 	}
 
