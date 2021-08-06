@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.crypto.v1.bc;
 
-import net.aholbrook.paseto.crypto.KeyPair;
+import net.aholbrook.paseto.crypto.Pair;
 import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
 import net.aholbrook.paseto.crypto.v1.V1CryptoLoader;
 import org.bouncycastle.crypto.BufferedBlockCipher;
@@ -24,7 +24,7 @@ public class BouncyCastleV1CryptoProviderTests {
 	private byte[] iv = new byte[8];
 
 	// TODO hardcode a result for keypair.
-	private KeyPair keyPair = new BouncyCastleV1CryptoProvider().rsaGenerate();
+	private Pair<byte[], byte[]> keyPair = new BouncyCastleV1CryptoProvider().rsaGenerate();
 
 	public void withAse256CtrCipherMocks(Consumer<BouncyCastleV1CryptoProvider> test) {
 		BouncyCastleV1CryptoProvider provider = Mockito.spy(BouncyCastleV1CryptoProvider.class);
@@ -62,8 +62,8 @@ public class BouncyCastleV1CryptoProviderTests {
 		BouncyCastleV1CryptoProvider provider = Mockito.spy(BouncyCastleV1CryptoProvider.class);
 		PSSSigner pssSigner = Mockito.mock(PSSSigner.class);
 
-		Mockito.when(provider.pssSha384(true, keyPair.getSecretKey())).thenReturn(pssSigner);
-		Mockito.when(provider.pssSha384(false, keyPair.getPublicKey())).thenReturn(pssSigner);
+		Mockito.when(provider.pssSha384(true, keyPair.a)).thenReturn(pssSigner);
+		Mockito.when(provider.pssSha384(false, keyPair.b)).thenReturn(pssSigner);
 
 		try {
 			Mockito.when(pssSigner.generateSignature())
@@ -79,7 +79,7 @@ public class BouncyCastleV1CryptoProviderTests {
 	@DisplayName("rsaSign correctly handles a CryptoException if thrown.")
 	public void rsaSign_CryptoProviderException() {
 		withPssSha384Mocks((provider) -> {
-			Assertions.assertThrows(CryptoProviderException.class, () -> provider.rsaSign(m, keyPair.getSecretKey()));
+			Assertions.assertThrows(CryptoProviderException.class, () -> provider.rsaSign(m, keyPair.a));
 		});
 	}
 

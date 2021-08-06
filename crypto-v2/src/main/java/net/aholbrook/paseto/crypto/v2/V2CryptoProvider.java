@@ -1,7 +1,7 @@
 package net.aholbrook.paseto.crypto.v2;
 
-import net.aholbrook.paseto.crypto.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
+import net.aholbrook.paseto.crypto.Pair;
 import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 import net.aholbrook.paseto.crypto.exception.ByteArrayRangeException;
 
@@ -36,7 +36,7 @@ public abstract class V2CryptoProvider implements NonceGenerator {
 
 	abstract public byte[] ed25519SkToPk(byte[] sk);
 
-	abstract public KeyPair ed25519Generate();
+	abstract public Pair<byte[], byte[]> ed25519Generate();
 
 	// Nonce
 	public NonceGenerator getNonceGenerator() {

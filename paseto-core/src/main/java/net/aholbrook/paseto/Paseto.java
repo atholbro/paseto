@@ -2,12 +2,15 @@ package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.base64.jvm8.Base64Loader;
 import net.aholbrook.paseto.base64.jvm8.Base64Provider;
-import net.aholbrook.paseto.crypto.KeyPair;
+import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
 import net.aholbrook.paseto.encoding.EncodingLoader;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.InvalidFooterException;
 import net.aholbrook.paseto.exception.InvalidHeaderException;
+import net.aholbrook.paseto.keys.AsymmetricPublicKey;
+import net.aholbrook.paseto.keys.AsymmetricSecretKey;
+import net.aholbrook.paseto.keys.SymmetricKey;
 import net.aholbrook.paseto.util.StringUtils;
 
 import java.nio.charset.Charset;
@@ -28,70 +31,70 @@ public abstract class Paseto {
 		this.nonceGenerator = nonceGenerator;
 	}
 
-	public abstract String encrypt(Object payload, byte[] key, String footer);
+	public abstract String encrypt(Object payload, SymmetricKey key, String footer);
 
-	public abstract <_Payload> _Payload decrypt(String token, byte[] key, String footer, Class<_Payload> payloadClass);
+	public abstract <_Payload> _Payload decrypt(String token, SymmetricKey key, String footer, Class<_Payload> payloadClass);
 
-	public abstract String sign(Object payload, byte[] key, String footer);
+	public abstract String sign(Object payload, AsymmetricSecretKey sk, String footer);
 
-	public abstract <_Payload> _Payload verify(String token, byte[] pk, String footer, Class<_Payload> payloadClass);
+	public abstract <_Payload> _Payload verify(String token, AsymmetricPublicKey pk, String footer, Class<_Payload> payloadClass);
 
 	public abstract KeyPair generateKeyPair();
 
-	public String encrypt(Object payload, byte[] key) {
+	public String encrypt(Object payload, SymmetricKey key) {
 		return encrypt(payload, key, null);
 	}
 
-	public String encrypt(Object payload, byte[] key, Object footer) {
+	public String encrypt(Object payload, SymmetricKey key, Object footer) {
 		return encrypt(payload, key, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)));
 	}
 
-	public <_Payload> _Payload decrypt(String token, byte[] key, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload decrypt(String token, SymmetricKey key, Class<_Payload> payloadClass) {
 		return decrypt(token, key, null, payloadClass);
 	}
 
-	public <_Payload> _Payload decrypt(String token, byte[] key, Object footer, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload decrypt(String token, SymmetricKey key, Object footer, Class<_Payload> payloadClass) {
 		return decrypt(token, key, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), payloadClass);
 	}
 
-	public String sign(Object payload, byte[] sk) {
+	public String sign(Object payload, AsymmetricSecretKey sk) {
 		return sign(payload, sk, null);
 	}
 
-	public String sign(Object payload, byte[] sk, Object footer) {
+	public String sign(Object payload, AsymmetricSecretKey sk, Object footer) {
 		return sign(payload, sk, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)));
 	}
 
-	public <_Payload> _Payload verify(String token, byte[] pk, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload verify(String token, AsymmetricPublicKey pk, Class<_Payload> payloadClass) {
 		return verify(token, pk, null, payloadClass);
 	}
 
-	public <_Payload> _Payload verify(String token, byte[] pk, Object footer, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload verify(String token, AsymmetricPublicKey pk, Object footer, Class<_Payload> payloadClass) {
 		return verify(token, pk, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), payloadClass);
 	}
 
-	public <_Payload> TokenWithFooter<_Payload, String> decryptWithFooter(String token, byte[] key,
+	public <_Payload> TokenWithFooter<_Payload, String> decryptWithFooter(String token, SymmetricKey key,
 			Class<_Payload> payloadClass) {
 		_Payload payload = decrypt(token, key, payloadClass);
 		String footer = extractFooter(token);
 		return new TokenWithFooter<>(payload, footer);
 	}
 
-	public <_Payload, _Footer> TokenWithFooter<_Payload, _Footer> decryptWithFooter(String token, byte[] key,
+	public <_Payload, _Footer> TokenWithFooter<_Payload, _Footer> decryptWithFooter(String token, SymmetricKey key,
 			Class<_Payload> payloadClass, Class<_Footer> footerClass) {
 		_Payload payload = decrypt(token, key, payloadClass);
 		_Footer footer = extractFooter(token, footerClass);
 		return new TokenWithFooter<>(payload, footer);
 	}
 
-	public <_Payload> TokenWithFooter<_Payload, String> verifyWithFooter(String token, byte[] pk,
+	public <_Payload> TokenWithFooter<_Payload, String> verifyWithFooter(String token, AsymmetricPublicKey pk,
 			Class<_Payload> payloadClass) {
 		_Payload payload = verify(token, pk, payloadClass);
 		String footer = extractFooter(token);
 		return new TokenWithFooter<>(payload, footer);
 	}
 
-	public <_Payload, _Footer> TokenWithFooter<_Payload, _Footer> verifyWithFooter(String token, byte[] pk,
+	public <_Payload, _Footer> TokenWithFooter<_Payload, _Footer> verifyWithFooter(String token, AsymmetricPublicKey pk,
 			Class<_Payload> payloadClass, Class<_Footer> footerClass) {
 		_Payload payload = verify(token, pk, payloadClass);
 		_Footer footer = extractFooter(token, footerClass);

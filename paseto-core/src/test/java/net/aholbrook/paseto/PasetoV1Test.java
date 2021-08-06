@@ -2,7 +2,8 @@ package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.base64.jvm8.Base64Provider;
 import net.aholbrook.paseto.base64.jvm8.jvm8.Jvm8Base64Provider;
-import net.aholbrook.paseto.crypto.KeyPair;
+import net.aholbrook.paseto.keys.AsymmetricPublicKey;
+import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.crypto.TestNonceGenerator;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import net.aholbrook.paseto.crypto.v1.bc.BouncyCastleV1CryptoProvider;
@@ -15,6 +16,7 @@ import net.aholbrook.paseto.exception.InvalidHeaderException;
 import net.aholbrook.paseto.exception.PasetoParseException;
 import net.aholbrook.paseto.exception.PasetoStringException;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
+import net.aholbrook.paseto.keys.SymmetricKey;
 import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.utils.AssertUtils;
@@ -400,9 +402,9 @@ public class PasetoV1Test extends PasetoTest {
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_token1_localDecryptWithFooter(Paseto.Builder builder) {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
-		Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
+		Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
 
-		TokenWithFooter<Token, KeyId> result = paseto.decryptWithFooter(tv.getToken(), tv.getA(), tv.getPayloadClass(),
+		TokenWithFooter<Token, KeyId> result = paseto.decryptWithFooter(tv.getToken(), tv.getLocalKey(), tv.getPayloadClass(),
 				KeyId.class);
 		Assertions.assertEquals(tv.getFooter(), result.getFooter(), "extracted footer != footer");
 	}
@@ -411,9 +413,9 @@ public class PasetoV1Test extends PasetoTest {
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_token1_localDecryptWithFooterString(Paseto.Builder builder) {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
-		Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
+		Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
 
-		TokenWithFooter<Token, String> result = paseto.decryptWithFooter(tv.getToken(), tv.getA(), tv.getPayloadClass());
+		TokenWithFooter<Token, String> result = paseto.decryptWithFooter(tv.getToken(), tv.getLocalKey(), tv.getPayloadClass());
 		KeyId footer = builder.encodingProvider.decode(result.getFooter(), KeyId.class);
 		Assertions.assertEquals(tv.getFooter(), footer, "extracted footer != footer");
 	}
@@ -422,9 +424,9 @@ public class PasetoV1Test extends PasetoTest {
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_token1_publicVerifyWithFooter(Paseto.Builder builder) {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
-		Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
+		Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
 
-		TokenWithFooter<Token, KeyId> result = paseto.verifyWithFooter(tv.getToken(), tv.getB(), tv.getPayloadClass(),
+		TokenWithFooter<Token, KeyId> result = paseto.verifyWithFooter(tv.getToken(), tv.getPublicKey(), tv.getPayloadClass(),
 				KeyId.class);
 		Assertions.assertEquals(tv.getFooter(), result.getFooter(), "extracted footer != footer");
 	}
@@ -433,9 +435,9 @@ public class PasetoV1Test extends PasetoTest {
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_token1_publicVerifyWithFooterString(Paseto.Builder builder) {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
-		Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
+		Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
 
-		TokenWithFooter<Token, String> result = paseto.verifyWithFooter(tv.getToken(), tv.getB(), tv.getPayloadClass());
+		TokenWithFooter<Token, String> result = paseto.verifyWithFooter(tv.getToken(), tv.getPublicKey(), tv.getPayloadClass());
 		KeyId footer = builder.encodingProvider.decode(result.getFooter(), KeyId.class);
 		Assertions.assertEquals(tv.getFooter(), footer, "extracted footer != footer");
 	}
@@ -447,14 +449,14 @@ public class PasetoV1Test extends PasetoTest {
 	public void v1_token1_modifyPayload(Paseto.Builder builder) {
 		Assertions.assertThrows(SignatureVerificationException.class, () -> {
 			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
 
 			// encrypt and modify
-			String token = paseto.encrypt(tv.getPayload(), tv.getA());
+			String token = paseto.encrypt(tv.getPayload(), tv.getLocalKey());
 			token = modify(token, new int[]{20, 15, 20});
 
 			// attempt to decrypt
-			paseto.decrypt(token, tv.getA(), tv.getPayloadClass());
+			paseto.decrypt(token, tv.getLocalKey(), tv.getPayloadClass());
 		});
 	}
 
@@ -464,14 +466,14 @@ public class PasetoV1Test extends PasetoTest {
 	public void v1_token1_modifyFooter(Paseto.Builder builder) {
 		Assertions.assertThrows(SignatureVerificationException.class, () -> {
 			TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
 
 			// encrypt and modify
-			String token = paseto.encrypt(tv.getPayload(), tv.getA());
+			String token = paseto.encrypt(tv.getPayload(), tv.getLocalKey());
 			token = modify(token, new int[]{token.length() - 1, token.length() - 4, token.length() - 6});
 
 			// attempt to decrypt
-			paseto.decrypt(token, tv.getA(), tv.getPayloadClass());
+			paseto.decrypt(token, tv.getLocalKey(), tv.getPayloadClass());
 		});
 	}
 
@@ -481,10 +483,10 @@ public class PasetoV1Test extends PasetoTest {
 	public void v1_token1_decryptWrongKey(Paseto.Builder builder) {
 		Assertions.assertThrows(SignatureVerificationException.class, () -> {
 			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
 
 			// attempt to decrypt
-			paseto.decrypt(tv.getToken(), RfcTestVectors.RFC_TEST_KEY, tv.getPayloadClass());
+			paseto.decrypt(tv.getToken(), RfcTestVectors.RFC_TEST_V1_KEY, tv.getPayloadClass());
 		});
 	}
 
@@ -494,34 +496,34 @@ public class PasetoV1Test extends PasetoTest {
 	public void v1_token1_verifyWrongKey(Paseto.Builder builder) {
 		Assertions.assertThrows(SignatureVerificationException.class, () -> {
 			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_PUBLIC;
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
 
 			// attempt to decrypt
-			paseto.verify(tv.getToken(), RfcTestVectors.RFC_TEST_RSA_PUBLIC_KEY, tv.getPayloadClass());
+			paseto.verify(tv.getToken(), RfcTestVectors.RFC_TEST_V1_PK, tv.getPayloadClass());
 		});
 	}
 
-	// Attempt to decrypt A V2 local token with as V1 local token, should fail with a InvalidHeaderException.
+	// Attempt to decrypt A V2 local token as a V1 local token, should fail with a InvalidHeaderException.
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_token1_v2LocalAsV1Local(Paseto.Builder builder) {
 		Assertions.assertThrows(InvalidHeaderException.class, () -> {
 			TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
 
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.decrypt(tv.getToken(), TokenTestVectors.TEST_V1_KEY, tv.getPayloadClass());
 		});
 	}
 
-	// Attempt to decrypt A V2 local token with as V1 public token, should fail with a InvalidHeaderException.
+	// Attempt to decrypt A V2 local token as a V1 public token, should fail with a InvalidHeaderException.
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_token1_v2LocalAsV1Public(Paseto.Builder builder) {
 		Assertions.assertThrows(InvalidHeaderException.class, () -> {
 			TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
 
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.verify(tv.getToken(), TokenTestVectors.TEST_V1_PK, tv.getPayloadClass());
 		});
 	}
 
@@ -532,8 +534,8 @@ public class PasetoV1Test extends PasetoTest {
 		Assertions.assertThrows(InvalidHeaderException.class, () -> {
 			TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
 
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.decrypt(tv.getToken(), TokenTestVectors.TEST_V1_KEY, tv.getPayloadClass());
 		});
 	}
 
@@ -544,8 +546,8 @@ public class PasetoV1Test extends PasetoTest {
 		Assertions.assertThrows(InvalidHeaderException.class, () -> {
 			TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_PUBLIC_WITH_FOOTER;
 
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.verify(tv.getToken(), TokenTestVectors.TEST_V1_PK, tv.getPayloadClass());
 		});
 	}
 
@@ -556,8 +558,8 @@ public class PasetoV1Test extends PasetoTest {
 		Assertions.assertThrows(InvalidHeaderException.class, () -> {
 			TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
 
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.decrypt(tv.getToken(), TokenTestVectors.TEST_V1_KEY, tv.getPayloadClass());
 		});
 	}
 
@@ -568,8 +570,8 @@ public class PasetoV1Test extends PasetoTest {
 		Assertions.assertThrows(InvalidHeaderException.class, () -> {
 			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
 
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.verify(tv.getToken(), tv.getA(), tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.verify(tv.getToken(), TokenTestVectors.TEST_V1_PK, tv.getPayloadClass());
 		});
 	}
 
@@ -580,8 +582,8 @@ public class PasetoV1Test extends PasetoTest {
 		Assertions.assertThrows(InvalidFooterException.class, () -> {
 			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
 
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.decrypt(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.decrypt(tv.getToken(), tv.getLocalKey(), "not-the-footer", tv.getPayloadClass());
 		});
 	}
 
@@ -592,8 +594,8 @@ public class PasetoV1Test extends PasetoTest {
 		Assertions.assertThrows(InvalidFooterException.class, () -> {
 			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_PUBLIC;
 
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.verify(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.verify(tv.getToken(), tv.getPublicKey(), "not-the-footer", tv.getPayloadClass());
 		});
 	}
 
@@ -604,8 +606,8 @@ public class PasetoV1Test extends PasetoTest {
 		Assertions.assertThrows(InvalidFooterException.class, () -> {
 			TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
 
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.decrypt(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.decrypt(tv.getToken(), tv.getLocalKey(), "not-the-footer", tv.getPayloadClass());
 		});
 	}
 
@@ -616,8 +618,8 @@ public class PasetoV1Test extends PasetoTest {
 		Assertions.assertThrows(InvalidFooterException.class, () -> {
 			TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
 
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.verify(tv.getToken(), tv.getA(), "not-the-footer", tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.verify(tv.getToken(), tv.getPublicKey(), "not-the-footer", tv.getPayloadClass());
 		});
 	}
 
@@ -627,8 +629,8 @@ public class PasetoV1Test extends PasetoTest {
 	public void v1_badInput(Paseto.Builder builder) {
 		Assertions.assertThrows(PasetoStringException.class, () -> {
 			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.decrypt("junk", tv.getA(), tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.decrypt("junk", tv.getLocalKey(), tv.getPayloadClass());
 		});
 	}
 
@@ -637,8 +639,8 @@ public class PasetoV1Test extends PasetoTest {
 	public void v1_badTokenDecrypt(Paseto.Builder builder) {
 		Assertions.assertThrows(PasetoStringException.class, () -> {
 			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.decrypt("v1.local.", tv.getA(), tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.decrypt("v1.local.", tv.getLocalKey(), tv.getPayloadClass());
 		});
 	}
 
@@ -646,9 +648,9 @@ public class PasetoV1Test extends PasetoTest {
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
 	public void v1_badTokenVerify(Paseto.Builder builder) {
 		Assertions.assertThrows(PasetoStringException.class, () -> {
-			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.verify("v1.local.", tv.getA(), tv.getPayloadClass());
+			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_PUBLIC;
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.verify("v1.local.", tv.getPublicKey(), tv.getPayloadClass());
 		});
 	}
 
@@ -657,8 +659,8 @@ public class PasetoV1Test extends PasetoTest {
 	public void v1_shortTokenLocal(Paseto.Builder builder) {
 		Assertions.assertThrows(PasetoStringException.class, () -> {
 			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_LOCAL;
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.decrypt("v1.local.c29tZXRoaW5n", tv.getA(), tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.decrypt("v1.local.c29tZXRoaW5n", tv.getLocalKey(), tv.getPayloadClass());
 		});
 	}
 
@@ -667,8 +669,8 @@ public class PasetoV1Test extends PasetoTest {
 	public void v1_shortTokenPublic(Paseto.Builder builder) {
 		Assertions.assertThrows(PasetoStringException.class, () -> {
 			TestVector<Token, Void> tv = TokenTestVectors.TV_1_V1_PUBLIC;
-			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
-			paseto.verify("v1.public.c29tZXRoaW5n", tv.getA(), tv.getPayloadClass());
+			Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
+			paseto.verify("v1.public.c29tZXRoaW5n", tv.getPublicKey(), tv.getPayloadClass());
 		});
 	}
 
@@ -679,18 +681,18 @@ public class PasetoV1Test extends PasetoTest {
 	public void v1_token1_localNonce(Paseto.Builder builder) {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_LOCAL_WITH_FOOTER;
 		Paseto paseto = builder.build();
-		String token1 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
-		String token2 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
+		String token1 = paseto.encrypt(tv.getPayload(), tv.getLocalKey(), tv.getFooter());
+		String token2 = paseto.encrypt(tv.getPayload(), tv.getLocalKey(), tv.getFooter());
 		Assertions.assertNotEquals(token1, token2, "nonce failed, 2 tokens have same contents");
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
-	public void v1_token1_publicNonce(Paseto.Builder builder) {
+	public void v1_token1_publicNonce(Paseto.Builder builder) { // TODO naming, nonce not used but results should still differ
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V1_PUBLIC_WITH_FOOTER;
 		Paseto paseto = builder.build();
-		String token1 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
-		String token2 = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
+		String token1 = paseto.sign(tv.getPayload(), tv.getSecretKey(), tv.getFooter());
+		String token2 = paseto.sign(tv.getPayload(), tv.getSecretKey(), tv.getFooter());
 		Assertions.assertNotEquals(token1, token2, "nonce failed, 2 tokens have same contents");
 	}
 
@@ -715,7 +717,7 @@ public class PasetoV1Test extends PasetoTest {
 			Paseto paseto = builder.build();
 
 			AssertUtils.assertPasetoParseException(() ->
-							paseto.decrypt("", RfcTestVectors.RFC_TEST_KEY, RfcToken.class),
+							paseto.decrypt("", RfcTestVectors.RFC_TEST_V1_KEY, RfcToken.class),
 					"", PasetoParseException.Reason.MISSING_SECTIONS, 0);
 		});
 	}
@@ -727,7 +729,7 @@ public class PasetoV1Test extends PasetoTest {
 			Paseto paseto = builder.build();
 
 			AssertUtils.assertPasetoParseException(() ->
-							paseto.verify("", RfcTestVectors.RFC_TEST_RSA_PUBLIC_KEY, RfcToken.class),
+							paseto.verify("", RfcTestVectors.RFC_TEST_V1_PK, RfcToken.class),
 					"", PasetoParseException.Reason.MISSING_SECTIONS, 0);
 		});
 	}
@@ -739,7 +741,7 @@ public class PasetoV1Test extends PasetoTest {
 			Paseto paseto = builder.build();
 
 			AssertUtils.assertPasetoParseException(() ->
-							paseto.decrypt("v1.local.aa", RfcTestVectors.RFC_TEST_KEY, RfcToken.class),
+							paseto.decrypt("v1.local.aa", RfcTestVectors.RFC_TEST_V1_KEY, RfcToken.class),
 					"v1.local.aa", PasetoParseException.Reason.PAYLOAD_LENGTH, 81);
 		});
 	}
@@ -751,7 +753,7 @@ public class PasetoV1Test extends PasetoTest {
 			Paseto paseto = builder.build();
 
 			AssertUtils.assertPasetoParseException(() ->
-							paseto.verify("v1.public.aa", RfcTestVectors.RFC_TEST_RSA_PUBLIC_KEY, RfcToken.class),
+							paseto.verify("v1.public.aa", RfcTestVectors.RFC_TEST_V1_PK, RfcToken.class),
 					"v1.public.aa", PasetoParseException.Reason.PAYLOAD_LENGTH, 257);
 		});
 	}

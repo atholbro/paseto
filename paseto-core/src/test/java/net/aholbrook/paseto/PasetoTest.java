@@ -9,31 +9,29 @@ import java.nio.charset.StandardCharsets;
 
 public abstract class PasetoTest {
 	protected <_TokenType, _Footer> void encryptTestVector(Paseto.Builder builder, TestVector<_TokenType, _Footer> tv) {
-		// A: key, B: nonce
-		Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
+		Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
 		Assertions.assertNotNull(paseto, "paseto V1 instance");
 
 		String token;
 		if (tv.getFooter() != null) {
-			token = paseto.encrypt(tv.getPayload(), tv.getA(), tv.getFooter());
+			token = paseto.encrypt(tv.getPayload(), tv.getLocalKey(), tv.getFooter());
 		} else {
-			token = paseto.encrypt(tv.getPayload(), tv.getA());
+			token = paseto.encrypt(tv.getPayload(), tv.getLocalKey());
 		}
 
 		Assertions.assertEquals(tv.getToken(), token, "Generated token does not match test vector.");
 	}
 
 	protected <_TokenType, _Footer> void decryptTestVector(Paseto.Builder builder, TestVector<_TokenType, _Footer> tv) {
-		// A: key, B: nonce
-		Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getB())).build();
+		Paseto paseto = builder.withNonceGenerator(new TestNonceGenerator(tv.getNonce())).build();
 		Assertions.assertNotNull(paseto, "paseto V1 instance");
 
 		_TokenType payload;
 		if (tv.getFooter() != null) {
-			payload = paseto.decrypt(tv.getToken(), tv.getA(), tv.getFooter(),
+			payload = paseto.decrypt(tv.getToken(), tv.getLocalKey(), tv.getFooter(),
 					tv.getPayloadClass());
 		} else {
-			payload = paseto.decrypt(tv.getToken(), tv.getA(), tv.getPayloadClass());
+			payload = paseto.decrypt(tv.getToken(), tv.getLocalKey(), tv.getPayloadClass());
 		}
 
 		Assertions.assertEquals(tv.getPayload(), payload, "Decrypted payload does not match test vector.");
@@ -41,16 +39,15 @@ public abstract class PasetoTest {
 
 	protected <_TokenType, _Footer> void signTestVector(Paseto.Builder builder, TestVector<_TokenType, _Footer> tv,
 			boolean assertSigned) {
-		// A: sk, B: pk
 		Paseto paseto = builder.build();
 		Assertions.assertNotNull(paseto, "paseto V1 instance");
 
 		String token;
 		if (tv.getFooter() != null) {
-			token = paseto.sign(tv.getPayload(), tv.getA(),
+			token = paseto.sign(tv.getPayload(), tv.getSecretKey(),
 					tv.getFooter());
 		} else {
-			token = paseto.sign(tv.getPayload(), tv.getA());
+			token = paseto.sign(tv.getPayload(), tv.getSecretKey());
 		}
 
 		if (assertSigned) {
@@ -60,24 +57,23 @@ public abstract class PasetoTest {
 		// Now verify the signature (we can't use the token in the test vector as the signature will change each time.
 		_TokenType decoded;
 		if (tv.getFooter() != null) {
-			decoded = paseto.verify(token, tv.getB(), tv.getFooter(), tv.getPayloadClass());
+			decoded = paseto.verify(token, tv.getPublicKey(), tv.getFooter(), tv.getPayloadClass());
 		} else {
-			decoded = paseto.verify(token, tv.getB(), tv.getPayloadClass());
+			decoded = paseto.verify(token, tv.getPublicKey(), tv.getPayloadClass());
 		}
 
 		Assertions.assertEquals(tv.getPayload(), decoded, "Decoded payload does not match test vector.");
 	}
 
 	protected <_TokenType, _Footer> void verifyTestVector(Paseto.Builder builder, TestVector<_TokenType, _Footer> tv) {
-		// A: sk, B: pk
 		Paseto paseto = builder.build();
 		Assertions.assertNotNull(paseto, "paseto V1 instance");
 
 		_TokenType payload;
 		if (tv.getFooter() != null) {
-			payload = paseto.verify(tv.getToken(), tv.getB(), tv.getFooter(), tv.getPayloadClass());
+			payload = paseto.verify(tv.getToken(), tv.getPublicKey(), tv.getFooter(), tv.getPayloadClass());
 		} else {
-			payload = paseto.verify(tv.getToken(), tv.getB(), tv.getPayloadClass());
+			payload = paseto.verify(tv.getToken(), tv.getPublicKey(), tv.getPayloadClass());
 		}
 
 		Assertions.assertEquals(tv.getPayload(), payload, "Verified payload does not match test vector.");

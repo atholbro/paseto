@@ -6,6 +6,8 @@ import net.aholbrook.paseto.PasetoV2;
 import net.aholbrook.paseto.TokenWithFooter;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.Claims;
+import net.aholbrook.paseto.keys.AsymmetricPublicKey;
+import net.aholbrook.paseto.keys.AsymmetricSecretKey;
 import net.aholbrook.paseto.time.Duration;
 
 
@@ -62,9 +64,9 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 	}
 
 	public interface KeyProvider {
-		byte[] getSecretKey();
+		AsymmetricSecretKey getSecretKey();
 
-		byte[] getPublicKey();
+		AsymmetricPublicKey getPublicKey();
 	}
 
 	public static class Builder<_TokenType extends Token> {

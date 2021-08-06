@@ -1,22 +1,26 @@
 package net.aholbrook.paseto.data;
 
+import net.aholbrook.paseto.Version;
+import net.aholbrook.paseto.keys.AsymmetricPublicKey;
+import net.aholbrook.paseto.keys.AsymmetricSecretKey;
+import net.aholbrook.paseto.keys.SymmetricKey;
 import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.utils.Hex;
 
 public class TokenTestVectors {
 	// q9Rq3FfaAyN8JWyVJhphybm9DaFNLVt2
-	public static byte[] TEST_KEY = Hex.decode("713952713346666141794e384a5779564a68706879626d394461464e4c567432");
+	public static final byte[] TEST_KEY = Hex.decode("713952713346666141794e384a5779564a68706879626d394461464e4c567432");
 	// SmpF7Y5DeSJFJxjMrnDSwnUv
-	public static byte[] TEST_NONCE = Hex.decode("536d70463759354465534a464a786a4d726e4453776e5576");
+	public static final byte[] TEST_NONCE = Hex.decode("536d70463759354465534a464a786a4d726e4453776e5576");
 
-	public static byte[] TEST_SK = Hex.decode("452c1969ed4806c8d48ee4c670df980183f6796633787b15a03f09cb24eebe7c432"
+	public static final byte[] TEST_SK = Hex.decode("452c1969ed4806c8d48ee4c670df980183f6796633787b15a03f09cb24eebe7c432"
 			+ "fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d");
 
-	public static byte[] TEST_PK = Hex.decode("432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d");
+	public static final byte[] TEST_PK = Hex.decode("432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d");
 
 	// paseto-base/test_v1_rsa
-	public static byte[] TEST_RSA_PRIVATE_KEY = Hex.decode(
+	public static final byte[] TEST_RSA_PRIVATE_KEY = Hex.decode(
 			"308204bd020100300d06092a864886f70d0101010500048204a7308204a30201000282010100b282b532724e9646349947452b"
 					+ "64b0ff1597f8428161785011e43a1187a90466c420271626909b865f2fdd1d4635a025b5a34394a2fa4bcfa963886cd0"
 					+ "308b4911b2a702c89aa38ebd80dec7b367226ab504ec29487037d509db7e9f6bb09a83cdd2f20ac4d664ba6df7e5b7a1"
@@ -45,7 +49,7 @@ public class TokenTestVectors {
 					+ "161a882c59403e87bda25de0a98c");
 
 	// paseto-base/test_v1_rsa.pub
-	public static byte[] TEST_RSA_PUBLIC_KEY = Hex.decode(
+	public static final byte[] TEST_RSA_PUBLIC_KEY = Hex.decode(
 			"30820122300d06092a864886f70d01010105000382010f003082010a0282010100b282b532724e9646349947452b64b0ff1597"
 					+ "f8428161785011e43a1187a90466c420271626909b865f2fdd1d4635a025b5a34394a2fa4bcfa963886cd0308b4911b2"
 					+ "a702c89aa38ebd80dec7b367226ab504ec29487037d509db7e9f6bb09a83cdd2f20ac4d664ba6df7e5b7a1bb08e47297"
@@ -53,6 +57,14 @@ public class TokenTestVectors {
 					+ "66ca12a75d1bda713ce03f85ce59e26c12c022a3554b752a8e15cf25972532b5052ab294ecee2ac80916eb372328153f"
 					+ "b1c88edc8409af5bd42a3b11eaf8cca70cc62a8a4770f5ef2617b6dc77c01ceb6b8cfaa2a3979a2cb705951e0c950203"
 					+ "010001");
+
+	public static final SymmetricKey TEST_V1_KEY = new SymmetricKey(TEST_KEY, Version.V1);
+	public static final AsymmetricSecretKey TEST_V1_SK = new AsymmetricSecretKey(TEST_RSA_PRIVATE_KEY, Version.V1);
+	public static final AsymmetricPublicKey TEST_V1_PK = new AsymmetricPublicKey(TEST_RSA_PUBLIC_KEY, Version.V1);
+	
+	public static final SymmetricKey TEST_V2_KEY = new SymmetricKey(TEST_KEY, Version.V2);
+	public static final AsymmetricSecretKey TEST_V2_SK = new AsymmetricSecretKey(TEST_SK, Version.V2);
+	public static final AsymmetricPublicKey TEST_V2_PK = new AsymmetricPublicKey(TEST_PK, Version.V2);
 
 	public final static Token TOKEN_1 = new Token()
 			.setIssuer("paragonie.com")
@@ -134,31 +146,32 @@ public class TokenTestVectors {
 			+ "0wMS0wMVQwMDowMDowMCswMDowMCIsIm5iZiI6IjIwMzgtMDQtMDFUMDA6MDA6MDArMDA6MDAiLCJpYXQiOiIyMDM4LTAzLTE3VDAwOj"
 			+ "AwOjAwKzAwOjAwIiwianRpIjoiODdJRlNHRmdQTnRRTk51dzBBdHVMdHRQIn0BYQ_iR7pXXZMTURqG4t8HrFWubNZeFrrHHP_3kZ6yEL"
 			+ "RtB3WJ68BEJSNc4Y-kkIdtD8QKqLD9tuTBZLRT9OUN.VEVTVA";
-	public final static TestVector<Token, Void> TV_1_V1_LOCAL = new TestVector<>(TEST_KEY, TEST_NONCE, TOKEN_1,
-			Token.class, null, TOKEN_1_V1_LOCAL);
-	public final static TestVector<Token, KeyId> TV_1_V1_LOCAL_WITH_FOOTER = new TestVector<>(TEST_KEY, TEST_NONCE,
-			TOKEN_1, Token.class, TOKEN_1_FOOTER, TOKEN_1_V1_LOCAL_WITH_FOOTER);
-	public final static TestVector<Token, String> TV_1_V1_LOCAL_WITH_STRING_FOOTER = new TestVector<>(TEST_KEY,
-			TEST_NONCE, TOKEN_1, Token.class, TOKEN_1_STRING_FOOTER, TOKEN_1_V1_LOCAL_WITH_STRING_FOOTER);
-	public final static TestVector<Token, Void> TV_1_V1_PUBLIC = new TestVector<>(TEST_RSA_PRIVATE_KEY,
-			TEST_RSA_PUBLIC_KEY, TOKEN_1, Token.class, null, TOKEN_1_V1_PUBLIC);
-	public final static TestVector<Token, KeyId> TV_1_V1_PUBLIC_WITH_FOOTER = new TestVector<>(TEST_RSA_PRIVATE_KEY,
-			TEST_RSA_PUBLIC_KEY, TOKEN_1, Token.class, TOKEN_1_FOOTER, TOKEN_1_V1_PUBLIC_WITH_FOOTER);
+
+	public final static TestVector<Token, Void> TV_1_V1_LOCAL = new TestVector<>(
+			TEST_V1_KEY, TEST_NONCE, TOKEN_1, Token.class, null, TOKEN_1_V1_LOCAL);
+	public final static TestVector<Token, KeyId> TV_1_V1_LOCAL_WITH_FOOTER = new TestVector<>(
+			TEST_V1_KEY, TEST_NONCE, TOKEN_1, Token.class, TOKEN_1_FOOTER, TOKEN_1_V1_LOCAL_WITH_FOOTER);
+	public final static TestVector<Token, String> TV_1_V1_LOCAL_WITH_STRING_FOOTER = new TestVector<>(
+			TEST_V1_KEY, TEST_NONCE, TOKEN_1, Token.class, TOKEN_1_STRING_FOOTER, TOKEN_1_V1_LOCAL_WITH_STRING_FOOTER);
+	public final static TestVector<Token, Void> TV_1_V1_PUBLIC = new TestVector<>(
+			TEST_V1_SK, TEST_V1_PK, TOKEN_1, Token.class, null, TOKEN_1_V1_PUBLIC);
+	public final static TestVector<Token, KeyId> TV_1_V1_PUBLIC_WITH_FOOTER = new TestVector<>(
+			TEST_V1_SK, TEST_V1_PK, TOKEN_1, Token.class, TOKEN_1_FOOTER, TOKEN_1_V1_PUBLIC_WITH_FOOTER);
 	public final static TestVector<Token, String> TV_1_V1_PUBLIC_WITH_STRING_FOOTER = new TestVector<>(
-			TEST_RSA_PRIVATE_KEY, TEST_RSA_PUBLIC_KEY, TOKEN_1, Token.class, TOKEN_1_STRING_FOOTER,
-			TOKEN_1_V1_PUBLIC_WITH_STRING_FOOTER);
-	public final static TestVector<Token, Void> TV_1_V2_LOCAL = new TestVector<>(TEST_KEY, TEST_NONCE, TOKEN_1,
-			Token.class, null, TOKEN_1_V2_LOCAL);
-	public final static TestVector<Token, KeyId> TV_1_V2_LOCAL_WITH_FOOTER = new TestVector<>(TEST_KEY, TEST_NONCE,
-			TOKEN_1, Token.class, TOKEN_1_FOOTER, TOKEN_1_V2_LOCAL_WITH_FOOTER);
-	public final static TestVector<Token, String> TV_1_V2_LOCAL_WITH_STRING_FOOTER = new TestVector<>(TEST_KEY,
-			TEST_NONCE, TOKEN_1, Token.class, TOKEN_1_STRING_FOOTER, TOKEN_1_V2_LOCAL_WITH_STRING_FOOTER);
-	public final static TestVector<Token, Void> TV_1_V2_PUBLIC = new TestVector<>(TEST_SK, TEST_PK,
-			TOKEN_1, Token.class, null, TOKEN_1_V2_PUBLIC);
-	public final static TestVector<Token, KeyId> TV_1_V2_PUBLIC_WITH_FOOTER = new TestVector<>(TEST_SK,
-			TEST_PK, TOKEN_1, Token.class, TOKEN_1_FOOTER, TOKEN_1_V2_PUBLIC_WITH_FOOTER);
-	public final static TestVector<Token, String> TV_1_V2_PUBLIC_WITH_STRING_FOOTER = new TestVector<>(TEST_SK,
-			TEST_PK, TOKEN_1, Token.class, TOKEN_1_STRING_FOOTER, TOKEN_1_V2_PUBLIC_WITH_STRING_FOOTER);
+			TEST_V1_SK, TEST_V1_PK, TOKEN_1, Token.class, TOKEN_1_STRING_FOOTER, TOKEN_1_V1_PUBLIC_WITH_STRING_FOOTER);
+
+	public final static TestVector<Token, Void> TV_1_V2_LOCAL = new TestVector<>(
+			TEST_V2_KEY, TEST_NONCE, TOKEN_1, Token.class, null, TOKEN_1_V2_LOCAL);
+	public final static TestVector<Token, KeyId> TV_1_V2_LOCAL_WITH_FOOTER = new TestVector<>(
+			TEST_V2_KEY, TEST_NONCE, TOKEN_1, Token.class, TOKEN_1_FOOTER, TOKEN_1_V2_LOCAL_WITH_FOOTER);
+	public final static TestVector<Token, String> TV_1_V2_LOCAL_WITH_STRING_FOOTER = new TestVector<>(
+			TEST_V2_KEY, TEST_NONCE, TOKEN_1, Token.class, TOKEN_1_STRING_FOOTER, TOKEN_1_V2_LOCAL_WITH_STRING_FOOTER);
+	public final static TestVector<Token, Void> TV_1_V2_PUBLIC = new TestVector<>(
+			TEST_V2_SK, TEST_V2_PK, TOKEN_1, Token.class, null, TOKEN_1_V2_PUBLIC);
+	public final static TestVector<Token, KeyId> TV_1_V2_PUBLIC_WITH_FOOTER = new TestVector<>(
+			TEST_V2_SK, TEST_V2_PK, TOKEN_1, Token.class, TOKEN_1_FOOTER, TOKEN_1_V2_PUBLIC_WITH_FOOTER);
+	public final static TestVector<Token, String> TV_1_V2_PUBLIC_WITH_STRING_FOOTER = new TestVector<>(
+			TEST_V2_SK, TEST_V2_PK, TOKEN_1, Token.class, TOKEN_1_STRING_FOOTER, TOKEN_1_V2_PUBLIC_WITH_STRING_FOOTER);
 
 	public final static CustomToken TOKEN_2 = (CustomToken) new CustomToken()
 			.setUserId(100L)
@@ -217,23 +230,23 @@ public class TokenTestVectors {
 			+ "FsLXNlcnZpY2UuZXhhbXBsZS5jb20iLCJleHAiOiIyMDE4LTAxLTAxVDE3OjIzOjQ0KzAwOjAwIiwibmJmIjoiMjAxOC0wMS0wMVQxNz"
 			+ "oxODo0NCswMDowMCIsImlhdCI6IjIwMTgtMDEtMDFUMTc6MTg6NDQrMDA6MDAifWn4VQZkCN2AhWGRcGpGDbj6p4ms8zDeauxMbdSOUW"
 			+ "f6aFNIIRhD-K7nLx-FFFDOr1_8MmhaSOZbVCh_tR4euA4.eyJraWQiOiJrZXktMSJ9";
-	public final static TestVector<CustomToken, Void> TV_2_V1_LOCAL = new TestVector<>(TEST_KEY, TEST_NONCE, TOKEN_2,
-			CustomToken.class, null, TOKEN_2_V1_LOCAL);
-	public final static TestVector<CustomToken, KeyId> TV_2_V1_LOCAL_WITH_FOOTER = new TestVector<>(TEST_KEY,
-			TEST_NONCE, TOKEN_2, CustomToken.class, TOKEN_2_FOOTER, TOKEN_2_V1_LOCAL_WITH_FOOTER);
-	public final static TestVector<CustomToken, Void> TV_2_V1_PUBLIC = new TestVector<>(TEST_RSA_PRIVATE_KEY,
-			TEST_RSA_PUBLIC_KEY, TOKEN_2, CustomToken.class, null, TOKEN_2_V1_PUBLIC);
+	public final static TestVector<CustomToken, Void> TV_2_V1_LOCAL = new TestVector<>(
+			TEST_V1_KEY, TEST_NONCE, TOKEN_2, CustomToken.class, null, TOKEN_2_V1_LOCAL);
+	public final static TestVector<CustomToken, KeyId> TV_2_V1_LOCAL_WITH_FOOTER = new TestVector<>(
+			TEST_V1_KEY, TEST_NONCE, TOKEN_2, CustomToken.class, TOKEN_2_FOOTER, TOKEN_2_V1_LOCAL_WITH_FOOTER);
+	public final static TestVector<CustomToken, Void> TV_2_V1_PUBLIC = new TestVector<>(
+			TEST_V1_SK, TEST_V1_PK, TOKEN_2, CustomToken.class, null, TOKEN_2_V1_PUBLIC);
 	public final static TestVector<CustomToken, KeyId> TV_2_V1_PUBLIC_WITH_FOOTER = new TestVector<>(
-			TEST_RSA_PRIVATE_KEY, TEST_RSA_PUBLIC_KEY, TOKEN_2, CustomToken.class, TOKEN_2_FOOTER,
-			TOKEN_2_V1_PUBLIC_WITH_FOOTER);
-	public final static TestVector<CustomToken, Void> TV_2_V2_LOCAL = new TestVector<>(TEST_KEY, TEST_NONCE, TOKEN_2,
-			CustomToken.class, null, TOKEN_2_V2_LOCAL);
-	public final static TestVector<CustomToken, KeyId> TV_2_V2_LOCAL_WITH_FOOTER = new TestVector<>(TEST_KEY,
-			TEST_NONCE, TOKEN_2, CustomToken.class, TOKEN_2_FOOTER, TOKEN_2_V2_LOCAL_WITH_FOOTER);
-	public final static TestVector<CustomToken, Void> TV_2_V2_PUBLIC = new TestVector<>(TEST_SK,
-			TEST_PK, TOKEN_2, CustomToken.class, null, TOKEN_2_V2_PUBLIC);
-	public final static TestVector<CustomToken, KeyId> TV_2_V2_PUBLIC_WITH_FOOTER = new TestVector<>(TEST_SK,
-			TEST_PK, TOKEN_2, CustomToken.class, TOKEN_2_FOOTER, TOKEN_2_V2_PUBLIC_WITH_FOOTER);
+			TEST_V1_SK, TEST_V1_PK, TOKEN_2, CustomToken.class, TOKEN_2_FOOTER, TOKEN_2_V1_PUBLIC_WITH_FOOTER);
+
+	public final static TestVector<CustomToken, Void> TV_2_V2_LOCAL = new TestVector<>(
+			TEST_V2_KEY, TEST_NONCE, TOKEN_2, CustomToken.class, null, TOKEN_2_V2_LOCAL);
+	public final static TestVector<CustomToken, KeyId> TV_2_V2_LOCAL_WITH_FOOTER = new TestVector<>(
+			TEST_V2_KEY, TEST_NONCE, TOKEN_2, CustomToken.class, TOKEN_2_FOOTER, TOKEN_2_V2_LOCAL_WITH_FOOTER);
+	public final static TestVector<CustomToken, Void> TV_2_V2_PUBLIC = new TestVector<>(
+			TEST_V2_SK, TEST_V2_PK, TOKEN_2, CustomToken.class, null, TOKEN_2_V2_PUBLIC);
+	public final static TestVector<CustomToken, KeyId> TV_2_V2_PUBLIC_WITH_FOOTER = new TestVector<>(
+			TEST_V2_SK, TEST_V2_PK, TOKEN_2, CustomToken.class, TOKEN_2_FOOTER, TOKEN_2_V2_PUBLIC_WITH_FOOTER);
 
 	// Minimal token, only iss and exp set.
 	public final static Token TOKEN_3 = new Token()
@@ -275,22 +288,23 @@ public class TokenTestVectors {
 			= "v2.public.eyJleHAiOiIyMDE4LTAxLTAxVDE3OjIzOjQ0KzAwOjAwIiwiaWF0IjoiMjAxOC0wMS0wMVQxNzoxODo0NCswMDowMCJ9gc"
 			+ "TyYa__QR6HuqU5Kcbl1cmXZDCEGdFy2xCO4MFnP8teHUfLs_vcY3Dfq3KjgfSAYXxEktCwpxhk3eQwg14yCQ.eyJraWQiOiJrZXktMiJ"
 			+ "9";
-	public final static TestVector<Token, Void> TV_3_V1_LOCAL = new TestVector<>(TEST_KEY, TEST_NONCE, TOKEN_3,
-			Token.class, null, TOKEN_3_V1_LOCAL);
-	public final static TestVector<Token, KeyId> TV_3_V1_LOCAL_WITH_FOOTER = new TestVector<>(TEST_KEY, TEST_NONCE,
-			TOKEN_3, Token.class, TOKEN_3_FOOTER, TOKEN_3_V1_LOCAL_WITH_FOOTER);
-	public final static TestVector<Token, Void> TV_3_V1_PUBLIC = new TestVector<>(TEST_RSA_PRIVATE_KEY,
-			TEST_RSA_PUBLIC_KEY, TOKEN_3, Token.class, null, TOKEN_3_V1_PUBLIC);
-	public final static TestVector<Token, KeyId> TV_3_V1_PUBLIC_WITH_FOOTER = new TestVector<>(TEST_RSA_PRIVATE_KEY,
-			TEST_RSA_PUBLIC_KEY, TOKEN_3, Token.class, TOKEN_3_FOOTER, TOKEN_3_V1_PUBLIC_WITH_FOOTER);
-	public final static TestVector<Token, Void> TV_3_V2_LOCAL = new TestVector<>(TEST_KEY, TEST_NONCE, TOKEN_3,
-			Token.class, null, TOKEN_3_V2_LOCAL);
-	public final static TestVector<Token, KeyId> TV_3_V2_LOCAL_WITH_FOOTER = new TestVector<>(TEST_KEY, TEST_NONCE,
-			TOKEN_3, Token.class, TOKEN_3_FOOTER, TOKEN_3_V2_LOCAL_WITH_FOOTER);
-	public final static TestVector<Token, Void> TV_3_V2_PUBLIC = new TestVector<>(TEST_SK, TEST_PK,
-			TOKEN_3, Token.class, null, TOKEN_3_V2_PUBLIC);
-	public final static TestVector<Token, KeyId> TV_3_V2_PUBLIC_WITH_FOOTER = new TestVector<>(TEST_SK,
-			TEST_PK, TOKEN_3, Token.class, TOKEN_3_FOOTER, TOKEN_3_V2_PUBLIC_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_3_V1_LOCAL = new TestVector<>(
+			TEST_V1_KEY, TEST_NONCE, TOKEN_3, Token.class, null, TOKEN_3_V1_LOCAL);
+	public final static TestVector<Token, KeyId> TV_3_V1_LOCAL_WITH_FOOTER = new TestVector<>(
+			TEST_V1_KEY, TEST_NONCE, TOKEN_3, Token.class, TOKEN_3_FOOTER, TOKEN_3_V1_LOCAL_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_3_V1_PUBLIC = new TestVector<>(
+			TEST_V1_SK, TEST_V1_PK, TOKEN_3, Token.class, null, TOKEN_3_V1_PUBLIC);
+	public final static TestVector<Token, KeyId> TV_3_V1_PUBLIC_WITH_FOOTER = new TestVector<>(
+			TEST_V1_SK, TEST_V1_PK, TOKEN_3, Token.class, TOKEN_3_FOOTER, TOKEN_3_V1_PUBLIC_WITH_FOOTER);
+
+	public final static TestVector<Token, Void> TV_3_V2_LOCAL = new TestVector<>(
+			TEST_V2_KEY, TEST_NONCE, TOKEN_3, Token.class, null, TOKEN_3_V2_LOCAL);
+	public final static TestVector<Token, KeyId> TV_3_V2_LOCAL_WITH_FOOTER = new TestVector<>(
+			TEST_V2_KEY, TEST_NONCE, TOKEN_3, Token.class, TOKEN_3_FOOTER, TOKEN_3_V2_LOCAL_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_3_V2_PUBLIC = new TestVector<>(
+			TEST_V2_SK, TEST_V2_PK, TOKEN_3, Token.class, null, TOKEN_3_V2_PUBLIC);
+	public final static TestVector<Token, KeyId> TV_3_V2_PUBLIC_WITH_FOOTER = new TestVector<>(
+			TEST_V2_SK, TEST_V2_PK, TOKEN_3, Token.class, TOKEN_3_FOOTER, TOKEN_3_V2_PUBLIC_WITH_FOOTER);
 
 	// Empty token
 	public final static Token TOKEN_4 = new Token();
@@ -320,20 +334,21 @@ public class TokenTestVectors {
 	private final static String TOKEN_4_V2_PUBLIC_WITH_FOOTER
 			= "v2.public.e30RItbv4bN4XIzyLFapaMll5aOnuqcmttzAH4-pFf8vHrK8COU0EeGwlt-1tfR3OkUxTyoQdlE2dlOtbLxlbrEO.eyJra"
 			+ "WQiOiJrZXktMSJ9";
-	public final static TestVector<Token, Void> TV_4_V1_LOCAL = new TestVector<>(TEST_KEY, TEST_NONCE, TOKEN_4,
-			Token.class, null, TOKEN_4_V1_LOCAL);
-	public final static TestVector<Token, KeyId> TV_4_V1_LOCAL_WITH_FOOTER = new TestVector<>(TEST_KEY, TEST_NONCE,
-			TOKEN_4, Token.class, TOKEN_4_FOOTER, TOKEN_4_V1_LOCAL_WITH_FOOTER);
-	public final static TestVector<Token, Void> TV_4_V1_PUBLIC = new TestVector<>(TEST_RSA_PRIVATE_KEY,
-			TEST_RSA_PUBLIC_KEY, TOKEN_4, Token.class, null, TOKEN_4_V1_PUBLIC);
-	public final static TestVector<Token, KeyId> TV_4_V1_PUBLIC_WITH_FOOTER = new TestVector<>(TEST_RSA_PRIVATE_KEY,
-			TEST_RSA_PUBLIC_KEY, TOKEN_4, Token.class, TOKEN_4_FOOTER, TOKEN_4_V1_PUBLIC_WITH_FOOTER);
-	public final static TestVector<Token, Void> TV_4_V2_LOCAL = new TestVector<>(TEST_KEY, TEST_NONCE, TOKEN_4,
-			Token.class, null, TOKEN_4_V2_LOCAL);
-	public final static TestVector<Token, KeyId> TV_4_V2_LOCAL_WITH_FOOTER = new TestVector<>(TEST_KEY, TEST_NONCE,
-			TOKEN_4, Token.class, TOKEN_4_FOOTER, TOKEN_4_V2_LOCAL_WITH_FOOTER);
-	public final static TestVector<Token, Void> TV_4_V2_PUBLIC = new TestVector<>(TEST_SK, TEST_PK,
-			TOKEN_4, Token.class, null, TOKEN_4_V2_PUBLIC);
-	public final static TestVector<Token, KeyId> TV_4_V2_PUBLIC_WITH_FOOTER = new TestVector<>(TEST_SK,
-			TEST_PK, TOKEN_4, Token.class, TOKEN_4_FOOTER, TOKEN_4_V2_PUBLIC_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_4_V1_LOCAL = new TestVector<>(
+			TEST_V1_KEY, TEST_NONCE, TOKEN_4, Token.class, null, TOKEN_4_V1_LOCAL);
+	public final static TestVector<Token, KeyId> TV_4_V1_LOCAL_WITH_FOOTER = new TestVector<>(
+			TEST_V1_KEY, TEST_NONCE, TOKEN_4, Token.class, TOKEN_4_FOOTER, TOKEN_4_V1_LOCAL_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_4_V1_PUBLIC = new TestVector<>(
+			TEST_V1_SK, TEST_V1_PK, TOKEN_4, Token.class, null, TOKEN_4_V1_PUBLIC);
+	public final static TestVector<Token, KeyId> TV_4_V1_PUBLIC_WITH_FOOTER = new TestVector<>(
+			TEST_V1_SK, TEST_V1_PK, TOKEN_4, Token.class, TOKEN_4_FOOTER, TOKEN_4_V1_PUBLIC_WITH_FOOTER);
+
+	public final static TestVector<Token, Void> TV_4_V2_LOCAL = new TestVector<>(
+			TEST_V2_KEY, TEST_NONCE, TOKEN_4, Token.class, null, TOKEN_4_V2_LOCAL);
+	public final static TestVector<Token, KeyId> TV_4_V2_LOCAL_WITH_FOOTER = new TestVector<>(
+			TEST_V2_KEY, TEST_NONCE, TOKEN_4, Token.class, TOKEN_4_FOOTER, TOKEN_4_V2_LOCAL_WITH_FOOTER);
+	public final static TestVector<Token, Void> TV_4_V2_PUBLIC = new TestVector<>(
+			TEST_V2_SK, TEST_V2_PK, TOKEN_4, Token.class, null, TOKEN_4_V2_PUBLIC);
+	public final static TestVector<Token, KeyId> TV_4_V2_PUBLIC_WITH_FOOTER = new TestVector<>(
+			TEST_V2_SK, TEST_V2_PK, TOKEN_4, Token.class, TOKEN_4_FOOTER, TOKEN_4_V2_PUBLIC_WITH_FOOTER);
 }
