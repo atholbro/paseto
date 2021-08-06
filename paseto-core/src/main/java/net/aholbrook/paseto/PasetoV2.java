@@ -1,7 +1,8 @@
 package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.base64.jvm8.Base64Provider;
-import net.aholbrook.paseto.crypto.KeyPair;
+import net.aholbrook.paseto.crypto.Pair;
+import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
 import net.aholbrook.paseto.crypto.v2.V2CryptoLoader;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
@@ -9,6 +10,9 @@ import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.DecryptionException;
 import net.aholbrook.paseto.exception.PasetoParseException;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
+import net.aholbrook.paseto.keys.AsymmetricPublicKey;
+import net.aholbrook.paseto.keys.AsymmetricSecretKey;
+import net.aholbrook.paseto.keys.SymmetricKey;
 import net.aholbrook.paseto.util.PaeUtil;
 import net.aholbrook.paseto.util.StringUtils;
 
@@ -26,7 +30,10 @@ public class PasetoV2 extends Paseto {
 	}
 
 	@Override
-	public String encrypt(Object payload, byte[] key, String footer) {
+	public String encrypt(Object payload, SymmetricKey key, String footer) {
+		// Verify key version.
+		key.verifyKey(Version.V2);
+
 		footer = StringUtils.ntes(footer); // convert null to ""
 		byte[] payloadBytes = StringUtils.getBytesUtf8(encodingProvider.encode(payload));
 		byte[] footerBytes = StringUtils.getBytesUtf8(footer);
@@ -38,7 +45,7 @@ public class PasetoV2 extends Paseto {
 		byte[] preAuth = PaeUtil.pae(StringUtils.getBytesUtf8(HEADER_LOCAL), n, footerBytes);
 
 		byte[] c = new byte[payloadBytes.length + cryptoProvider.xChaCha20Poly1305IetfAbytes()];
-		cryptoProvider.aeadXChaCha20Poly1305IetfEncrypt(c, payloadBytes, preAuth, n, key);
+		cryptoProvider.aeadXChaCha20Poly1305IetfEncrypt(c, payloadBytes, preAuth, n, key.getMaterial());
 
 		byte[] nc = new byte[n.length + c.length];
 		System.arraycopy(n, 0, nc, 0, n.length);
@@ -53,7 +60,10 @@ public class PasetoV2 extends Paseto {
 	}
 
 	@Override
-	public <_Payload> _Payload decrypt(String token, byte[] key, String footer, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload decrypt(String token, SymmetricKey key, String footer, Class<_Payload> payloadClass) {
+		// Verify key version.
+		key.verifyKey(Version.V2);
+
 		// Split token into sections
 		String[] sections = split(token);
 		if (sections == null) {
@@ -80,7 +90,7 @@ public class PasetoV2 extends Paseto {
 
 		byte[] preAuth = PaeUtil.pae(StringUtils.getBytesUtf8(HEADER_LOCAL), n, StringUtils.getBytesUtf8(decodedFooter));
 		byte[] p = new byte[c.length - cryptoProvider.xChaCha20Poly1305IetfAbytes()];
-		if (!cryptoProvider.aeadXChaCha20Poly1305IetfDecrypt(p, c, preAuth, n, key)) {
+		if (!cryptoProvider.aeadXChaCha20Poly1305IetfDecrypt(p, c, preAuth, n, key.getMaterial())) {
 			throw new DecryptionException(token);
 		}
 
@@ -89,14 +99,17 @@ public class PasetoV2 extends Paseto {
 	}
 
 	@Override
-	public String sign(Object payload, byte[] sk, String footer) {
+	public String sign(Object payload, AsymmetricSecretKey sk, String footer) {
+		// Verify key version.
+		sk.verifyKey(Version.V2);
+
 		footer = StringUtils.ntes(footer); // convert null to ""
 		byte[] payloadBytes = StringUtils.getBytesUtf8(encodingProvider.encode(payload));
 		byte[] footerBytes = StringUtils.getBytesUtf8(footer);
 
 		byte[] m2 = PaeUtil.pae(StringUtils.getBytesUtf8(HEADER_PUBLIC), payloadBytes, footerBytes);
 		byte[] sig = new byte[cryptoProvider.ed25519SignBytes()];
-		cryptoProvider.ed25519Sign(sig, m2, sk);
+		cryptoProvider.ed25519Sign(sig, m2, sk.getMaterial());
 
 		byte[] msig = new byte[payloadBytes.length + sig.length];
 		System.arraycopy(payloadBytes, 0, msig, 0, payloadBytes.length);
@@ -111,7 +124,10 @@ public class PasetoV2 extends Paseto {
 	}
 
 	@Override
-	public <_Payload> _Payload verify(String token, byte[] pk, String footer, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload verify(String token, AsymmetricPublicKey pk, String footer, Class<_Payload> payloadClass) {
+		// Verify key version.
+		pk.verifyKey(Version.V2);
+
 		// Split token into sections
 		String[] sections = split(token);
 		if (sections == null) {
@@ -137,7 +153,7 @@ public class PasetoV2 extends Paseto {
 		System.arraycopy(msig, 0, m, 0, m.length);
 
 		byte[] m2 = PaeUtil.pae(StringUtils.getBytesUtf8(HEADER_PUBLIC), m, StringUtils.getBytesUtf8(decodedFooter));
-		if (!cryptoProvider.ed25519Verify(s, m2, pk)) {
+		if (!cryptoProvider.ed25519Verify(s, m2, pk.getMaterial())) {
 			throw new SignatureVerificationException(token);
 		}
 
@@ -147,7 +163,11 @@ public class PasetoV2 extends Paseto {
 
 	@Override
 	public KeyPair generateKeyPair() {
-		return cryptoProvider.ed25519Generate();
+		Pair<byte[], byte[]> rawKey = cryptoProvider.ed25519Generate();
+		return new KeyPair(
+				new AsymmetricSecretKey(rawKey.a, Version.V2),
+				new AsymmetricPublicKey(rawKey.b, Version.V2)
+		);
 	}
 
 	public static class Builder extends Paseto.Builder {

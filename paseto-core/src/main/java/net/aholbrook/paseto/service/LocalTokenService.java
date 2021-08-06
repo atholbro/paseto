@@ -6,6 +6,7 @@ import net.aholbrook.paseto.PasetoV2;
 import net.aholbrook.paseto.TokenWithFooter;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.Claims;
+import net.aholbrook.paseto.keys.SymmetricKey;
 import net.aholbrook.paseto.time.Duration;
 
 public class LocalTokenService<_TokenType extends Token> extends TokenService<_TokenType> {
@@ -20,25 +21,25 @@ public class LocalTokenService<_TokenType extends Token> extends TokenService<_T
 	@Override
 	public String encode(_TokenType token) {
 		validateToken(token);
-		return paseto.encrypt(token, keyProvider.getSecretKey());
+		return paseto.encrypt(token, keyProvider.getKey());
 	}
 
 	@Override
 	public <_FooterType> String encode(_TokenType token, _FooterType footer) {
 		validateToken(token);
-		return paseto.encrypt(token, keyProvider.getSecretKey(), footer);
+		return paseto.encrypt(token, keyProvider.getKey(), footer);
 	}
 
 	@Override
 	public _TokenType decode(String token) {
-		_TokenType result = paseto.decrypt(token, keyProvider.getSecretKey(), tokenClass);
+		_TokenType result = paseto.decrypt(token, keyProvider.getKey(), tokenClass);
 		Claims.verify(result, claims);
 		return result;
 	}
 
 	@Override
 	public <_FooterType> _TokenType decode(String token, _FooterType footer) {
-		_TokenType result = paseto.decrypt(token, keyProvider.getSecretKey(), footer, tokenClass);
+		_TokenType result = paseto.decrypt(token, keyProvider.getKey(), footer, tokenClass);
 		Claims.verify(result, claims);
 		return result;
 	}
@@ -46,7 +47,7 @@ public class LocalTokenService<_TokenType extends Token> extends TokenService<_T
 	@Override
 	public <_FooterType> TokenWithFooter<_TokenType, _FooterType> decodeWithFooter(String token, Class<_FooterType> footerClass) {
 		TokenWithFooter<_TokenType, _FooterType> result
-				= paseto.decryptWithFooter(token, keyProvider.getSecretKey(), tokenClass, footerClass);
+				= paseto.decryptWithFooter(token, keyProvider.getKey(), tokenClass, footerClass);
 		Claims.verify(result.getToken(), claims);
 		return result;
 	}
@@ -62,7 +63,7 @@ public class LocalTokenService<_TokenType extends Token> extends TokenService<_T
 	}
 
 	public interface KeyProvider {
-		byte[] getSecretKey();
+		SymmetricKey getKey();
 	}
 
 	public static class Builder<_TokenType extends Token> {

@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.crypto.v1;
 
-import net.aholbrook.paseto.crypto.KeyPair;
+import net.aholbrook.paseto.crypto.Pair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
 import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 
@@ -45,7 +45,7 @@ public abstract class V1CryptoProvider implements NonceGenerator {
 
 	abstract public boolean rsaVerify(byte[] m, byte[] sig, byte[] publicKey);
 
-	abstract public KeyPair rsaGenerate();
+	abstract public Pair<byte[], byte[]> rsaGenerate();
 
 	// Validation
 	protected final void validateHkdfExtractAndExpand(byte[] salt, byte[] inputKeyingMaterial, byte[] info) {

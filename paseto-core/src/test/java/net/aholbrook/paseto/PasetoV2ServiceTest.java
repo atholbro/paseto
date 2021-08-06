@@ -7,6 +7,8 @@ import net.aholbrook.paseto.data.RfcToken;
 import net.aholbrook.paseto.data.TestVector;
 import net.aholbrook.paseto.data.TokenTestVectors;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
+import net.aholbrook.paseto.keys.AsymmetricPublicKey;
+import net.aholbrook.paseto.keys.AsymmetricSecretKey;
 import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;
@@ -23,40 +25,40 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class PasetoV2ServiceTest extends PasetoServiceTest {
 	@Override
 	protected LocalTokenService.KeyProvider rfcLocalKeyProvider() {
-		return () -> RfcTestVectors.RFC_TEST_KEY;
+		return () -> RfcTestVectors.RFC_TEST_V2_KEY;
 	}
 
 	@Override
 	protected PublicTokenService.KeyProvider rfcPublicKeyProvider() {
 		return new PublicTokenService.KeyProvider() {
 			@Override
-			public byte[] getSecretKey() {
-				return RfcTestVectors.RFC_TEST_SK;
+			public AsymmetricSecretKey getSecretKey() {
+				return RfcTestVectors.RFC_TEST_V2_SK;
 			}
 
 			@Override
-			public byte[] getPublicKey() {
-				return RfcTestVectors.RFC_TEST_PK;
+			public AsymmetricPublicKey getPublicKey() {
+				return RfcTestVectors.RFC_TEST_V2_PK;
 			}
 		};
 	}
 
 	@Override
 	protected LocalTokenService.KeyProvider tokenLocalKeyProvider() {
-		return () -> TokenTestVectors.TEST_KEY;
+		return () -> TokenTestVectors.TEST_V2_KEY;
 	}
 
 	@Override
 	protected PublicTokenService.KeyProvider tokenPublicKeyProvider() {
 		return new PublicTokenService.KeyProvider() {
 			@Override
-			public byte[] getSecretKey() {
-				return TokenTestVectors.TEST_SK;
+			public AsymmetricSecretKey getSecretKey() {
+				return TokenTestVectors.TEST_V2_SK;
 			}
 
 			@Override
-			public byte[] getPublicKey() {
-				return TokenTestVectors.TEST_PK;
+			public AsymmetricPublicKey getPublicKey() {
+				return TokenTestVectors.TEST_V2_PK;
 			}
 		};
 	}
@@ -102,42 +104,42 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_rfcVectorE1(Paseto.Builder builder) {
 		TestVector<RfcToken, ?> tv = RfcTestVectors.RFC_TEST_VECTOR_V2_E_1;
-		encodeTestVector(rfcLocalService(builder, tv.getB()), tv);
+		encodeTestVector(rfcLocalService(builder, tv.getNonce()), tv);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_rfcVectorE2(Paseto.Builder builder) {
 		TestVector<RfcToken, ?> tv = RfcTestVectors.RFC_TEST_VECTOR_V2_E_2;
-		encodeTestVector(rfcLocalService(builder, tv.getB()), tv);
+		encodeTestVector(rfcLocalService(builder, tv.getNonce()), tv);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_rfcVectorE3(Paseto.Builder builder) {
 		TestVector<RfcToken, ?> tv = RfcTestVectors.RFC_TEST_VECTOR_V2_E_3;
-		encodeTestVector(rfcLocalService(builder, tv.getB()), tv);
+		encodeTestVector(rfcLocalService(builder, tv.getNonce()), tv);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_rfcVectorE4(Paseto.Builder builder) {
 		TestVector<RfcToken, ?> tv = RfcTestVectors.RFC_TEST_VECTOR_V2_E_4;
-		encodeTestVector(rfcLocalService(builder, tv.getB()), tv);
+		encodeTestVector(rfcLocalService(builder, tv.getNonce()), tv);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_rfcVectorE5(Paseto.Builder builder) {
 		TestVector<RfcToken, ?> tv = RfcTestVectors.RFC_TEST_VECTOR_V2_E_5;
-		encodeTestVector(rfcLocalService(builder, tv.getB()), tv);
+		encodeTestVector(rfcLocalService(builder, tv.getNonce()), tv);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_rfcVectorE6(Paseto.Builder builder) {
 		TestVector<RfcToken, ?> tv = RfcTestVectors.RFC_TEST_VECTOR_V2_E_6;
-		encodeTestVector(rfcLocalService(builder, tv.getB()), tv);
+		encodeTestVector(rfcLocalService(builder, tv.getNonce()), tv);
 	}
 
 	// Decryption tests
@@ -145,42 +147,42 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_rfcVectorE1Decrypt(Paseto.Builder builder) {
 		TestVector<RfcToken, ?> tv = RfcTestVectors.RFC_TEST_VECTOR_V2_E_1;
-		decodeTestVector(rfcLocalService(builder, tv.getB()), tv);
+		decodeTestVector(rfcLocalService(builder, tv.getNonce()), tv);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_rfcVectorE2Decrypt(Paseto.Builder builder) {
 		TestVector<RfcToken, ?> tv = RfcTestVectors.RFC_TEST_VECTOR_V2_E_2;
-		decodeTestVector(rfcLocalService(builder, tv.getB()), tv);
+		decodeTestVector(rfcLocalService(builder, tv.getNonce()), tv);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_rfcVectorE3Decrypt(Paseto.Builder builder) {
 		TestVector<RfcToken, ?> tv = RfcTestVectors.RFC_TEST_VECTOR_V2_E_3;
-		decodeTestVector(rfcLocalService(builder, tv.getB()), tv);
+		decodeTestVector(rfcLocalService(builder, tv.getNonce()), tv);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_rfcVectorE4Decrypt(Paseto.Builder builder) {
 		TestVector<RfcToken, ?> tv = RfcTestVectors.RFC_TEST_VECTOR_V2_E_4;
-		decodeTestVector(rfcLocalService(builder, tv.getB()), tv);
+		decodeTestVector(rfcLocalService(builder, tv.getNonce()), tv);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_rfcVectorE5Decrypt(Paseto.Builder builder) {
 		TestVector<RfcToken, ?> tv = RfcTestVectors.RFC_TEST_VECTOR_V2_E_5;
-		decodeTestVector(rfcLocalService(builder, tv.getB()), tv);
+		decodeTestVector(rfcLocalService(builder, tv.getNonce()), tv);
 	}
 
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_rfcVectorE6Decrypt(Paseto.Builder builder) {
 		TestVector<RfcToken, ?> tv = RfcTestVectors.RFC_TEST_VECTOR_V2_E_6;
-		decodeTestVector(rfcLocalService(builder, tv.getB()), tv);
+		decodeTestVector(rfcLocalService(builder, tv.getNonce()), tv);
 	}
 
 	// Sign tests
@@ -217,7 +219,7 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_local_decodeWithFooter(Paseto.Builder builder) {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
-		TokenService<Token> service = tokenLocalService(builder, tv.getB());
+		TokenService<Token> service = tokenLocalService(builder, tv.getNonce());
 
 		TokenWithFooter<Token, KeyId> result = service.decodeWithFooter(tv.getToken(), KeyId.class);
 		Assertions.assertEquals(tv.getPayload(), result.getToken());
@@ -239,7 +241,7 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_local_extractFooter(Paseto.Builder builder) {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
-		TokenService<Token> service = tokenLocalService(builder, tv.getB());
+		TokenService<Token> service = tokenLocalService(builder, tv.getNonce());
 
 		KeyId result = service.getFooter(tv.getToken(), KeyId.class);
 		Assertions.assertEquals(tv.getFooter(), result);
@@ -249,7 +251,7 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_local_extractFooter_asString(Paseto.Builder builder) {
 		TestVector<Token, KeyId> tv = TokenTestVectors.TV_1_V2_LOCAL_WITH_FOOTER;
-		TokenService<Token> service = tokenLocalService(builder, tv.getB());
+		TokenService<Token> service = tokenLocalService(builder, tv.getNonce());
 
 		String result = service.getFooter(tv.getToken());
 		Assertions.assertEquals("{\"kid\":\"key-1\"}", result);

@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.crypto.v1.bc;
 
-import net.aholbrook.paseto.crypto.KeyPair;
+import net.aholbrook.paseto.crypto.Pair;
 import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import org.bouncycastle.asn1.DERNull;
@@ -163,7 +163,7 @@ public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 	}
 
 	@Override
-	public KeyPair rsaGenerate() {
+	public Pair<byte[], byte[]> rsaGenerate() {
 		RSAKeyPairGenerator keyGen = new RSAKeyPairGenerator();
 		keyGen.init(new RSAKeyGenerationParameters(E, rng, RSA_KEY_SIZE,
 				PrimeCertaintyCalculator.getDefaultCertainty(RSA_KEY_SIZE)));
@@ -180,6 +180,6 @@ public class BouncyCastleV1CryptoProvider extends V1CryptoProvider {
 				priv.getPublicExponent(), priv.getExponent(), priv.getP(), priv.getQ(), priv.getDP(), priv.getDQ(),
 				priv.getQInv()));
 
-		return new KeyPair(privateKey, publicKey);
+		return new Pair<>(privateKey, publicKey);
 	}
 }
