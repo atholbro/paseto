@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.crypto.v2.bc;
 
-import net.aholbrook.paseto.crypto.KeyPair;
+import net.aholbrook.paseto.crypto.Pair;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Digest;
@@ -77,7 +77,7 @@ public class BouncyCastleV2CryptoProvider extends V2CryptoProvider {
 	}
 
 	@Override
-	public KeyPair ed25519Generate() {
+	public Pair<byte[], byte[]> ed25519Generate() {
 		int skLen = ed25519SignSecretKeyBytes() - ed25519SignPublicKeyBytes();
 		byte[] sk = new byte[ed25519SignSecretKeyBytes()];
 		byte[] pk = new byte[ed25519SignPublicKeyBytes()];
@@ -89,6 +89,6 @@ public class BouncyCastleV2CryptoProvider extends V2CryptoProvider {
 		System.arraycopy(pkParams.getEncoded(), 0, sk, skLen, pk.length);
 		System.arraycopy(sk, skLen, pk, 0, pk.length);
 
-		return new KeyPair(sk, pk);
+		return new Pair<>(sk, pk);
 	}
 }

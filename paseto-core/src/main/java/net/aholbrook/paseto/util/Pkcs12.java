@@ -1,6 +1,9 @@
 package net.aholbrook.paseto.util;
 
-import net.aholbrook.paseto.crypto.KeyPair;
+import net.aholbrook.paseto.Version;
+import net.aholbrook.paseto.keys.AsymmetricPublicKey;
+import net.aholbrook.paseto.keys.AsymmetricSecretKey;
+import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.exception.Pkcs12LoadException;
 
 import java.io.FileInputStream;
@@ -34,7 +37,10 @@ public class Pkcs12 {
 			if (cert == null) { throw new Pkcs12LoadException(Pkcs12LoadException.Reason.PUBLIC_KEY_NOT_FOUND); }
 			PublicKey publicKey = cert.getPublicKey();
 
-			return new KeyPair(privateKey.getEncoded(), publicKey.getEncoded());
+			return new KeyPair(
+					new AsymmetricSecretKey(privateKey.getEncoded(), Version.V1),
+					new AsymmetricPublicKey(publicKey.getEncoded(), Version.V1)
+			);
 		} catch (FileNotFoundException e) {
 			throw new Pkcs12LoadException(e);
 		} catch (CertificateException e) {
