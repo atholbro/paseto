@@ -18,8 +18,8 @@ plugins {
 }
 
 ext {
-	publish_user = project.hasProperty('publish_user') ? project.getProperty('publish_user') : ''
-	publish_pass = project.hasProperty('publish_pass') ? project.getProperty('publish_pass') : ''
+	publish_user = System.getProperty('publish_user')
+	publish_pass = System.getProperty('publish_pass')
 }
 
 def generateBaseName(artifact_id) {
@@ -101,8 +101,8 @@ allprojects {
 			}
 			repositories {
 				maven {
-					def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-					def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+					def releasesRepoUrl = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
+					def snapshotsRepoUrl = "https://central.sonatype.com/repository/maven-snapshots/"
 					url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 
 					credentials {
