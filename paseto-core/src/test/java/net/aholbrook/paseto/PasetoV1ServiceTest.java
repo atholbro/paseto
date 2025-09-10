@@ -14,12 +14,13 @@ import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.service.TokenService;
-import net.aholbrook.paseto.time.OffsetDateTime;
 import net.aholbrook.paseto.utils.AssertUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.time.OffsetDateTime;
 
 public class PasetoV1ServiceTest extends PasetoServiceTest {
 	@Override

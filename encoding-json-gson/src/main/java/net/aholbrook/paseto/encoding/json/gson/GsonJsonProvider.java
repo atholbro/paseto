@@ -5,7 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.encoding.exception.EncodingException;
-import net.aholbrook.paseto.time.OffsetDateTime;
+
+import java.time.OffsetDateTime;
 
 public class GsonJsonProvider implements EncodingProvider {
 	private final Gson gson;

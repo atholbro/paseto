@@ -1,9 +1,7 @@
 package net.aholbrook.paseto;
 
-import net.aholbrook.paseto.base64.jvm8.Base64Provider;
-import net.aholbrook.paseto.crypto.Pair;
-import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
+import net.aholbrook.paseto.crypto.Pair;
 import net.aholbrook.paseto.crypto.v1.V1CryptoLoader;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import net.aholbrook.paseto.encoding.EncodingProvider;
@@ -11,10 +9,13 @@ import net.aholbrook.paseto.exception.PasetoParseException;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
 import net.aholbrook.paseto.keys.AsymmetricPublicKey;
 import net.aholbrook.paseto.keys.AsymmetricSecretKey;
+import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.keys.SymmetricKey;
 import net.aholbrook.paseto.util.ByteArrayUtils;
 import net.aholbrook.paseto.util.PaeUtil;
 import net.aholbrook.paseto.util.StringUtils;
+
+import java.util.Base64;
 
 public class PasetoV1 extends Paseto {
 	private final static String VERSION = "v1";
@@ -26,9 +27,9 @@ public class PasetoV1 extends Paseto {
 
 	private final V1CryptoProvider cryptoProvider;
 
-	private PasetoV1(Base64Provider base64Provider, EncodingProvider encodingProvider, V1CryptoProvider cryptoProvider,
+	private PasetoV1(EncodingProvider encodingProvider, V1CryptoProvider cryptoProvider,
 			NonceGenerator nonceGenerator) {
-		super(base64Provider, encodingProvider, nonceGenerator);
+		super(encodingProvider, nonceGenerator);
 		this.cryptoProvider = cryptoProvider;
 	}
 
@@ -66,10 +67,10 @@ public class PasetoV1 extends Paseto {
 		System.arraycopy(t, 0, nct, n.length + c.length, t.length);
 
 		if (footerBytes.length > 0) {
-			return HEADER_LOCAL + base64Provider.encodeToString(nct) + SEPARATOR
-					+ base64Provider.encodeToString(footerBytes);
+			return HEADER_LOCAL + Base64.getUrlEncoder().withoutPadding().encodeToString(nct) + SEPARATOR
+					+ Base64.getUrlEncoder().withoutPadding().encodeToString(footerBytes);
 		} else {
-			return HEADER_LOCAL + base64Provider.encodeToString(nct);
+			return HEADER_LOCAL + Base64.getUrlEncoder().withoutPadding().encodeToString(nct);
 		}
 	}
 
@@ -91,7 +92,7 @@ public class PasetoV1 extends Paseto {
 		String decodedFooter = decodeFooter(token, sections, footer);
 
 		// Decrypt
-		byte[] nct = base64Provider.decodeFromString(sections[2]);
+		byte[] nct = Base64.getUrlDecoder().decode(sections[2]);
 		byte[] n = new byte[V1CryptoProvider.NONCE_SIZE];
 		byte[] t = new byte[V1CryptoProvider.SHA384_OUT_LEN];
 		// verify length
@@ -144,10 +145,10 @@ public class PasetoV1 extends Paseto {
 		System.arraycopy(sig, 0, msig, payloadBytes.length, sig.length);
 
 		if (footerBytes.length > 0) {
-			return HEADER_PUBLIC + base64Provider.encodeToString(msig)
-					+ SEPARATOR + base64Provider.encodeToString(footerBytes);
+			return HEADER_PUBLIC + Base64.getUrlEncoder().withoutPadding().encodeToString(msig)
+					+ SEPARATOR + Base64.getUrlEncoder().withoutPadding().encodeToString(footerBytes);
 		} else {
-			return HEADER_PUBLIC + base64Provider.encodeToString(msig);
+			return HEADER_PUBLIC + Base64.getUrlEncoder().withoutPadding().encodeToString(msig);
 		}
 	}
 
@@ -169,7 +170,7 @@ public class PasetoV1 extends Paseto {
 		String decodedFooter = decodeFooter(token, sections, footer);
 
 		// Verify
-		byte[] msig = base64Provider.decodeFromString(sections[2]);
+		byte[] msig = Base64.getUrlDecoder().decode(sections[2]);
 		byte[] s = new byte[V1CryptoProvider.RSA_SIGNATURE_LEN];
 		// verify length
 		if (msig.length < s.length + 1) {
@@ -215,7 +216,7 @@ public class PasetoV1 extends Paseto {
 
 		public PasetoV1 build() {
 			fillInDefaults();
-			return new PasetoV1(base64Provider, encodingProvider, v1CryptoProvider, nonceGenerator);
+			return new PasetoV1(encodingProvider, v1CryptoProvider, nonceGenerator);
 		}
 	}
 }

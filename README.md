@@ -16,7 +16,6 @@ Paseto is everything you love about JOSE (JWT, JWE, JWS) without any of the
 * [Installation](#installation)
   * [Gradle](#gradle)
   * [Maven](#maven)
-  * [Libsodium for V2 Tokens](#libsodium-for-v2-tokens)
 * [Usage](#usage)
   * [A note on the available APIs](#a-note-on-the-available-apis)
   * [V1 vs V2](#v1-vs-v2)
@@ -57,11 +56,11 @@ the cryptographic primitives required for v2 tokens in pure Java may be provided
 
 Currently the following providers are available:
 
-| Name | Type | Description |
-| :----: | :----: | --------------------------------------------------------------------------------------- |
+|         Name          | Type | Description |
+|:---------------------:| :----: | --------------------------------------------------------------------------------------- |
 | encoding-jackson-json | EncodingProvider | JSON using Jackson |
-| crypto-v1-bc | V1CryptoProvider | Cryptography for Paseto V1 Tokens using Bouncy Castle |
-| crypto-v2-libsodium | V2CryptoProvider | Cryptography for Paseto V2 Tokens using libsodium (LazySodium) |
+|     crypto-v1-bc      | V1CryptoProvider | Cryptography for Paseto V1 Tokens using Bouncy Castle |
+|     crypto-v2-bc      | V2CryptoProvider | Cryptography for Paseto V2 Tokens using Bouncy Castle |
 
 _Note: GSON will be officailly supported in the future as an alternative to Jackson._
 
@@ -69,28 +68,10 @@ _Note: GSON will be officailly supported in the future as an alternative to Jack
 ### Gradle
 
 ```gradle
-// Top level build file
-allprojects {
-	repositories {
-		jcenter()
-		maven { url  "https://dl.bintray.com/terl/lazysodium-maven" }
-	}
-}
-
-// Dependencies section
 dependencies {
 	compile 'net.aholbrook.paseto:meta:0.6.1'
 }
 ```
-
-### Libsodium for V2 Tokens
-If you're using V2 tokens (which are recommended for most use cases) then you'll have to install libsodium for
-your platform. More details can be found in the libsodium documentation at:
-https://download.libsodium.org/doc/installation/
-
-Typically this is as easy as installing a package, for example on Arch Linux you can use: `sudo pacman -S libsodium`.
-
-_If you only plan on using V1 Tokens, then you can skip this step._
 
 # Usage
 ### A note on the available APIs

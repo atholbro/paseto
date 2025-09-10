@@ -22,27 +22,22 @@ publishing {
 }
 
 dependencies {
-	api project(":base64")
 	api project(':encoding')
 	api project(':crypto-v1')
 	api project(':crypto-v2')
 
-	compileOnly project(':time-jsr310')
-
 	// Tests -- pull in all project libs
-	testImplementation project(':base64-jvm8')
 	testImplementation project(':crypto-v1-bc')
 	testImplementation project(':crypto-v2-bc')
-	testImplementation project(':crypto-v2-libsodium')
 	testImplementation project(':encoding-json-jackson')
 	testImplementation project(':encoding-json-gson')
-	testImplementation project(':time-jsr310')
-	testImplementation project(':time-threeten')
-	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.2'
+	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.20'
 
 	// Test frameworks
-	testImplementation 'org.mockito:mockito-inline:3.8.0'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
-	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.1'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+	testImplementation 'net.bytebuddy:byte-buddy:1.17.7'
+	testImplementation 'org.mockito:mockito-inline:5.2.0'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.4'
+	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.13.4'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.1"
 }

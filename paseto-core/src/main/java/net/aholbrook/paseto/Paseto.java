@@ -1,8 +1,5 @@
 package net.aholbrook.paseto;
 
-import net.aholbrook.paseto.base64.jvm8.Base64Loader;
-import net.aholbrook.paseto.base64.jvm8.Base64Provider;
-import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
 import net.aholbrook.paseto.encoding.EncodingLoader;
 import net.aholbrook.paseto.encoding.EncodingProvider;
@@ -10,10 +7,12 @@ import net.aholbrook.paseto.exception.InvalidFooterException;
 import net.aholbrook.paseto.exception.InvalidHeaderException;
 import net.aholbrook.paseto.keys.AsymmetricPublicKey;
 import net.aholbrook.paseto.keys.AsymmetricSecretKey;
+import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.keys.SymmetricKey;
 import net.aholbrook.paseto.util.StringUtils;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.regex.Pattern;
 
 public abstract class Paseto {
@@ -21,12 +20,10 @@ public abstract class Paseto {
 	final static String PURPOSE_LOCAL = "local";
 	final static String PURPOSE_PUBLIC = "public";
 
-	final Base64Provider base64Provider;
 	final EncodingProvider encodingProvider;
 	final NonceGenerator nonceGenerator;
 
-	public Paseto(Base64Provider base64Provider, EncodingProvider encodingProvider, NonceGenerator nonceGenerator) {
-		this.base64Provider = base64Provider;
+	public Paseto(EncodingProvider encodingProvider, NonceGenerator nonceGenerator) {
 		this.encodingProvider = encodingProvider;
 		this.nonceGenerator = nonceGenerator;
 	}
@@ -104,7 +101,7 @@ public abstract class Paseto {
 	public String extractFooter(String token) {
 		String footer = split(token)[3];
 		if (!StringUtils.isEmpty(footer)) {
-			return StringUtils.fromUtf8Bytes(base64Provider.decodeFromString(footer));
+			return StringUtils.fromUtf8Bytes(Base64.getUrlDecoder().decode(footer));
 		}
 
 		return null;
@@ -151,7 +148,7 @@ public abstract class Paseto {
 
 	String decodeFooter(String token, String[] sections, String expectedFooter) {
 		String userFooter = StringUtils.ntes(sections[3]);
-		String decodedFooter = new String(base64Provider.decodeFromString(userFooter), Charset.forName("UTF-8"));
+		String decodedFooter = new String(Base64.getUrlDecoder().decode(userFooter), StandardCharsets.UTF_8);
 
 		// Check the footer if expected footer is not empty, otherwise we just return the footer without checking. This
 		// is fine though, as the footer is covered by the token PAE signature. This check exists for proper error
@@ -164,23 +161,16 @@ public abstract class Paseto {
 	}
 
 	<_Payload> _Payload decode(byte[] payload, Class<_Payload> payloadClass) {
-		return encodingProvider.decode(new String(payload, Charset.forName("UTF-8")), payloadClass);
+		return encodingProvider.decode(new String(payload, StandardCharsets.UTF_8), payloadClass);
 	}
 
 	public abstract static class Builder {
-		protected Base64Provider base64Provider;
 		protected EncodingProvider encodingProvider;
 		protected NonceGenerator nonceGenerator;
 		private String name = null;
 
 		protected void fillInDefaults() {
-			if (base64Provider == null) { base64Provider = Base64Loader.getProvider(); }
 			if (encodingProvider == null) { encodingProvider = EncodingLoader.getProvider(); }
-		}
-
-		public Builder withBase64Provider(Base64Provider base64Provider) {
-			this.base64Provider = base64Provider;
-			return this;
 		}
 
 		public Builder withEncodingProvider(EncodingProvider encodingProvider) {

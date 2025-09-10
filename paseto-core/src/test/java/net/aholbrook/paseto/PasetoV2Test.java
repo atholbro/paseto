@@ -1,7 +1,5 @@
 package net.aholbrook.paseto;
 
-import net.aholbrook.paseto.base64.jvm8.Base64Provider;
-import net.aholbrook.paseto.base64.jvm8.jvm8.Jvm8Base64Provider;
 import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.crypto.TestNonceGenerator;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
@@ -753,23 +751,6 @@ public class PasetoV2Test extends PasetoTest {
 							paseto.verify("v2.public.aa", RfcTestVectors.RFC_TEST_V2_PK, RfcToken.class),
 					"v2.public.aa", PasetoParseException.Reason.PAYLOAD_LENGTH, 65);
 		});
-	}
-
-	@Test
-	@DisplayName("V2 Builder has a default base 64 provider.")
-	public void v2_builder_withDefaultBase64Provider() {
-		PasetoV2.Builder builder = new PasetoV2.Builder();
-		builder.build();
-		Assertions.assertNotNull(builder.base64Provider);
-	}
-
-	@Test
-	@DisplayName("V2 Builder can override base 64 provider.")
-	public void v2_builder_withBase64Provider() {
-		Base64Provider provider = new Jvm8Base64Provider();
-		PasetoV2.Builder builder = new PasetoV2.Builder();
-		builder.withBase64Provider(provider);
-		Assertions.assertEquals(provider, builder.base64Provider);
 	}
 
 	@Test

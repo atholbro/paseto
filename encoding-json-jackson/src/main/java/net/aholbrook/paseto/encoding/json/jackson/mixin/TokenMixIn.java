@@ -7,7 +7,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import net.aholbrook.paseto.encoding.json.jackson.TimeDeserializer;
 import net.aholbrook.paseto.encoding.json.jackson.TimeSerializer;
-import net.aholbrook.paseto.time.OffsetDateTime;
+
+import java.time.OffsetDateTime;
 
 @JsonPropertyOrder({"iss", "sub", "aud", "exp", "nbf", "iat", "jti"})
 public abstract class TokenMixIn {

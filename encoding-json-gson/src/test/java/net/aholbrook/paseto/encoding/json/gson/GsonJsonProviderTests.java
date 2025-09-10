@@ -1,10 +1,11 @@
 package net.aholbrook.paseto.encoding.json.gson;
 
 import net.aholbrook.paseto.encoding.EncodingLoader;
-import net.aholbrook.paseto.time.OffsetDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.time.OffsetDateTime;
 
 @DisplayName("Encoding :: GSON")
 public class GsonJsonProviderTests {

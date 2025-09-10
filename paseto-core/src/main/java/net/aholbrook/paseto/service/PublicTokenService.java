@@ -8,7 +8,8 @@ import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.Claims;
 import net.aholbrook.paseto.keys.AsymmetricPublicKey;
 import net.aholbrook.paseto.keys.AsymmetricSecretKey;
-import net.aholbrook.paseto.time.Duration;
+
+import java.time.Duration;
 
 
 public class PublicTokenService<_TokenType extends Token> extends TokenService<_TokenType> {

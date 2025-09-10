@@ -24,9 +24,10 @@ publishing {
 dependencies {
 	api project(":crypto-v1")
 
-	implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.68'
+	implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
 
-	testImplementation 'org.mockito:mockito-core:3.8.0'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+	testImplementation 'org.mockito:mockito-core:5.19.0'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.4'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.1"
 }

@@ -4,9 +4,12 @@ import net.aholbrook.paseto.exception.claims.ExpiredTokenException;
 import net.aholbrook.paseto.exception.claims.MissingClaimException;
 import net.aholbrook.paseto.exception.claims.NotYetValidTokenException;
 import net.aholbrook.paseto.service.Token;
-import net.aholbrook.paseto.time.Clock;
-import net.aholbrook.paseto.time.Duration;
-import net.aholbrook.paseto.time.OffsetDateTime;
+
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 
 public class CurrentlyValid implements Claim {
@@ -74,11 +77,11 @@ public class CurrentlyValid implements Claim {
 			throw new MissingClaimException(Token.CLAIM_EXPIRATION, NAME, token);
 		}
 
-		OffsetDateTime expiration = OffsetDateTime.ofEpochSecond(token.getExpiration());
+		OffsetDateTime expiration = Instant.ofEpochSecond(token.getExpiration()).atOffset(ZoneOffset.UTC);
 
 		// Check "Not Before" if provided.
 		if (token.getNotBefore() != null) {
-			OffsetDateTime notBefore = OffsetDateTime.ofEpochSecond(token.getNotBefore());
+			OffsetDateTime notBefore = Instant.ofEpochSecond(token.getNotBefore()).atOffset(ZoneOffset.UTC);
 
 			if (notBefore.minus(allowableDrift).isAfter(time)) {
 				throw new NotYetValidTokenException(notBefore, NAME, token);
