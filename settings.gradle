@@ -10,7 +10,6 @@ include ":crypto"
 include ":crypto-v1"
 include ":crypto-v2"
 include ":crypto-v1-bc"
-include ":crypto-v2-libsodium"
 include ":crypto-v2-bc"
 
 include ":encoding"

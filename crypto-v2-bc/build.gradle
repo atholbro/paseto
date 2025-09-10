@@ -24,7 +24,8 @@ publishing {
 dependencies {
 	api project(":crypto-v2")
 
-	implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.68'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+	implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.4'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.1"
 }

@@ -22,5 +22,5 @@ publishing {
 }
 
 dependencies {
-	implementation group: 'org.threeten', name: 'threetenbp', version: '1.5.0'
+	implementation group: 'org.threeten', name: 'threetenbp', version: '1.7.2'
 }

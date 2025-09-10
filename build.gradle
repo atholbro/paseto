@@ -13,14 +13,13 @@ buildscript {
 
 plugins {
 	id 'io.codearte.nexus-staging' version '0.30.0'
-	id 'nu.studer.credentials' version '2.1'
-	id "com.github.ben-manes.versions" version "0.38.0"
-	id "com.adarshr.test-logger" version "2.1.1"
+	id "com.github.ben-manes.versions" version "0.52.0"
+	id "se.ascp.gradle.gradle-versions-filter" version "0.1.16"
 }
 
 ext {
-	publish_user = project.hasProperty('publish_user') ? project.getProperty('publish_user') : credentials.publish_user
-	publish_pass = project.hasProperty('publish_pass') ? project.getProperty('publish_pass') : credentials.publish_pass
+	publish_user = project.hasProperty('publish_user') ? project.getProperty('publish_user') : ''
+	publish_pass = project.hasProperty('publish_pass') ? project.getProperty('publish_pass') : ''
 }
 
 def generateBaseName(artifact_id) {
@@ -36,7 +35,6 @@ allprojects {
 	apply plugin: 'java-library'
 	apply plugin: 'com.github.gradle-git-version-calculator'
 	apply plugin: 'jacoco'
-	apply plugin: "com.adarshr.test-logger"
 
 	gitVersionCalculator {
 		prefix = 'release@'
@@ -53,7 +51,7 @@ allprojects {
 	}
 
 	jacoco {
-		toolVersion = "0.8.6"
+		toolVersion = "0.8.13"
 	}
 
 	if (it.name != "paseto") {
@@ -122,23 +120,38 @@ allprojects {
 
 		useJUnitPlatform()
 
-		testlogger {
-			setTheme("mocha")
+		testLogging {
+			events "failed", "skipped"
+			showExceptions true
+			exceptionFormat "full"
+			showCauses true
+			showStackTraces true
+			showStandardStreams true
 		}
 	}
 }
 
 subprojects {
-	sourceCompatibility = 1.8
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
 
-	task sourcesJar(type: Jar) {
+	tasks.register('sourcesJar', Jar) {
 		from sourceSets.main.allJava
-		classifier = 'sources'
+		archiveClassifier.set('sources')
 	}
 
-	task javadocJar(type: Jar) {
-		from javadoc
-		classifier = 'javadoc'
+	tasks.register('javadocJar', Jar) {
+		from tasks.named('javadoc')
+		archiveClassifier.set('javadoc')
+	}
+
+	artifacts {
+		archives tasks.named('sourcesJar')
+		archives tasks.named('javadocJar')
+	}
+
+	tasks.withType(Javadoc).configureEach {
+		options.addStringOption('Xdoclint:none', '-quiet')
 	}
 }
 
@@ -146,32 +159,32 @@ task allDependencies {
 	subprojects.each { dependsOn("${it.name}:dependencies") }
 }
 
-task codeCoverageReport(type: JacocoReport) {
-	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-
-	subprojects.each {
-		sourceSets it.sourceSets.main
-	}
-
-	reports {
-		xml.enabled true
-		xml.destination file("${buildDir}/reports/jacoco/report.xml")
-		html.enabled false
-		csv.enabled false
-	}
-
-	onlyIf = { true }
-
-	afterEvaluate {
-		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: [
-					'net/aholbrook/paseto/time/**',
-					'net/aholbrook/paseto/encoding/json/jackson/mixin/**'
-			])
-		}))
-	}
-}
-
-codeCoverageReport.dependsOn {
-	subprojects*.test
-}
+//task codeCoverageReport(type: JacocoReport) {
+//	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+//
+//	subprojects.each {
+//		sourceSets it.sourceSets.main
+//	}
+//
+//	reports {
+//		xml.enabled true
+//		xml.destination file("${buildDir}/reports/jacoco/report.xml")
+//		html.enabled false
+//		csv.enabled false
+//	}
+//
+//	onlyIf = { true }
+//
+//	afterEvaluate {
+//		classDirectories.setFrom(files(classDirectories.files.collect {
+//			fileTree(dir: it, exclude: [
+//					'net/aholbrook/paseto/time/**',
+//					'net/aholbrook/paseto/encoding/json/jackson/mixin/**'
+//			])
+//		}))
+//	}
+//}
+//
+//codeCoverageReport.dependsOn {
+//	subprojects*.test
+//}
