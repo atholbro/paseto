@@ -106,34 +106,33 @@ token.
 ### Getting Started
 Lets start with an example of creating a basic Paseto JsonToken. For this example we'll use a local token (encrypted) variant and the latest version (2).
 ```
-byte[] key = Hex.decode("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
-TokenService<Token> tokenService = PasetoBuilders.V2.localService(() -> key, Token.class)
-    .withDefaultValidityPeriod(Duration.ofDays(15).getSeconds())
+SymmetricKey key = new SymmetricKey("q2N#y,-U3{)/^Bcl#VExy06cL>%t]XJY".getBytes(StandardCharsets.UTF_8), Version.V2);
+TokenService<Token> tokenService = new LocalTokenService.Builder<Token>(Token.class, () -> key)
+    .withDefaultValidityPeriod(Duration.ofDays(15).toSeconds())
     .build();
-
 Token token = new Token();
 token.setTokenId("example-id"); // A session key, user id, etc.
-
 String encoded = tokenService.encode(token);
+System.out.println(encoded);
 ```
 
 Lets break down the example step by step:
 
-```byte[] key = Hex.decode("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");```
+```SymmetricKey key = new SymmetricKey("q2N#y,-U3{)/^Bcl#VExy06cL>%t]XJY".getBytes(StandardCharsets.UTF_8), Version.V2);```
 
 To encode a Paseto token, an encryption key is required. Paseto expects your encryption key to be provided as an
-array of bytes. For this example we use the provided Hex utility class to decode a byte array from a String of hex
-pairs.
+instance of SymmetricKey which takes the 32 bytes of the key and the Paseto version. For this example I've just made a
+random string of 32 characters and converted it to a byte array.
 
 
 ```
-TokenService<Token> tokenService = PasetoBuilders.V2.localService(() -> key, Token.class)
-    .withDefaultValidityPeriod(Duration.ofDays(15).getSeconds())
+TokenService<Token> tokenService = new LocalTokenService.Builder<Token>(Token.class, () -> key)
+    .withDefaultValidityPeriod(Duration.ofDays(15).toSeconds())
     .build();
 ```
 Next we create an instance of the Paseto LocalTokenService. The TokenService is the interface to the interface to
 high level Paseto API. The minimum requirements to work with local Paseto tokens are the encryption key, and the
-type of token. `PasetoBuilders.V2.localService()` returns a builder, which allows you to adjust some of the default
+type of token. Paseto uses builders, which allows you to adjust some of the default
 behaviors when encoding/decoding tokens. In this example we set a default validity period, which automatically sets
 the token expiration date & time such that the token is valid for the given duration (15 days in this example).
 
@@ -152,7 +151,7 @@ set. This reduces the code requirement to create a token, as typically most toke
 validity period. If we had excluded the call to `withDefaultValidityPeriod()` then no default would be set, and we'd be
 required to set an expiration date & time.
 
-Finally a call to build() is made, which creates an instance of the TokenService.
+Finally, a call to build() is made, which creates an instance of the TokenService.
 
 ```
 Token token = new Token();
