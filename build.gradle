@@ -159,32 +159,32 @@ task allDependencies {
 	subprojects.each { dependsOn("${it.name}:dependencies") }
 }
 
-//task codeCoverageReport(type: JacocoReport) {
-//	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-//
-//	subprojects.each {
-//		sourceSets it.sourceSets.main
-//	}
-//
-//	reports {
-//		xml.enabled true
-//		xml.destination file("${buildDir}/reports/jacoco/report.xml")
-//		html.enabled false
-//		csv.enabled false
-//	}
-//
-//	onlyIf = { true }
-//
-//	afterEvaluate {
-//		classDirectories.setFrom(files(classDirectories.files.collect {
-//			fileTree(dir: it, exclude: [
-//					'net/aholbrook/paseto/time/**',
-//					'net/aholbrook/paseto/encoding/json/jackson/mixin/**'
-//			])
-//		}))
-//	}
-//}
-//
-//codeCoverageReport.dependsOn {
-//	subprojects*.test
-//}
+task codeCoverageReport(type: JacocoReport) {
+	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+	subprojects.each {
+		sourceSets it.sourceSets.main
+	}
+
+	reports {
+		xml.required.set(true)
+		xml.outputLocation.set(file("${buildDir}/reports/jacoco/report.xml"))
+		html.required.set(false)
+		csv.required.set(false)
+	}
+
+	onlyIf = { true }
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'net/aholbrook/paseto/time/**',
+					'net/aholbrook/paseto/encoding/json/jackson/mixin/**'
+			])
+		}))
+	}
+}
+
+codeCoverageReport.dependsOn {
+	subprojects*.test
+}

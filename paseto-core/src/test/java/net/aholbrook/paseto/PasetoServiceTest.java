@@ -11,9 +11,10 @@ import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.service.TokenService;
-import net.aholbrook.paseto.time.OffsetDateTime;
 import net.aholbrook.paseto.utils.AssertUtils;
 import org.junit.jupiter.api.Assertions;
+
+import java.time.OffsetDateTime;
 
 public abstract class PasetoServiceTest {
 	protected abstract LocalTokenService.KeyProvider rfcLocalKeyProvider();

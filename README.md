@@ -68,15 +68,6 @@ _Note: GSON will be officailly supported in the future as an alternative to Jack
 ### Gradle
 
 ```gradle
-// Top level build file
-allprojects {
-	repositories {
-		jcenter()
-		maven { url  "https://dl.bintray.com/terl/lazysodium-maven" }
-	}
-}
-
-// Dependencies section
 dependencies {
 	compile 'net.aholbrook.paseto:meta:0.6.1'
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import net.aholbrook.paseto.service.Token;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 
 public class TimeDeserializer extends JsonDeserializer<Long> {
 	@Override
@@ -14,7 +15,7 @@ public class TimeDeserializer extends JsonDeserializer<Long> {
 		JsonToken token = p.getCurrentToken();
 
 		if (token.equals(JsonToken.VALUE_STRING)) {
-			return Token.DATETIME_FORMATTER.parse(p.getValueAsString()).toEpochSecond();
+			return OffsetDateTime.parse(p.getValueAsString(), Token.DATETIME_FORMATTER).toEpochSecond();
 		} else {
 			return getNullValue(ctxt);
 		}

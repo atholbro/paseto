@@ -2,9 +2,10 @@ package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.data.TokenTestVectors;
 import net.aholbrook.paseto.service.Token;
-import net.aholbrook.paseto.time.OffsetDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.time.OffsetDateTime;
 
 public class TokenTest {
 	@Test

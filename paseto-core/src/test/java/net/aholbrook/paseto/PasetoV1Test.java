@@ -1,9 +1,5 @@
 package net.aholbrook.paseto;
 
-import net.aholbrook.paseto.base64.jvm8.Base64Provider;
-import net.aholbrook.paseto.base64.jvm8.jvm8.Jvm8Base64Provider;
-import net.aholbrook.paseto.keys.AsymmetricPublicKey;
-import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.crypto.TestNonceGenerator;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
 import net.aholbrook.paseto.crypto.v1.bc.BouncyCastleV1CryptoProvider;
@@ -16,7 +12,7 @@ import net.aholbrook.paseto.exception.InvalidHeaderException;
 import net.aholbrook.paseto.exception.PasetoParseException;
 import net.aholbrook.paseto.exception.PasetoStringException;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
-import net.aholbrook.paseto.keys.SymmetricKey;
+import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.utils.AssertUtils;
@@ -756,23 +752,6 @@ public class PasetoV1Test extends PasetoTest {
 							paseto.verify("v1.public.aa", RfcTestVectors.RFC_TEST_V1_PK, RfcToken.class),
 					"v1.public.aa", PasetoParseException.Reason.PAYLOAD_LENGTH, 257);
 		});
-	}
-
-	@Test
-	@DisplayName("V1 Builder has a default base 64 provider.")
-	public void v1_builder_withDefaultBase64Provider() {
-		PasetoV1.Builder builder = new PasetoV1.Builder();
-		builder.build();
-		Assertions.assertNotNull(builder.base64Provider);
-	}
-
-	@Test
-	@DisplayName("V1 Builder can override base 64 provider.")
-	public void v1_builder_withBase64Provider() {
-		Base64Provider provider = new Jvm8Base64Provider();
-		PasetoV1.Builder builder = new PasetoV1.Builder();
-		builder.withBase64Provider(provider);
-		Assertions.assertEquals(provider, builder.base64Provider);
 	}
 
 	@Test

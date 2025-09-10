@@ -22,10 +22,8 @@ publishing {
 }
 
 dependencies {
-	api project(':base64-jvm8')
 	api project(':paseto-core')
 	api project(':crypto-v1-bc')
 	api project(':crypto-v2-bc')
 	api project(':encoding-json-jackson')
-	api project(':time-jsr310')
 }

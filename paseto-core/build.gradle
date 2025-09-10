@@ -22,21 +22,15 @@ publishing {
 }
 
 dependencies {
-	api project(":base64")
 	api project(':encoding')
 	api project(':crypto-v1')
 	api project(':crypto-v2')
 
-	compileOnly project(':time-jsr310')
-
 	// Tests -- pull in all project libs
-	testImplementation project(':base64-jvm8')
 	testImplementation project(':crypto-v1-bc')
 	testImplementation project(':crypto-v2-bc')
 	testImplementation project(':encoding-json-jackson')
 	testImplementation project(':encoding-json-gson')
-	testImplementation project(':time-jsr310')
-	testImplementation project(':time-threeten')
 	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.20'
 
 	// Test frameworks

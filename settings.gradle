@@ -1,11 +1,5 @@
 rootProject.name = 'paseto'
 
-include ":base64"
-include ":base64-jvm8"
-
-include ":time-jsr310"
-include ":time-threeten"
-
 include ":crypto"
 include ":crypto-v1"
 include ":crypto-v2"

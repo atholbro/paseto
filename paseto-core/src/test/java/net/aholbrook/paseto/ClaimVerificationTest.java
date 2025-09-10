@@ -18,13 +18,15 @@ import net.aholbrook.paseto.exception.claims.MissingClaimException;
 import net.aholbrook.paseto.exception.claims.MultipleClaimException;
 import net.aholbrook.paseto.exception.claims.NotYetValidTokenException;
 import net.aholbrook.paseto.service.Token;
-import net.aholbrook.paseto.time.Clock;
-import net.aholbrook.paseto.time.OffsetDateTime;
 import net.aholbrook.paseto.utils.AssertUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Set;
 
 @DisplayName("Claim Verifications")
@@ -55,7 +57,7 @@ public class ClaimVerificationTest {
 	@DisplayName("Verify that a token is valid 5 seconds after it becomes valid.")
 	public void tokenVerification_valid() {
 		Token token = TokenTestVectors.TOKEN_1;
-		OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getNotBefore()).plusSeconds(5);
+		OffsetDateTime time = Instant.ofEpochSecond(token.getNotBefore()).atOffset(ZoneOffset.UTC).plusSeconds(5);
 
 		standardVerification(token, time);
 	}
@@ -65,7 +67,7 @@ public class ClaimVerificationTest {
 	public void tokenVerification_valid_atExpiry() {
 		Token token = TokenTestVectors.TOKEN_1;
 		// check directly at expiry time, should still be considered valid
-		OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getExpiration());
+		OffsetDateTime time = Instant.ofEpochSecond(token.getExpiration()).atOffset(ZoneOffset.UTC);
 
 		standardVerification(token, time);
 	}
@@ -75,7 +77,7 @@ public class ClaimVerificationTest {
 	public void tokenVerification_expired_afterExpiry() {
 		Assertions.assertThrows(ExpiredTokenException.class, () -> {
 			Token token = TokenTestVectors.TOKEN_1;
-			OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getExpiration()).plusDays(1);
+			OffsetDateTime time = Instant.ofEpochSecond(token.getExpiration()).atOffset(ZoneOffset.UTC).plusDays(1);
 			AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 		});
 	}
@@ -85,7 +87,7 @@ public class ClaimVerificationTest {
 	public void tokenVerification_expired_afterExpiry2() {
 		Assertions.assertThrows(ExpiredTokenException.class, () -> {
 			Token token = TokenTestVectors.TOKEN_1;
-			OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getExpiration()).plusSeconds(1);
+			OffsetDateTime time = Instant.ofEpochSecond(token.getExpiration()).atOffset(ZoneOffset.UTC).plusSeconds(1);
 			AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 		});
 	}
@@ -95,7 +97,7 @@ public class ClaimVerificationTest {
 	public void tokenVerification_expired_beforeExpiry() {
 		Token token = TokenTestVectors.TOKEN_1;
 		// check expiry time - 1 second, should pass
-		OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getExpiration()).minusSeconds(1);
+		OffsetDateTime time = Instant.ofEpochSecond(token.getExpiration()).atOffset(ZoneOffset.UTC).minusSeconds(1);
 		standardVerification(token, time);
 	}
 
@@ -121,7 +123,7 @@ public class ClaimVerificationTest {
 		Assertions.assertThrows(NotYetValidTokenException.class, () -> {
 			Token token = TokenTestVectors.TOKEN_1;
 			// exactly the time defined in the vector, should pass
-			OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getIssuedAt());
+			OffsetDateTime time = Instant.ofEpochSecond(token.getIssuedAt()).atOffset(ZoneOffset.UTC);
 			AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 		});
 	}
@@ -132,7 +134,7 @@ public class ClaimVerificationTest {
 		Assertions.assertThrows(NotYetValidTokenException.class, () -> {
 			Token token = TokenTestVectors.TOKEN_1;
 			// +1 second, should pass
-			OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getIssuedAt()).plusSeconds(1);
+			OffsetDateTime time = Instant.ofEpochSecond(token.getIssuedAt()).atOffset(ZoneOffset.UTC).plusSeconds(1);
 			AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 		});
 	}
@@ -144,7 +146,7 @@ public class ClaimVerificationTest {
 		Assertions.assertThrows(NotYetValidTokenException.class, () -> {
 			Token token = TokenTestVectors.TOKEN_1;
 			// +2 seconds, should pass
-			OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getIssuedAt()).plusSeconds(1);
+			OffsetDateTime time = Instant.ofEpochSecond(token.getIssuedAt()).atOffset(ZoneOffset.UTC).plusSeconds(1);
 			AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 		});
 	}
@@ -155,7 +157,7 @@ public class ClaimVerificationTest {
 		Assertions.assertThrows(NotYetValidTokenException.class, () -> {
 			Token token = TokenTestVectors.TOKEN_1;
 			// -1 second, should pass (due to allowableDrift)
-			OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getIssuedAt()).minusSeconds(1);
+			OffsetDateTime time = Instant.ofEpochSecond(token.getIssuedAt()).atOffset(ZoneOffset.UTC).minusSeconds(1);
 			AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 		});
 	}
@@ -166,7 +168,7 @@ public class ClaimVerificationTest {
 		Assertions.assertThrows(MultipleClaimException.class, () -> {
 			Token token = TokenTestVectors.TOKEN_1;
 			// -2 seconds, should fail
-			OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getIssuedAt()).minusSeconds(2);
+			OffsetDateTime time = Instant.ofEpochSecond(token.getIssuedAt()).atOffset(ZoneOffset.UTC).minusSeconds(2);
 			AssertUtils.assertMultiClaimException(() -> standardVerification(token, time),
 					new Class[]{IssuedInFutureException.class, NotYetValidTokenException.class});
 		});
@@ -187,7 +189,7 @@ public class ClaimVerificationTest {
 	public void tokenVerification_notBefore_atValid() {
 		Token token = TokenTestVectors.TOKEN_1;
 		// exactly the time defined in the vector, should pass
-		OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getNotBefore());
+		OffsetDateTime time = Instant.ofEpochSecond(token.getNotBefore()).atOffset(ZoneOffset.UTC);
 
 		standardVerification(token, time);
 	}
@@ -203,7 +205,7 @@ public class ClaimVerificationTest {
 	public void tokenVerification_notBefore_afterValid() {
 		Token token = TokenTestVectors.TOKEN_1;
 		// +1 second, should pass
-		OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getNotBefore()).plusSeconds(1);
+		OffsetDateTime time = Instant.ofEpochSecond(token.getNotBefore()).atOffset(ZoneOffset.UTC).plusSeconds(1);
 
 		standardVerification(token, time);
 	}
@@ -213,7 +215,7 @@ public class ClaimVerificationTest {
 	public void tokenVerification_notBefore_afterValid2() {
 		Token token = TokenTestVectors.TOKEN_1;
 		// +2 seconds, should pass
-		OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getNotBefore()).plusSeconds(1);
+		OffsetDateTime time = Instant.ofEpochSecond(token.getNotBefore()).atOffset(ZoneOffset.UTC).plusSeconds(1);
 
 		standardVerification(token, time);
 	}
@@ -223,7 +225,7 @@ public class ClaimVerificationTest {
 	public void tokenVerification_notBefore_beforeValidGrace() {
 		Token token = TokenTestVectors.TOKEN_1;
 		// -1 second, should pass (due to allowableDrift)
-		OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getNotBefore()).minusSeconds(1);
+		OffsetDateTime time = Instant.ofEpochSecond(token.getNotBefore()).atOffset(ZoneOffset.UTC).minusSeconds(1);
 
 		standardVerification(token, time);
 	}
@@ -234,7 +236,7 @@ public class ClaimVerificationTest {
 		Assertions.assertThrows(NotYetValidTokenException.class, () -> {
 			Token token = TokenTestVectors.TOKEN_1;
 			// -2 seconds, should fail
-			OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getNotBefore()).minusSeconds(2);
+			OffsetDateTime time = Instant.ofEpochSecond(token.getNotBefore()).atOffset(ZoneOffset.UTC).minusSeconds(2);
 			AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 		});
 	}
@@ -245,7 +247,7 @@ public class ClaimVerificationTest {
 		Assertions.assertThrows(NotYetValidTokenException.class, () -> {
 			Token token = TokenTestVectors.TOKEN_1;
 			// issue time, should fail for this token
-			OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getIssuedAt());
+			OffsetDateTime time = Instant.ofEpochSecond(token.getIssuedAt()).atOffset(ZoneOffset.UTC);
 			AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 		});
 	}
@@ -256,7 +258,7 @@ public class ClaimVerificationTest {
 		Assertions.assertThrows(NotYetValidTokenException.class, () -> {
 			Token token = TokenTestVectors.TOKEN_1;
 			// issue time - 1 sec, should fail for this token
-			OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getIssuedAt()).minusSeconds(1);
+			OffsetDateTime time = Instant.ofEpochSecond(token.getIssuedAt()).atOffset(ZoneOffset.UTC).minusSeconds(1);
 			AssertUtils.assertClaimException(() -> standardVerification(token, time), null, CurrentlyValid.NAME, token);
 		});
 	}
@@ -390,7 +392,7 @@ public class ClaimVerificationTest {
 	@DisplayName("Token Verification Context")
 	public void tokenVerificationContext() {
 		Token token = TokenTestVectors.TOKEN_1;
-		OffsetDateTime time = OffsetDateTime.ofEpochSecond(token.getNotBefore()).plusSeconds(5);
+		OffsetDateTime time = Instant.ofEpochSecond(token.getNotBefore()).atOffset(ZoneOffset.UTC).plusSeconds(5);
 
 		VerificationContext context = standardVerification(token, time);
 		Assertions.assertTrue(context.hasClaim(IssuedInPast.NAME));

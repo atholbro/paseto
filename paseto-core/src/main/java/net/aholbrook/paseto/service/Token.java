@@ -1,9 +1,10 @@
 package net.aholbrook.paseto.service;
 
-import net.aholbrook.paseto.time.OffsetDateTime;
-import net.aholbrook.paseto.time.format.DateTimeFormatter;
-import net.aholbrook.paseto.time.temporal.ChronoUnit;
-
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Token {
@@ -72,7 +73,7 @@ public class Token {
 	}
 
 	public Token setExpiration(Long expiration) {
-		this.exp = expiration != null ? OffsetDateTime.ofEpochSecond(expiration) : null;
+		this.exp = expiration != null ? Instant.ofEpochSecond(expiration).atOffset(ZoneOffset.UTC) : null;
 
 		// Cut off mills/nanos. The formatter does this too, but only after output.
 		if (this.exp != null) {
@@ -91,7 +92,7 @@ public class Token {
 	}
 
 	public Token setNotBefore(Long notBefore) {
-		this.nbf = notBefore != null ? OffsetDateTime.ofEpochSecond(notBefore) : null;
+		this.nbf = notBefore != null ? Instant.ofEpochSecond(notBefore).atOffset(ZoneOffset.UTC) : null;
 
 		// Cut off mills/nanos. The formatter does this too, but only after output.
 		if (this.nbf != null) {
@@ -110,7 +111,7 @@ public class Token {
 	}
 
 	public Token setIssuedAt(Long issuedAt) {
-		this.iat = issuedAt != null ? OffsetDateTime.ofEpochSecond(issuedAt) : null;
+		this.iat = issuedAt != null ? Instant.ofEpochSecond(issuedAt).atOffset(ZoneOffset.UTC) : null;
 
 		// Cut off mills/nanos. The formatter does this too, but only after output.
 		if (this.iat != null) {

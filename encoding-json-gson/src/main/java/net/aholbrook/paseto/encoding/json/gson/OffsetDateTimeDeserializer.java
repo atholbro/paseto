@@ -5,9 +5,9 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import net.aholbrook.paseto.service.Token;
-import net.aholbrook.paseto.time.OffsetDateTime;
 
 import java.lang.reflect.Type;
+import java.time.OffsetDateTime;
 
 public class OffsetDateTimeDeserializer implements JsonDeserializer<OffsetDateTime> {
 	@Override
@@ -15,7 +15,7 @@ public class OffsetDateTimeDeserializer implements JsonDeserializer<OffsetDateTi
 			throws JsonParseException {
 
 		if (json.isJsonPrimitive() && json.getAsJsonPrimitive().isString()) {
-			return Token.DATETIME_FORMATTER.parse(json.getAsString());
+			return OffsetDateTime.parse(json.getAsString(), Token.DATETIME_FORMATTER);
 		} else {
 			return null;
 		}

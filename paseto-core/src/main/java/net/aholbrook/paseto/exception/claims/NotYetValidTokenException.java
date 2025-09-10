@@ -1,7 +1,8 @@
 package net.aholbrook.paseto.exception.claims;
 
 import net.aholbrook.paseto.service.Token;
-import net.aholbrook.paseto.time.OffsetDateTime;
+
+import java.time.OffsetDateTime;
 
 public class NotYetValidTokenException extends ClaimException {
 	public NotYetValidTokenException(OffsetDateTime time, String ruleName, Token token) {

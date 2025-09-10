@@ -3,6 +3,7 @@ package net.aholbrook.paseto.data;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import net.aholbrook.paseto.service.Token;
 
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 // only needed for testing as we store the result as a string, so the field order must match
@@ -15,7 +16,7 @@ public class RfcToken extends Token {
 
 	public RfcToken(String data, String exp) {
 		this.data = data;
-		setExpiration(Token.DATETIME_FORMATTER.parse(exp).toEpochSecond());
+		setExpiration(OffsetDateTime.parse(exp, Token.DATETIME_FORMATTER).toEpochSecond());
 	}
 
 	public String getData() {

@@ -14,13 +14,14 @@ import net.aholbrook.paseto.service.LocalTokenService;
 import net.aholbrook.paseto.service.PublicTokenService;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.service.TokenService;
-import net.aholbrook.paseto.time.Clock;
-import net.aholbrook.paseto.time.OffsetDateTime;
 import net.aholbrook.paseto.utils.AssertUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.time.Clock;
+import java.time.OffsetDateTime;
 
 public class PasetoV2ServiceTest extends PasetoServiceTest {
 	@Override
@@ -276,7 +277,7 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 		String result = service.getFooter(tv.getToken());
 		Assertions.assertEquals("{\"kid\":\"key-1\"}", result);
 	}
-	
+
 	// Test defaultValidityPeriod
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
