@@ -25,9 +25,9 @@ dependencies {
 	api project(':encoding')
 	implementation project(':paseto-core')
 
-	implementation "com.google.code.gson:gson:2.13.1"
+	implementation "com.google.code.gson:gson:2.13.2"
 
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.4'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
-	testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.1"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.13.4"
 }
