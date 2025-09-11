@@ -1,6 +1,5 @@
 package net.aholbrook.paseto;
 
-import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.crypto.TestNonceGenerator;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.crypto.v2.bc.BouncyCastleV2CryptoProvider;
@@ -16,6 +15,7 @@ import net.aholbrook.paseto.exception.PasetoParseException;
 import net.aholbrook.paseto.exception.PasetoStringException;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
 import net.aholbrook.paseto.keys.AsymmetricPublicKey;
+import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.service.Token;
 import net.aholbrook.paseto.utils.AssertUtils;

@@ -1,7 +1,7 @@
 package net.aholbrook.paseto.crypto.v1;
 
-import net.aholbrook.paseto.crypto.Pair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
+import net.aholbrook.paseto.crypto.Pair;
 import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 
 import java.math.BigInteger;

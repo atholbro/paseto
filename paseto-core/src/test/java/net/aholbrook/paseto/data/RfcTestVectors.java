@@ -3,7 +3,6 @@ package net.aholbrook.paseto.data;
 import net.aholbrook.paseto.Version;
 import net.aholbrook.paseto.keys.AsymmetricPublicKey;
 import net.aholbrook.paseto.keys.AsymmetricSecretKey;
-import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.keys.SymmetricKey;
 import net.aholbrook.paseto.service.KeyId;
 import net.aholbrook.paseto.utils.Hex;

@@ -1,7 +1,6 @@
 package net.aholbrook.paseto;
 
 import net.aholbrook.paseto.crypto.Pair;
-import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.crypto.exception.ByteArrayLengthException;
 import net.aholbrook.paseto.crypto.exception.CryptoProviderException;
 import net.aholbrook.paseto.crypto.v1.V1CryptoProvider;
