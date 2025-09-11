@@ -14,9 +14,9 @@ public abstract class PasetoTest {
 
 		String token;
 		if (tv.getFooter() != null) {
-			token = paseto.encrypt(tv.getPayload(), tv.getLocalKey(), tv.getFooter());
+			token = paseto.encrypt(tv.getPayload(), tv.getLocalKey(), tv.getFooter(), tv.getImplicitAssertion());
 		} else {
-			token = paseto.encrypt(tv.getPayload(), tv.getLocalKey());
+			token = paseto.encrypt(tv.getPayload(), tv.getLocalKey(), null, tv.getImplicitAssertion());
 		}
 
 		Assertions.assertEquals(tv.getToken(), token, "Generated token does not match test vector.");
@@ -29,9 +29,9 @@ public abstract class PasetoTest {
 		_TokenType payload;
 		if (tv.getFooter() != null) {
 			payload = paseto.decrypt(tv.getToken(), tv.getLocalKey(), tv.getFooter(),
-					tv.getPayloadClass());
+					tv.getPayloadClass(),  tv.getImplicitAssertion());
 		} else {
-			payload = paseto.decrypt(tv.getToken(), tv.getLocalKey(), tv.getPayloadClass());
+			payload = paseto.decrypt(tv.getToken(), tv.getLocalKey(), null, tv.getPayloadClass(), tv.getImplicitAssertion());
 		}
 
 		Assertions.assertEquals(tv.getPayload(), payload, "Decrypted payload does not match test vector.");
@@ -44,10 +44,9 @@ public abstract class PasetoTest {
 
 		String token;
 		if (tv.getFooter() != null) {
-			token = paseto.sign(tv.getPayload(), tv.getSecretKey(),
-					tv.getFooter());
+			token = paseto.sign(tv.getPayload(), tv.getSecretKey(), tv.getFooter(), tv.getImplicitAssertion());
 		} else {
-			token = paseto.sign(tv.getPayload(), tv.getSecretKey());
+			token = paseto.sign(tv.getPayload(), tv.getSecretKey(),  null, tv.getImplicitAssertion());
 		}
 
 		if (assertSigned) {
@@ -57,9 +56,9 @@ public abstract class PasetoTest {
 		// Now verify the signature (we can't use the token in the test vector as the signature will change each time.
 		_TokenType decoded;
 		if (tv.getFooter() != null) {
-			decoded = paseto.verify(token, tv.getPublicKey(), tv.getFooter(), tv.getPayloadClass());
+			decoded = paseto.verify(token, tv.getPublicKey(), tv.getFooter(), tv.getPayloadClass(), tv.getImplicitAssertion());
 		} else {
-			decoded = paseto.verify(token, tv.getPublicKey(), tv.getPayloadClass());
+			decoded = paseto.verify(token, tv.getPublicKey(), null, tv.getPayloadClass(), tv.getImplicitAssertion());
 		}
 
 		Assertions.assertEquals(tv.getPayload(), decoded, "Decoded payload does not match test vector.");
@@ -71,9 +70,9 @@ public abstract class PasetoTest {
 
 		_TokenType payload;
 		if (tv.getFooter() != null) {
-			payload = paseto.verify(tv.getToken(), tv.getPublicKey(), tv.getFooter(), tv.getPayloadClass());
+			payload = paseto.verify(tv.getToken(), tv.getPublicKey(), tv.getFooter(), tv.getPayloadClass(), tv.getImplicitAssertion());
 		} else {
-			payload = paseto.verify(tv.getToken(), tv.getPublicKey(), tv.getPayloadClass());
+			payload = paseto.verify(tv.getToken(), tv.getPublicKey(), null, tv.getPayloadClass(), tv.getImplicitAssertion());
 		}
 
 		Assertions.assertEquals(tv.getPayload(), payload, "Verified payload does not match test vector.");

@@ -3,8 +3,10 @@ rootProject.name = 'paseto'
 include ":crypto"
 include ":crypto-v1"
 include ":crypto-v2"
+include ":crypto-v4"
 include ":crypto-v1-bc"
 include ":crypto-v2-bc"
+include ":crypto-v4-bc"
 
 include ":encoding"
 include ":encoding-json-jackson"

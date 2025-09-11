@@ -1,0 +1,30 @@
+def artifact_id = "crypto-v4"
+
+jar {
+	archiveBaseName = generateBaseName(artifact_id)
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			pom {
+				name = 'Paseto - Crypto V4'
+				description = 'Crypto V4 interface, which is required for all V4 crypto providers.'
+			}
+
+			artifactId artifact_id
+
+			from components.java
+			artifact sourcesJar
+			artifact javadocJar
+		}
+	}
+}
+
+dependencies {
+	api project(":crypto")
+
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.4'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.1"
+}

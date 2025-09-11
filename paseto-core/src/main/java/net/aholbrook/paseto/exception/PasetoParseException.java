@@ -24,7 +24,8 @@ public class PasetoParseException extends PasetoStringException {
 
 	public enum Reason {
 		MISSING_SECTIONS,
-		PAYLOAD_LENGTH
+		PAYLOAD_LENGTH,
+		INVALID_BASE64,
 	}
 
 	public static String message(Reason reason, String token) {
@@ -41,6 +42,12 @@ public class PasetoParseException extends PasetoStringException {
 				sb.append("Invalid token: \"")
 						.append(token)
 						.append("\" payload section does not meet minimum length requirements.");
+				break;
+
+			case INVALID_BASE64:
+				sb.append("Invalid token: \"")
+						.append(token)
+						.append("\" invalid base64 encoding.");
 				break;
 		}
 

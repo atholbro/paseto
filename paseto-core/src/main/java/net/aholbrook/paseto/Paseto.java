@@ -28,72 +28,119 @@ public abstract class Paseto {
 		this.nonceGenerator = nonceGenerator;
 	}
 
-	public abstract String encrypt(Object payload, SymmetricKey key, String footer);
+	public abstract String encrypt(Object payload, SymmetricKey key, String footer, String implicitAssertion);
 
-	public abstract <_Payload> _Payload decrypt(String token, SymmetricKey key, String footer, Class<_Payload> payloadClass);
+	public abstract <_Payload> _Payload decrypt(String token, SymmetricKey key, String footer,
+			Class<_Payload> payloadClass, String implicitAssertion);
 
-	public abstract String sign(Object payload, AsymmetricSecretKey sk, String footer);
+	public abstract String sign(Object payload, AsymmetricSecretKey sk, String footer, String implicitAssertion);
 
-	public abstract <_Payload> _Payload verify(String token, AsymmetricPublicKey pk, String footer, Class<_Payload> payloadClass);
+	public abstract <_Payload> _Payload verify(String token, AsymmetricPublicKey pk, String footer,
+			Class<_Payload> payloadClass, String implicitAssertion);
 
 	public abstract KeyPair generateKeyPair();
 
+
 	public String encrypt(Object payload, SymmetricKey key) {
-		return encrypt(payload, key, null);
+		return encrypt(payload, key, null, null);
 	}
 
 	public String encrypt(Object payload, SymmetricKey key, Object footer) {
-		return encrypt(payload, key, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)));
+		return encrypt(payload, key, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), null);
+	}
+
+	public String encrypt(Object payload, SymmetricKey key, Object footer, String implicitAssertion) {
+		return encrypt(payload, key, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), implicitAssertion);
 	}
 
 	public <_Payload> _Payload decrypt(String token, SymmetricKey key, Class<_Payload> payloadClass) {
-		return decrypt(token, key, null, payloadClass);
+		return decrypt(token, key, null, payloadClass, null);
 	}
 
 	public <_Payload> _Payload decrypt(String token, SymmetricKey key, Object footer, Class<_Payload> payloadClass) {
-		return decrypt(token, key, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), payloadClass);
+		return decrypt(token, key, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), payloadClass, null);
+	}
+
+	public <_Payload> _Payload decrypt(String token, SymmetricKey key, Object footer, Class<_Payload> payloadClass, String implicitAssertion) {
+		return decrypt(token, key, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), payloadClass, implicitAssertion);
 	}
 
 	public String sign(Object payload, AsymmetricSecretKey sk) {
-		return sign(payload, sk, null);
+		return sign(payload, sk, null, null);
 	}
 
 	public String sign(Object payload, AsymmetricSecretKey sk, Object footer) {
-		return sign(payload, sk, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)));
+		return sign(payload, sk, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), null);
+	}
+
+	public String sign(Object payload, AsymmetricSecretKey sk, Object footer, String implicitAssertion) {
+		return sign(payload, sk, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), implicitAssertion);
 	}
 
 	public <_Payload> _Payload verify(String token, AsymmetricPublicKey pk, Class<_Payload> payloadClass) {
-		return verify(token, pk, null, payloadClass);
+		return verify(token, pk, null, payloadClass, null);
 	}
 
 	public <_Payload> _Payload verify(String token, AsymmetricPublicKey pk, Object footer, Class<_Payload> payloadClass) {
-		return verify(token, pk, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), payloadClass);
+		return verify(token, pk, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), payloadClass, null);
+	}
+
+	public <_Payload> _Payload verify(String token, AsymmetricPublicKey pk, Object footer, Class<_Payload> payloadClass, String implicitAssertion) {
+		return verify(token, pk, (String) ((footer instanceof String) ? footer : encodingProvider.encode(footer)), payloadClass, implicitAssertion);
 	}
 
 	public <_Payload> TokenWithFooter<_Payload, String> decryptWithFooter(String token, SymmetricKey key,
 			Class<_Payload> payloadClass) {
-		_Payload payload = decrypt(token, key, payloadClass);
+		_Payload payload = decrypt(token, key, null, payloadClass, null);
+		String footer = extractFooter(token);
+		return new TokenWithFooter<>(payload, footer);
+	}
+
+	public <_Payload> TokenWithFooter<_Payload, String> decryptWithFooter(String token, SymmetricKey key,
+			Class<_Payload> payloadClass, String implicitAssertion) {
+		_Payload payload = decrypt(token, key, null, payloadClass, implicitAssertion);
 		String footer = extractFooter(token);
 		return new TokenWithFooter<>(payload, footer);
 	}
 
 	public <_Payload, _Footer> TokenWithFooter<_Payload, _Footer> decryptWithFooter(String token, SymmetricKey key,
 			Class<_Payload> payloadClass, Class<_Footer> footerClass) {
-		_Payload payload = decrypt(token, key, payloadClass);
+		_Payload payload = decrypt(token, key, null, payloadClass, null);
+		_Footer footer = extractFooter(token, footerClass);
+		return new TokenWithFooter<>(payload, footer);
+	}
+
+	public <_Payload, _Footer> TokenWithFooter<_Payload, _Footer> decryptWithFooter(String token, SymmetricKey key,
+			Class<_Payload> payloadClass, Class<_Footer> footerClass,  String implicitAssertion) {
+		_Payload payload = decrypt(token, key, null, payloadClass, implicitAssertion);
 		_Footer footer = extractFooter(token, footerClass);
 		return new TokenWithFooter<>(payload, footer);
 	}
 
 	public <_Payload> TokenWithFooter<_Payload, String> verifyWithFooter(String token, AsymmetricPublicKey pk,
 			Class<_Payload> payloadClass) {
-		_Payload payload = verify(token, pk, payloadClass);
+		_Payload payload = verify(token, pk, null, payloadClass, null);
+		String footer = extractFooter(token);
+		return new TokenWithFooter<>(payload, footer);
+	}
+
+	public <_Payload> TokenWithFooter<_Payload, String> verifyWithFooter(String token, AsymmetricPublicKey pk,
+			Class<_Payload> payloadClass,  String implicitAssertion) {
+		_Payload payload = verify(token, pk, null, payloadClass, implicitAssertion);
 		String footer = extractFooter(token);
 		return new TokenWithFooter<>(payload, footer);
 	}
 
 	public <_Payload, _Footer> TokenWithFooter<_Payload, _Footer> verifyWithFooter(String token, AsymmetricPublicKey pk,
 			Class<_Payload> payloadClass, Class<_Footer> footerClass) {
-		_Payload payload = verify(token, pk, payloadClass);
+		_Payload payload = verify(token, pk, null, payloadClass, null);
+		_Footer footer = extractFooter(token, footerClass);
+		return new TokenWithFooter<>(payload, footer);
+	}
+
+	public <_Payload, _Footer> TokenWithFooter<_Payload, _Footer> verifyWithFooter(String token, AsymmetricPublicKey pk,
+			Class<_Payload> payloadClass, Class<_Footer> footerClass,   String implicitAssertion) {
+		_Payload payload = verify(token, pk, null, payloadClass, implicitAssertion);
 		_Footer footer = extractFooter(token, footerClass);
 		return new TokenWithFooter<>(payload, footer);
 	}

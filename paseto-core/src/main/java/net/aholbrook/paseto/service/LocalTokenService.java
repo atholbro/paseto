@@ -26,14 +26,33 @@ public class LocalTokenService<_TokenType extends Token> extends TokenService<_T
 	}
 
 	@Override
+	public String encode(_TokenType token, String implicitAssertion) {
+		validateToken(token);
+		return paseto.encrypt(token, keyProvider.getKey(), null, implicitAssertion);
+	}
+
+	@Override
 	public <_FooterType> String encode(_TokenType token, _FooterType footer) {
 		validateToken(token);
 		return paseto.encrypt(token, keyProvider.getKey(), footer);
 	}
 
 	@Override
+	public <_FooterType> String encode(_TokenType token, _FooterType footer, String implicitAssertion) {
+		validateToken(token);
+		return paseto.encrypt(token, keyProvider.getKey(), footer, implicitAssertion);
+	}
+
+	@Override
 	public _TokenType decode(String token) {
 		_TokenType result = paseto.decrypt(token, keyProvider.getKey(), tokenClass);
+		Claims.verify(result, claims);
+		return result;
+	}
+
+	@Override
+	public _TokenType decode(String token, String implicitAssertion) {
+		_TokenType result = paseto.decrypt(token, keyProvider.getKey(), null, tokenClass, implicitAssertion);
 		Claims.verify(result, claims);
 		return result;
 	}
@@ -46,9 +65,24 @@ public class LocalTokenService<_TokenType extends Token> extends TokenService<_T
 	}
 
 	@Override
+	public <_FooterType> _TokenType decode(String token, _FooterType footer, String implicitAssertion) {
+		_TokenType result = paseto.decrypt(token, keyProvider.getKey(), footer, tokenClass, implicitAssertion);
+		Claims.verify(result, claims);
+		return result;
+	}
+
+	@Override
 	public <_FooterType> TokenWithFooter<_TokenType, _FooterType> decodeWithFooter(String token, Class<_FooterType> footerClass) {
 		TokenWithFooter<_TokenType, _FooterType> result
 				= paseto.decryptWithFooter(token, keyProvider.getKey(), tokenClass, footerClass);
+		Claims.verify(result.getToken(), claims);
+		return result;
+	}
+
+	@Override
+	public <_FooterType> TokenWithFooter<_TokenType, _FooterType> decodeWithFooter(String token, Class<_FooterType> footerClass, String implicitAssertion) {
+		TokenWithFooter<_TokenType, _FooterType> result
+				= paseto.decryptWithFooter(token, keyProvider.getKey(), tokenClass, footerClass, implicitAssertion);
 		Claims.verify(result.getToken(), claims);
 		return result;
 	}

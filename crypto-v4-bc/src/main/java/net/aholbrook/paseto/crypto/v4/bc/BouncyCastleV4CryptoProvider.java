@@ -1,0 +1,90 @@
+package net.aholbrook.paseto.crypto.v4.bc;
+
+import net.aholbrook.paseto.crypto.Pair;
+import net.aholbrook.paseto.crypto.v4.V4CryptoProvider;
+import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.Digest;
+import org.bouncycastle.crypto.digests.Blake2bDigest;
+import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
+import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
+import org.bouncycastle.crypto.signers.Ed25519Signer;
+
+import java.security.SecureRandom;
+
+public class BouncyCastleV4CryptoProvider extends V4CryptoProvider {
+	private final SecureRandom rng = new SecureRandom();
+
+	@Override
+	public boolean blake2b(byte[] out, byte[] key, byte[]... in) {
+		validateBlake2b(out, key, in);
+		Digest digest = new Blake2bDigest(key, out.length, null, null);
+		for (byte[] part : in) {
+			digest.update(part, 0, part.length);
+		}
+		digest.doFinal(out, 0);
+		return true;
+	}
+
+	@Override
+	public boolean xChaCha20Xor(byte[] out, byte[] in, byte[] nonce, byte[] key) {
+		validateXChaCha20Xor(out, in, nonce, key);
+		return XChaCha20.process(out, in, nonce, key);
+	}
+
+	@Override
+	public boolean ed25519Sign(byte[] sig, byte[] m, byte[] sk) {
+		validateEd25519Sign(sig, m, sk);
+		CipherParameters params = new Ed25519PrivateKeyParameters(sk, 0);
+		Ed25519Signer ed25519 = new Ed25519Signer();
+		ed25519.init(true, params);
+		ed25519.update(m, 0, m.length);
+		byte[] result = ed25519.generateSignature();
+		System.arraycopy(result, 0, sig, 0, sig.length);
+		return true;
+	}
+
+	@Override
+	public boolean ed25519Verify(byte[] sig, byte[] m, byte[] pk) {
+		validateEd25519Verify(sig, m, pk);
+		CipherParameters params = new Ed25519PublicKeyParameters(pk, 0);
+		Ed25519Signer ed25519 = new Ed25519Signer();
+		ed25519.init(false, params);
+		ed25519.update(m, 0, m.length);
+		return ed25519.verifySignature(sig);
+	}
+
+	@Override
+	public byte[] ed25519SkToPk(byte[] sk) {
+		validateEd25519PublicKey(sk);
+		byte[] pk = new byte[ed25519SignPublicKeyBytes()];
+
+		Ed25519PrivateKeyParameters params = new Ed25519PrivateKeyParameters(sk, 0);
+		Ed25519PublicKeyParameters pkParams = params.generatePublicKey();
+		System.arraycopy(pkParams.getEncoded(), 0, pk, 0, pk.length);
+
+		return pk;
+	}
+
+	@Override
+	public Pair<byte[], byte[]> ed25519Generate() {
+		int skLen = ed25519SignSecretKeyBytes() - ed25519SignPublicKeyBytes();
+		byte[] sk = new byte[ed25519SignSecretKeyBytes()];
+		byte[] pk = new byte[ed25519SignPublicKeyBytes()];
+
+		Ed25519PrivateKeyParameters params = new Ed25519PrivateKeyParameters(rng);
+		Ed25519PublicKeyParameters pkParams = params.generatePublicKey();
+
+		System.arraycopy(params.getEncoded(), 0, sk, 0, skLen);
+		System.arraycopy(pkParams.getEncoded(), 0, sk, skLen, pk.length);
+		System.arraycopy(sk, skLen, pk, 0, pk.length);
+
+		return new Pair<>(sk, pk);
+	}
+
+	@Override
+	public byte[] generateNonce() {
+		byte[] buffer = new byte[V4_NONCE_BYTES];
+		rng.nextBytes(buffer);
+		return buffer;
+	}
+}

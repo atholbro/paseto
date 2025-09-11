@@ -27,14 +27,25 @@ public abstract class TokenService<_TokenType extends Token> {
 
 	abstract public String encode(_TokenType token);
 
+	abstract public String encode(_TokenType token, String implicitAssertion);
+
 	abstract public <_FooterType> String encode(_TokenType token, _FooterType footer);
+
+	abstract public <_FooterType> String encode(_TokenType token, _FooterType footer, String implicitAssertion);
 
 	abstract public _TokenType decode(String token);
 
+	abstract public _TokenType decode(String token, String implicitAssertion);
+
 	abstract public <_FooterType> _TokenType decode(String token, _FooterType footer);
+
+	abstract public <_FooterType> _TokenType decode(String token, _FooterType footer, String implicitAssertion);
 
 	abstract public <_FooterType> TokenWithFooter<_TokenType, _FooterType> decodeWithFooter(String token,
 			Class<_FooterType> footerClass);
+
+	abstract public <_FooterType> TokenWithFooter<_TokenType, _FooterType> decodeWithFooter(String token,
+			Class<_FooterType> footerClass, String implicitAssertion);
 
 	abstract public String getFooter(String token);
 
