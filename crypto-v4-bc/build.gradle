@@ -1,0 +1,31 @@
+def artifact_id = "crypto-v4-bc"
+
+jar {
+	archiveBaseName = generateBaseName(artifact_id)
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			pom {
+				name = 'Paseto - Crypto V4: Bouncy Castle'
+				description = 'Cryptographic primitives required for Paseto V4 tokens via Bouncy Castle.'
+			}
+
+			artifactId artifact_id
+
+			from components.java
+			artifact sourcesJar
+			artifact javadocJar
+		}
+	}
+}
+
+dependencies {
+	api project(":crypto-v4")
+
+	implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.4'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.13.4"
+}

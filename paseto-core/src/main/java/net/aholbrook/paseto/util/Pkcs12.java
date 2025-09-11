@@ -1,10 +1,10 @@
 package net.aholbrook.paseto.util;
 
 import net.aholbrook.paseto.Version;
+import net.aholbrook.paseto.exception.Pkcs12LoadException;
 import net.aholbrook.paseto.keys.AsymmetricPublicKey;
 import net.aholbrook.paseto.keys.AsymmetricSecretKey;
 import net.aholbrook.paseto.keys.KeyPair;
-import net.aholbrook.paseto.exception.Pkcs12LoadException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

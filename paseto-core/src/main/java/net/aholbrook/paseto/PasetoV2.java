@@ -1,16 +1,17 @@
 package net.aholbrook.paseto;
 
-import net.aholbrook.paseto.crypto.Pair;
-import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.crypto.NonceGenerator;
+import net.aholbrook.paseto.crypto.Pair;
 import net.aholbrook.paseto.crypto.v2.V2CryptoLoader;
 import net.aholbrook.paseto.crypto.v2.V2CryptoProvider;
 import net.aholbrook.paseto.encoding.EncodingProvider;
 import net.aholbrook.paseto.exception.DecryptionException;
+import net.aholbrook.paseto.exception.ImplicitAssertionsNotSupportedException;
 import net.aholbrook.paseto.exception.PasetoParseException;
 import net.aholbrook.paseto.exception.SignatureVerificationException;
 import net.aholbrook.paseto.keys.AsymmetricPublicKey;
 import net.aholbrook.paseto.keys.AsymmetricSecretKey;
+import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.keys.SymmetricKey;
 import net.aholbrook.paseto.util.PaeUtil;
 import net.aholbrook.paseto.util.StringUtils;
@@ -31,9 +32,12 @@ public class PasetoV2 extends Paseto {
 	}
 
 	@Override
-	public String encrypt(Object payload, SymmetricKey key, String footer) {
+	public String encrypt(Object payload, SymmetricKey key, String footer, String implicitAssertion) {
 		// Verify key version.
 		key.verifyKey(Version.V2);
+		if (payload == null) { throw new NullPointerException("payload"); }
+
+		if (implicitAssertion != null) { throw new ImplicitAssertionsNotSupportedException(Version.V2); }
 
 		footer = StringUtils.ntes(footer); // convert null to ""
 		byte[] payloadBytes = StringUtils.getBytesUtf8(encodingProvider.encode(payload));
@@ -61,9 +65,12 @@ public class PasetoV2 extends Paseto {
 	}
 
 	@Override
-	public <_Payload> _Payload decrypt(String token, SymmetricKey key, String footer, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload decrypt(String token, SymmetricKey key, String footer, Class<_Payload> payloadClass,
+			String implicitAssertion) {
 		// Verify key version.
 		key.verifyKey(Version.V2);
+
+		if (implicitAssertion != null) { throw new ImplicitAssertionsNotSupportedException(Version.V2); }
 
 		// Split token into sections
 		String[] sections = split(token);
@@ -100,9 +107,11 @@ public class PasetoV2 extends Paseto {
 	}
 
 	@Override
-	public String sign(Object payload, AsymmetricSecretKey sk, String footer) {
+	public String sign(Object payload, AsymmetricSecretKey sk, String footer, String implicitAssertion) {
 		// Verify key version.
 		sk.verifyKey(Version.V2);
+
+		if (implicitAssertion != null) { throw new ImplicitAssertionsNotSupportedException(Version.V2); }
 
 		footer = StringUtils.ntes(footer); // convert null to ""
 		byte[] payloadBytes = StringUtils.getBytesUtf8(encodingProvider.encode(payload));
@@ -125,9 +134,12 @@ public class PasetoV2 extends Paseto {
 	}
 
 	@Override
-	public <_Payload> _Payload verify(String token, AsymmetricPublicKey pk, String footer, Class<_Payload> payloadClass) {
+	public <_Payload> _Payload verify(String token, AsymmetricPublicKey pk, String footer, Class<_Payload> payloadClass,
+			String implicitAssertion) {
 		// Verify key version.
 		pk.verifyKey(Version.V2);
+
+		if (implicitAssertion != null) { throw new ImplicitAssertionsNotSupportedException(Version.V2); }
 
 		// Split token into sections
 		String[] sections = split(token);

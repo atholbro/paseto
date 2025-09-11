@@ -1,7 +1,7 @@
 package net.aholbrook.paseto;
 
-import net.aholbrook.paseto.keys.KeyPair;
 import net.aholbrook.paseto.data.RfcTestVectors;
+import net.aholbrook.paseto.keys.KeyPair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

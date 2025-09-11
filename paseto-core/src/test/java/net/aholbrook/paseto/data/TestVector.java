@@ -13,9 +13,10 @@ public class TestVector<_Payload, _Footer> {
 	private final Class<_Payload> payloadClass;
 	private final _Footer footer;
 	private final String token;
+	private final String implicitAssertion;
 
 	public TestVector(SymmetricKey localKey, byte[] nonce, _Payload payload, Class<_Payload> payloadClass,
-					  _Footer footer, String token) {
+			_Footer footer, String token) {
 		this.localKey = localKey;
 		this.nonce = nonce;
 		this.secretKey = null;
@@ -24,10 +25,24 @@ public class TestVector<_Payload, _Footer> {
 		this.payloadClass = payloadClass;
 		this.footer = footer;
 		this.token = token;
+		this.implicitAssertion = null;
+	}
+
+	public TestVector(SymmetricKey localKey, byte[] nonce, _Payload payload, Class<_Payload> payloadClass,
+			_Footer footer, String token, String implicitAssertion) {
+		this.localKey = localKey;
+		this.nonce = nonce;
+		this.secretKey = null;
+		this.publicKey = null;
+		this.payload = payload;
+		this.payloadClass = payloadClass;
+		this.footer = footer;
+		this.token = token;
+		this.implicitAssertion = implicitAssertion;
 	}
 
 	public TestVector(AsymmetricSecretKey secretKey, AsymmetricPublicKey publicKey, _Payload payload,
-					  Class<_Payload> payloadClass, _Footer footer, String token) {
+			Class<_Payload> payloadClass, _Footer footer, String token) {
 		this.localKey = null;
 		this.nonce = null;
 		this.secretKey = secretKey;
@@ -36,6 +51,20 @@ public class TestVector<_Payload, _Footer> {
 		this.payloadClass = payloadClass;
 		this.footer = footer;
 		this.token = token;
+		this.implicitAssertion = null;
+	}
+
+	public TestVector(AsymmetricSecretKey secretKey, AsymmetricPublicKey publicKey, _Payload payload,
+			Class<_Payload> payloadClass, _Footer footer, String token, String implicitAssertion) {
+		this.localKey = null;
+		this.nonce = null;
+		this.secretKey = secretKey;
+		this.publicKey = publicKey;
+		this.payload = payload;
+		this.payloadClass = payloadClass;
+		this.footer = footer;
+		this.token = token;
+		this.implicitAssertion = implicitAssertion;
 	}
 
 	public SymmetricKey getLocalKey() {
@@ -69,4 +98,6 @@ public class TestVector<_Payload, _Footer> {
 	public String getToken() {
 		return token;
 	}
+
+	public String getImplicitAssertion() { return  implicitAssertion; }
 }
