@@ -38,7 +38,7 @@ public class ClaimVerificationTest {
 	private VerificationContext standardVerification(Token token, OffsetDateTime time) {
 		Claim[] claims = new Claim[] {
 				new IssuedInPast(time, IssuedInPast.DEFAULT_ALLOWABLE_DRIFT),
-				new CurrentlyValid(time, CurrentlyValid.DEFAULT_ALLOWABLE_DRIFT)
+				new CurrentlyValid(time, CurrentlyValid.DEFAULT_ALLOWABLE_DRIFT, false)
 		};
 
 		return Claims.verify(token, claims);
@@ -109,6 +109,19 @@ public class ClaimVerificationTest {
 			AssertUtils.assertMissingClaimException(() -> Claims.verify(token, new Claim[]{new CurrentlyValid()}),
 					CurrentlyValid.NAME, token, Token.CLAIM_EXPIRATION);
 		});
+	}
+
+	@Test
+	@DisplayName("A token without an expiration time is valid if allowWithoutExpiration is set to true.")
+	public void tokenVerification_null_expired_allowed() {
+		Token token = new Token().setIssuedAt(0L);
+
+		Claim[] claims = new Claim[] {
+				new IssuedInPast(IssuedInPast.DEFAULT_ALLOWABLE_DRIFT),
+				new CurrentlyValid(CurrentlyValid.DEFAULT_ALLOWABLE_DRIFT, true)
+		};
+
+		Claims.verify(token, claims);
 	}
 
 	@Test

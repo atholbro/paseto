@@ -16,13 +16,15 @@ public abstract class TokenService<_TokenType extends Token> {
 	final Class<_TokenType> tokenClass;
 	final Claim[] claims;
 	private final Duration defaultValidityPeriod;
+	private final boolean allowTokensWithoutExpiration;
 
 	TokenService(Paseto paseto, Claim[] claims, Duration defaultValidityPeriod,
-			Class<_TokenType> tokenClass) {
+			Class<_TokenType> tokenClass, boolean allowTokensWithoutExpiration) {
 		this.paseto = paseto;
 		this.tokenClass = tokenClass;
 		this.defaultValidityPeriod = defaultValidityPeriod;
 		this.claims = claims;
+		this.allowTokensWithoutExpiration = allowTokensWithoutExpiration;
 	}
 
 	abstract public String encode(_TokenType token);
@@ -62,7 +64,7 @@ public abstract class TokenService<_TokenType extends Token> {
 			if (defaultValidityPeriod != null) {
 				OffsetDateTime issuedAt = Instant.ofEpochSecond(token.getIssuedAt()).atOffset(ZoneOffset.UTC);
 				token.setExpiration(issuedAt.plus(defaultValidityPeriod).toEpochSecond());
-			} else {
+			} else if (!allowTokensWithoutExpiration) {
 				throw new MissingClaimException(Token.CLAIM_EXPIRATION, "TokenService", token);
 			}
 		}

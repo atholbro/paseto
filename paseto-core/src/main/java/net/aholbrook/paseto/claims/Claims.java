@@ -12,6 +12,10 @@ public class Claims {
 			new IssuedInPast(), new CurrentlyValid()
 	};
 
+	public static final Claim[] DEFAULT_NO_EXPIRY_CLAIM_CHECKS = new Claim[] {
+			new IssuedInPast(), new CurrentlyValid(true)
+	};
+
 	public static VerificationContext verify(Token token) {
 		return verify(token, DEFAULT_CLAIM_CHECKS);
 	}
