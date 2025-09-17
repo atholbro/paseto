@@ -317,6 +317,20 @@ public class PasetoV1ServiceTest extends PasetoServiceTest {
 		});
 	}
 
+	@ParameterizedTest(name = "{displayName} with {0}")
+	@MethodSource("net.aholbrook.paseto.Sources#pasetoV1Builders")
+	public void v1Service_public_noExpiryAllowed(Paseto.Builder builder) {
+		Token token = new Token().setTokenId("id").setIssuedAt(0L);
+		PublicTokenService<Token> service = new PublicTokenService.Builder<>(Token.class, rfcPublicKeyProvider())
+				.withPaseto(builder.build())
+				.withoutExpiration()
+				.build();
+
+		String s = service.encode(token);
+		Token token2 = service.decode(s);
+		Assertions.assertNotNull(token2.getIssuedAt());
+		Assertions.assertNull(token2.getExpiration());
+	}
 
 	// Constructors / Builder options
 	@ParameterizedTest(name = "{displayName} with {0}")

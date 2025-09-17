@@ -310,6 +310,21 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 
 	@ParameterizedTest(name = "{displayName} with {0}")
 	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
+	public void v2Service_local_noExpiryAllowed(Paseto.Builder builder) {
+		Token token = new Token().setTokenId("id").setIssuedAt(0L);
+		LocalTokenService<Token> service = new LocalTokenService.Builder<>(Token.class, rfcLocalKeyProvider())
+				.withPaseto(builder.build())
+				.withoutExpiration()
+				.build();
+
+		String s = service.encode(token);
+		Token token2 = service.decode(s);
+		Assertions.assertNotNull(token2.getIssuedAt());
+		Assertions.assertNull(token2.getExpiration());
+	}
+
+	@ParameterizedTest(name = "{displayName} with {0}")
+	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
 	public void v2Service_public_defaultValidityPeriod(Paseto.Builder builder) {
 		Token token = new Token().setTokenId("id");
 		PublicTokenService<Token> service = new PublicTokenService.Builder<>(Token.class, rfcPublicKeyProvider())
@@ -335,6 +350,21 @@ public class PasetoV2ServiceTest extends PasetoServiceTest {
 			AssertUtils.assertMissingClaimException(() ->
 					service.encode(token), "TokenService", token, Token.CLAIM_EXPIRATION);
 		});
+	}
+
+	@ParameterizedTest(name = "{displayName} with {0}")
+	@MethodSource("net.aholbrook.paseto.Sources#pasetoV2Builders")
+	public void v2Service_public_noExpiryAllowed(Paseto.Builder builder) {
+		Token token = new Token().setTokenId("id").setIssuedAt(0L);
+		PublicTokenService<Token> service = new PublicTokenService.Builder<>(Token.class, rfcPublicKeyProvider())
+				.withPaseto(builder.build())
+				.withoutExpiration()
+				.build();
+
+		String s = service.encode(token);
+		Token token2 = service.decode(s);
+		Assertions.assertNotNull(token2.getIssuedAt());
+		Assertions.assertNull(token2.getExpiration());
 	}
 
 

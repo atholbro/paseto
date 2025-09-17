@@ -18,6 +18,7 @@ public class CurrentlyValid implements Claim {
 
 	private final OffsetDateTime time;
 	private final Duration allowableDrift;
+	private final boolean allowWithoutExpiration;
 
 	/**
 	 * Verifies that the token is not expired or validated before it's "Not Before" time.
@@ -28,7 +29,20 @@ public class CurrentlyValid implements Claim {
 	 * relaxes the check by adding a 1 second window into the future during which the not before check will pass.
 	 */
 	public CurrentlyValid() {
-		this(DEFAULT_ALLOWABLE_DRIFT);
+		this(DEFAULT_ALLOWABLE_DRIFT, false);
+	}
+
+	/**
+	 * Verifies that the token is not expired or validated before it's "Not Before" time.
+	 *
+	 * This call sets the "check time" to Clock.systemUTC() and should be used in most cases.
+	 *
+	 * This constructor sets the allowable clock drift as DEFAULT_ALLOWABLE_DRIFT which is defined as 1 second. This
+	 * relaxes the check by adding a 1 second window into the future during which the not before check will pass.
+	 * @param allowWithoutExpiration When true, treat tokens without a set expiry as valid.
+	 */
+	public CurrentlyValid(boolean allowWithoutExpiration) {
+		this(DEFAULT_ALLOWABLE_DRIFT, allowWithoutExpiration);
 	}
 
 	/**
@@ -42,7 +56,22 @@ public class CurrentlyValid implements Claim {
 	 * time.
 	 */
 	public CurrentlyValid(Duration allowableDrift) {
-		this(null, allowableDrift);
+		this(null, allowableDrift, false);
+	}
+
+	/**
+	 * Verifies that the token is not expired or validated before it's "Not Before" time.
+	 *
+	 * This call sets the "check time" to Clock.systemUTC() and should be used in most cases.
+	 *
+	 * @param allowableDrift Time window during which a token is considered valid even if it's not before time is in
+	 * the future. Should be set to a small time window (default is 1 second) which allows for a
+	 * slight clock drift between servers. Only applies to "not before" and not the expiration
+	 * time.
+	 * @param allowWithoutExpiration When true, treat tokens without a set expiry as valid.
+	 */
+	public CurrentlyValid(Duration allowableDrift, boolean allowWithoutExpiration) {
+		this(null, allowableDrift, allowWithoutExpiration);
 	}
 
 	/**
@@ -57,10 +86,12 @@ public class CurrentlyValid implements Claim {
 	 * the future. Should be set to a small time window (default is 1 second) which allows for a
 	 * slight clock drift between servers. Only applies to "not before" and not the expiration
 	 * time.
+	 * @param allowWithoutExpiration When true, treat tokens without a set expiry as valid.
 	 */
-	public CurrentlyValid(OffsetDateTime time, Duration allowableDrift) {
+	public CurrentlyValid(OffsetDateTime time, Duration allowableDrift, boolean allowWithoutExpiration) {
 		this.time = time;
 		this.allowableDrift = allowableDrift;
+		this.allowWithoutExpiration = allowWithoutExpiration;
 	}
 
 	@Override
@@ -70,14 +101,8 @@ public class CurrentlyValid implements Claim {
 
 	@Override
 	public void check(Token token, VerificationContext context) {
+		// Note: issued at times can be checked with the IssuedInPast rule.
 		OffsetDateTime time = this.time == null ? OffsetDateTime.now(Clock.systemUTC()) : this.time;
-
-		// If no expiry time was set, then we treat the token as expired.
-		if (token.getExpiration() == null) {
-			throw new MissingClaimException(Token.CLAIM_EXPIRATION, NAME, token);
-		}
-
-		OffsetDateTime expiration = Instant.ofEpochSecond(token.getExpiration()).atOffset(ZoneOffset.UTC);
 
 		// Check "Not Before" if provided.
 		if (token.getNotBefore() != null) {
@@ -88,7 +113,16 @@ public class CurrentlyValid implements Claim {
 			}
 		}
 
-		// Note: issued at times can be checked with the IssuedInPast rule.
+		// If no expiry time was set, then we treat the token as expired unless allowWithoutExpiration is true.
+		if (token.getExpiration() == null) {
+			if (allowWithoutExpiration) {
+				return; // valid
+			} else {
+				throw new MissingClaimException(Token.CLAIM_EXPIRATION, NAME, token);
+			}
+		}
+
+		OffsetDateTime expiration = Instant.ofEpochSecond(token.getExpiration()).atOffset(ZoneOffset.UTC);
 
 		// Finally we check the expiration time.
 		if (expiration.isBefore(time)) {

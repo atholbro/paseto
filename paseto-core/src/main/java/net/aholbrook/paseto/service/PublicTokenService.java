@@ -3,6 +3,7 @@ package net.aholbrook.paseto.service;
 import net.aholbrook.paseto.Paseto;
 import net.aholbrook.paseto.PasetoV1;
 import net.aholbrook.paseto.PasetoV2;
+import net.aholbrook.paseto.PasetoV4;
 import net.aholbrook.paseto.TokenWithFooter;
 import net.aholbrook.paseto.claims.Claim;
 import net.aholbrook.paseto.claims.Claims;
@@ -16,8 +17,8 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 	private final KeyProvider keyProvider;
 
 	private PublicTokenService(Paseto paseto, KeyProvider keyProvider, Claim[] claims,
-			Duration defaultValidityPeriod, Class<_TokenType> tokenClass) {
-		super(paseto, claims, defaultValidityPeriod, tokenClass);
+			Duration defaultValidityPeriod, Class<_TokenType> tokenClass, boolean allowTokensWithoutExpiration) {
+		super(paseto, claims, defaultValidityPeriod, tokenClass, allowTokensWithoutExpiration);
 		this.keyProvider = keyProvider;
 	}
 
@@ -110,6 +111,7 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 		private Paseto paseto;
 		private Long defaultValidityPeriod = null;
 		private Claim[] claims = Claims.DEFAULT_CLAIM_CHECKS;
+		private boolean allowTokensWithoutExpiration = false;
 
 		public Builder(Class<_TokenType> tokenClass, KeyProvider keyProvider) {
 			this.tokenClass = tokenClass;
@@ -126,6 +128,11 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 			return this;
 		}
 
+		public Builder<_TokenType> withV4() {
+			this.paseto = new PasetoV4.Builder().build();
+			return this;
+		}
+
 		public Builder<_TokenType> withPaseto(Paseto paseto) {
 			this.paseto = paseto;
 			return this;
@@ -133,6 +140,16 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 
 		public Builder<_TokenType> withDefaultValidityPeriod(Long defaultValidityPeriod) {
 			this.defaultValidityPeriod = defaultValidityPeriod;
+			return this;
+		}
+
+		public Builder<_TokenType> withoutExpiration() {
+			this.allowTokensWithoutExpiration = true;
+
+			if (claims == Claims.DEFAULT_CLAIM_CHECKS) {
+				claims = Claims.DEFAULT_NO_EXPIRY_CLAIM_CHECKS;
+			}
+
 			return this;
 		}
 
@@ -148,7 +165,8 @@ public class PublicTokenService<_TokenType extends Token> extends TokenService<_
 					keyProvider,
 					claims,
 					defaultValidityPeriod != null ? Duration.ofSeconds(defaultValidityPeriod) : null,
-					tokenClass);
+					tokenClass,
+					allowTokensWithoutExpiration);
 		}
 	}
 }
