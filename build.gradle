@@ -51,7 +51,7 @@ allprojects {
 	}
 
 	jacoco {
-		toolVersion = "0.8.13"
+		toolVersion = "0.8.14"
 	}
 
 	if (it.name != "paseto") {
@@ -132,8 +132,8 @@ allprojects {
 }
 
 subprojects {
-	sourceCompatibility = JavaVersion.VERSION_11
-	targetCompatibility = JavaVersion.VERSION_11
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 
 	tasks.register('sourcesJar', Jar) {
 		from sourceSets.main.allJava
