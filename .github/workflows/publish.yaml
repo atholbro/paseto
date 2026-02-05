@@ -1,0 +1,21 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    container:
+      image: eclipse-temurin:17.0.18_8-jdk-alpine-3.23
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gradle build
+        run: ./gradlew build --no-daemon
+
+      - name: Tests
+        run: ./gradlew test --no-daemon

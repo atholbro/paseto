@@ -1,0 +1,21 @@
+name: Build & Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    container:
+      image: eclipse-temurin:17.0.18_8-jdk-alpine-3.23
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gradle
+        run: ./gradlew test --no-daemon

@@ -1,0 +1,268 @@
+{
+    "name": "PASETO V3 Service Test Vectors",
+    "version": "V3",
+    "tests": [
+        {
+            "name": "TV_1_V3_LOCAL",
+            "mode": "local",
+            "nonce": "d892e66e5ef2185186b161adbcefc1283157e5c90dbdae4d5db1cc481e2889fd",
+            "key": "3236753cafb041c87c87fe8f4fbe7303b5c22f61fd447c5d3e5bf9e4d6f9e327",
+            "payload": {
+                "iss": "paragonie.com",
+                "sub": "test",
+                "aud": "pie-hosted.com",
+                "exp": "2039-01-01T00:00:00+00:00",
+                "nbf": "2038-04-01T00:00:00+00:00",
+                "iat": "2038-03-17T00:00:00+00:00",
+                "jti": "87IFSGFgPNtQNNuw0AtuLttP"
+            },
+            "token": "v3.local.2JLmbl7yGFGGsWGtvO_BKDFX5ckNva5NXbHMSB4oif16wOixPwP82ADp2kGmfjJr3rfg21dvhFXSK2WQJ1ps0YT_4qo38OvuB1kXngGpJJGpm6P-rTVsRYPVgjmVlywK-etxLj6x1Enu5oZpY1qII5e49dcw6pCK_SlDnFeMvSZw6Z-rB4y6ciQAFu5FwzOb_irxFxLhU4altMd2fBCaYu2kYgzrLS5SF98n_e1KhNwvAGIzbyvHQPF7wvyqT-uoSA8beKcfqMzm-xP9ancN1M_BT10ppMuGCiab8sXFTJ9um0yHim7DVAAFZ0AU3084gwuiQxAhqDrqhhWl1w_z1PUSvA"
+        },
+        {
+            "name": "TV_1_V3_LOCAL_WITH_FOOTER",
+            "mode": "local",
+            "nonce": "d892e66e5ef2185186b161adbcefc1283157e5c90dbdae4d5db1cc481e2889fd",
+            "key": "3236753cafb041c87c87fe8f4fbe7303b5c22f61fd447c5d3e5bf9e4d6f9e327",
+            "payload": {
+                "iss": "paragonie.com",
+                "sub": "test",
+                "aud": "pie-hosted.com",
+                "exp": "2039-01-01T00:00:00+00:00",
+                "nbf": "2038-04-01T00:00:00+00:00",
+                "iat": "2038-03-17T00:00:00+00:00",
+                "jti": "87IFSGFgPNtQNNuw0AtuLttP"
+            },
+            "footer": {
+                "kid": "key-1"
+            },
+            "token": "v3.local.2JLmbl7yGFGGsWGtvO_BKDFX5ckNva5NXbHMSB4oif16wOixPwP82ADp2kGmfjJr3rfg21dvhFXSK2WQJ1ps0YT_4qo38OvuB1kXngGpJJGpm6P-rTVsRYPVgjmVlywK-etxLj6x1Enu5oZpY1qII5e49dcw6pCK_SlDnFeMvSZw6Z-rB4y6ciQAFu5FwzOb_irxFxLhU4altMd2fBCaYu2kYgzrLS5SF98n_e1KhNwvAGIzbyvHQPF7wvyqT-uoSA8beKcfqMzm-xP9ancN1M_BT20BxragqsFqGzn2vBWCEYplscNMo4w3cDGn7zQHUbFHFnwIFgtScZ4ODZXype2PrQ.eyJraWQiOiJrZXktMSJ9"
+        },
+        {
+            "name": "TV_1_V3_LOCAL_WITH_STRING_FOOTER",
+            "mode": "local",
+            "nonce": "d892e66e5ef2185186b161adbcefc1283157e5c90dbdae4d5db1cc481e2889fd",
+            "key": "3236753cafb041c87c87fe8f4fbe7303b5c22f61fd447c5d3e5bf9e4d6f9e327",
+            "payload": {
+                "iss": "paragonie.com",
+                "sub": "test",
+                "aud": "pie-hosted.com",
+                "exp": "2039-01-01T00:00:00+00:00",
+                "nbf": "2038-04-01T00:00:00+00:00",
+                "iat": "2038-03-17T00:00:00+00:00",
+                "jti": "87IFSGFgPNtQNNuw0AtuLttP"
+            },
+            "footer": "TEST",
+            "token": "v3.local.2JLmbl7yGFGGsWGtvO_BKDFX5ckNva5NXbHMSB4oif16wOixPwP82ADp2kGmfjJr3rfg21dvhFXSK2WQJ1ps0YT_4qo38OvuB1kXngGpJJGpm6P-rTVsRYPVgjmVlywK-etxLj6x1Enu5oZpY1qII5e49dcw6pCK_SlDnFeMvSZw6Z-rB4y6ciQAFu5FwzOb_irxFxLhU4altMd2fBCaYu2kYgzrLS5SF98n_e1KhNwvAGIzbyvHQPF7wvyqT-uoSA8beKcfqMzm-xP9ancN1M_BT3YXaH-lrkKCWRNlXILfnSQ3zaKq_tTjEwwR3gGrGKRZBQETzmKspPWM9XIbaizKTg.VEVTVA"
+        },
+        {
+            "name": "TV_1_V3_PUBLIC",
+            "mode": "public",
+            "public-key": "039bd37f93bd00b144b991b91bd2937c59273ea3db9b564a084856842e645c2ff4c669754899a0b1f516972db997151952",
+            "secret-key": "1dd0e1156bbe26b2000b7ea251824076b1ece4796fca6eaa93306f65b6c1772d5d42ab60b62c610e901e7a7b6cbf7a47",
+            "payload": {
+                "iss": "paragonie.com",
+                "sub": "test",
+                "aud": "pie-hosted.com",
+                "exp": "2039-01-01T00:00:00+00:00",
+                "nbf": "2038-04-01T00:00:00+00:00",
+                "iat": "2038-03-17T00:00:00+00:00",
+                "jti": "87IFSGFgPNtQNNuw0AtuLttP"
+            },
+            "token": "v3.public.eyJpc3MiOiJwYXJhZ29uaWUuY29tIiwic3ViIjoidGVzdCIsImF1ZCI6InBpZS1ob3N0ZWQuY29tIiwiZXhwIjoiMjAzOS0wMS0wMVQwMDowMDowMFoiLCJuYmYiOiIyMDM4LTA0LTAxVDAwOjAwOjAwWiIsImlhdCI6IjIwMzgtMDMtMTdUMDA6MDA6MDBaIiwianRpIjoiODdJRlNHRmdQTnRRTk51dzBBdHVMdHRQIn2zdZ25xmdJ3JC3p0gFgVm8f2sPRK4cvI4m7L-WpJ0BCSHOqcgWeYbIJ2axDXNWVRHOm7acJ4bUpZ4ywYYO6ZNY4VFv5kox2ttui_XFRSH418MVeLbYT9dL84XOAeSwjII"
+        },
+        {
+            "name": "TV_1_V3_PUBLIC_WITH_FOOTER",
+            "mode": "public",
+            "public-key": "039bd37f93bd00b144b991b91bd2937c59273ea3db9b564a084856842e645c2ff4c669754899a0b1f516972db997151952",
+            "secret-key": "1dd0e1156bbe26b2000b7ea251824076b1ece4796fca6eaa93306f65b6c1772d5d42ab60b62c610e901e7a7b6cbf7a47",
+            "payload": {
+                "iss": "paragonie.com",
+                "sub": "test",
+                "aud": "pie-hosted.com",
+                "exp": "2039-01-01T00:00:00+00:00",
+                "nbf": "2038-04-01T00:00:00+00:00",
+                "iat": "2038-03-17T00:00:00+00:00",
+                "jti": "87IFSGFgPNtQNNuw0AtuLttP"
+            },
+            "footer": {
+                "kid": "key-1"
+            },
+            "token": "v3.public.eyJpc3MiOiJwYXJhZ29uaWUuY29tIiwic3ViIjoidGVzdCIsImF1ZCI6InBpZS1ob3N0ZWQuY29tIiwiZXhwIjoiMjAzOS0wMS0wMVQwMDowMDowMFoiLCJuYmYiOiIyMDM4LTA0LTAxVDAwOjAwOjAwWiIsImlhdCI6IjIwMzgtMDMtMTdUMDA6MDA6MDBaIiwianRpIjoiODdJRlNHRmdQTnRRTk51dzBBdHVMdHRQIn0S6G1nUBhlw1BXV2mbMalmPZ9JG8jT9NEtum5Ost5s_ntcQs56v6JSsmp1WqEUGrICtN6cq99x3pCHWrNw_r5ALalCf2tKNFffPAxof6hoOieA_zbkx3tuolVdPafC8b0.eyJraWQiOiJrZXktMSJ9"
+        },
+        {
+            "name": "TV_1_V3_PUBLIC_WITH_STRING_FOOTER",
+            "mode": "public",
+            "public-key": "039bd37f93bd00b144b991b91bd2937c59273ea3db9b564a084856842e645c2ff4c669754899a0b1f516972db997151952",
+            "secret-key": "1dd0e1156bbe26b2000b7ea251824076b1ece4796fca6eaa93306f65b6c1772d5d42ab60b62c610e901e7a7b6cbf7a47",
+            "payload": {
+                "iss": "paragonie.com",
+                "sub": "test",
+                "aud": "pie-hosted.com",
+                "exp": "2039-01-01T00:00:00+00:00",
+                "nbf": "2038-04-01T00:00:00+00:00",
+                "iat": "2038-03-17T00:00:00+00:00",
+                "jti": "87IFSGFgPNtQNNuw0AtuLttP"
+            },
+            "footer": "TEST",
+            "token": "v3.public.eyJpc3MiOiJwYXJhZ29uaWUuY29tIiwic3ViIjoidGVzdCIsImF1ZCI6InBpZS1ob3N0ZWQuY29tIiwiZXhwIjoiMjAzOS0wMS0wMVQwMDowMDowMFoiLCJuYmYiOiIyMDM4LTA0LTAxVDAwOjAwOjAwWiIsImlhdCI6IjIwMzgtMDMtMTdUMDA6MDA6MDBaIiwianRpIjoiODdJRlNHRmdQTnRRTk51dzBBdHVMdHRQIn1yPzcJxS-bHMJg4gOTaK4HpD0BHCbUufnNZvbGk13WDD_01O3SD19eohlmXFueEebhEMTQ4TcRsbzsTTsZix0y-eVuKvV2JesfzO1Ya-VWGfyySQ3KXvcZWqOe9MomUJI.VEVTVA"
+        },
+        {
+            "name": "TV_2_V3_LOCAL",
+            "mode": "local",
+            "nonce": "d892e66e5ef2185186b161adbcefc1283157e5c90dbdae4d5db1cc481e2889fd",
+            "key": "3236753cafb041c87c87fe8f4fbe7303b5c22f61fd447c5d3e5bf9e4d6f9e327",
+            "payload": {
+                "userId": 100,
+                "iss": "auth.example.com",
+                "sub": "user-auth",
+                "aud": "internal-service.example.com",
+                "exp": "2018-01-01T17:23:44+00:00",
+                "nbf": "2018-01-01T17:18:44+00:00",
+                "iat": "2018-01-01T17:18:44+00:00"
+            },
+            "token": "v3.local.2JLmbl7yGFGGsWGtvO_BKDFX5ckNva5NXbHMSB4oif16wOixPwP82BH93EjvdCRj1unv0RQuxxqDciXBaBo6jtX-s-NnvP__UQsXwkqtfJ3k0vXyp29qWICWwjaDii5eqqomMGjwmBSvp9N2VAXVO4uqqp9wkoiE7XcQwliGrjlw6_O3AIKlcS9gEoRd3yHPrHyJDxzxCtbpu81lYxCYDvGjaxDiIE5Wfcc7774bwKQ3DnJpKnrISuJuxYS4LZvUHmdvOMILxJWzviHsbXIdgqXSAvc9Glkf55R5Ej1fPpQOr94L0EWcNMzRTe2tyjj-rmef-ZkeKBRnKi2D6XefKkwLJwmF"
+        },
+        {
+            "name": "TV_2_V3_LOCAL_WITH_FOOTER",
+            "mode": "local",
+            "nonce": "d892e66e5ef2185186b161adbcefc1283157e5c90dbdae4d5db1cc481e2889fd",
+            "key": "3236753cafb041c87c87fe8f4fbe7303b5c22f61fd447c5d3e5bf9e4d6f9e327",
+            "payload": {
+                "userId": 100,
+                "iss": "auth.example.com",
+                "sub": "user-auth",
+                "aud": "internal-service.example.com",
+                "exp": "2018-01-01T17:23:44+00:00",
+                "nbf": "2018-01-01T17:18:44+00:00",
+                "iat": "2018-01-01T17:18:44+00:00"
+            },
+            "footer": {
+                "kid": "key-1"
+            },
+            "token": "v3.local.2JLmbl7yGFGGsWGtvO_BKDFX5ckNva5NXbHMSB4oif16wOixPwP82BH93EjvdCRj1unv0RQuxxqDciXBaBo6jtX-s-NnvP__UQsXwkqtfJ3k0vXyp29qWICWwjaDii5eqqomMGjwmBSvp9N2VAXVO4uqqp9wkoiE7XcQwliGrjlw6_O3AIKlcS9gEoRd3yHPrHyJDxzxCtbpu81lYxCYDvGjaxDiIE5Wfcc7774bwKQ3DnJpKnrISuJuxYS4LZvUHmdvOMILxJWzviHsbXIdgqXSAvc9w_VVPr5cuZfg-VVGH3zqgeywjFP5KYwsYa539Xlarq019g0cC-2abv4fnmURhS_U.eyJraWQiOiJrZXktMSJ9"
+        },
+        {
+            "name": "TV_2_V3_PUBLIC",
+            "mode": "public",
+            "public-key": "039bd37f93bd00b144b991b91bd2937c59273ea3db9b564a084856842e645c2ff4c669754899a0b1f516972db997151952",
+            "secret-key": "1dd0e1156bbe26b2000b7ea251824076b1ece4796fca6eaa93306f65b6c1772d5d42ab60b62c610e901e7a7b6cbf7a47",
+            "payload": {
+                "userId": 100,
+                "iss": "auth.example.com",
+                "sub": "user-auth",
+                "aud": "internal-service.example.com",
+                "exp": "2018-01-01T17:23:44+00:00",
+                "nbf": "2018-01-01T17:18:44+00:00",
+                "iat": "2018-01-01T17:18:44+00:00"
+            },
+            "token": "v3.public.eyJpc3MiOiJhdXRoLmV4YW1wbGUuY29tIiwic3ViIjoidXNlci1hdXRoIiwiYXVkIjoiaW50ZXJuYWwtc2VydmljZS5leGFtcGxlLmNvbSIsImV4cCI6IjIwMTgtMDEtMDFUMTc6MjM6NDRaIiwibmJmIjoiMjAxOC0wMS0wMVQxNzoxODo0NFoiLCJpYXQiOiIyMDE4LTAxLTAxVDE3OjE4OjQ0WiIsInVzZXJJZCI6MTAwfZkRHwf55ng2lrghAZTZMuDr3Z6sZt-UHu0fkwZaQphAyqvFqgDFnJEfEJO5qmVIRjQbD7TtSsAIVpcwkCwhlUXzLBksAQrD4weh1IXKN9aA5ytmhMoqO-ADx2U-qXmdnA"
+        },
+        {
+            "name": "TV_2_V3_PUBLIC_WITH_FOOTER",
+            "mode": "public",
+            "public-key": "039bd37f93bd00b144b991b91bd2937c59273ea3db9b564a084856842e645c2ff4c669754899a0b1f516972db997151952",
+            "secret-key": "1dd0e1156bbe26b2000b7ea251824076b1ece4796fca6eaa93306f65b6c1772d5d42ab60b62c610e901e7a7b6cbf7a47",
+            "payload": {
+                "userId": 100,
+                "iss": "auth.example.com",
+                "sub": "user-auth",
+                "aud": "internal-service.example.com",
+                "exp": "2018-01-01T17:23:44+00:00",
+                "nbf": "2018-01-01T17:18:44+00:00",
+                "iat": "2018-01-01T17:18:44+00:00"
+            },
+            "footer": {
+                "kid": "key-1"
+            },
+            "token": "v3.public.eyJpc3MiOiJhdXRoLmV4YW1wbGUuY29tIiwic3ViIjoidXNlci1hdXRoIiwiYXVkIjoiaW50ZXJuYWwtc2VydmljZS5leGFtcGxlLmNvbSIsImV4cCI6IjIwMTgtMDEtMDFUMTc6MjM6NDRaIiwibmJmIjoiMjAxOC0wMS0wMVQxNzoxODo0NFoiLCJpYXQiOiIyMDE4LTAxLTAxVDE3OjE4OjQ0WiIsInVzZXJJZCI6MTAwfV-dLvrBJpBHzCRfniUB9MjTx5t3ULVzDrpIjbLe4EUOnbXY_RaTUTh1S8ZYdLJB5E0C3Uhok3Gm_3c5QQxYcljfw64zVTCCzuavgc8tI1dvUHbm5kbwB_1kCVmSVpyTVQ.eyJraWQiOiJrZXktMSJ9"
+        },
+        {
+            "name": "TV_3_V3_LOCAL",
+            "mode": "local",
+            "nonce": "d892e66e5ef2185186b161adbcefc1283157e5c90dbdae4d5db1cc481e2889fd",
+            "key": "3236753cafb041c87c87fe8f4fbe7303b5c22f61fd447c5d3e5bf9e4d6f9e327",
+            "payload": {
+                "exp": "2018-01-01T17:23:44+00:00",
+                "iat": "2018-01-01T17:18:44+00:00"
+            },
+            "token": "v3.local.2JLmbl7yGFGGsWGtvO_BKDFX5ckNva5NXbHMSB4oif16wOS6PAP82EK4mRjsIW0vi6jXhQ13mkSbajPoP1Q63Zb_4rw3o667HU4F30X8OK333-2q8SE7HrTV01k_nj8BvgIgmkvpjtLGiD7k3Y5-RBVQrxGLYGzKE1Jbl24SgGrbwJcOwxwrRmQkKA"
+        },
+        {
+            "name": "TV_3_V3_LOCAL_WITH_FOOTER",
+            "mode": "local",
+            "nonce": "d892e66e5ef2185186b161adbcefc1283157e5c90dbdae4d5db1cc481e2889fd",
+            "key": "3236753cafb041c87c87fe8f4fbe7303b5c22f61fd447c5d3e5bf9e4d6f9e327",
+            "payload": {
+                "exp": "2018-01-01T17:23:44+00:00",
+                "iat": "2018-01-01T17:18:44+00:00"
+            },
+            "footer": {
+                "kid": "key-2"
+            },
+            "token": "v3.local.2JLmbl7yGFGGsWGtvO_BKDFX5ckNva5NXbHMSB4oif16wOS6PAP82EK4mRjsIW0vi6jXhQ13mkSbajPoP1Q63Zb_4rw3o667HU4F30X8OK333-2q8SE7HrTV03qRGeif20G361jCj7TEQ4cXl7KC2EImV8WE6_mUkxV5QDzugWjERRsiAEGPOYaPsw.eyJraWQiOiJrZXktMiJ9"
+        },
+        {
+            "name": "TV_3_V3_PUBLIC",
+            "mode": "public",
+            "public-key": "039bd37f93bd00b144b991b91bd2937c59273ea3db9b564a084856842e645c2ff4c669754899a0b1f516972db997151952",
+            "secret-key": "1dd0e1156bbe26b2000b7ea251824076b1ece4796fca6eaa93306f65b6c1772d5d42ab60b62c610e901e7a7b6cbf7a47",
+            "payload": {
+                "exp": "2018-01-01T17:23:44+00:00",
+                "iat": "2018-01-01T17:18:44+00:00"
+            },
+            "token": "v3.public.eyJleHAiOiIyMDE4LTAxLTAxVDE3OjIzOjQ0WiIsImlhdCI6IjIwMTgtMDEtMDFUMTc6MTg6NDRaIn1uAziuP16q4A4GwwxZZ9WydYt6XdwEf1G5GzILvEGjuBTg5d3xlnjSwrn6Y8naRsVX36_4fUPh6FeqWVYZa6LsyUbL7Bk0fGRxJ4Ygro083usOdy1sKr3GkFhFOpWyAtA"
+        },
+        {
+            "name": "TV_3_V3_PUBLIC_WITH_FOOTER",
+            "mode": "public",
+            "public-key": "039bd37f93bd00b144b991b91bd2937c59273ea3db9b564a084856842e645c2ff4c669754899a0b1f516972db997151952",
+            "secret-key": "1dd0e1156bbe26b2000b7ea251824076b1ece4796fca6eaa93306f65b6c1772d5d42ab60b62c610e901e7a7b6cbf7a47",
+            "payload": {
+                "exp": "2018-01-01T17:23:44+00:00",
+                "iat": "2018-01-01T17:18:44+00:00"
+            },
+            "footer": {
+                "kid": "key-2"
+            },
+            "token": "v3.public.eyJleHAiOiIyMDE4LTAxLTAxVDE3OjIzOjQ0WiIsImlhdCI6IjIwMTgtMDEtMDFUMTc6MTg6NDRaIn3Yn2hPlXPhycaGmgyxXRCZdsNJVGHJhhaxT_2yGpMbKCN0PBtNY_B-7ABDt7KP00kbIlvNEaTB9KPrcuPE3esOOm-m8iuLMbBv9-OORVrdtkbTFvcoRiB7hDVMa4lveik.eyJraWQiOiJrZXktMiJ9"
+        },
+        {
+            "name": "TV_4_V3_LOCAL",
+            "mode": "local",
+            "nonce": "d892e66e5ef2185186b161adbcefc1283157e5c90dbdae4d5db1cc481e2889fd",
+            "key": "3236753cafb041c87c87fe8f4fbe7303b5c22f61fd447c5d3e5bf9e4d6f9e327",
+            "payload": {},
+            "token": "v3.local.2JLmbl7yGFGGsWGtvO_BKDFX5ckNva5NXbHMSB4oif16n4_8721k4U0NIDG-eUwWjXhaqLfq9PM251pvIEu38c_Tww7CH9YATBWX2VB-EOP4MA"
+        },
+        {
+            "name": "TV_4_V3_LOCAL_WITH_FOOTER",
+            "mode": "local",
+            "nonce": "d892e66e5ef2185186b161adbcefc1283157e5c90dbdae4d5db1cc481e2889fd",
+            "key": "3236753cafb041c87c87fe8f4fbe7303b5c22f61fd447c5d3e5bf9e4d6f9e327",
+            "payload": {},
+            "footer": {
+                "kid": "key-1"
+            },
+            "token": "v3.local.2JLmbl7yGFGGsWGtvO_BKDFX5ckNva5NXbHMSB4oif16nwpT2ZUIed8NO7vU4DL7vIWs8UNDboFU52eUDcUPa_0W_uWv4iXCKZW8pOEQyRMSCg.eyJraWQiOiJrZXktMSJ9"
+        },
+        {
+            "name": "TV_4_V3_PUBLIC",
+            "mode": "public",
+            "public-key": "039bd37f93bd00b144b991b91bd2937c59273ea3db9b564a084856842e645c2ff4c669754899a0b1f516972db997151952",
+            "secret-key": "1dd0e1156bbe26b2000b7ea251824076b1ece4796fca6eaa93306f65b6c1772d5d42ab60b62c610e901e7a7b6cbf7a47",
+            "payload": {},
+            "token": "v3.public.e33UUjZyjbMZ0a2oDso5S9EviOipCbyS2Dh5mKeINK99zmYBCal5FfO1sLW3QBRno3h6fAMkLfl3uSBRDySiaSBa3pg0aIBw72aJdEIzyD_5E-2zrueLWjezFzlPFPUSaVo"
+        },
+        {
+            "name": "TV_4_V3_PUBLIC_WITH_FOOTER",
+            "mode": "public",
+            "public-key": "039bd37f93bd00b144b991b91bd2937c59273ea3db9b564a084856842e645c2ff4c669754899a0b1f516972db997151952",
+            "secret-key": "1dd0e1156bbe26b2000b7ea251824076b1ece4796fca6eaa93306f65b6c1772d5d42ab60b62c610e901e7a7b6cbf7a47",
+            "payload": {},
+            "footer": {
+                "kid": "key-1"
+            },
+            "token": "v3.public.e30IsoJvLCjwqnypFfAJ64AVYIggDbuTAxFLkhO_xiSeGzj3UTgj6wnWZfGU76TzaKQYaw52sz4lz1MfuYB9B-Qr06bptljULigj8DHgypEU7cwnkurayW3FSHS0iIbelEs.eyJraWQiOiJrZXktMSJ9"
+        }
+    ]
+}

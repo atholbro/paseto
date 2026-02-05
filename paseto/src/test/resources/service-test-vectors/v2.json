@@ -1,0 +1,268 @@
+{
+  "name": "PASETO V2 Service Test Vectors",
+  "version": "V2",
+  "tests": [
+    {
+      "name": "TV_1_V2_LOCAL",
+      "mode": "local",
+      "nonce": "536d70463759354465534a464a786a4d726e4453776e5576",
+      "key": "713952713346666141794e384a5779564a68706879626d394461464e4c567432",
+      "payload": {
+        "iss": "paragonie.com",
+        "sub": "test",
+        "aud": "pie-hosted.com",
+        "exp": "2039-01-01T00:00:00+00:00",
+        "nbf": "2038-04-01T00:00:00+00:00",
+        "iat": "2038-03-17T00:00:00+00:00",
+        "jti": "87IFSGFgPNtQNNuw0AtuLttP"
+      },
+      "token": "v2.local.N60x0mOUQFieZUq9mmjIak0IUsdKuqOq4y56F4rFKiBdeuspsjiVC_ppq9hTL9lS0RiveMQgHuCDhfEbLB49bGOgU8TVF5ZMYqdzmbQ3FsEXkMlw_Cg4LPbC05E8NfbatU4EyP5ciysEQBPZUwcCrgzGK6GgvBP-ip4wBiOTDBYRpdI8DdBOOpYa6Tj9tEj_Jz-Q_pguOdzg2kJeYSL4GeTvhsgIqTaWO25Zwm1lIz5T6l0jAdcHujjhMJINOBcw4UTGXcsaFMZo-9WM5eZ_79x24pHP9NTDbigJ"
+    },
+    {
+      "name": "TV_1_V2_LOCAL_WITH_FOOTER",
+      "mode": "local",
+      "nonce": "536d70463759354465534a464a786a4d726e4453776e5576",
+      "key": "713952713346666141794e384a5779564a68706879626d394461464e4c567432",
+      "payload": {
+        "iss": "paragonie.com",
+        "sub": "test",
+        "aud": "pie-hosted.com",
+        "exp": "2039-01-01T00:00:00+00:00",
+        "nbf": "2038-04-01T00:00:00+00:00",
+        "iat": "2038-03-17T00:00:00+00:00",
+        "jti": "87IFSGFgPNtQNNuw0AtuLttP"
+      },
+      "footer": {
+        "kid": "key-1"
+      },
+      "token": "v2.local.N60x0mOUQFieZUq9mmjIak0IUsdKuqOq4y56F4rFKiBdeuspsjiVC_ppq9hTL9lS0RiveMQgHuCDhfEbLB49bGOgU8TVF5ZMYqdzmbQ3FsEXkMlw_Cg4LPbC05E8NfbatU4EyP5ciysEQBPZUwcCrgzGK6GgvBP-ip4wBiOTDBYRpdI8DdBOOpYa6Tj9tEj_Jz-Q_pguOdzg2kJeYSL4GeTvhsgIqTaWO25Zwm1lIz5T6l0jAdcHujjhMJINOBcw4UTGXcsaFMZo-9UaHaAdWDd6FpfCEYCNAkQc.eyJraWQiOiJrZXktMSJ9"
+    },
+    {
+      "name": "TV_1_V2_LOCAL_WITH_STRING_FOOTER",
+      "mode": "local",
+      "nonce": "536d70463759354465534a464a786a4d726e4453776e5576",
+      "key": "713952713346666141794e384a5779564a68706879626d394461464e4c567432",
+      "payload": {
+        "iss": "paragonie.com",
+        "sub": "test",
+        "aud": "pie-hosted.com",
+        "exp": "2039-01-01T00:00:00+00:00",
+        "nbf": "2038-04-01T00:00:00+00:00",
+        "iat": "2038-03-17T00:00:00+00:00",
+        "jti": "87IFSGFgPNtQNNuw0AtuLttP"
+      },
+      "footer": "TEST",
+      "token": "v2.local.N60x0mOUQFieZUq9mmjIak0IUsdKuqOq4y56F4rFKiBdeuspsjiVC_ppq9hTL9lS0RiveMQgHuCDhfEbLB49bGOgU8TVF5ZMYqdzmbQ3FsEXkMlw_Cg4LPbC05E8NfbatU4EyP5ciysEQBPZUwcCrgzGK6GgvBP-ip4wBiOTDBYRpdI8DdBOOpYa6Tj9tEj_Jz-Q_pguOdzg2kJeYSL4GeTvhsgIqTaWO25Zwm1lIz5T6l0jAdcHujjhMJINOBcw4UTGXcsaFMZo-9VRgM8gqTL3QOLhROa-QaSZ.VEVTVA"
+    },
+    {
+      "name": "TV_1_V2_PUBLIC",
+      "mode": "public",
+      "public-key": "432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "secret-key": "452c1969ed4806c8d48ee4c670df980183f6796633787b15a03f09cb24eebe7c432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "payload": {
+        "iss": "paragonie.com",
+        "sub": "test",
+        "aud": "pie-hosted.com",
+        "exp": "2039-01-01T00:00:00+00:00",
+        "nbf": "2038-04-01T00:00:00+00:00",
+        "iat": "2038-03-17T00:00:00+00:00",
+        "jti": "87IFSGFgPNtQNNuw0AtuLttP"
+      },
+      "token": "v2.public.eyJpc3MiOiJwYXJhZ29uaWUuY29tIiwic3ViIjoidGVzdCIsImF1ZCI6InBpZS1ob3N0ZWQuY29tIiwiZXhwIjoiMjAzOS0wMS0wMVQwMDowMDowMFoiLCJuYmYiOiIyMDM4LTA0LTAxVDAwOjAwOjAwWiIsImlhdCI6IjIwMzgtMDMtMTdUMDA6MDA6MDBaIiwianRpIjoiODdJRlNHRmdQTnRRTk51dzBBdHVMdHRQIn0AhXNmt_kbi8APdch6KsJSHYlZWYqdCIgq6IewbPfO52U8CGn78WsGHlZS2kSD35x1OC8YTMGUNnuYJJS8s4ML"
+    },
+    {
+      "name": "TV_1_V2_PUBLIC_WITH_FOOTER",
+      "mode": "public",
+      "public-key": "432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "secret-key": "452c1969ed4806c8d48ee4c670df980183f6796633787b15a03f09cb24eebe7c432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "payload": {
+        "iss": "paragonie.com",
+        "sub": "test",
+        "aud": "pie-hosted.com",
+        "exp": "2039-01-01T00:00:00+00:00",
+        "nbf": "2038-04-01T00:00:00+00:00",
+        "iat": "2038-03-17T00:00:00+00:00",
+        "jti": "87IFSGFgPNtQNNuw0AtuLttP"
+      },
+      "footer": {
+        "kid": "key-1"
+      },
+      "token": "v2.public.eyJpc3MiOiJwYXJhZ29uaWUuY29tIiwic3ViIjoidGVzdCIsImF1ZCI6InBpZS1ob3N0ZWQuY29tIiwiZXhwIjoiMjAzOS0wMS0wMVQwMDowMDowMFoiLCJuYmYiOiIyMDM4LTA0LTAxVDAwOjAwOjAwWiIsImlhdCI6IjIwMzgtMDMtMTdUMDA6MDA6MDBaIiwianRpIjoiODdJRlNHRmdQTnRRTk51dzBBdHVMdHRQIn3IuKYP2UxvVeoSCNVaji6Ylg5WB5cBZowhWP5xnlkBd8n22X8RyuK7IzgEYKFbjW5PMV23-hvDHRNN2DaT0rcE.eyJraWQiOiJrZXktMSJ9"
+    },
+    {
+      "name": "TV_1_V2_PUBLIC_WITH_STRING_FOOTER",
+      "mode": "public",
+      "public-key": "432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "secret-key": "452c1969ed4806c8d48ee4c670df980183f6796633787b15a03f09cb24eebe7c432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "payload": {
+        "iss": "paragonie.com",
+        "sub": "test",
+        "aud": "pie-hosted.com",
+        "exp": "2039-01-01T00:00:00+00:00",
+        "nbf": "2038-04-01T00:00:00+00:00",
+        "iat": "2038-03-17T00:00:00+00:00",
+        "jti": "87IFSGFgPNtQNNuw0AtuLttP"
+      },
+      "footer": "TEST",
+      "token": "v2.public.eyJpc3MiOiJwYXJhZ29uaWUuY29tIiwic3ViIjoidGVzdCIsImF1ZCI6InBpZS1ob3N0ZWQuY29tIiwiZXhwIjoiMjAzOS0wMS0wMVQwMDowMDowMFoiLCJuYmYiOiIyMDM4LTA0LTAxVDAwOjAwOjAwWiIsImlhdCI6IjIwMzgtMDMtMTdUMDA6MDA6MDBaIiwianRpIjoiODdJRlNHRmdQTnRRTk51dzBBdHVMdHRQIn0pNKtj4h5E6aHCTyWkH06NF8ppb1Pz8dDP0hzMJHA7Z0GH8xmL2bbpMfG0bd6HWO61dVUjBTyF6VIL2k4TY9YD.VEVTVA"
+    },
+    {
+      "name": "TV_2_V2_LOCAL",
+      "mode": "local",
+      "nonce": "536d70463759354465534a464a786a4d726e4453776e5576",
+      "key": "713952713346666141794e384a5779564a68706879626d394461464e4c567432",
+      "payload": {
+        "userId": 100,
+        "iss": "auth.example.com",
+        "sub": "user-auth",
+        "aud": "internal-service.example.com",
+        "exp": "2018-01-01T17:23:44+00:00",
+        "nbf": "2018-01-01T17:18:44+00:00",
+        "iat": "2018-01-01T17:18:44+00:00"
+      },
+      "token": "v2.local.5kYkxm5RYz8L6Nc0AFAber-x9qoyNE5W4mpBvatIJIFmCEgyUWP63w75WwhuLbWms6W_PHsodtVvHlLMLohZoT_psYC8sxhG3ak7RVjFyOXHLUP0v61PZcK1LkUTedYaa2DG4I76FQ3aE6sfRVAH7tac9W3OxM5mg4gddZHXJoLQfi5O_pUZUfEydzx0qotZcn0tKqLC-LMY0h-f06xEr4Z0n7mGAbCInTI-Yt8LsicXl8-aGcntxGMmI9yU34rbWoCQJGICLd8JfBU-kSbxfq8_ztJiBAq28u3vOTA"
+    },
+    {
+      "name": "TV_2_V2_LOCAL_WITH_FOOTER",
+      "mode": "local",
+      "nonce": "536d70463759354465534a464a786a4d726e4453776e5576",
+      "key": "713952713346666141794e384a5779564a68706879626d394461464e4c567432",
+      "payload": {
+        "userId": 100,
+        "iss": "auth.example.com",
+        "sub": "user-auth",
+        "aud": "internal-service.example.com",
+        "exp": "2018-01-01T17:23:44+00:00",
+        "nbf": "2018-01-01T17:18:44+00:00",
+        "iat": "2018-01-01T17:18:44+00:00"
+      },
+      "footer": {
+        "kid": "key-1"
+      },
+      "token": "v2.local.5kYkxm5RYz8L6Nc0AFAber-x9qoyNE5W4mpBvatIJIFmCEgyUWP63w75WwhuLbWms6W_PHsodtVvHlLMLohZoT_psYC8sxhG3ak7RVjFyOXHLUP0v61PZcK1LkUTedYaa2DG4I76FQ3aE6sfRVAH7tac9W3OxM5mg4gddZHXJoLQfi5O_pUZUfEydzx0qotZcn0tKqLC-LMY0h-f06xEr4Z0n7mGAbCInTI-Yt8LsicXl8-aGcntxGMmI9yU34rbWoCQJGICLd8JfBU-kfEQFjnDXE12weiSZseuO_k.eyJraWQiOiJrZXktMSJ9"
+    },
+    {
+      "name": "TV_2_V2_PUBLIC",
+      "mode": "public",
+      "public-key": "432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "secret-key": "452c1969ed4806c8d48ee4c670df980183f6796633787b15a03f09cb24eebe7c432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "payload": {
+        "userId": 100,
+        "iss": "auth.example.com",
+        "sub": "user-auth",
+        "aud": "internal-service.example.com",
+        "exp": "2018-01-01T17:23:44+00:00",
+        "nbf": "2018-01-01T17:18:44+00:00",
+        "iat": "2018-01-01T17:18:44+00:00"
+      },
+      "token": "v2.public.eyJpc3MiOiJhdXRoLmV4YW1wbGUuY29tIiwic3ViIjoidXNlci1hdXRoIiwiYXVkIjoiaW50ZXJuYWwtc2VydmljZS5leGFtcGxlLmNvbSIsImV4cCI6IjIwMTgtMDEtMDFUMTc6MjM6NDRaIiwibmJmIjoiMjAxOC0wMS0wMVQxNzoxODo0NFoiLCJpYXQiOiIyMDE4LTAxLTAxVDE3OjE4OjQ0WiIsInVzZXJJZCI6MTAwfS8gdfCGSVEiJhVPkUJkG6gfBkPpu9D7LychqqPucW1fZ49ztN9J2ETpNSr8YktzcY3Po9tGsoLLsomrEFt27Qs"
+    },
+    {
+      "name": "TV_2_V2_PUBLIC_WITH_FOOTER",
+      "mode": "public",
+      "public-key": "432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "secret-key": "452c1969ed4806c8d48ee4c670df980183f6796633787b15a03f09cb24eebe7c432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "payload": {
+        "userId": 100,
+        "iss": "auth.example.com",
+        "sub": "user-auth",
+        "aud": "internal-service.example.com",
+        "exp": "2018-01-01T17:23:44+00:00",
+        "nbf": "2018-01-01T17:18:44+00:00",
+        "iat": "2018-01-01T17:18:44+00:00"
+      },
+      "footer": {
+        "kid": "key-1"
+      },
+      "token": "v2.public.eyJpc3MiOiJhdXRoLmV4YW1wbGUuY29tIiwic3ViIjoidXNlci1hdXRoIiwiYXVkIjoiaW50ZXJuYWwtc2VydmljZS5leGFtcGxlLmNvbSIsImV4cCI6IjIwMTgtMDEtMDFUMTc6MjM6NDRaIiwibmJmIjoiMjAxOC0wMS0wMVQxNzoxODo0NFoiLCJpYXQiOiIyMDE4LTAxLTAxVDE3OjE4OjQ0WiIsInVzZXJJZCI6MTAwfXr1uteYxsHlRsgphVWcVdR3EXlFoVbdn5pY5Z-EM4e6lLoBIEcjIEWip1xbBCOVvagPaN6Pged1iFdk1MKoagk.eyJraWQiOiJrZXktMSJ9"
+    },
+    {
+      "name": "TV_3_V2_LOCAL",
+      "mode": "local",
+      "nonce": "536d70463759354465534a464a786a4d726e4453776e5576",
+      "key": "713952713346666141794e384a5779564a68706879626d394461464e4c567432",
+      "payload": {
+        "exp": "2018-01-01T17:23:44+00:00",
+        "iat": "2018-01-01T17:18:44+00:00"
+      },
+      "token": "v2.local.Sc9eWdE0vqFscVHmbavTmdx6db0XBzc2Rquyl59Xe3j8kmuwISIf5X-EG_OKjyTaJtoCRmCuiCZqQ8n7tIv-Bt6JOJ5nJTzKM-60KkXt0XeDIIy3_4HnJDJ3gNUxS6nXo6e8"
+    },
+    {
+      "name": "TV_3_V2_LOCAL_WITH_FOOTER",
+      "mode": "local",
+      "nonce": "536d70463759354465534a464a786a4d726e4453776e5576",
+      "key": "713952713346666141794e384a5779564a68706879626d394461464e4c567432",
+      "payload": {
+        "exp": "2018-01-01T17:23:44+00:00",
+        "iat": "2018-01-01T17:18:44+00:00"
+      },
+      "footer": {
+        "kid": "key-2"
+      },
+      "token": "v2.local.Sc9eWdE0vqFscVHmbavTmdx6db0XBzc2Rquyl59Xe3j8kmuwISIf5X-EG_OKjyTaJtoCRmCuiCZqQ8n7tIv-Bt6JOJ5nJTzKM-60KkXt0XeDIIwnYketijmIe5OByy5mLten.eyJraWQiOiJrZXktMiJ9"
+    },
+    {
+      "name": "TV_3_V2_PUBLIC",
+      "mode": "public",
+      "public-key": "432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "secret-key": "452c1969ed4806c8d48ee4c670df980183f6796633787b15a03f09cb24eebe7c432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "payload": {
+        "exp": "2018-01-01T17:23:44+00:00",
+        "iat": "2018-01-01T17:18:44+00:00"
+      },
+      "token": "v2.public.eyJleHAiOiIyMDE4LTAxLTAxVDE3OjIzOjQ0WiIsImlhdCI6IjIwMTgtMDEtMDFUMTc6MTg6NDRaIn1AAN9t0kBCWD213fqk3bg6N52494mC4BOsq7vluxxWjgsG3LJ7s93rr2LmI_JEY2v6hsy1JgksvBxLyKoedqkO"
+    },
+    {
+      "name": "TV_3_V2_PUBLIC_WITH_FOOTER",
+      "mode": "public",
+      "public-key": "432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "secret-key": "452c1969ed4806c8d48ee4c670df980183f6796633787b15a03f09cb24eebe7c432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "payload": {
+        "exp": "2018-01-01T17:23:44+00:00",
+        "iat": "2018-01-01T17:18:44+00:00"
+      },
+      "footer": {
+        "kid": "key-2"
+      },
+      "token": "v2.public.eyJleHAiOiIyMDE4LTAxLTAxVDE3OjIzOjQ0WiIsImlhdCI6IjIwMTgtMDEtMDFUMTc6MTg6NDRaIn0Nk_d7zmMH3iwoc8ZNXp2PLWnzqxxtgGpYDenkuOJ7Sf9dwqcplWXQMeZvm5ADZ_CkI-OhtzijvjsK5ZTHMQMI.eyJraWQiOiJrZXktMiJ9"
+    },
+    {
+      "name": "TV_4_V2_LOCAL",
+      "mode": "local",
+      "nonce": "536d70463759354465534a464a786a4d726e4453776e5576",
+      "key": "713952713346666141794e384a5779564a68706879626d394461464e4c567432",
+      "payload": {},
+      "token": "v2.local.iX9JhHZ4_OW6GHqAbSPP23VAGg5RnEeuGgVksnbXKVHrlWaTU18JRP9I"
+    },
+    {
+      "name": "TV_4_V2_LOCAL_WITH_FOOTER",
+      "mode": "local",
+      "nonce": "536d70463759354465534a464a786a4d726e4453776e5576",
+      "key": "713952713346666141794e384a5779564a68706879626d394461464e4c567432",
+      "payload": {},
+      "footer": {
+        "kid": "key-1"
+      },
+      "token": "v2.local.iX9JhHZ4_OW6GHqAbSPP23VAGg5RnEeuGgWaTY-bgw1FO-EuJhIaUJp2.eyJraWQiOiJrZXktMSJ9"
+    },
+    {
+      "name": "TV_4_V2_PUBLIC",
+      "mode": "public",
+      "public-key": "432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "secret-key": "452c1969ed4806c8d48ee4c670df980183f6796633787b15a03f09cb24eebe7c432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "payload": {},
+      "token": "v2.public.e31M63YrD2PTNGHzBHHeLhYooCXgT2KxLBmPdFSlLr-7poFIEaxqGD7w2XCwcdJkSjagz2o7Gtwh9VYTRHGtYMEM"
+    },
+    {
+      "name": "TV_4_V2_PUBLIC_WITH_FOOTER",
+      "mode": "public",
+      "public-key": "432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "secret-key": "452c1969ed4806c8d48ee4c670df980183f6796633787b15a03f09cb24eebe7c432fa82fc615a23192c7cb24cd3dfc4897c6e113db87dced7604d34d06c5b68d",
+      "payload": {},
+      "footer": {
+        "kid": "key-1"
+      },
+      "token": "v2.public.e30RItbv4bN4XIzyLFapaMll5aOnuqcmttzAH4-pFf8vHrK8COU0EeGwlt-1tfR3OkUxTyoQdlE2dlOtbLxlbrEO.eyJraWQiOiJrZXktMSJ9"
+    }
+  ]
+}
