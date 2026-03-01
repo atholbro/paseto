@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
-    jacoco
     `version-catalog`
 
     alias(libs.plugins.kotlin.jvm)
@@ -59,36 +58,23 @@ allprojects {
         }
 
         withType<JavaCompile> { options.encoding = "UTF-8" }
+
+        withType<Test>().configureEach {
+            useJUnitPlatform()
+
+            testLogging {
+                events("failed", "skipped")
+                showExceptions = true
+                exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+                showCauses = true
+                showStackTraces = true
+                showStandardStreams = true
+            }
+        }
     }
 
     detekt {
         buildUponDefaultConfig = true
         config.setFrom(files("${project.rootDir}/detekt-config.yml"))
-    }
-}
-
-jacoco {
-    toolVersion = libs.versions.jacoco.get()
-}
-
-tasks.register<JacocoReport>("codeCoverageReport") {
-    val includedProjects = subprojects.filterNot { it.path == ":vector-gen" }
-    val testTasks = includedProjects.flatMap { it.tasks.withType<Test>() }
-
-    dependsOn(testTasks)
-
-    executionData.setFrom(testTasks.map { it.extensions.getByType<JacocoTaskExtension>().destinationFile })
-
-    includedProjects.forEach {
-        val mainSourceSet = it.extensions.getByType<JavaPluginExtension>().sourceSets.getByName("main")
-        sourceDirectories.from(mainSourceSet.allSource.sourceDirectories)
-        classDirectories.from(mainSourceSet.output)
-    }
-
-    reports {
-        xml.required.set(true)
-        xml.outputLocation.set(file("${layout.buildDirectory.get()}/reports/jacoco/report.xml"))
-        html.required.set(false)
-        csv.required.set(false)
     }
 }

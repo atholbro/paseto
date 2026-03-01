@@ -20,9 +20,13 @@ jobs:
           VERSION=${VERSION#v}
           export VERSION
           echo "Publish $VERSION"
-          ./gradlew lintKotlin check codeCoverageReport publishAggregationToCentralPortal --no-daemon
+          ./gradlew lintKotlin check jacocoTestReport publishAggregationToCentralPortal --no-daemon
 
-      - name: Codecov
+      - name: Codecov - Install dependencies
+        run: |
+          apk add --no-cache bash git curl
+
+      - name: Codecov - Upload
         uses: codecov/codecov-action@v5.5.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

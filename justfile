@@ -39,7 +39,7 @@ check:
 
 # Generate a code coverage report (via Jacoco).
 coverage:
-    {{gradlew}} -configuration-cache codeCoverageReport
+    {{gradlew}} -configuration-cache jacocoTestReport
 
 # Verify source code style.
 lint:

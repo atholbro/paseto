@@ -29,6 +29,10 @@ java {
     withSourcesJar()
 }
 
+jacoco {
+    toolVersion = libs.versions.jacoco.get()
+}
+
 tasks {
     jar {
         archiveBaseName.set("paseto")
@@ -49,18 +53,13 @@ tasks {
         }
     }
 
-    withType<Test>().configureEach {
-        outputs.upToDateWhen { false }
+    jacocoTestReport {
+        dependsOn(test)
 
-        useJUnitPlatform()
-
-        testLogging {
-            events("failed", "skipped")
-            showExceptions = true
-            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-            showCauses = true
-            showStackTraces = true
-            showStandardStreams = true
+        reports {
+            xml.required = true
+            csv.required = true
+            html.required = true
         }
     }
 }
