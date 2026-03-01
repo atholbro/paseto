@@ -4,7 +4,7 @@ on:
     branches:
       - master
 jobs:
-  build:
+  tag:
     runs-on: ubuntu-22.04
 
     steps:
@@ -16,3 +16,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: patch
           tag_prefix: v
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
