@@ -1,3 +1,4 @@
+import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -72,10 +73,11 @@ jacoco {
 
 tasks.register<JacocoReport>("codeCoverageReport") {
     val includedProjects = subprojects.filterNot { it.path == ":vector-gen" }
+    val testTasks = includedProjects.flatMap { it.tasks.withType<Test>() }
 
-    dependsOn(includedProjects.map { it.tasks.named("test") })
+    dependsOn(testTasks)
 
-    executionData(fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec"))
+    executionData.setFrom(testTasks.map { it.extensions.getByType<JacocoTaskExtension>().destinationFile })
 
     includedProjects.forEach {
         val mainSourceSet = it.extensions.getByType<JavaPluginExtension>().sourceSets.getByName("main")
