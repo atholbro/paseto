@@ -41,12 +41,10 @@ import kotlin.io.encoding.Base64
 class KeyTests {
     companion object {
         @JvmStatic
-        fun keyPairsAllVersions(): Stream<Arguments> =
-            listOf(keyV1Public, keyV2Public, keyV4Public).map { Arguments.of(it) }.stream()
+        fun keyPairsAllVersions(): Stream<Arguments> = listOf(keyV1Public, keyV2Public, keyV4Public).map { Arguments.of(it) }.stream()
 
         @JvmStatic
-        fun allVersions(): Stream<Arguments> =
-            listOf(Version.V1, Version.V2, Version.V4).map { Arguments.of(it) }.stream()
+        fun allVersions(): Stream<Arguments> = listOf(Version.V1, Version.V2, Version.V4).map { Arguments.of(it) }.stream()
     }
 
     @ParameterizedTest
@@ -164,7 +162,7 @@ class KeyTests {
         // verify normalizeMaterial does not impact V1
         keyV1Public.secretKey shouldBe AsymmetricSecretKey.ofRawBytes(
             keyV1Public.secretKey!!.getKeyMaterialFor(Version.V1, Purpose.PUBLIC),
-            Version.V1
+            Version.V1,
         )
     }
 

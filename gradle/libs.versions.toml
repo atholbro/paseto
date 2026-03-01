@@ -1,33 +1,39 @@
 [versions]
-clikt = "5.1.0"
-kotlin = "2.3.0"
 bouncycastle = "1.82"
-kotlinx-serialization = "1.10.0"
-mockk = "1.14.9"
-kotest = "6.1.2"
-junit-jupiter = "6.0.1"
-junit-platform = "6.0.1"
+clikt = "5.1.0"
+gradleFilterVersions = "0.1.16"
+gradleUpdateVersions = "1.1.0"
+gradleVersions = "0.53.0"
 # @keep used manually for jacoco config, see build.gradle.kts
 jacoco = "0.8.14"
+junit-jupiter = "6.0.1"
+junit-platform = "6.0.1"
 # @keep jvm target
 jvm = "17"
+kotest = "6.1.2"
+kotlin = "2.3.0"
+kotlinter = "5.4.2"
+kotlinx-serialization = "1.10.0"
+mockk = "1.14.9"
 nmcp = "1.4.4"
 
 [libraries]
 bouncycastle = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
 
 [plugins]
+gradleVersions = { id = "com.github.ben-manes.versions", version.ref = "gradleVersions" }
+gradleVersions-filter = { id = "se.ascp.gradle.gradle-versions-filter", version.ref = "gradleFilterVersions" }
+gradleVersions-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "gradleUpdateVersions" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-versions = { id = "com.github.ben-manes.versions", version = "0.52.0" }
-versions-filter = { id = "se.ascp.gradle.gradle-versions-filter", version = "0.1.16" }
+kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 nmcp = { id = "com.gradleup.nmcp", version.ref = "nmcp" }
 nmcp-aggregation = { id = "com.gradleup.nmcp.aggregation", version.ref = "nmcp" }

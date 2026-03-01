@@ -34,12 +34,7 @@ object PasetoV4 : Paseto {
     override val version: Version = Version.V4
     override val supportsImplicitAssertion: Boolean = true
 
-    override fun encrypt(
-        payload: String,
-        key: SymmetricKey,
-        footer: String?,
-        implicitAssertion: String?
-    ): String {
+    override fun encrypt(payload: String, key: SymmetricKey, footer: String?, implicitAssertion: String?): String {
         val cleanup = mutableListOf<Runnable>()
 
         try {
@@ -53,20 +48,20 @@ object PasetoV4 : Paseto {
             val tmp = ByteArray(56)
             cleanup.add { tmp.fill(0) }
             blake2b(tmp, keyMaterial, concat("paseto-encryption-key".toByteArray(Charsets.UTF_8), n))
-            val Ek = Arrays.copyOfRange(tmp, 0, 32)
-            cleanup.add { Ek.fill(0) }
+            val ek = Arrays.copyOfRange(tmp, 0, 32)
+            cleanup.add { ek.fill(0) }
             val n2 = Arrays.copyOfRange(tmp, 32, 56)
             cleanup.add { n2.fill(0) }
-            val Ak = ByteArray(32)
-            cleanup.add { Ak.fill(0) }
-            blake2b(Ak, keyMaterial, "paseto-auth-key-for-aead".toByteArray(Charsets.UTF_8), n)
+            val ak = ByteArray(32)
+            cleanup.add { ak.fill(0) }
+            blake2b(ak, keyMaterial, "paseto-auth-key-for-aead".toByteArray(Charsets.UTF_8), n)
             val c = ByteArray(payloadBytes.size)
-            if (!chaCha20(c, payloadBytes, n2, Ek)) {
+            if (!chaCha20(c, payloadBytes, n2, ek)) {
                 throw EncryptionException()
             }
             val preAuth = pae(HEADER_LOCAL.toByteArray(Charsets.UTF_8), n, c, footerBytes, implicitAssertionBytes)
             val t = ByteArray(32)
-            blake2b(t, Ak, preAuth)
+            blake2b(t, ak, preAuth)
 
             val nct = ByteArray(n.size + c.size + t.size)
             System.arraycopy(n, 0, nct, 0, n.size)
@@ -85,12 +80,7 @@ object PasetoV4 : Paseto {
         }
     }
 
-    override fun decrypt(
-        token: String,
-        key: SymmetricKey,
-        footer: String?,
-        implicitAssertion: String?
-    ): String {
+    override fun decrypt(token: String, key: SymmetricKey, footer: String?, implicitAssertion: String?): String {
         val cleanup = mutableListOf<Runnable>()
 
         try {
@@ -119,21 +109,21 @@ object PasetoV4 : Paseto {
             val tmp = ByteArray(56)
             cleanup.add { tmp.fill(0) }
             blake2b(tmp, keyMaterial, "paseto-encryption-key".toByteArray(Charsets.UTF_8), n)
-            val Ek = Arrays.copyOfRange(tmp, 0, 32)
-            cleanup.add { Ek.fill(0) }
+            val ek = Arrays.copyOfRange(tmp, 0, 32)
+            cleanup.add { ek.fill(0) }
             val n2 = Arrays.copyOfRange(tmp, 32, 56)
             cleanup.add { n2.fill(0) }
-            val Ak = ByteArray(32)
-            cleanup.add { Ak.fill(0) }
-            blake2b(Ak, keyMaterial, "paseto-auth-key-for-aead".toByteArray(Charsets.UTF_8), n)
+            val ak = ByteArray(32)
+            cleanup.add { ak.fill(0) }
+            blake2b(ak, keyMaterial, "paseto-auth-key-for-aead".toByteArray(Charsets.UTF_8), n)
             val preAuth = pae(HEADER_LOCAL.toByteArray(Charsets.UTF_8), n, c, footerBytes, implicitAssertionBytes)
             val t2 = ByteArray(32)
-            blake2b(t2, Ak, preAuth)
+            blake2b(t2, ak, preAuth)
             if (!t.constantTimeEquals(t2)) {
                 throw DecryptionException(token)
             }
             val p = ByteArray(c.size)
-            if (!chaCha20(p, c, n2, Ek)) {
+            if (!chaCha20(p, c, n2, ek)) {
                 throw DecryptionException(token)
             }
 
@@ -148,7 +138,7 @@ object PasetoV4 : Paseto {
         payload: String,
         secretKey: AsymmetricSecretKey,
         footer: String?,
-        implicitAssertion: String?
+        implicitAssertion: String?,
     ): String {
         try {
             // Verify key version.
@@ -186,7 +176,7 @@ object PasetoV4 : Paseto {
         token: String,
         publicKey: AsymmetricPublicKey,
         footer: String?,
-        implicitAssertion: String?
+        implicitAssertion: String?,
     ): String {
         // Verify key version.
         val keyMaterial = publicKey.getKeyMaterialFor(Version.V4, Purpose.PUBLIC)

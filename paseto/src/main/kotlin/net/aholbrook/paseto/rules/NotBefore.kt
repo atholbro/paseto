@@ -15,9 +15,7 @@ import java.time.Clock
  * @param clock To allow overriding clock source for unit tests.
  */
 @ConsistentCopyVisibility
-data class NotBefore internal constructor(
-    private val clock: Clock,
-) : Rule {
+data class NotBefore internal constructor(private val clock: Clock) : Rule {
     constructor() : this(Clock.systemUTC())
 
     override operator fun invoke(token: PasetoToken, mode: Mode, currentResults: Map<Rule, RuleResult>) {

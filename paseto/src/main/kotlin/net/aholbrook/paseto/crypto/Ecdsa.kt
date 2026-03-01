@@ -31,14 +31,22 @@ internal const val ECDSA_P384_PUBLICKEYBYTES = 49
 internal const val ECDSA_P384_SECRETKEYBYTES = 48
 
 internal fun ecdsaP384Sign(m: ByteArray, sk: ByteArray, enforceLowS: Boolean = false): ByteArray {
-    if (m.isEmpty()) { throw ByteArrayLengthException("m", 0, 1, false) }
-    if (sk.size != ECDSA_P384_SECRETKEYBYTES) { throw ByteArrayLengthException("sk", sk.size, ECDSA_P384_SECRETKEYBYTES) }
+    if (m.isEmpty()) {
+        throw ByteArrayLengthException("m", 0, 1, false)
+    }
+    if (sk.size !=
+        ECDSA_P384_SECRETKEYBYTES
+    ) {
+        throw ByteArrayLengthException("sk", sk.size, ECDSA_P384_SECRETKEYBYTES)
+    }
 
     val curveParams = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
     val params = ECDomainParameters(curveParams.curve, curveParams.g, curveParams.n, curveParams.h)
 
-    val d =BigInteger(1, sk)
-    if (d.signum() <= 0 || d >= params.n) { throw KeyV3Exception("Invalid P-384 private key") }
+    val d = BigInteger(1, sk)
+    if (d.signum() <= 0 || d >= params.n) {
+        throw KeyV3Exception("Invalid P-384 private key")
+    }
     val secretKey = ECPrivateKeyParameters(d, params)
 
     val signer = ECDSASigner(HMacDSAKCalculator(SHA384Digest()))
@@ -61,8 +69,12 @@ internal fun ecdsaP384Sign(m: ByteArray, sk: ByteArray, enforceLowS: Boolean = f
 }
 
 internal fun ecdsaP384Verify(sig: ByteArray, m: ByteArray, pk: ByteArray, enforceLowS: Boolean = false): Boolean {
-    if (sig.size != ECDSA_P384_BYTES) { throw ByteArrayLengthException("sig", sig.size, ECDSA_P384_BYTES) }
-    if (m.isEmpty()) { throw ByteArrayLengthException("m", 0, 1, false) }
+    if (sig.size != ECDSA_P384_BYTES) {
+        throw ByteArrayLengthException("sig", sig.size, ECDSA_P384_BYTES)
+    }
+    if (m.isEmpty()) {
+        throw ByteArrayLengthException("m", 0, 1, false)
+    }
     p384VerifyPk(pk)
 
     val curveParams = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
@@ -73,9 +85,15 @@ internal fun ecdsaP384Verify(sig: ByteArray, m: ByteArray, pk: ByteArray, enforc
     val r = BigInteger(1, sig.copyOfRange(0, ECDSA_P384_BYTES / 2))
     val s = BigInteger(1, sig.copyOfRange(ECDSA_P384_BYTES / 2, sig.size))
 
-    if (r.signum() <= 0 || r >= params.n) { return false }
-    if (s.signum() <= 0 || s >= params.n) { return false }
-    if (enforceLowS && s > params.n shr 1) { return false }
+    if (r.signum() <= 0 || r >= params.n) {
+        return false
+    }
+    if (s.signum() <= 0 || s >= params.n) {
+        return false
+    }
+    if (enforceLowS && s > params.n shr 1) {
+        return false
+    }
 
     val digest = SHA384Digest()
     val hash = ByteArray(digest.digestSize)
@@ -95,7 +113,9 @@ internal fun p384SkToPk(sk: ByteArray): ByteArray {
 
     val params = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
     val d = BigInteger(1, sk)
-    if (d.signum() <= 0 || d >= params.n) { throw KeyV3Exception("Invalid P-384 private key") }
+    if (d.signum() <= 0 || d >= params.n) {
+        throw KeyV3Exception("Invalid P-384 private key")
+    }
     val q = params.g.multiply(d).normalize()
     return q.getEncoded(true)
 }
@@ -104,7 +124,9 @@ internal fun p384VerifyPk(pk: ByteArray) {
     if (pk.size != ECDSA_P384_PUBLICKEYBYTES) {
         throw ByteArrayLengthException("pk", pk.size, ECDSA_P384_PUBLICKEYBYTES)
     }
-    if (pk[0] != 0x02.toByte() && pk[0] != 0x03.toByte()) { throw KeyV3Exception("must use point compression") }
+    if (pk[0] != 0x02.toByte() && pk[0] != 0x03.toByte()) {
+        throw KeyV3Exception("must use point compression")
+    }
 
     try {
         val params = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
@@ -114,8 +136,12 @@ internal fun p384VerifyPk(pk: ByteArray) {
             throw KeyV3Exception("decode point", ex)
         }
 
-        if (q.isInfinity) { throw KeyV3Exception("Point at infinity") }
-        if (!q.isValid) { throw KeyV3Exception("Point not on curve") }
+        if (q.isInfinity) {
+            throw KeyV3Exception("Point at infinity")
+        }
+        if (!q.isValid) {
+            throw KeyV3Exception("Point not on curve")
+        }
     } catch (e: IllegalArgumentException) {
         throw KeyV3Exception(e.message ?: "")
     }
@@ -127,14 +153,16 @@ internal fun p384EncodeSkPkcs8(sk: ByteArray): ByteArray {
     }
     val params = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
     val d = BigInteger(1, sk)
-    if (d.signum() <= 0 || d >= params.n) { throw KeyV3Exception("Invalid P-384 private key") }
+    if (d.signum() <= 0 || d >= params.n) {
+        throw KeyV3Exception("Invalid P-384 private key")
+    }
     val secretKey = ECPrivateKey(384, d, null, SECObjectIdentifiers.secp384r1)
     return PrivateKeyInfo(
         AlgorithmIdentifier(
             X9ObjectIdentifiers.id_ecPublicKey,
-            SECObjectIdentifiers.secp384r1
+            SECObjectIdentifiers.secp384r1,
         ),
-        secretKey
+        secretKey,
     ).encoded
 }
 
@@ -161,7 +189,9 @@ internal fun p384EncodeSkSec1(sk: ByteArray): ByteArray {
     }
     val params = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
     val d = BigInteger(1, sk)
-    if (d.signum() <= 0 || d >= params.n) { throw KeyV3Exception("Invalid P-384 private key") }
+    if (d.signum() <= 0 || d >= params.n) {
+        throw KeyV3Exception("Invalid P-384 private key")
+    }
     val secretKey = ECPrivateKey(384, d, null, SECObjectIdentifiers.secp384r1)
     return secretKey.encoded
 }
@@ -172,13 +202,20 @@ internal fun p384DecodeSkSec1(der: ByteArray): ByteArray {
     key.parametersObject?.let { params ->
         when (params) {
             is ASN1ObjectIdentifier -> {
-                if (params != SECObjectIdentifiers.secp384r1) { throw KeyV3Exception("SEC1 key not on secp384r1") }
+                if (params != SECObjectIdentifiers.secp384r1) {
+                    throw KeyV3Exception("SEC1 key not on secp384r1")
+                }
             }
-            else -> { throw KeyV3Exception("Unsupported curve parameters") }
+
+            else -> {
+                throw KeyV3Exception("Unsupported curve parameters")
+            }
         }
     } ?: throw KeyV3Exception("SEC1 key must include curve parameters")
     val d = key.key
-    if (d.signum() <= 0 || d >= curveParams.n) { throw KeyV3Exception("Invalid P-384 private key") }
+    if (d.signum() <= 0 || d >= curveParams.n) {
+        throw KeyV3Exception("Invalid P-384 private key")
+    }
 
     return BigIntegers.asUnsignedByteArray(ECDSA_P384_SECRETKEYBYTES, d)
 }
@@ -191,8 +228,12 @@ internal fun p384EncodePkSpki(pk: ByteArray): ByteArray {
         throw KeyV3Exception("decode point", ex)
     }
 
-    if (point.isInfinity) { throw KeyV3Exception("Point at infinity") }
-    if (!point.isValid) { throw KeyV3Exception("Point not on curve") }
+    if (point.isInfinity) {
+        throw KeyV3Exception("Point at infinity")
+    }
+    if (!point.isValid) {
+        throw KeyV3Exception("Point not on curve")
+    }
 
     return SubjectPublicKeyInfo(
         AlgorithmIdentifier(X9ObjectIdentifiers.id_ecPublicKey, SECObjectIdentifiers.secp384r1),
@@ -210,8 +251,12 @@ internal fun p384DecodePkSpki(der: ByteArray): ByteArray {
         throw KeyV3Exception("Public key is not on secp384r1")
     }
 
-    if (params.q.isInfinity) { throw KeyV3Exception("Point at infinity") }
-    if (!params.q.isValid) { throw KeyV3Exception("Point not on curve") }
+    if (params.q.isInfinity) {
+        throw KeyV3Exception("Point at infinity")
+    }
+    if (!params.q.isValid) {
+        throw KeyV3Exception("Point not on curve")
+    }
 
     return params.q.getEncoded(true)
 }

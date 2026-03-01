@@ -23,7 +23,7 @@ class SerdeTests {
             }
         }
 
-        val actual = json.encodeToString(PasetoTokenSerializer,token)
+        val actual = json.encodeToString(PasetoTokenSerializer, token)
         actual shouldBe "{}"
     }
 
@@ -44,7 +44,7 @@ class SerdeTests {
             }
         }
 
-        val actual = json.encodeToString(PasetoTokenSerializer,token)
+        val actual = json.encodeToString(PasetoTokenSerializer, token)
         actual shouldBe "{\"v\":true}"
     }
 
@@ -64,7 +64,7 @@ class SerdeTests {
             }
         }
 
-        val actual = json.encodeToString(PasetoTokenSerializer,token)
+        val actual = json.encodeToString(PasetoTokenSerializer, token)
         actual shouldBe "{\"v\":${Int.MIN_VALUE}}"
     }
 
@@ -84,7 +84,7 @@ class SerdeTests {
             }
         }
 
-        val actual = json.encodeToString(PasetoTokenSerializer,token)
+        val actual = json.encodeToString(PasetoTokenSerializer, token)
         actual shouldBe "{\"v\":${Long.MAX_VALUE}}"
     }
 
@@ -104,7 +104,7 @@ class SerdeTests {
             }
         }
 
-        val actual = json.encodeToString(PasetoTokenSerializer,token)
+        val actual = json.encodeToString(PasetoTokenSerializer, token)
         actual shouldBe "{\"v\":100.0}"
     }
 
@@ -124,7 +124,7 @@ class SerdeTests {
             }
         }
 
-        val actual = json.encodeToString(PasetoTokenSerializer,token)
+        val actual = json.encodeToString(PasetoTokenSerializer, token)
         actual shouldBe "{\"v\":100.0123}"
     }
 
@@ -144,7 +144,7 @@ class SerdeTests {
             }
         }
 
-        val actual = json.encodeToString(PasetoTokenSerializer,token)
+        val actual = json.encodeToString(PasetoTokenSerializer, token)
         actual shouldBe "{\"v\":\"100\"}"
     }
 
@@ -164,7 +164,7 @@ class SerdeTests {
             }
         }
 
-        val actual = json.encodeToString(PasetoTokenSerializer,token)
+        val actual = json.encodeToString(PasetoTokenSerializer, token)
         actual shouldBe "{\"v\":null}"
     }
 
@@ -180,13 +180,16 @@ class SerdeTests {
             issuedAt = null
             expiresAt = null
             claims = claimObject {
-                put("more", claimObject {
-                    put("nested", true)
-                })
+                put(
+                    "more",
+                    claimObject {
+                        put("nested", true)
+                    },
+                )
             }
         }
 
-        val actual = json.encodeToString(PasetoTokenSerializer,token)
+        val actual = json.encodeToString(PasetoTokenSerializer, token)
         actual shouldBe "{\"more\":{\"nested\":true}}"
     }
 
@@ -202,26 +205,30 @@ class SerdeTests {
             issuedAt = null
             expiresAt = null
             claims = claimObject {
-                put("v", claimArray {
-                    add(claimObject { put("x", true) })
-                    add(claimArray { add(1) })
-                    add(false)
-                    add(1)
-                    add(1.1)
-                    add("1.3")
-                    add(null)
-                })
+                put(
+                    "v",
+                    claimArray {
+                        add(claimObject { put("x", true) })
+                        add(claimArray { add(1) })
+                        add(false)
+                        add(1)
+                        add(1.1)
+                        add("1.3")
+                        add(null)
+                    },
+                )
             }
         }
 
-        val actual = json.encodeToString(PasetoTokenSerializer,token)
+        val actual = json.encodeToString(PasetoTokenSerializer, token)
         actual shouldBe "{\"v\":[{\"x\":true},[1],false,1,1.1,\"1.3\",null]}"
     }
 
     @Test
     fun deserialize_claimArray() {
-        val token = json.decodeFromString(PasetoTokenSerializer,
-            "{\"v\":[{\"x\":true},[1],false,1,1.1,\"1.3\",null]}"
+        val token = json.decodeFromString(
+            PasetoTokenSerializer,
+            "{\"v\":[{\"x\":true},[1],false,1,1.1,\"1.3\",null]}",
         )
         val array = token.claims["v"]?.arrayOrNull
         array?.get(0)?.objectOrNull?.get("x")?.booleanOrNull shouldBe true

@@ -38,7 +38,7 @@ internal fun pssSha384(forSigning: Boolean, key: ByteArray): PSSSigner {
             SHA384Digest(),
             SHA384Digest(),
             SHA384_OUT_LEN,
-            0xBC.toByte()
+            0xBC.toByte(),
         )
 
         if (forSigning) {
@@ -93,13 +93,13 @@ internal fun rsaSkToPk(secretKey: ByteArray): ByteArray {
     val publicKeyParams = RSAKeyParameters(
         false,
         rsa.modulus,
-        rsa.publicExponent
+        rsa.publicExponent,
     )
     val algo = AlgorithmIdentifier(PKCSObjectIdentifiers.rsaEncryption, DERNull.INSTANCE)
 
     return KeyUtil.getEncodedSubjectPublicKeyInfo(
         algo,
-        RSAPublicKey(rsa.modulus, rsa.publicExponent)
+        RSAPublicKey(rsa.modulus, rsa.publicExponent),
     )
 }
 
@@ -110,8 +110,8 @@ internal fun rsaGenerate(): Pair<ByteArray, ByteArray> {
             E,
             rng,
             RSA_KEY_SIZE,
-            PrimeCertaintyCalculator.getDefaultCertainty(RSA_KEY_SIZE)
-        )
+            PrimeCertaintyCalculator.getDefaultCertainty(RSA_KEY_SIZE),
+        ),
     )
     val pair = keyGen.generateKeyPair()
 
@@ -121,13 +121,15 @@ internal fun rsaGenerate(): Pair<ByteArray, ByteArray> {
     // As in BCRSAPrivateKey / BCRSAPublicKey
     val algo = AlgorithmIdentifier(PKCSObjectIdentifiers.rsaEncryption, DERNull.INSTANCE)
     val publicKey = KeyUtil.getEncodedSubjectPublicKeyInfo(
-        algo, RSAPublicKey(
+        algo,
+        RSAPublicKey(
             pub.modulus,
-            pub.exponent
-        )
+            pub.exponent,
+        ),
     )
     val privateKey = KeyUtil.getEncodedPrivateKeyInfo(
-        algo, RSAPrivateKey(
+        algo,
+        RSAPrivateKey(
             pri.modulus,
             pri.publicExponent,
             pri.exponent,
@@ -135,8 +137,8 @@ internal fun rsaGenerate(): Pair<ByteArray, ByteArray> {
             pri.q,
             pri.dp,
             pri.dq,
-            pri.qInv
-        )
+            pri.qInv,
+        ),
     )
 
     return Pair<ByteArray, ByteArray>(privateKey, publicKey)

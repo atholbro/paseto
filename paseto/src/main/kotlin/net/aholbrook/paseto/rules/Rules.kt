@@ -9,6 +9,7 @@ import kotlin.contracts.contract
 
 sealed interface RuleResult
 object RuleVerified : RuleResult
+
 @JvmInline
 value class RuleFailed(val cause: PasetoTokenException) : RuleResult
 
@@ -22,7 +23,8 @@ sealed interface Rule {
     operator fun invoke(token: PasetoToken, mode: Mode, currentResults: Map<Rule, RuleResult>)
 
     enum class Mode {
-        ENCODE, DECODE
+        ENCODE,
+        DECODE,
     }
 }
 
@@ -43,12 +45,13 @@ class Rules internal constructor(@PublishedApi internal val rules: List<Rule>) {
             }
         }
 
-        if (mre.exceptions.isNotEmpty()) { throw mre }
+        if (mre.exceptions.isNotEmpty()) {
+            throw mre
+        }
         return context
     }
 
-    inline fun <reified T> findByTypeOrNull(): T? =
-        rules.find { it::class == T::class } as? T
+    inline fun <reified T> findByTypeOrNull(): T? = rules.find { it::class == T::class } as? T
 }
 
 inline fun <reified T> Map<Rule, RuleResult>.findByTypeOrNull(): Pair<Rule, RuleResult>? =
@@ -66,8 +69,8 @@ class RulesBuilder @PublishedApi internal constructor() {
     val customRules = mutableListOf<CustomRule>()
 
     @PublishedApi
-    internal fun build(): Rules =
-        Rules(listOfNotNull(
+    internal fun build(): Rules = Rules(
+        listOfNotNull(
             forAudience,
             identifiedBy,
             issuedBy,
@@ -76,7 +79,8 @@ class RulesBuilder @PublishedApi internal constructor() {
             notExpired,
             subject,
             validAt,
-        ) + customRules)
+        ) + customRules,
+    )
 
     @PublishedApi
     internal fun copy(rules: Rules) {

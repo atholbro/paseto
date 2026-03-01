@@ -24,11 +24,17 @@ internal fun aeadXChaCha20Poly1305IetfEncrypt(
     input: ByteArray,
     ad: ByteArray,
     nonce: ByteArray,
-    key: ByteArray
+    key: ByteArray,
 ): Boolean {
-    if (input.isEmpty()) { throw ByteArrayLengthException("in", input.size, 1, false) }
-    if (ad.isEmpty()) { throw ByteArrayLengthException("ad", ad.size, 1, false) }
-    if (key.isEmpty()) { throw ByteArrayLengthException("key", key.size, 1, false) }
+    if (input.isEmpty()) {
+        throw ByteArrayLengthException("in", input.size, 1, false)
+    }
+    if (ad.isEmpty()) {
+        throw ByteArrayLengthException("ad", ad.size, 1, false)
+    }
+    if (key.isEmpty()) {
+        throw ByteArrayLengthException("key", key.size, 1, false)
+    }
     if (nonce.size != XCHACHA20_POLY1305_IETF_NPUBBYTES) {
         throw ByteArrayLengthException("nonce", nonce.size, XCHACHA20_POLY1305_IETF_NPUBBYTES)
     }
@@ -44,11 +50,17 @@ internal fun aeadXChaCha20Poly1305IetfDecrypt(
     input: ByteArray,
     ad: ByteArray,
     nonce: ByteArray,
-    key: ByteArray
+    key: ByteArray,
 ): Boolean {
-    if (input.isEmpty()) { throw ByteArrayLengthException("in", input.size, 1, false) }
-    if (ad.isEmpty()) { throw ByteArrayLengthException("ad", ad.size, 1, false) }
-    if (key.isEmpty()) { throw ByteArrayLengthException("key", key.size, 1, false) }
+    if (input.isEmpty()) {
+        throw ByteArrayLengthException("in", input.size, 1, false)
+    }
+    if (ad.isEmpty()) {
+        throw ByteArrayLengthException("ad", ad.size, 1, false)
+    }
+    if (key.isEmpty()) {
+        throw ByteArrayLengthException("key", key.size, 1, false)
+    }
     if (nonce.size != XCHACHA20_POLY1305_IETF_NPUBBYTES) {
         throw ByteArrayLengthException("nonce", nonce.size, XCHACHA20_POLY1305_IETF_NPUBBYTES)
     }
@@ -60,10 +72,20 @@ internal fun aeadXChaCha20Poly1305IetfDecrypt(
 }
 
 internal fun chaCha20(out: ByteArray, input: ByteArray, nonce: ByteArray, key: ByteArray): Boolean {
-    if (input.isEmpty()) { throw ByteArrayLengthException("in", input.size, 1, false) }
-    if (key.size != CHACHA20_KEY_BYTES) { throw ByteArrayLengthException("key", key.size, CHACHA20_KEY_BYTES, false) }
-    if (nonce.size != CHACHA20_NONCE_BYTES) { throw ByteArrayLengthException("nonce", nonce.size, CHACHA20_NONCE_BYTES, false) }
-    if (out.size != input.size) { throw ByteArrayLengthException("out", out.size, input.size, false) }
+    if (input.isEmpty()) {
+        throw ByteArrayLengthException("in", input.size, 1, false)
+    }
+    if (key.size != CHACHA20_KEY_BYTES) {
+        throw ByteArrayLengthException("key", key.size, CHACHA20_KEY_BYTES, false)
+    }
+    if (nonce.size !=
+        CHACHA20_NONCE_BYTES
+    ) {
+        throw ByteArrayLengthException("nonce", nonce.size, CHACHA20_NONCE_BYTES, false)
+    }
+    if (out.size != input.size) {
+        throw ByteArrayLengthException("out", out.size, input.size, false)
+    }
 
     val iv = ByteArray(12)
     System.arraycopy(nonce, 16, iv, 4, 8)
@@ -91,7 +113,7 @@ private fun chaCha20Poly1305(
     input: ByteArray,
     ad: ByteArray,
     nonce: ByteArray,
-    key: ByteArray
+    key: ByteArray,
 ): Boolean {
     val chacha = ChaCha20Poly1305()
     val iv = ByteArray(12)

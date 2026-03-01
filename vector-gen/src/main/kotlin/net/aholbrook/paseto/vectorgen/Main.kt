@@ -69,32 +69,34 @@ class GenerateCommand : CliktCommand(name = "vector-gen") {
         val outputObject = ServiceTestVectors(
             name = inputVectors.name.replace(
                 oldValue = inputVersion.toString(),
-                newValue = (pasetoVersion ?: inputVersion).toString()
+                newValue = (pasetoVersion ?: inputVersion).toString(),
             ),
             version = (pasetoVersion ?: inputVersion).toString(),
-            tests = outputVectors
+            tests = outputVectors,
         )
 
         if (!output.exists()) {
             output.createNewFile()
         }
 
-        json.encodeToStream(ServiceTestVectors.serializer(), outputObject,output.outputStream())
-        //println(json.encodeToString(ServiceTestVectors.serializer(), outputObject))
+        json.encodeToStream(ServiceTestVectors.serializer(), outputObject, output.outputStream())
+        // println(json.encodeToString(ServiceTestVectors.serializer(), outputObject))
     }
 
     private fun convertLocalVector(
         vector: ServiceTestVector,
         inputVersion: Version,
         pasetoVersion: Version?,
-        regenerateMap: MutableMap<String, String>
+        regenerateMap: MutableMap<String, String>,
     ): ServiceTestVector? {
-        if (vector.key == null) { return null }
+        if (vector.key == null) {
+            return null
+        }
 
         val key = if (pasetoVersion != null && inputVersion != pasetoVersion) {
             SymmetricKey.ofHex(
                 regenerateMap.getOrPut(vector.key!!) { SymmetricKey.generate(pasetoVersion).toHex() },
-                pasetoVersion
+                pasetoVersion,
             )
         } else {
             SymmetricKey.ofHex(vector.key!!, inputVersion)
@@ -110,7 +112,7 @@ class GenerateCommand : CliktCommand(name = "vector-gen") {
                     }
                     rng.nextBytes(nonce)
                     Hex.toHexString(nonce)
-                }
+                },
             )
         } else {
             Hex.decode(vector.nonce!!)
@@ -141,9 +143,11 @@ class GenerateCommand : CliktCommand(name = "vector-gen") {
         vector: ServiceTestVector,
         inputVersion: Version,
         pasetoVersion: Version?,
-        rekeyMap: MutableMap<String, KeyPair>
+        rekeyMap: MutableMap<String, KeyPair>,
     ): ServiceTestVector? {
-        if (vector.secretKey == null || vector.publicKey == null) { return null }
+        if (vector.secretKey == null || vector.publicKey == null) {
+            return null
+        }
 
         val keyPair = if (pasetoVersion != null && inputVersion != pasetoVersion) {
             rekeyMap.getOrPut(vector.secretKey + vector.publicKey) {
@@ -190,5 +194,3 @@ class GenerateCommand : CliktCommand(name = "vector-gen") {
         )
     }
 }
-
-

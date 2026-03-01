@@ -51,17 +51,15 @@ private val json = Json {
     ignoreUnknownKeys = false
 }
 
-private fun Version.testFile() = when(this) {
+private fun Version.testFile() = when (this) {
     Version.V1 -> "/v1.json"
     Version.V2 -> "/v2.json"
     Version.V3 -> "/v3.json"
     Version.V4 -> "/v4.json"
 }
 
-private fun loadVectors(resourcePath: String): TestVectors {
-    return TestVectorsTests::class.java.getResourceAsStream(resourcePath)!!.use { inputStream ->
-        json.decodeFromString<TestVectors>(inputStream.readAllBytes().toString(Charsets.UTF_8))
-    }
+private fun loadVectors(resourcePath: String): TestVectors = TestVectorsTests::class.java.getResourceAsStream(resourcePath)!!.use { inputStream ->
+    json.decodeFromString<TestVectors>(inputStream.readAllBytes().toString(Charsets.UTF_8))
 }
 
 class TestVectorsTests {
@@ -71,7 +69,7 @@ class TestVectorsTests {
         name: String,
         version: Version,
         vector: TestVector,
-        test: (paseto: Paseto, vector: TestVector) -> Unit
+        test: (paseto: Paseto, vector: TestVector) -> Unit,
     ) {
         val paseto = version.paseto
 
@@ -128,12 +126,12 @@ class TestVectorsTests {
                 payload = vector.payload!!,
                 secretKey = key,
                 footer = vector.footer,
-                implicitAssertion = vector.implicitAssertion
+                implicitAssertion = vector.implicitAssertion,
             )
 
             // V1/V3 signatures are non-deterministic
             when (paseto.version) {
-                Version.V1-> {
+                Version.V1 -> {
                     val publicKey = AsymmetricPublicKey.ofPem(vector.publicKey!!, paseto.version)
                     val actual = paseto.verify(signed, publicKey, vector.footer, vector.implicitAssertion)
                     actual shouldBe vector.payload
@@ -162,63 +160,61 @@ class TestVectorsTests {
                 token = vector.token,
                 publicKey = key,
                 footer = vector.footer,
-                implicitAssertion = vector.implicitAssertion
+                implicitAssertion = vector.implicitAssertion,
             )
             actual shouldBe vector.payload
         }
 
         @JvmStatic
-        fun loadJsonVectors(): Stream<Arguments> {
-            return listOf(Version.V1, Version.V2, Version.V3, Version.V4)
-                .flatMap { version ->
-                    val vectors = loadVectors(version.testFile())
-                    vectors.tests.flatMap { vector ->
-                        listOfNotNull(
-                            Arguments.of(
-                                "${vectors.name} - ${vector.name}: pem loading public key",
-                                version,
-                                vector,
-                                ::testPemLoadingPublicKey
-                            ).takeIf { !vector.expectFail && vector.publicKeyPem != null && vector.publicKey != null },
+        fun loadJsonVectors(): Stream<Arguments> = listOf(Version.V1, Version.V2, Version.V3, Version.V4)
+            .flatMap { version ->
+                val vectors = loadVectors(version.testFile())
+                vectors.tests.flatMap { vector ->
+                    listOfNotNull(
+                        Arguments.of(
+                            "${vectors.name} - ${vector.name}: pem loading public key",
+                            version,
+                            vector,
+                            ::testPemLoadingPublicKey,
+                        ).takeIf { !vector.expectFail && vector.publicKeyPem != null && vector.publicKey != null },
 
-                            // protocol
-                            Arguments.of(
-                                "${vectors.name} - ${vector.name}: pem loading secret key",
-                                version,
-                                vector,
-                                ::testPemLoadingSecretKey
-                            ).takeIf { !vector.expectFail && vector.secretKeyPem != null && vector.secretKey != null },
+                        // protocol
+                        Arguments.of(
+                            "${vectors.name} - ${vector.name}: pem loading secret key",
+                            version,
+                            vector,
+                            ::testPemLoadingSecretKey,
+                        ).takeIf { !vector.expectFail && vector.secretKeyPem != null && vector.secretKey != null },
 
-                            Arguments.of(
-                                "${vectors.name} - ${vector.name}: encrypt",
-                                version,
-                                vector,
-                                ::testEncrypt
-                            ).takeIf { vector.key != null },
+                        Arguments.of(
+                            "${vectors.name} - ${vector.name}: encrypt",
+                            version,
+                            vector,
+                            ::testEncrypt,
+                        ).takeIf { vector.key != null },
 
-                            Arguments.of(
-                                "${vectors.name} - ${vector.name}: decrypt",
-                                version,
-                                vector,
-                                ::testDecrypt
-                            ).takeIf { vector.key != null },
+                        Arguments.of(
+                            "${vectors.name} - ${vector.name}: decrypt",
+                            version,
+                            vector,
+                            ::testDecrypt,
+                        ).takeIf { vector.key != null },
 
-                            Arguments.of(
-                                "${vectors.name} - ${vector.name}: sign",
-                                version,
-                                vector,
-                                ::testSign
-                            ).takeIf { vector.secretKey != null },
+                        Arguments.of(
+                            "${vectors.name} - ${vector.name}: sign",
+                            version,
+                            vector,
+                            ::testSign,
+                        ).takeIf { vector.secretKey != null },
 
-                            Arguments.of(
-                                "${vectors.name} - ${vector.name}: verify",
-                                version,
-                                vector,
-                                ::testVerify
-                            ).takeIf { vector.publicKey != null },
-                        )
-                    }
-                }.stream()
-        }
+                        Arguments.of(
+                            "${vectors.name} - ${vector.name}: verify",
+                            version,
+                            vector,
+                            ::testVerify,
+                        ).takeIf { vector.publicKey != null },
+                    )
+                }
+            }.stream()
     }
 }

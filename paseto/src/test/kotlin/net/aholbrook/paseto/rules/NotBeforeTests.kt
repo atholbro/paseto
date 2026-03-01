@@ -19,7 +19,7 @@ class NotBeforeTests {
     @ParameterizedTest
     @EnumSource(value = Rule.Mode::class)
     fun `requires claim`(mode: Rule.Mode) {
-        val token = pasetoToken {  }
+        val token = pasetoToken { }
         val notBefore = NotBefore()
 
         val ex = shouldThrow<MissingClaimException> {

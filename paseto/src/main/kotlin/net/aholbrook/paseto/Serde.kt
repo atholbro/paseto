@@ -30,8 +30,7 @@ internal object PasetoTokenSerializer : KSerializer<PasetoToken> {
 
         fun take(name: String) = obj[name]?.jsonPrimitive?.contentOrNull
 
-        fun takeInstant(name: String): Instant? =
-            obj[name]?.jsonPrimitive?.contentOrNull?.let { Instant.parse(it) }
+        fun takeInstant(name: String): Instant? = obj[name]?.jsonPrimitive?.contentOrNull?.let { Instant.parse(it) }
 
         val claims = buildJsonObject {
             obj.filterNot { it.key in reserved }.forEach { put(it.key, it.value) }

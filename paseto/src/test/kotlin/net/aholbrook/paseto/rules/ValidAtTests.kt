@@ -37,7 +37,7 @@ class ValidAtTests {
     @ParameterizedTest
     @EnumSource(value = Rule.Mode::class)
     fun `requires nbf claim`(mode: Rule.Mode) {
-        val token = pasetoToken {  }
+        val token = pasetoToken { }
         val validAt = ValidAt()
 
         val ex = shouldThrow<MissingClaimException> {

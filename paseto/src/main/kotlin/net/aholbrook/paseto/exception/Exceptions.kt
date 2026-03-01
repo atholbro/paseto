@@ -10,8 +10,7 @@ open class PasetoException(msg: String, cause: Throwable? = null) : RuntimeExcep
 class ImplicitAssertionsNotSupportedException(actual: Version) :
     PasetoException("Implicit assertions are not supported for " + actual.name + " tokens.")
 
-class CannotSignWithoutSecretKey :
-    PasetoException("Token services without a secret key do not support signing.")
+class CannotSignWithoutSecretKey : PasetoException("Token services without a secret key do not support signing.")
 
 open class PasetoStringException(s: String, val token: String) : PasetoException(s)
 
@@ -45,12 +44,14 @@ class PasetoParseException(val reason: Reason, token: String) :
         when (reason) {
             Reason.MISSING_SECTIONS ->
                 "Invalid token: \"$token\" unable to locate 3-4 paseto sections."
+
             Reason.PAYLOAD_LENGTH ->
                 "Invalid token: \"$token\" payload section doesn't meet the minimum length requirements."
+
             Reason.INVALID_BASE64 ->
                 "Invalid token: \"$token\" invalid base64 encoding."
         },
-        token
+        token,
     ) {
     var minLength: Int = 0
         internal set

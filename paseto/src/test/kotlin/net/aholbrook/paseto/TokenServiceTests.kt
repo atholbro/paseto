@@ -19,10 +19,10 @@ import net.aholbrook.paseto.exception.TokenExpiresBeforeIssuedException
 import net.aholbrook.paseto.exception.TokenIsNotValidUntilAfterExpiration
 import net.aholbrook.paseto.protocol.KeyPair
 import net.aholbrook.paseto.protocol.Version
-import net.aholbrook.paseto.rules.ValidAt
 import net.aholbrook.paseto.rules.IssuedInPast
 import net.aholbrook.paseto.rules.NotBefore
 import net.aholbrook.paseto.rules.NotExpired
+import net.aholbrook.paseto.rules.ValidAt
 import net.aholbrook.paseto.rules.rules
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -38,48 +38,48 @@ import kotlin.io.encoding.Base64
 class TokenServiceTests {
     companion object {
         @JvmStatic
-        fun allServiceConfigurations(): Stream<Arguments> =
-            listOf(
-                Pair(Version.V1, Purpose.Local { keyV1Local }),
-                Pair(Version.V1, Purpose.Public { keyV1Public }),
-                Pair(Version.V2, Purpose.Local { keyV2Local }),
-                Pair(Version.V2, Purpose.Public { keyV2Public }),
-                Pair(Version.V4, Purpose.Local { keyV4Local }),
-                Pair(Version.V4, Purpose.Public { keyV4Public }),
-            ).map {
-                Arguments.of(it.first, it.second)
-            }.stream()
+        fun allServiceConfigurations(): Stream<Arguments> = listOf(
+            Pair(Version.V1, Purpose.Local { keyV1Local }),
+            Pair(Version.V1, Purpose.Public { keyV1Public }),
+            Pair(Version.V2, Purpose.Local { keyV2Local }),
+            Pair(Version.V2, Purpose.Public { keyV2Public }),
+            Pair(Version.V4, Purpose.Local { keyV4Local }),
+            Pair(Version.V4, Purpose.Public { keyV4Public }),
+        ).map {
+            Arguments.of(it.first, it.second)
+        }.stream()
 
         @JvmStatic
-        fun publicServicesWithoutSecretKey(): Stream<Arguments> =
-            listOf(
-                Triple(
-                    Version.V1,
-                    Purpose.Public { KeyPair(null, keyV1Public.publicKey) },
-                    Purpose.Public { keyV1Public },
-                ),
-                Triple(
-                    Version.V2,
-                    Purpose.Public { KeyPair(null, keyV2Public.publicKey) },
-                    Purpose.Public { keyV2Public },
-                ),
-                Triple(
-                    Version.V4,
-                    Purpose.Public { KeyPair(null, keyV4Public.publicKey) },
-                    Purpose.Public { keyV4Public },
-                ),
-            ).map {
-                Arguments.of(it.first, it.second, it.third)
-            }.stream()
+        fun publicServicesWithoutSecretKey(): Stream<Arguments> = listOf(
+            Triple(
+                Version.V1,
+                Purpose.Public { KeyPair(null, keyV1Public.publicKey) },
+                Purpose.Public { keyV1Public },
+            ),
+            Triple(
+                Version.V2,
+                Purpose.Public { KeyPair(null, keyV2Public.publicKey) },
+                Purpose.Public { keyV2Public },
+            ),
+            Triple(
+                Version.V4,
+                Purpose.Public { KeyPair(null, keyV4Public.publicKey) },
+                Purpose.Public { keyV4Public },
+            ),
+        ).map {
+            Arguments.of(it.first, it.second, it.third)
+        }.stream()
     }
 
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
     fun `v1 and v2 do not support implicit assertions`(version: Version, purpose: Purpose) {
-        if (version != Version.V1 && version != Version.V2) { return }
+        if (version != Version.V1 && version != Version.V2) {
+            return
+        }
 
         val service = tokenService(version, purpose)
-        val token = pasetoToken {  }
+        val token = pasetoToken { }
 
         withClue("encode") {
             shouldThrow<ImplicitAssertionsNotSupportedException> {
@@ -96,7 +96,9 @@ class TokenServiceTests {
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
     fun `all remaining versions support implicit assertions`(version: Version, purpose: Purpose) {
-        if (version == Version.V1 || version == Version.V2) { return }
+        if (version == Version.V1 || version == Version.V2) {
+            return
+        }
 
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
@@ -427,7 +429,7 @@ class TokenServiceTests {
         val encoded = service.encode(token, null)
         val taintedFooter = service.insecureGetFooter(encoded)
 
-        with (taintedFooter as TaintedClaimFooter) {
+        with(taintedFooter as TaintedClaimFooter) {
             keyId shouldBe "key-3"
             wrappedKey shouldBe "invalid"
             claims["custom"]?.stringOrNull shouldBe "also works?"

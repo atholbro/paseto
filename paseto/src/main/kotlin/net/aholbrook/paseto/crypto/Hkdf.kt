@@ -9,7 +9,7 @@ internal const val HKDF_SALT_LEN = 16
 internal const val HKDF_LEN = 32
 
 internal fun hkdfExtractAndExpand(salt: ByteArray, inputKeyingMaterial: ByteArray, info: ByteArray): ByteArray {
-    if (salt.size!=HKDF_SALT_LEN) {
+    if (salt.size != HKDF_SALT_LEN) {
         throw ByteArrayLengthException("salt", salt.size, HKDF_SALT_LEN, true)
     }
 

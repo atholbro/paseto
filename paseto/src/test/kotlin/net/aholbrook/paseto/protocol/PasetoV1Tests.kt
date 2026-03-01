@@ -99,7 +99,7 @@ class PasetoV1Tests {
     @ValueSource(strings = ["v2", "v4"])
     fun local_rejectsIncorrectVersions(version: String) {
         shouldThrow<InvalidHeaderException> {
-            PasetoV1.decrypt("${version}.local.abc", keyV1Local)
+            PasetoV1.decrypt("$version.local.abc", keyV1Local)
         }
     }
 
@@ -114,7 +114,7 @@ class PasetoV1Tests {
     @ValueSource(strings = ["v2", "v4"])
     fun public_rejectsIncorrectVersions(version: String) {
         shouldThrow<InvalidHeaderException> {
-            PasetoV1.verify("${version}.public.abc", keyV1Public.publicKey)
+            PasetoV1.verify("$version.public.abc", keyV1Public.publicKey)
         }
     }
 

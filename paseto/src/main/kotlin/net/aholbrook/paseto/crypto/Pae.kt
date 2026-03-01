@@ -15,8 +15,7 @@ private fun le64(value: Long): ByteArray {
     return result
 }
 
-private fun paeLen(vararg pieces: ByteArray): Int =
-    8 + 8 * pieces.size + pieces.sumOf { it.size }
+private fun paeLen(vararg pieces: ByteArray): Int = 8 + 8 * pieces.size + pieces.sumOf { it.size }
 
 internal fun pae(vararg pieces: ByteArray): ByteArray {
     val result = ByteArray(paeLen(*pieces))

@@ -88,11 +88,7 @@ internal class LocalTokenService internal constructor(
         return paseto.encrypt(encoded, keyProvider(), encodedFooter, implicitAssertion)
     }
 
-    override fun decode(
-        token: String,
-        footer: PasetoFooter?,
-        implicitAssertion: String?
-    ): PasetoToken {
+    override fun decode(token: String, footer: PasetoFooter?, implicitAssertion: String?): PasetoToken {
         if (!implicitAssertion.isNullOrEmpty() && !paseto.supportsImplicitAssertion) {
             throw ImplicitAssertionsNotSupportedException(paseto.version)
         }
@@ -105,7 +101,8 @@ internal class LocalTokenService internal constructor(
         return decoded
     }
 
-    override fun insecureGetFooter(token: String): TaintedPasetoFooter? = json.decodeFooter(extractFooter(token)).taint()
+    override fun insecureGetFooter(token: String): TaintedPasetoFooter? =
+        json.decodeFooter(extractFooter(token)).taint()
 }
 
 internal class PublicTokenService internal constructor(
@@ -124,15 +121,13 @@ internal class PublicTokenService internal constructor(
         val encoded = json.encodeToString(PasetoTokenSerializer, token)
         val encodedFooter = json.encodeFooter(token.footer)
         val keyPair = keyProvider()
-        if (keyPair.secretKey == null) { throw CannotSignWithoutSecretKey() }
+        if (keyPair.secretKey == null) {
+            throw CannotSignWithoutSecretKey()
+        }
         return paseto.sign(encoded, keyPair.secretKey, encodedFooter, implicitAssertion)
     }
 
-    override fun decode(
-        token: String,
-        footer: PasetoFooter?,
-        implicitAssertion: String?
-    ): PasetoToken {
+    override fun decode(token: String, footer: PasetoFooter?, implicitAssertion: String?): PasetoToken {
         // TODO expand service-test-vectors for v4 with implicit assertions
         if (!implicitAssertion.isNullOrEmpty() && !paseto.supportsImplicitAssertion) {
             throw ImplicitAssertionsNotSupportedException(paseto.version)
@@ -146,7 +141,8 @@ internal class PublicTokenService internal constructor(
         return decoded
     }
 
-    override fun insecureGetFooter(token: String): TaintedPasetoFooter? = json.decodeFooter(extractFooter(token)).taint()
+    override fun insecureGetFooter(token: String): TaintedPasetoFooter? =
+        json.decodeFooter(extractFooter(token)).taint()
 }
 
 private fun Json.encodeFooter(footer: PasetoFooter?): String? = footer?.let { footer ->

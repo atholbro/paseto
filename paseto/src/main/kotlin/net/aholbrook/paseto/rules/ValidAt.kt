@@ -18,15 +18,19 @@ import java.time.Instant
  * @param clock To allow overriding clock source for unit tests.
  */
 @ConsistentCopyVisibility
-data class ValidAt internal constructor(
-    private val clock: Clock,
-) : Rule {
+data class ValidAt internal constructor(private val clock: Clock) : Rule {
     constructor() : this(Clock.systemUTC())
 
     override operator fun invoke(token: PasetoToken, mode: Mode, currentResults: Map<Rule, RuleResult>) {
-        if (token.issuedAt == null) { throw MissingClaimException("iat", token) }
-        if (token.notBefore == null) { throw MissingClaimException("nbf", token) }
-        if (token.expiresAt == null) { throw MissingClaimException("exp", token) }
+        if (token.issuedAt == null) {
+            throw MissingClaimException("iat", token)
+        }
+        if (token.notBefore == null) {
+            throw MissingClaimException("nbf", token)
+        }
+        if (token.expiresAt == null) {
+            throw MissingClaimException("exp", token)
+        }
 
         if (mode == Mode.ENCODE) {
             // verify the token was not issued after it expired (iat <= exp)

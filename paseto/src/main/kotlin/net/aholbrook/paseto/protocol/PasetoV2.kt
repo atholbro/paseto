@@ -28,12 +28,7 @@ object PasetoV2 : Paseto {
     override val version: Version = Version.V2
     override val supportsImplicitAssertion: Boolean = false
 
-    override fun encrypt(
-        payload: String,
-        key: SymmetricKey,
-        footer: String?,
-        implicitAssertion: String?
-    ): String {
+    override fun encrypt(payload: String, key: SymmetricKey, footer: String?, implicitAssertion: String?): String {
         val cleanup = mutableListOf<Runnable>()
 
         try {
@@ -71,12 +66,7 @@ object PasetoV2 : Paseto {
         }
     }
 
-    override fun decrypt(
-        token: String,
-        key: SymmetricKey,
-        footer: String?,
-        implicitAssertion: String?
-    ): String {
+    override fun decrypt(token: String, key: SymmetricKey, footer: String?, implicitAssertion: String?): String {
         try {
             // Verify key version.
             val keyMaterial = key.getKeyMaterialFor(Version.V2, Purpose.LOCAL)
@@ -121,7 +111,7 @@ object PasetoV2 : Paseto {
         payload: String,
         secretKey: AsymmetricSecretKey,
         footer: String?,
-        implicitAssertion: String?
+        implicitAssertion: String?,
     ): String {
         try {
             // Verify key version.
@@ -155,7 +145,7 @@ object PasetoV2 : Paseto {
         token: String,
         publicKey: AsymmetricPublicKey,
         footer: String?,
-        implicitAssertion: String?
+        implicitAssertion: String?,
     ): String {
         // Verify key version.
         val keyMaterial = publicKey.getKeyMaterialFor(Version.V2, Purpose.PUBLIC)

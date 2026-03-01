@@ -7,8 +7,10 @@ plugins {
     `version-catalog`
 
     alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.versions)
-    alias(libs.plugins.versions.filter)
+    alias(libs.plugins.kotlinter)
+    alias(libs.plugins.gradleVersions)
+    alias(libs.plugins.gradleVersions.filter)
+    alias(libs.plugins.gradleVersions.update)
 }
 
 repositories {
@@ -18,6 +20,7 @@ repositories {
 
 allprojects {
     apply(plugin = "java")
+    apply(plugin = "org.jmailen.kotlinter")
 
     repositories {
         mavenLocal()
@@ -79,5 +82,4 @@ tasks.register<JacocoReport>("codeCoverageReport") {
         html.required.set(false)
         csv.required.set(false)
     }
-
 }

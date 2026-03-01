@@ -17,11 +17,7 @@ import java.time.Instant
 import kotlin.collections.forEach
 
 @Serializable
-data class ServiceTestVectors(
-    val name: String,
-    val version: String,
-    val tests: List<ServiceTestVector>,
-)
+data class ServiceTestVectors(val name: String, val version: String, val tests: List<ServiceTestVector>)
 
 @Serializable
 data class ServiceTestVector(
@@ -55,12 +51,15 @@ fun tokenFromVector(vector: ServiceTestVector): PasetoToken {
 
         footer = when (val f = vector.footer) {
             null, is JsonNull -> null
+
             is JsonPrimitive -> pasetoFooter(f.content)
+
             is JsonObject -> pasetoFooter {
                 keyId = f["kid"]?.jsonPrimitive?.contentOrNull
                 wrappedKey = f["wpk"]?.jsonPrimitive?.contentOrNull
                 claims = JsonObject(f.filterNot { it.key in footerReserved }).toClaimElement() as ClaimObject
             }
+
             else -> null
         }
     }
@@ -68,6 +67,7 @@ fun tokenFromVector(vector: ServiceTestVector): PasetoToken {
 
 fun JsonElement.toClaimElement(): ClaimElement = when (this) {
     is JsonNull -> ClaimNull
+
     is JsonPrimitive -> {
         when {
             this.isString -> primitiveValue(this.contentOrNull)
@@ -78,10 +78,11 @@ fun JsonElement.toClaimElement(): ClaimElement = when (this) {
             else -> ClaimNull
         }
     }
+
     is JsonArray -> claimArray {
         forEach { add(it.toClaimElement()) }
-
     }
+
     is JsonObject -> claimObject {
         forEach { (key, element) ->
             put(key, element.toClaimElement())

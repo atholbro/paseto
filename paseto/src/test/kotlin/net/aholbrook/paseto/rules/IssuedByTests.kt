@@ -23,7 +23,7 @@ class IssuedByTests {
     @Test
     fun missingIssuedBy() {
         val issuedBy = IssuedBy("abc")
-        val token = pasetoToken {  }
+        val token = pasetoToken { }
 
         val ex = shouldThrow<MissingClaimException> {
             issuedBy(token, Rule.Mode.DECODE, emptyMap())

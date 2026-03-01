@@ -23,7 +23,7 @@ class SubjectTests {
     @Test
     fun missingSubject() {
         val subject = Subject("abc")
-        val token = pasetoToken {  }
+        val token = pasetoToken { }
 
         val ex = shouldThrow<MissingClaimException> {
             subject(token, Rule.Mode.DECODE, emptyMap())

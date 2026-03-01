@@ -30,12 +30,7 @@ object PasetoV3 : Paseto {
     override val version: Version = Version.V3
     override val supportsImplicitAssertion: Boolean = false
 
-    override fun encrypt(
-        payload: String,
-        key: SymmetricKey,
-        footer: String?,
-        implicitAssertion: String?
-    ): String {
+    override fun encrypt(payload: String, key: SymmetricKey, footer: String?, implicitAssertion: String?): String {
         val cleanup = mutableListOf<Runnable>()
 
         try {
@@ -67,19 +62,18 @@ object PasetoV3 : Paseto {
             val t = hmacSha384(preAuth, ak)
 
             return h + Base64.UrlSafeNoPadding.encode(n + c + t) +
-                if (f.isEmpty()) { "" } else { ".${Base64.UrlSafeNoPadding.encode(f)}" }
+                if (f.isEmpty()) {
+                    ""
+                } else {
+                    ".${Base64.UrlSafeNoPadding.encode(f)}"
+                }
         } finally {
             key.clear()
             cleanup.forEach { it.run() }
         }
     }
 
-    override fun decrypt(
-        token: String,
-        key: SymmetricKey,
-        footer: String?,
-        implicitAssertion: String?
-    ): String {
+    override fun decrypt(token: String, key: SymmetricKey, footer: String?, implicitAssertion: String?): String {
         val cleanup = mutableListOf<Runnable>()
 
         try {
@@ -141,7 +135,7 @@ object PasetoV3 : Paseto {
         payload: String,
         secretKey: AsymmetricSecretKey,
         footer: String?,
-        implicitAssertion: String?
+        implicitAssertion: String?,
     ): String {
         try {
             val sk = secretKey.getKeyMaterialFor(Version.V3, Purpose.PUBLIC)
@@ -155,7 +149,11 @@ object PasetoV3 : Paseto {
             val sig = ecdsaP384Sign(m2, sk)
 
             return h + Base64.UrlSafeNoPadding.encode(m + sig) +
-                if (f.isEmpty()) { "" } else { ".${Base64.UrlSafeNoPadding.encode(f)}" }
+                if (f.isEmpty()) {
+                    ""
+                } else {
+                    ".${Base64.UrlSafeNoPadding.encode(f)}"
+                }
         } finally {
             secretKey.clear()
         }
@@ -165,7 +163,7 @@ object PasetoV3 : Paseto {
         token: String,
         publicKey: AsymmetricPublicKey,
         footer: String?,
-        implicitAssertion: String?
+        implicitAssertion: String?,
     ): String {
         val pk = publicKey.getKeyMaterialFor(Version.V3, Purpose.PUBLIC)
         val h = "v3.public."

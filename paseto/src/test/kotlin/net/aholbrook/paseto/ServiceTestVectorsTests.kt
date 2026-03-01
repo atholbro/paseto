@@ -23,10 +23,8 @@ private val json = Json {
     ignoreUnknownKeys = false
 }
 
-private fun loadServiceVectors(resourcePath: String): ServiceTestVectors {
-    return ServiceTestVectorsTests::class.java.getResourceAsStream(resourcePath)!!.use { inputStream ->
-        json.decodeFromString<ServiceTestVectors>(inputStream.readAllBytes().toString(Charsets.UTF_8))
-    }
+private fun loadServiceVectors(resourcePath: String): ServiceTestVectors = ServiceTestVectorsTests::class.java.getResourceAsStream(resourcePath)!!.use { inputStream ->
+    json.decodeFromString<ServiceTestVectors>(inputStream.readAllBytes().toString(Charsets.UTF_8))
 }
 
 private fun Version.serviceTestFile(): String = "/service-test-vectors/${this.toString().lowercase()}.json"
@@ -51,15 +49,15 @@ private fun publicService(version: Version, vector: ServiceTestVector, currentTi
             if (version == Version.V1) {
                 KeyPair(
                     AsymmetricSecretKey.ofPem(vector.secretKey!!, version),
-                    AsymmetricPublicKey.ofPem(vector.publicKey!!, version)
+                    AsymmetricPublicKey.ofPem(vector.publicKey!!, version),
                 )
             } else {
                 KeyPair(
                     AsymmetricSecretKey.ofHex(vector.secretKey!!, version),
-                    AsymmetricPublicKey.ofHex(vector.publicKey!!, version)
+                    AsymmetricPublicKey.ofHex(vector.publicKey!!, version),
                 )
             }
-        }
+        },
     ) {
         rules = rules {
             issuedInPast = clock?.let { issuedInPast?.copy(clock = clock) }
@@ -109,8 +107,10 @@ class ServiceTestVectorsTests {
             val actual = when (vector.mode) {
                 "local" -> localService(version, vector, currentTime)
                     .decode(vector.token, expected.footer)
+
                 "public" -> publicService(version, vector, currentTime)
                     .decode(vector.token, expected.footer)
+
                 else -> error("Unsupported mode: ${vector.mode}")
             }
 
@@ -118,28 +118,26 @@ class ServiceTestVectorsTests {
         }
 
         @JvmStatic
-        fun loadServiceVectorTests(): Stream<Arguments> {
-            return Version.entries
-                .flatMap { version ->
-                    val file = version.serviceTestFile()
-                    val vectors = loadServiceVectors(file)
-                    vectors.tests.flatMap { vector ->
-                        listOf(
-                            Arguments.of(
-                                "${vectors.name} - ${vector.name}: encode",
-                                version,
-                                vector,
-                                ::encodeTest,
-                            ),
-                            Arguments.of(
-                                "${vectors.name} - ${vector.name}: decode",
-                                version,
-                                vector,
-                                ::decodeTest,
-                            ),
-                        )
-                    }
-                }.stream()
-        }
+        fun loadServiceVectorTests(): Stream<Arguments> = Version.entries
+            .flatMap { version ->
+                val file = version.serviceTestFile()
+                val vectors = loadServiceVectors(file)
+                vectors.tests.flatMap { vector ->
+                    listOf(
+                        Arguments.of(
+                            "${vectors.name} - ${vector.name}: encode",
+                            version,
+                            vector,
+                            ::encodeTest,
+                        ),
+                        Arguments.of(
+                            "${vectors.name} - ${vector.name}: decode",
+                            version,
+                            vector,
+                            ::decodeTest,
+                        ),
+                    )
+                }
+            }.stream()
     }
 }

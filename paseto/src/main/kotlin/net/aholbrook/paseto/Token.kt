@@ -53,6 +53,7 @@ inline fun pasetoToken(clock: Clock = Clock.systemUTC(), init: PasetoTokenBuilde
 }
 
 sealed interface PasetoFooter
+
 @JvmInline
 value class StringFooter internal constructor(val value: String) : PasetoFooter
 
@@ -77,6 +78,7 @@ class ClaimFooterBuilder @PublishedApi internal constructor() {
 }
 
 fun pasetoFooter(footer: String) = StringFooter(footer)
+
 @OptIn(ExperimentalContracts::class)
 inline fun pasetoFooter(init: ClaimFooterBuilder.() -> Unit): ClaimFooter {
     contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }

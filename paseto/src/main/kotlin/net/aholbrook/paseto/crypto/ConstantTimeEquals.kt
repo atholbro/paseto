@@ -27,7 +27,7 @@ internal fun ByteArray.constantTimeEquals(expected: ByteArray): Boolean {
         for (i in indices) {
             result = result or (this[i].toInt() xor expected[i].toInt())
         }
-        return result==0
+        return result == 0
     }
 }
 

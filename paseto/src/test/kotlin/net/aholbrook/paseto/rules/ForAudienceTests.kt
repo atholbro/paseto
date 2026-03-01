@@ -9,7 +9,6 @@ import net.aholbrook.paseto.exception.MissingClaimException
 import net.aholbrook.paseto.pasetoToken
 import org.junit.jupiter.api.Test
 
-
 class ForAudienceTests {
     @Test
     fun validAudience() {
@@ -24,7 +23,7 @@ class ForAudienceTests {
     @Test
     fun missingAudience() {
         val forAudience = ForAudience("abc")
-        val token = pasetoToken {  }
+        val token = pasetoToken { }
 
         val ex = shouldThrow<MissingClaimException> {
             forAudience(token, Rule.Mode.DECODE, emptyMap())

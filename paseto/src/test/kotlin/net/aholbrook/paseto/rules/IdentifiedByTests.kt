@@ -23,7 +23,7 @@ class IdentifiedByTests {
     @Test
     fun missingTokenId() {
         val identifiedBy = IdentifiedBy("abc")
-        val token = pasetoToken {  }
+        val token = pasetoToken { }
 
         val ex = shouldThrow<MissingClaimException> {
             identifiedBy(token, Rule.Mode.DECODE, emptyMap())

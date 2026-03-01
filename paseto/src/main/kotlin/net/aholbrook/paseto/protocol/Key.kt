@@ -54,10 +54,7 @@ import java.security.UnrecoverableKeyException
 import java.security.cert.CertificateException
 import kotlin.io.encoding.Base64
 
-class AsymmetricPublicKey private constructor(
-    private val material: ByteArray,
-    val version: Version,
-) {
+class AsymmetricPublicKey private constructor(private val material: ByteArray, val version: Version) {
     internal val purpose: Purpose = Purpose.PUBLIC
 
     init {
@@ -82,11 +79,13 @@ class AsymmetricPublicKey private constructor(
     fun toPem(): String {
         val der = when (version) {
             Version.V1 -> material
+
             Version.V3 -> p384EncodePkSpki(material)
+
             Version.V2, Version.V4 -> Ed25519PublicKeyParameters(material, 0).let {
                 SubjectPublicKeyInfo(
                     AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519),
-                    it.encoded
+                    it.encoded,
                 ).encoded
             }
         }
@@ -98,20 +97,34 @@ class AsymmetricPublicKey private constructor(
     }
 
     internal fun getKeyMaterialFor(version: Version, purpose: Purpose): ByteArray {
-        if (this.version != version) { throw KeyVersionException(version, this.version) }
-        if (this.purpose != purpose) { throw KeyPurposeException(purpose.toString(), this.purpose.toString()) }
+        if (this.version != version) {
+            throw KeyVersionException(version, this.version)
+        }
+        if (this.purpose != purpose) {
+            throw KeyPurposeException(purpose.toString(), this.purpose.toString())
+        }
         return material
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) { return true }
-        if (javaClass != other?.javaClass) { return false }
+        if (this === other) {
+            return true
+        }
+        if (javaClass != other?.javaClass) {
+            return false
+        }
 
         other as AsymmetricPublicKey
 
-        if (version != other.version) { return false }
-        if (purpose != other.purpose) { return false }
-        if (!material.contentEquals(other.material)) { return false }
+        if (version != other.version) {
+            return false
+        }
+        if (purpose != other.purpose) {
+            return false
+        }
+        if (!material.contentEquals(other.material)) {
+            return false
+        }
 
         return true
     }
@@ -123,9 +136,7 @@ class AsymmetricPublicKey private constructor(
         return result
     }
 
-    override fun toString(): String {
-        return "AsymmetricPublicKey(material=*****, version=$version, purpose=$purpose)"
-    }
+    override fun toString(): String = "AsymmetricPublicKey(material=*****, version=$version, purpose=$purpose)"
 
     companion object {
         @JvmStatic
@@ -144,7 +155,9 @@ class AsymmetricPublicKey private constructor(
         fun ofPem(pem: ByteArray, version: Version): AsymmetricPublicKey {
             val (type, der) = decodePem(pem)
 
-            if (type != "PUBLIC KEY") { throw KeyPemUnsupportedTypeException(type) }
+            if (type != "PUBLIC KEY") {
+                throw KeyPemUnsupportedTypeException(type)
+            }
 
             val encoded = when (version) {
                 Version.V1 -> der
@@ -159,25 +172,29 @@ class AsymmetricPublicKey private constructor(
         @JvmStatic
         fun fromSecretKey(secretKey: AsymmetricSecretKey): AsymmetricPublicKey = when (secretKey.version) {
             Version.V1 -> ofRawBytes(
-                rsaSkToPk(secretKey.getKeyMaterialFor(Version.V1, Purpose.PUBLIC)), Version.V1
+                rsaSkToPk(secretKey.getKeyMaterialFor(Version.V1, Purpose.PUBLIC)),
+                Version.V1,
             )
+
             Version.V2 -> ofRawBytes(
-                ed25519SkToPk(secretKey.getKeyMaterialFor(Version.V2, Purpose.PUBLIC)), Version.V2
+                ed25519SkToPk(secretKey.getKeyMaterialFor(Version.V2, Purpose.PUBLIC)),
+                Version.V2,
             )
+
             Version.V3 -> ofRawBytes(
-                p384SkToPk(secretKey.getKeyMaterialFor(Version.V1, Purpose.PUBLIC)), Version.V3
+                p384SkToPk(secretKey.getKeyMaterialFor(Version.V1, Purpose.PUBLIC)),
+                Version.V3,
             )
+
             Version.V4 -> ofRawBytes(
-                ed25519SkToPk(secretKey.getKeyMaterialFor(Version.V4, Purpose.PUBLIC)), Version.V4
+                ed25519SkToPk(secretKey.getKeyMaterialFor(Version.V4, Purpose.PUBLIC)),
+                Version.V4,
             )
         }
     }
 }
 
-class AsymmetricSecretKey private constructor(
-    private val material: ByteArray,
-    val version: Version,
-) {
+class AsymmetricSecretKey private constructor(private val material: ByteArray, val version: Version) {
     internal val purpose: Purpose = Purpose.PUBLIC
 
     init {
@@ -198,7 +215,9 @@ class AsymmetricSecretKey private constructor(
     fun toPem(): String {
         val der = when (version) {
             Version.V1 -> material
+
             Version.V3 -> p384EncodeSkSec1(material)
+
             Version.V2, Version.V4 -> {
                 val rawKey = if (material.size == ED25519_SECRETKEYBYTES) {
                     material.copyOfRange(0, ED25519_PUBLICKEYBYTES)
@@ -219,8 +238,12 @@ class AsymmetricSecretKey private constructor(
     }
 
     internal fun getKeyMaterialFor(version: Version, purpose: Purpose): ByteArray {
-        if (this.version != version) { throw KeyVersionException(version, this.version) }
-        if (this.purpose != purpose) { throw KeyPurposeException(purpose.toString(), this.purpose.toString()) }
+        if (this.version != version) {
+            throw KeyVersionException(version, this.version)
+        }
+        if (this.purpose != purpose) {
+            throw KeyPurposeException(purpose.toString(), this.purpose.toString())
+        }
         return material
     }
 
@@ -235,14 +258,24 @@ class AsymmetricSecretKey private constructor(
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) { return true }
-        if (javaClass != other?.javaClass) { return false }
+        if (this === other) {
+            return true
+        }
+        if (javaClass != other?.javaClass) {
+            return false
+        }
 
         other as AsymmetricSecretKey
 
-        if (version != other.version) { return false }
-        if (purpose != other.purpose) { return false }
-        if (!normalizeMaterial(material).contentEquals(normalizeMaterial(other.material))) { return false }
+        if (version != other.version) {
+            return false
+        }
+        if (purpose != other.purpose) {
+            return false
+        }
+        if (!normalizeMaterial(material).contentEquals(normalizeMaterial(other.material))) {
+            return false
+        }
 
         return true
     }
@@ -254,9 +287,7 @@ class AsymmetricSecretKey private constructor(
         return result
     }
 
-    override fun toString(): String {
-        return "AsymmetricSecretKey(material=*****, version=$version, purpose=$purpose)"
-    }
+    override fun toString(): String = "AsymmetricSecretKey(material=*****, version=$version, purpose=$purpose)"
 
     companion object {
         @JvmStatic
@@ -281,17 +312,24 @@ class AsymmetricSecretKey private constructor(
                     "PRIVATE KEY" -> der
                     else -> throw KeyPemUnsupportedTypeException(type)
                 }
+
                 Version.V2 -> {
-                    if (type != "PRIVATE KEY") { throw KeyPemUnsupportedTypeException(type) }
+                    if (type != "PRIVATE KEY") {
+                        throw KeyPemUnsupportedTypeException(type)
+                    }
                     (PrivateKeyFactory.createKey(der) as Ed25519PrivateKeyParameters).encoded
                 }
+
                 Version.V3 -> when (type) {
                     "EC PRIVATE KEY" -> p384DecodeSkSec1(der)
                     "PRIVATE KEY" -> p384DecodeSkPkcs8(der)
                     else -> throw KeyPemUnsupportedTypeException(type)
                 }
+
                 Version.V4 -> {
-                    if (type != "PRIVATE KEY") { throw KeyPemUnsupportedTypeException(type) }
+                    if (type != "PRIVATE KEY") {
+                        throw KeyPemUnsupportedTypeException(type)
+                    }
                     (PrivateKeyFactory.createKey(der) as Ed25519PrivateKeyParameters).encoded
                 }
             }
@@ -301,10 +339,7 @@ class AsymmetricSecretKey private constructor(
     }
 }
 
-class SymmetricKey private constructor(
-    private val material: ByteArray,
-    val version: Version,
-) {
+class SymmetricKey private constructor(private val material: ByteArray, val version: Version) {
     internal val purpose: Purpose = Purpose.LOCAL
 
     init {
@@ -324,8 +359,12 @@ class SymmetricKey private constructor(
     fun toBase64Url(): String = Base64.UrlSafe.encode(material)
 
     internal fun getKeyMaterialFor(version: Version, purpose: Purpose): ByteArray {
-        if (this.version != version) { throw KeyVersionException(version, this.version) }
-        if (this.purpose != purpose) { throw KeyPurposeException(purpose.toString(), this.purpose.toString()) }
+        if (this.version != version) {
+            throw KeyVersionException(version, this.version)
+        }
+        if (this.purpose != purpose) {
+            throw KeyPurposeException(purpose.toString(), this.purpose.toString())
+        }
         return material
     }
 
@@ -334,14 +373,24 @@ class SymmetricKey private constructor(
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) { return true }
-        if (javaClass != other?.javaClass) { return false }
+        if (this === other) {
+            return true
+        }
+        if (javaClass != other?.javaClass) {
+            return false
+        }
 
         other as SymmetricKey
 
-        if (version != other.version) { return false }
-        if (purpose != other.purpose) { return false }
-        if (!material.contentEquals(other.material)) { return false }
+        if (version != other.version) {
+            return false
+        }
+        if (purpose != other.purpose) {
+            return false
+        }
+        if (!material.contentEquals(other.material)) {
+            return false
+        }
 
         return true
     }
@@ -353,9 +402,7 @@ class SymmetricKey private constructor(
         return result
     }
 
-    override fun toString(): String {
-        return "SymmetricKey(material=*****, version=$version, purpose=$purpose)"
-    }
+    override fun toString(): String = "SymmetricKey(material=*****, version=$version, purpose=$purpose)"
 
     companion object {
         @JvmStatic
@@ -388,14 +435,24 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
     val version: Version = publicKey.version
 
     override fun equals(other: Any?): Boolean {
-        if (this===other) { return true }
-        if (javaClass!=other?.javaClass) { return false }
+        if (this === other) {
+            return true
+        }
+        if (javaClass != other?.javaClass) {
+            return false
+        }
 
         other as KeyPair
 
-        if (version!=other.version) { return false }
-        if (secretKey!=other.secretKey) { return false }
-        if (publicKey!=other.publicKey) { return false }
+        if (version != other.version) {
+            return false
+        }
+        if (secretKey != other.secretKey) {
+            return false
+        }
+        if (publicKey != other.publicKey) {
+            return false
+        }
 
         return true
     }
@@ -407,11 +464,10 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
         return result
     }
 
-
     companion object {
         @JvmStatic
         fun generate(version: Version): KeyPair {
-            val (secretKey, publicKey) = when(version) {
+            val (secretKey, publicKey) = when (version) {
                 Version.V1 -> rsaGenerate()
                 Version.V2 -> ed25519Generate()
                 Version.V3 -> p384Generate()
@@ -430,7 +486,7 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
             keystoreFile: String,
             keystorePass: String,
             alias: String,
-            keyPass: String = keystorePass
+            keyPass: String = keystorePass,
         ): KeyPair {
             try {
                 val p12 = KeyStore.getInstance("PKCS12")
@@ -444,7 +500,7 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
 
                 return KeyPair(
                     AsymmetricSecretKey.ofRawBytes(privateKey.encoded, Version.V1),
-                    AsymmetricPublicKey.ofRawBytes(publicKey.encoded, Version.V1)
+                    AsymmetricPublicKey.ofRawBytes(publicKey.encoded, Version.V1),
                 )
             } catch (e: FileNotFoundException) {
                 throw Pkcs12LoadException(e)

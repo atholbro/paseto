@@ -13,9 +13,13 @@ internal const val PURPOSE_LOCAL: String = "local"
 internal const val PURPOSE_PUBLIC: String = "public"
 
 enum class Version {
-    V1, V2, V3, V4;
+    V1,
+    V2,
+    V3,
+    V4,
+    ;
 
-    internal val paseto: Paseto get() = when(this) {
+    internal val paseto: Paseto get() = when (this) {
         V1 -> PasetoV1
         V2 -> PasetoV2
         V3 -> PasetoV3
@@ -25,26 +29,16 @@ enum class Version {
 
 internal enum class Purpose {
     LOCAL,
-    PUBLIC;
+    PUBLIC,
 }
 
 sealed interface Paseto {
     val version: Version
     val supportsImplicitAssertion: Boolean
 
-    fun encrypt(
-        payload: String,
-        key: SymmetricKey,
-        footer: String? = null,
-        implicitAssertion: String? = null,
-    ): String
+    fun encrypt(payload: String, key: SymmetricKey, footer: String? = null, implicitAssertion: String? = null): String
 
-    fun decrypt(
-        token: String,
-        key: SymmetricKey,
-        footer: String? = null,
-        implicitAssertion: String? = null,
-    ): String
+    fun decrypt(token: String, key: SymmetricKey, footer: String? = null, implicitAssertion: String? = null): String
 
     fun sign(
         payload: String,
@@ -57,7 +51,7 @@ sealed interface Paseto {
         token: String,
         publicKey: AsymmetricPublicKey,
         footer: String? = null,
-        implicitAssertion: String? = null
+        implicitAssertion: String? = null,
     ): String
 }
 
@@ -71,12 +65,7 @@ internal fun extractFooter(token: String): String? {
     return null
 }
 
-internal data class PasetoSections(
-    val version: String,
-    val purpose: String,
-    val payload: String,
-    val footer: String
-)
+internal data class PasetoSections(val version: String, val purpose: String, val payload: String, val footer: String)
 
 /**
  * Splits a Paseto token into its 4 sections: VERSION, PURPOSE, PAYLOAD, FOOTER.
@@ -111,7 +100,7 @@ internal fun checkHeader(token: String, sections: PasetoSections, expectedHeader
 internal fun decodeFooter(token: String, sections: PasetoSections, expectedFooter: String?): String {
     val userFooter = sections.footer
     val decodedFooter = Base64.UrlSafeNoPadding.decodeOrNull(userFooter)
-        ?.toString( Charsets.UTF_8)
+        ?.toString(Charsets.UTF_8)
         ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
 
     // Check the footer if expected footer is not empty, otherwise we just return the footer without checking. This

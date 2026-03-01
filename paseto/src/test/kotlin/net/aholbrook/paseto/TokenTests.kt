@@ -56,7 +56,7 @@ class TokenTests {
             }
         }
 
-        token.claims["test"]?.asType<String>()shouldBe "data"
+        token.claims["test"]?.asType<String>() shouldBe "data"
         token.claims["test"]?.stringOrNull shouldBe "data"
     }
 

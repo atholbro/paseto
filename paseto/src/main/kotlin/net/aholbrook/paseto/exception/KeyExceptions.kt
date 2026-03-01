@@ -11,7 +11,6 @@ class KeyPurposeException(val expected: String, val actual: String) :
 class KeyVersionException(val expected: Version, val actual: Version) :
     PasetoException("Got wrong Key version: $actual given, expected: $expected.")
 
-class KeyPemUnsupportedTypeException(val type: String) :
-    PasetoException("Unsupported PEM type: $type")
+class KeyPemUnsupportedTypeException(val type: String) : PasetoException("Unsupported PEM type: $type")
 
 class KeyV3Exception(msg: String, cause: Throwable? = null) : PasetoException(msg, cause)

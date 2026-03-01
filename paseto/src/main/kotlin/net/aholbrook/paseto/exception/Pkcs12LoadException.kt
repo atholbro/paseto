@@ -32,7 +32,7 @@ class Pkcs12LoadException(val reason: Reason, cause: Throwable? = null) :
         } else {
             Reason.IO_EXCEPTION
         },
-        cause = e
+        cause = e,
     )
 
     enum class Reason {
@@ -43,6 +43,6 @@ class Pkcs12LoadException(val reason: Reason, cause: Throwable? = null) :
         INCORRECT_PASSWORD,
         CERTIFICATE_ERROR,
         PRIVATE_KEY_NOT_FOUND,
-        PUBLIC_KEY_NOT_FOUND
+        PUBLIC_KEY_NOT_FOUND,
     }
 }

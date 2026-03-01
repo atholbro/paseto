@@ -26,7 +26,7 @@ sealed interface ClaimElement {
     val doubleOrNull: Double? get() = null
 }
 
-inline fun <reified T> ClaimElement.asType(): T? = when(T::class) {
+inline fun <reified T> ClaimElement.asType(): T? = when (T::class) {
     String::class -> primitiveOrNull?.stringOrNull as? T
     Boolean::class -> primitiveOrNull?.booleanOrNull as? T
     Int::class -> primitiveOrNull?.intOrNull as? T
@@ -42,18 +42,20 @@ object ClaimNull : ClaimElement
 @JvmInline
 @Suppress("JavaDefaultMethodsNotOverriddenByDelegation")
 value class ClaimArray internal constructor(private val content: List<ClaimElement>) :
-    ClaimElement, List<ClaimElement> by content {
+    ClaimElement,
+    List<ClaimElement> by content {
 
     internal constructor(jsonArray: JsonArray) : this(jsonArray.map { it.toClaim() })
 }
 
 @JvmInline
 value class ClaimObject internal constructor(private val content: Map<String, ClaimElement>) :
-    ClaimElement, Map<String, ClaimElement> by content {
+    ClaimElement,
+    Map<String, ClaimElement> by content {
 
     internal constructor() : this(emptyMap())
     internal constructor(jsonObject: JsonObject) : this(
-        content = jsonObject.mapValues { it.value.toClaim() }
+        content = jsonObject.mapValues { it.value.toClaim() },
     )
 }
 

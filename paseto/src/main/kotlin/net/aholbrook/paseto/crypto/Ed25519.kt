@@ -12,13 +12,13 @@ internal const val ED25519_SECRETKEYBYTES = 64
 
 internal fun ed25519Sign(sig: ByteArray, m: ByteArray, sk: ByteArray): Boolean {
     // check lengths
-    if (sig.size!=ED25519_BYTES) {
+    if (sig.size != ED25519_BYTES) {
         throw ByteArrayLengthException("sig", sig.size, ED25519_BYTES)
     }
     if (m.isEmpty()) {
         throw ByteArrayLengthException("m", 0, 1, false)
     }
-    if (sk.size!=ED25519_SECRETKEYBYTES) {
+    if (sk.size != ED25519_SECRETKEYBYTES) {
         throw ByteArrayLengthException("sk", sk.size, ED25519_SECRETKEYBYTES)
     }
 
@@ -34,13 +34,13 @@ internal fun ed25519Sign(sig: ByteArray, m: ByteArray, sk: ByteArray): Boolean {
 
 internal fun ed25519Verify(sig: ByteArray, m: ByteArray, pk: ByteArray): Boolean {
     // check lengths
-    if (sig.size!=ED25519_BYTES) {
+    if (sig.size != ED25519_BYTES) {
         throw ByteArrayLengthException("sig", sig.size, ED25519_BYTES)
     }
     if (m.isEmpty()) {
         throw ByteArrayLengthException("m", 0, 1, false)
     }
-    if (pk.size!=ED25519_PUBLICKEYBYTES) {
+    if (pk.size != ED25519_PUBLICKEYBYTES) {
         throw ByteArrayLengthException("pk", pk.size, ED25519_PUBLICKEYBYTES)
     }
 
@@ -52,7 +52,7 @@ internal fun ed25519Verify(sig: ByteArray, m: ByteArray, pk: ByteArray): Boolean
 }
 
 internal fun ed25519SkToPk(sk: ByteArray): ByteArray {
-    if (sk.size!=ED25519_SECRETKEYBYTES) {
+    if (sk.size != ED25519_SECRETKEYBYTES) {
         throw ByteArrayLengthException("sk", sk.size, ED25519_SECRETKEYBYTES)
     }
 
