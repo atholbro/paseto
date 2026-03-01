@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package net.aholbrook.paseto.protocol
 
 import net.aholbrook.paseto.UrlSafeNoPadding
@@ -21,8 +23,6 @@ import net.aholbrook.paseto.exception.PasetoParseException
 import net.aholbrook.paseto.exception.SignatureVerificationException
 import kotlin.io.encoding.Base64
 
-private const val VERSION = "v3"
-private const val HEADER_PUBLIC: String = VERSION + SEPARATOR + PURPOSE_PUBLIC + SEPARATOR // v1.public.
 private val HKDF_INFO_EK: ByteArray = "paseto-encryption-key".toByteArray(Charsets.UTF_8)
 private val HKDF_INFO_AK: ByteArray = "paseto-auth-key-for-aead".toByteArray(Charsets.UTF_8)
 

@@ -1,6 +1,7 @@
 [versions]
 bouncycastle = "1.82"
 clikt = "5.1.0"
+detekt = "1.23.8"
 gradleFilterVersions = "0.1.16"
 gradleUpdateVersions = "1.1.0"
 gradleVersions = "0.53.0"
@@ -29,6 +30,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [plugins]
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 gradleVersions = { id = "com.github.ben-manes.versions", version.ref = "gradleVersions" }
 gradleVersions-filter = { id = "se.ascp.gradle.gradle-versions-filter", version.ref = "gradleFilterVersions" }
 gradleVersions-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "gradleUpdateVersions" }

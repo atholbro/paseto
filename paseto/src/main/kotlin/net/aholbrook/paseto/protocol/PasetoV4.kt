@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package net.aholbrook.paseto.protocol
 
 import net.aholbrook.paseto.UrlSafeNoPadding
@@ -21,7 +23,6 @@ import kotlin.io.encoding.Base64
 private const val VERSION = "v4"
 private const val HEADER_LOCAL: String = VERSION + SEPARATOR + PURPOSE_LOCAL + SEPARATOR // v4.local.
 private const val HEADER_PUBLIC: String = VERSION + SEPARATOR + PURPOSE_PUBLIC + SEPARATOR // v4.public.
-private const val NONCE_SIZE = 32
 
 private fun concat(a: ByteArray, b: ByteArray): ByteArray {
     val result = ByteArray(a.size + b.size)
@@ -44,7 +45,7 @@ object PasetoV4 : Paseto {
             val footerBytes = (footer ?: "").toByteArray(Charsets.UTF_8)
             val implicitAssertionBytes = (implicitAssertion ?: "").toByteArray(Charsets.UTF_8)
 
-            val n = generateNonce(NONCE_SIZE)
+            val n = generateNonce(32)
             val tmp = ByteArray(56)
             cleanup.add { tmp.fill(0) }
             blake2b(tmp, keyMaterial, concat("paseto-encryption-key".toByteArray(Charsets.UTF_8), n))

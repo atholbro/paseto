@@ -69,6 +69,7 @@ private fun publicService(version: Version, vector: ServiceTestVector, currentTi
 class ServiceTestVectorsTests {
     @ParameterizedTest(name = "{0}")
     @MethodSource("loadServiceVectorTests")
+    @Suppress("unused_parameter", "UnusedParameter")
     fun serviceVectorTest(
         name: String,
         version: Version,

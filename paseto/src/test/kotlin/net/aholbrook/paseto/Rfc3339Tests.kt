@@ -18,6 +18,7 @@ class Rfc3339Tests {
             "leap_second_negative_zero_offset,2026-06-30T23:59:60-00:00,2026-06-30T23:59:60Z",
         ],
     )
+    @Suppress("unused_parameter", "UnusedParameter")
     fun rfc3339InstantParse(name: String, rfc3339: String, iso8601: String) {
         shouldNotThrow<Throwable> {
             val expected = Instant.parse(iso8601)

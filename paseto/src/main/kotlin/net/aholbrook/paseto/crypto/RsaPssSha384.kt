@@ -90,11 +90,6 @@ internal fun rsaVerify(m: ByteArray, sig: ByteArray, publicKey: ByteArray): Bool
 internal fun rsaSkToPk(secretKey: ByteArray): ByteArray {
     val secretKeyInfo = PrivateKeyInfo.getInstance(secretKey)
     val rsa = RSAPrivateKey.getInstance(secretKeyInfo.parsePrivateKey())
-    val publicKeyParams = RSAKeyParameters(
-        false,
-        rsa.modulus,
-        rsa.publicExponent,
-    )
     val algo = AlgorithmIdentifier(PKCSObjectIdentifiers.rsaEncryption, DERNull.INSTANCE)
 
     return KeyUtil.getEncodedSubjectPublicKeyInfo(

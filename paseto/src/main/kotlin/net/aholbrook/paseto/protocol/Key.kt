@@ -1,7 +1,5 @@
 package net.aholbrook.paseto.protocol
 
-import net.aholbrook.paseto.crypto.ECDSA_P384_PUBLICKEYBYTES
-import net.aholbrook.paseto.crypto.ECDSA_P384_SECRETKEYBYTES
 import net.aholbrook.paseto.crypto.ED25519_PUBLICKEYBYTES
 import net.aholbrook.paseto.crypto.ED25519_SECRETKEYBYTES
 import net.aholbrook.paseto.crypto.ed25519Generate
@@ -10,7 +8,6 @@ import net.aholbrook.paseto.crypto.p384DecodePkSpki
 import net.aholbrook.paseto.crypto.p384DecodeSkPkcs8
 import net.aholbrook.paseto.crypto.p384DecodeSkSec1
 import net.aholbrook.paseto.crypto.p384EncodePkSpki
-import net.aholbrook.paseto.crypto.p384EncodeSkPkcs8
 import net.aholbrook.paseto.crypto.p384EncodeSkSec1
 import net.aholbrook.paseto.crypto.p384Generate
 import net.aholbrook.paseto.crypto.p384SkToPk
@@ -58,15 +55,10 @@ class AsymmetricPublicKey private constructor(private val material: ByteArray, v
     internal val purpose: Purpose = Purpose.PUBLIC
 
     init {
-        val allowedKeySizes = when (version) {
-            Version.V1 -> arrayOf()
-            Version.V2 -> arrayOf(ED25519_PUBLICKEYBYTES)
-            Version.V3 -> arrayOf(ECDSA_P384_PUBLICKEYBYTES)
-            Version.V4 -> arrayOf(ED25519_PUBLICKEYBYTES)
-        }
-
-        if (allowedKeySizes.isNotEmpty() && !allowedKeySizes.contains(material.size)) {
-            throw KeyLengthException(material.size, allowedKeySizes)
+        if (version.asymmetricPublicKeySize > -1) {
+            if (version.asymmetricPublicKeySize != material.size) {
+                throw KeyLengthException(material.size, arrayOf(version.asymmetricPublicKeySize))
+            }
         }
 
         if (version == Version.V3) {
@@ -200,9 +192,18 @@ class AsymmetricSecretKey private constructor(private val material: ByteArray, v
     init {
         val allowedKeySizes = when (version) {
             Version.V1 -> arrayOf()
-            Version.V2 -> arrayOf(ED25519_SECRETKEYBYTES - ED25519_PUBLICKEYBYTES, ED25519_SECRETKEYBYTES)
-            Version.V3 -> arrayOf(ECDSA_P384_SECRETKEYBYTES)
-            Version.V4 -> arrayOf(ED25519_SECRETKEYBYTES - ED25519_PUBLICKEYBYTES, ED25519_SECRETKEYBYTES)
+
+            Version.V2 -> arrayOf(
+                version.asymmetricSecretKeySize,
+                version.asymmetricSecretKeySize - version.asymmetricPublicKeySize,
+            )
+
+            Version.V3 -> arrayOf(version.asymmetricSecretKeySize)
+
+            Version.V4 -> arrayOf(
+                version.asymmetricSecretKeySize,
+                version.asymmetricSecretKeySize - version.asymmetricPublicKeySize,
+            )
         }
 
         if (allowedKeySizes.isNotEmpty() && !allowedKeySizes.contains(material.size)) {
@@ -343,15 +344,8 @@ class SymmetricKey private constructor(private val material: ByteArray, val vers
     internal val purpose: Purpose = Purpose.LOCAL
 
     init {
-        val allowedKeySizes = when (version) {
-            Version.V1 -> arrayOf(32)
-            Version.V2 -> arrayOf(32)
-            Version.V3 -> arrayOf(32)
-            Version.V4 -> arrayOf(32)
-        }
-
-        if (!allowedKeySizes.contains(material.size)) {
-            throw KeyLengthException(material.size, allowedKeySizes)
+        if (version.symmetricKeySize != material.size) {
+            throw KeyLengthException(material.size, arrayOf(version.symmetricKeySize))
         }
     }
 
@@ -406,7 +400,7 @@ class SymmetricKey private constructor(private val material: ByteArray, val vers
 
     companion object {
         @JvmStatic
-        fun generate(version: Version) = ofRawBytes(randomBytes(32), version)
+        fun generate(version: Version) = ofRawBytes(randomBytes(version.symmetricKeySize), version)
 
         @JvmStatic
         fun ofRawBytes(material: ByteArray, version: Version) = SymmetricKey(material, version)
@@ -513,7 +507,8 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
             } catch (e: IOException) {
                 throw Pkcs12LoadException(e)
             } catch (e: KeyStoreException) {
-                throw RuntimeException(e) // This can only occur if you forget to call load, thus this will never throw.
+                // This can only occur if you forget to call load, thus this will never throw.
+                throw IllegalStateException(e)
             }
         }
     }

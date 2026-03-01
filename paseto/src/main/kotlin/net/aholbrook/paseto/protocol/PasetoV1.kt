@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package net.aholbrook.paseto.protocol
 
 import net.aholbrook.paseto.UrlSafeNoPadding
@@ -22,7 +24,6 @@ import kotlin.io.encoding.Base64
 private const val VERSION = "v1"
 private const val HEADER_LOCAL: String = VERSION + SEPARATOR + PURPOSE_LOCAL + SEPARATOR // v1.local.
 private const val HEADER_PUBLIC: String = VERSION + SEPARATOR + PURPOSE_PUBLIC + SEPARATOR // v1.public.
-private const val NONCE_SIZE = 32
 private val HKDF_INFO_EK: ByteArray = "paseto-encryption-key".toByteArray(Charsets.UTF_8)
 private val HKDF_INFO_AK: ByteArray = "paseto-auth-key-for-aead".toByteArray(Charsets.UTF_8)
 
@@ -41,9 +42,9 @@ object PasetoV1 : Paseto {
             val footerBytes = (footer ?: "").toByteArray(Charsets.UTF_8)
 
             // Generate n
-            val random = generateNonce(NONCE_SIZE)
+            val random = generateNonce(32)
             cleanup.add { random.fill(0) }
-            val n = ByteArray(NONCE_SIZE)
+            val n = ByteArray(32)
             System.arraycopy(hmacSha384(payloadBytes, random), 0, n, 0, n.size)
 
             // Split N into salt/nonce
@@ -98,7 +99,7 @@ object PasetoV1 : Paseto {
             // Decrypt
             val nct = Base64.UrlSafeNoPadding.decodeOrNull(sections.payload)
                 ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
-            val n = ByteArray(NONCE_SIZE)
+            val n = ByteArray(32)
             val t = ByteArray(SHA384_OUT_LEN)
             // verify length
             if (nct.size < n.size + t.size + 1) {

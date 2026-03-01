@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package net.aholbrook.paseto.crypto
 
 import net.aholbrook.paseto.exception.ByteArrayLengthException

@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package net.aholbrook.paseto.crypto
 
 private fun le64(value: Long): ByteArray {

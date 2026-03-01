@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package net.aholbrook.paseto.protocol
 
 import net.aholbrook.paseto.UrlSafeNoPadding
@@ -22,7 +24,6 @@ import kotlin.io.encoding.Base64
 private const val VERSION = "v2"
 private const val HEADER_LOCAL: String = VERSION + SEPARATOR + PURPOSE_LOCAL + SEPARATOR // v2.local.
 private const val HEADER_PUBLIC: String = VERSION + SEPARATOR + PURPOSE_PUBLIC + SEPARATOR // v2.public.
-private const val NONCE_SIZE = 24
 
 object PasetoV2 : Paseto {
     override val version: Version = Version.V2
@@ -38,7 +39,7 @@ object PasetoV2 : Paseto {
             val payloadBytes = payload.toByteArray(Charsets.UTF_8)
             val footerBytes = (footer ?: "").toByteArray(Charsets.UTF_8)
 
-            val nonce: ByteArray = generateNonce(NONCE_SIZE)
+            val nonce: ByteArray = generateNonce(24)
             cleanup.add { nonce.fill(0) }
             val n = ByteArray(XCHACHA20_POLY1305_IETF_NPUBBYTES)
             blake2b(n, nonce, payloadBytes)

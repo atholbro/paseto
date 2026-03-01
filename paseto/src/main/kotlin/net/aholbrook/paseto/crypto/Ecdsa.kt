@@ -143,7 +143,7 @@ internal fun p384VerifyPk(pk: ByteArray) {
             throw KeyV3Exception("Point not on curve")
         }
     } catch (e: IllegalArgumentException) {
-        throw KeyV3Exception(e.message ?: "")
+        throw KeyV3Exception(e.message ?: "", e)
     }
 }
 
@@ -153,9 +153,12 @@ internal fun p384EncodeSkPkcs8(sk: ByteArray): ByteArray {
     }
     val params = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
     val d = BigInteger(1, sk)
+
     if (d.signum() <= 0 || d >= params.n) {
         throw KeyV3Exception("Invalid P-384 private key")
     }
+
+    @Suppress("MagicNumber")
     val secretKey = ECPrivateKey(384, d, null, SECObjectIdentifiers.secp384r1)
     return PrivateKeyInfo(
         AlgorithmIdentifier(
@@ -187,11 +190,14 @@ internal fun p384EncodeSkSec1(sk: ByteArray): ByteArray {
     if (sk.size != ECDSA_P384_SECRETKEYBYTES) {
         throw ByteArrayLengthException("sk", sk.size, ECDSA_P384_SECRETKEYBYTES)
     }
+
     val params = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
     val d = BigInteger(1, sk)
     if (d.signum() <= 0 || d >= params.n) {
         throw KeyV3Exception("Invalid P-384 private key")
     }
+
+    @Suppress("MagicNumber")
     val secretKey = ECPrivateKey(384, d, null, SECObjectIdentifiers.secp384r1)
     return secretKey.encoded
 }
@@ -199,6 +205,7 @@ internal fun p384EncodeSkSec1(sk: ByteArray): ByteArray {
 internal fun p384DecodeSkSec1(der: ByteArray): ByteArray {
     val key = ECPrivateKey.getInstance(ASN1Primitive.fromByteArray(der))
     val curveParams = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
+
     key.parametersObject?.let { params ->
         when (params) {
             is ASN1ObjectIdentifier -> {
@@ -212,6 +219,7 @@ internal fun p384DecodeSkSec1(der: ByteArray): ByteArray {
             }
         }
     } ?: throw KeyV3Exception("SEC1 key must include curve parameters")
+
     val d = key.key
     if (d.signum() <= 0 || d >= curveParams.n) {
         throw KeyV3Exception("Invalid P-384 private key")

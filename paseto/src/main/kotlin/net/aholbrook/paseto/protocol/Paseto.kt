@@ -1,6 +1,10 @@
 package net.aholbrook.paseto.protocol
 
 import net.aholbrook.paseto.UrlSafeNoPadding
+import net.aholbrook.paseto.crypto.ECDSA_P384_PUBLICKEYBYTES
+import net.aholbrook.paseto.crypto.ECDSA_P384_SECRETKEYBYTES
+import net.aholbrook.paseto.crypto.ED25519_PUBLICKEYBYTES
+import net.aholbrook.paseto.crypto.ED25519_SECRETKEYBYTES
 import net.aholbrook.paseto.crypto.constantTimeEquals
 import net.aholbrook.paseto.decodeOrNull
 import net.aholbrook.paseto.exception.InvalidFooterException
@@ -25,6 +29,20 @@ enum class Version {
         V3 -> PasetoV3
         V4 -> PasetoV4
     }
+
+    internal val asymmetricPublicKeySize: Int get() = when (this) {
+        V1 -> -1
+        V2 -> ED25519_PUBLICKEYBYTES
+        V3 -> ECDSA_P384_PUBLICKEYBYTES
+        V4 -> ED25519_PUBLICKEYBYTES
+    }
+    internal val asymmetricSecretKeySize: Int get() = when (this) {
+        V1 -> -1
+        V2 -> ED25519_SECRETKEYBYTES
+        V3 -> ECDSA_P384_SECRETKEYBYTES
+        V4 -> ED25519_SECRETKEYBYTES
+    }
+    internal val symmetricKeySize: Int = 32
 }
 
 internal enum class Purpose {
@@ -77,6 +95,7 @@ internal data class PasetoSections(val version: String, val purpose: String, val
  * @param token Paseto token.
  * @return PasetoSections or null if token is missing required sections.
  */
+@Suppress("MagicNumber")
 internal fun split(token: String): PasetoSections {
     if (token.isNotEmpty()) {
         val tokens = token.split(SEPARATOR)

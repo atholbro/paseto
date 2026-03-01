@@ -14,6 +14,7 @@ internal fun aes256CtrCipher(forEncryption: Boolean, key: ByteArray, iv: ByteArr
         throw ByteArrayLengthException("key", key.size, 1, false)
     }
     if (iv.isEmpty()) {
+        @Suppress("MagicNumber")
         throw ByteArrayLengthException("iv", iv.size, 8, false)
     }
 

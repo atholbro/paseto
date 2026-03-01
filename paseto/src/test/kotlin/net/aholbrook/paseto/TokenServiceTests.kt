@@ -516,6 +516,7 @@ class TokenServiceTests {
 
     @ParameterizedTest
     @MethodSource("publicServicesWithoutSecretKey")
+    @Suppress("unused_parameter", "UnusedParameter")
     fun `cannot sign without a secret key`(version: Version, purpose: Purpose, signingPurpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {

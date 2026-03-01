@@ -8,6 +8,7 @@ plugins {
 
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlinter)
+    alias(libs.plugins.detekt)
     alias(libs.plugins.gradleVersions)
     alias(libs.plugins.gradleVersions.filter)
     alias(libs.plugins.gradleVersions.update)
@@ -21,6 +22,7 @@ repositories {
 allprojects {
     apply(plugin = "java")
     apply(plugin = "org.jmailen.kotlinter")
+    apply(plugin = "io.gitlab.arturbosch.detekt")
 
     repositories {
         mavenLocal()
@@ -56,6 +58,11 @@ allprojects {
         }
 
         withType<JavaCompile> { options.encoding = "UTF-8" }
+    }
+
+    detekt {
+        buildUponDefaultConfig = true
+        config.setFrom(files("${project.rootDir}/detekt-config.yml"))
     }
 }
 

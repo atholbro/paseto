@@ -65,6 +65,7 @@ private fun loadVectors(resourcePath: String): TestVectors = TestVectorsTests::c
 class TestVectorsTests {
     @ParameterizedTest(name = "{0}")
     @MethodSource("loadJsonVectors")
+    @Suppress("unused_parameter", "UnusedParameter")
     fun testVector(
         name: String,
         version: Version,
