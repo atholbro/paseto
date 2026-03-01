@@ -1,5 +1,5 @@
 [versions]
-bouncycastle = "1.82"
+bouncycastle = "1.83"
 clikt = "5.1.0"
 detekt = "1.23.8"
 gradleFilterVersions = "0.1.16"
@@ -7,12 +7,12 @@ gradleUpdateVersions = "1.1.0"
 gradleVersions = "0.53.0"
 # @keep used manually for jacoco config, see build.gradle.kts
 jacoco = "0.8.14"
-junit-jupiter = "6.0.1"
-junit-platform = "6.0.1"
+junit-jupiter = "6.0.3"
+junit-platform = "6.0.3"
 # @keep jvm target
 jvm = "17"
-kotest = "6.1.2"
-kotlin = "2.3.0"
+kotest = "6.1.4"
+kotlin = "2.3.10"
 kotlinter = "5.4.2"
 kotlinx-serialization = "1.10.0"
 mockk = "1.14.9"
