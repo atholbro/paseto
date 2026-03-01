@@ -120,7 +120,11 @@ publishing {
 }
 
 signing {
-    sign(publishing.publications["maven"])
+    useInMemoryPgpKeys(
+        System.getenv("GPG_KEY"),
+        System.getenv("GPG_PASS"),
+    )
+    sign(publishing.publications)
 }
 
 nmcpAggregation {
