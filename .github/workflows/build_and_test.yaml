@@ -3,13 +3,13 @@ name: Build & Test
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
-  build:
+  build_and_test:
     runs-on: ubuntu-22.04
     container:
       image: eclipse-temurin:17.0.18_8-jdk-alpine-3.23
