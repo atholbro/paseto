@@ -10,6 +10,8 @@ private val keyV1Local_ by lazy { SymmetricKey.generate(Version.V1) }
 private val keyV1Public_ by lazy { KeyPair.generate(Version.V1) }
 private val keyV2Local_ by lazy { SymmetricKey.generate(Version.V2) }
 private val keyV2Public_ by lazy { KeyPair.generate(Version.V2) }
+private val keyV3Local_ by lazy { SymmetricKey.generate(Version.V3) }
+private val keyV3Public_ by lazy { KeyPair.generate(Version.V3) }
 private val keyV4Local_ by lazy { SymmetricKey.generate(Version.V4) }
 private val keyV4Public_ by lazy { KeyPair.generate(Version.V4) }
 
@@ -17,6 +19,8 @@ val keyV1Local: SymmetricKey get() = keyV1Local_.copy()
 val keyV1Public: KeyPair get() = keyV1Public_.copy()
 val keyV2Local: SymmetricKey get() = keyV2Local_.copy()
 val keyV2Public: KeyPair get() = keyV2Public_.copy()
+val keyV3Local: SymmetricKey get() = keyV3Local_.copy()
+val keyV3Public: KeyPair get() = keyV3Public_.copy()
 val keyV4Local: SymmetricKey get() = keyV4Local_.copy()
 val keyV4Public: KeyPair get() = keyV4Public_.copy()
 

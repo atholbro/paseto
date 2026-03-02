@@ -18,9 +18,11 @@ import net.aholbrook.paseto.crypto.pae
 import net.aholbrook.paseto.crypto.rsaSign
 import net.aholbrook.paseto.crypto.rsaVerify
 import net.aholbrook.paseto.decodeOrNull
+import net.aholbrook.paseto.exception.DecryptionException
 import net.aholbrook.paseto.exception.InvalidHeaderException
 import net.aholbrook.paseto.exception.PasetoParseException
 import net.aholbrook.paseto.exception.SignatureVerificationException
+import net.aholbrook.paseto.exception.SigningException
 import kotlin.io.encoding.Base64
 
 private val HKDF_INFO_EK: ByteArray = "paseto-encryption-key".toByteArray(Charsets.UTF_8)
@@ -28,7 +30,7 @@ private val HKDF_INFO_AK: ByteArray = "paseto-auth-key-for-aead".toByteArray(Cha
 
 object PasetoV3 : Paseto {
     override val version: Version = Version.V3
-    override val supportsImplicitAssertion: Boolean = false
+    override val supportsImplicitAssertion: Boolean = true
 
     override fun encrypt(payload: String, key: SymmetricKey, footer: String?, implicitAssertion: String?): String {
         val cleanup = mutableListOf<Runnable>()
@@ -120,7 +122,7 @@ object PasetoV3 : Paseto {
             val preAuth = pae(h.toByteArray(Charsets.UTF_8), n, c, f.toByteArray(Charsets.UTF_8), i)
             val t2 = hmacSha384(preAuth, ak)
             if (!t.constantTimeEquals(t2)) {
-                throw SignatureVerificationException(token)
+                throw DecryptionException(token)
             }
 
             val m = aes256CtrDecrypt(c, ek, n2)
@@ -146,7 +148,10 @@ object PasetoV3 : Paseto {
             val i = (implicitAssertion ?: "").toByteArray(Charsets.UTF_8)
 
             val m2 = pae(pk, h.toByteArray(Charsets.UTF_8), m, f, i)
-            val sig = ecdsaP384Sign(m2, sk)
+            val sig = ByteArray(ECDSA_P384_BYTES)
+            if (!ecdsaP384Sign(sig, m2, sk)) {
+                throw SigningException(payload)
+            }
 
             return h + Base64.UrlSafeNoPadding.encode(m + sig) +
                 if (f.isEmpty()) {
@@ -178,6 +183,11 @@ object PasetoV3 : Paseto {
 
         val sm = Base64.UrlSafeNoPadding.decodeOrNull(sections.payload)
             ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
+        if (sm.size < ECDSA_P384_BYTES) {
+            throw PasetoParseException(PasetoParseException.Reason.PAYLOAD_LENGTH, token).apply {
+                minLength = ECDSA_P384_BYTES
+            }
+        }
         val s = sm.copyOfRange(sm.size - ECDSA_P384_BYTES, sm.size)
         val m = sm.copyOfRange(0, sm.size - s.size)
 

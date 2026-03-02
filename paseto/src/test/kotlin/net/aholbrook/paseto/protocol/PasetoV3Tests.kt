@@ -1,0 +1,161 @@
+package net.aholbrook.paseto.protocol
+
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.shouldBe
+import io.mockk.every
+import io.mockk.mockkStatic
+import io.mockk.unmockkAll
+import net.aholbrook.paseto.UrlSafeNoPadding
+import net.aholbrook.paseto.crypto.ECDSA_P384_BYTES
+import net.aholbrook.paseto.crypto.aes256CtrDecrypt
+import net.aholbrook.paseto.crypto.chaCha20
+import net.aholbrook.paseto.crypto.constantTimeEquals
+import net.aholbrook.paseto.crypto.ecdsaP384Sign
+import net.aholbrook.paseto.crypto.ecdsaP384Verify
+import net.aholbrook.paseto.crypto.ed25519Sign
+import net.aholbrook.paseto.crypto.ed25519Verify
+import net.aholbrook.paseto.exception.DecryptionException
+import net.aholbrook.paseto.exception.EncryptionException
+import net.aholbrook.paseto.exception.InvalidHeaderException
+import net.aholbrook.paseto.exception.PasetoParseException
+import net.aholbrook.paseto.exception.SignatureVerificationException
+import net.aholbrook.paseto.exception.SigningException
+import net.aholbrook.paseto.keyV3Local
+import net.aholbrook.paseto.keyV3Public
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import kotlin.io.encoding.Base64
+
+class PasetoV3Tests {
+    @Test
+    fun local_missingSections() {
+        val ex = shouldThrow<PasetoParseException> {
+            PasetoV3.decrypt("", keyV3Local)
+        }
+
+        ex.reason shouldBe PasetoParseException.Reason.MISSING_SECTIONS
+        ex.minLength shouldBe 0
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = [0, 80])
+    fun local_incorrectPayloadLength(size: Int) {
+        val payload = "v3.local.${Base64.UrlSafeNoPadding.encode(ByteArray(size))}"
+        val ex = shouldThrow<PasetoParseException> {
+            PasetoV3.decrypt(payload, keyV3Local)
+        }
+        ex.reason shouldBe PasetoParseException.Reason.PAYLOAD_LENGTH
+        ex.minLength shouldBe 81
+    }
+
+    @Test
+    fun public_missingSections() {
+        val ex = shouldThrow<PasetoParseException> {
+            PasetoV3.verify("", keyV3Public.publicKey)
+        }
+
+        ex.reason shouldBe PasetoParseException.Reason.MISSING_SECTIONS
+        ex.minLength shouldBe 0
+    }
+
+    @Test
+    fun public_payloadLength() {
+        val ex = shouldThrow<PasetoParseException> {
+            PasetoV3.verify("v3.public.YWIK", keyV3Public.publicKey)
+        }
+
+        ex.reason shouldBe PasetoParseException.Reason.PAYLOAD_LENGTH
+        ex.minLength shouldBe ECDSA_P384_BYTES
+    }
+
+    @Test
+    fun local_constantTimeEqualsFailingThrowsDecryptionException() {
+        mockkStatic("net.aholbrook.paseto.crypto.ConstantTimeEqualsKt")
+
+        try {
+            val encrypted = PasetoV3.encrypt("abc", keyV3Local, null, null)
+            every { any<ByteArray>().constantTimeEquals(any()) } returns false
+            shouldThrow<DecryptionException> {
+                PasetoV3.decrypt(encrypted, keyV3Local)
+            }
+        } finally {
+            unmockkAll()
+        }
+    }
+
+    @Test
+    fun public_signError() {
+        mockkStatic("net.aholbrook.paseto.crypto.EcdsaKt")
+        every { ecdsaP384Sign(any(), any(), any()) } returns false
+
+        try {
+            shouldThrow<SigningException> {
+                PasetoV3.sign("abc", keyV3Public.secretKey!!, null, null)
+            }
+        } finally {
+            unmockkAll()
+        }
+    }
+
+    @Test
+    fun public_verifyError() {
+        mockkStatic("net.aholbrook.paseto.crypto.EcdsaKt")
+        every { ecdsaP384Verify(any(), any(), any()) } returns false
+
+        try {
+            val signed = PasetoV3.sign("abc", keyV3Public.secretKey!!, null, null)
+            shouldThrow<SignatureVerificationException> {
+                PasetoV3.verify(signed, keyV3Public.publicKey, null, null)
+            }
+        } finally {
+            unmockkAll()
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["v1", "v2"])
+    fun local_rejectsIncorrectVersions(version: String) {
+        shouldThrow<InvalidHeaderException> {
+            PasetoV3.decrypt("$version.local.abc", keyV3Local)
+        }
+    }
+
+    @Test
+    fun local_rejectsIncorrectPurpose() {
+        shouldThrow<InvalidHeaderException> {
+            PasetoV3.decrypt("v4.public.abc", keyV3Local)
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["v1", "v2"])
+    fun public_rejectsIncorrectVersions(version: String) {
+        shouldThrow<InvalidHeaderException> {
+            PasetoV3.verify("$version.public.abc", keyV3Public.publicKey)
+        }
+    }
+
+    @Test
+    fun public_rejectsIncorrectPurpose() {
+        shouldThrow<InvalidHeaderException> {
+            PasetoV3.verify("v3.local.abc", keyV3Public.publicKey)
+        }
+    }
+
+    @Test
+    fun local_rejectsPaddedBase64() {
+        val ex = shouldThrow<PasetoParseException> {
+            PasetoV3.decrypt("v3.local.YWJjCg==", keyV3Local)
+        }
+        ex.reason shouldBe PasetoParseException.Reason.INVALID_BASE64
+    }
+
+    @Test
+    fun public_rejectsPaddedBase64() {
+        val ex = shouldThrow<PasetoParseException> {
+            PasetoV3.verify("v3.public.YWJjCg==", keyV3Public.publicKey)
+        }
+        ex.reason shouldBe PasetoParseException.Reason.INVALID_BASE64
+    }
+}

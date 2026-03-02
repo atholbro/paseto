@@ -12,7 +12,7 @@ class ImplicitAssertionsNotSupportedException(actual: Version) :
 
 class CannotSignWithoutSecretKey : PasetoException("Token services without a secret key do not support signing.")
 
-open class PasetoStringException(s: String, val token: String) : PasetoException(s)
+open class PasetoStringException(s: String, val token: String, cause: Throwable? = null) : PasetoException(s, cause)
 
 class EncryptionException : PasetoException("Failed to encrypt payload.")
 

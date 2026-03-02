@@ -37,6 +37,14 @@ private val rng = SecureRandom()
 fun main(args: Array<String>) = GenerateCommand()
     .main(args)
 
+@Suppress("MagicNumber")
+fun Version.nonceSize() = when (this) {
+    Version.V1 -> ByteArray(32)
+    Version.V2 -> ByteArray(24)
+    Version.V3 -> ByteArray(32)
+    Version.V4 -> ByteArray(32)
+}
+
 class GenerateCommand : CliktCommand(name = "vector-gen") {
     val pasetoVersion by option("-p", "--paseto-version", help = "Output PASETO version")
         .enum<Version>()
@@ -104,12 +112,7 @@ class GenerateCommand : CliktCommand(name = "vector-gen") {
         val nonce = if (pasetoVersion != null && inputVersion != pasetoVersion) {
             Hex.decode(
                 regenerateMap.getOrPut(vector.nonce!!) {
-                    val nonce = when (pasetoVersion) {
-                        Version.V1 -> ByteArray(32)
-                        Version.V2 -> ByteArray(24)
-                        Version.V3 -> ByteArray(32)
-                        Version.V4 -> ByteArray(32)
-                    }
+                    val nonce = pasetoVersion.nonceSize()
                     rng.nextBytes(nonce)
                     Hex.toHexString(nonce)
                 },
