@@ -7,13 +7,13 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.spyk
 import io.mockk.unmockkAll
 import net.aholbrook.paseto.exception.ByteArrayLengthException
 import net.aholbrook.paseto.exception.KeyV3Exception
 import org.bouncycastle.asn1.ASN1Primitive
 import org.bouncycastle.asn1.sec.ECPrivateKey
 import org.bouncycastle.asn1.sec.SECObjectIdentifiers
-import org.bouncycastle.asn1.x9.X9ECParameters
 import org.bouncycastle.crypto.ec.CustomNamedCurves
 import org.bouncycastle.crypto.params.ECDomainParameters
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters
@@ -191,12 +191,12 @@ class EcdsaTests {
     @Test
     fun `ecdsaP384Verify validates public key - handles exception during decode point`() {
         try {
-            val mockParams = mockk<X9ECParameters>(relaxed = true)
+            val mockParams = spyk(CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1))
             val mockCurve = mockk<ECCurve>()
 
             mockkStatic("org.bouncycastle.crypto.ec.CustomNamedCurves")
             every { CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1) } returns mockParams
-            every { mockParams.curve } returns mockCurve
+            every { mockParams.getCurve() } returns mockCurve
             every { mockCurve.decodePoint(any()) } throws IllegalArgumentException()
 
             shouldThrow<KeyV3Exception> {
@@ -217,12 +217,12 @@ class EcdsaTests {
     fun `ecdsaP384Verify validates public key - checks q for infinity`() {
         try {
             val curveParams = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
-            val mockParams = mockk<X9ECParameters>(relaxed = true)
+            val mockParams = spyk(curveParams)
             val mockCurve = mockk<ECCurve>()
 
             mockkStatic("org.bouncycastle.crypto.ec.CustomNamedCurves")
             every { CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1) } returns mockParams
-            every { mockParams.curve } returns mockCurve
+            every { mockParams.getCurve() } returns mockCurve
             every { mockCurve.decodePoint(any()) } returns curveParams.curve.infinity
 
             shouldThrow<KeyV3Exception> {
@@ -242,13 +242,13 @@ class EcdsaTests {
     @Test
     fun `ecdsaP384Verify validates public key - checks q isValid`() {
         try {
-            val mockParams = mockk<X9ECParameters>(relaxed = true)
+            val mockParams = spyk(CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1))
             val mockCurve = mockk<ECCurve>()
             val mockQ = mockk<ECPoint>()
 
             mockkStatic("org.bouncycastle.crypto.ec.CustomNamedCurves")
             every { CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1) } returns mockParams
-            every { mockParams.curve } returns mockCurve
+            every { mockParams.getCurve() } returns mockCurve
             every { mockCurve.decodePoint(any()) } returns mockQ
             every { mockQ.isInfinity } returns false
             every { mockQ.isValid } returns false
