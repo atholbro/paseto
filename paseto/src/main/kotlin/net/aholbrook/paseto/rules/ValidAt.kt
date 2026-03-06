@@ -1,5 +1,6 @@
 package net.aholbrook.paseto.rules
 
+import net.aholbrook.paseto.InternalApi
 import net.aholbrook.paseto.PasetoToken
 import net.aholbrook.paseto.exception.ExpiredTokenException
 import net.aholbrook.paseto.exception.IssuedInFutureException

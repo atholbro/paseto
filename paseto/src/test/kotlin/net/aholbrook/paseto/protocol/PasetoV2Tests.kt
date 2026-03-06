@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
+import net.aholbrook.paseto.StringFooter
 import net.aholbrook.paseto.crypto.aeadXChaCha20Poly1305IetfDecrypt
 import net.aholbrook.paseto.crypto.aeadXChaCha20Poly1305IetfEncrypt
 import net.aholbrook.paseto.crypto.ed25519Sign
@@ -77,7 +78,7 @@ class PasetoV2Tests {
 
         try {
             shouldThrow<EncryptionException> {
-                PasetoV2.encrypt("abc", keyV2Local, null, null)
+                PasetoV2.encrypt("abc".toByteArray(Charsets.UTF_8), keyV2Local, "", "")
             }
         } finally {
             unmockkAll()
@@ -90,7 +91,7 @@ class PasetoV2Tests {
         every { aeadXChaCha20Poly1305IetfDecrypt(any(), any(), any(), any(), any()) } returns false
 
         try {
-            val encrypted = PasetoV2.encrypt("abc", keyV2Local, null, null)
+            val encrypted = PasetoV2.encrypt("abc".toByteArray(Charsets.UTF_8), keyV2Local)
             shouldThrow<DecryptionException> {
                 PasetoV2.decrypt(encrypted, keyV2Local)
             }
@@ -106,7 +107,7 @@ class PasetoV2Tests {
 
         try {
             shouldThrow<SigningException> {
-                PasetoV2.sign("abc", keyV2Public.secretKey!!, null, null)
+                PasetoV2.sign("abc".toByteArray(Charsets.UTF_8), keyV2Public.secretKey!!)
             }
         } finally {
             unmockkAll()
@@ -119,9 +120,9 @@ class PasetoV2Tests {
         every { ed25519Verify(any(), any(), any()) } returns false
 
         try {
-            val signed = PasetoV2.sign("abc", keyV2Public.secretKey!!, null, null)
+            val signed = PasetoV2.sign("abc".toByteArray(Charsets.UTF_8), keyV2Public.secretKey!!)
             shouldThrow<SignatureVerificationException> {
-                PasetoV2.verify(signed, keyV2Public.publicKey, null, null)
+                PasetoV2.verify(signed, keyV2Public.publicKey)
             }
         } finally {
             unmockkAll()

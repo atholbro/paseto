@@ -1,4 +1,4 @@
-@file:Suppress("MagicNumber")
+@file:Suppress("MagicNumber", "DuplicatedCode")
 
 package net.aholbrook.paseto.protocol
 
@@ -28,11 +28,11 @@ import kotlin.io.encoding.Base64
 private val HKDF_INFO_EK: ByteArray = "paseto-encryption-key".toByteArray(Charsets.UTF_8)
 private val HKDF_INFO_AK: ByteArray = "paseto-auth-key-for-aead".toByteArray(Charsets.UTF_8)
 
-object PasetoV3 : Paseto {
+internal object PasetoV3 : Paseto {
     override val version: Version = Version.V3
     override val supportsImplicitAssertion: Boolean = true
 
-    override fun encrypt(payload: String, key: SymmetricKey, footer: String?, implicitAssertion: String?): String {
+    override fun encrypt(m: ByteArray, key: SymmetricKey, footer: String, implicitAssertion: String): String {
         val cleanup = mutableListOf<Runnable>()
 
         try {
@@ -40,9 +40,8 @@ object PasetoV3 : Paseto {
             val k = key.getKeyMaterialFor(Version.V3, Purpose.LOCAL)
 
             val h = "v3.local."
-            val m = payload.toByteArray(Charsets.UTF_8)
-            val f = (footer ?: "").toByteArray(Charsets.UTF_8)
-            val i = (implicitAssertion ?: "").toByteArray(Charsets.UTF_8)
+            val f = footer.toByteArray(Charsets.UTF_8)
+            val i = implicitAssertion.toByteArray(Charsets.UTF_8)
 
             // Generate n
             val n = generateNonce(32)
@@ -75,7 +74,12 @@ object PasetoV3 : Paseto {
         }
     }
 
-    override fun decrypt(token: String, key: SymmetricKey, footer: String?, implicitAssertion: String?): String {
+    override fun decrypt(
+        token: String,
+        key: SymmetricKey,
+        footer: String,
+        implicitAssertion: String,
+    ): Pair<String, String> {
         val cleanup = mutableListOf<Runnable>()
 
         try {
@@ -84,7 +88,7 @@ object PasetoV3 : Paseto {
             val h = "v3.local."
             val sections = split(token)
             val f = decodeFooter(token, sections, footer) // TODO review
-            val i = (implicitAssertion ?: "").toByteArray(Charsets.UTF_8)
+            val i = implicitAssertion.toByteArray(Charsets.UTF_8)
 
             // Check header
             if (!token.startsWith(h)) {
@@ -126,7 +130,7 @@ object PasetoV3 : Paseto {
             }
 
             val m = aes256CtrDecrypt(c, ek, n2)
-            return m.toString(Charsets.UTF_8)
+            return Pair(m.toString(Charsets.UTF_8), f)
         } finally {
             key.clear()
             cleanup.forEach { it.run() }
@@ -134,23 +138,22 @@ object PasetoV3 : Paseto {
     }
 
     override fun sign(
-        payload: String,
+        m: ByteArray,
         secretKey: AsymmetricSecretKey,
-        footer: String?,
-        implicitAssertion: String?,
+        footer: String,
+        implicitAssertion: String,
     ): String {
         try {
             val sk = secretKey.getKeyMaterialFor(Version.V3, Purpose.PUBLIC)
             val pk = p384SkToPk(sk)
             val h = "v3.public."
-            val m = payload.toByteArray(Charsets.UTF_8)
-            val f = (footer ?: "").toByteArray(Charsets.UTF_8)
-            val i = (implicitAssertion ?: "").toByteArray(Charsets.UTF_8)
+            val f = footer.toByteArray(Charsets.UTF_8)
+            val i = implicitAssertion.toByteArray(Charsets.UTF_8)
 
             val m2 = pae(pk, h.toByteArray(Charsets.UTF_8), m, f, i)
             val sig = ByteArray(ECDSA_P384_BYTES)
             if (!ecdsaP384Sign(sig, m2, sk)) {
-                throw SigningException(payload)
+                throw SigningException(m)
             }
 
             return h + Base64.UrlSafeNoPadding.encode(m + sig) +
@@ -167,14 +170,14 @@ object PasetoV3 : Paseto {
     override fun verify(
         token: String,
         publicKey: AsymmetricPublicKey,
-        footer: String?,
-        implicitAssertion: String?,
-    ): String {
+        footer: String,
+        implicitAssertion: String,
+    ): Pair<String, String> {
         val pk = publicKey.getKeyMaterialFor(Version.V3, Purpose.PUBLIC)
         val h = "v3.public."
         val sections = split(token)
         val f = decodeFooter(token, sections, footer) // TODO review
-        val i = (implicitAssertion ?: "").toByteArray(Charsets.UTF_8)
+        val i = implicitAssertion.toByteArray(Charsets.UTF_8)
 
         // Check header
         if (!token.startsWith(h)) {
@@ -196,6 +199,6 @@ object PasetoV3 : Paseto {
             throw SignatureVerificationException(token)
         }
 
-        return m.toString(Charsets.UTF_8)
+        return Pair(m.toString(Charsets.UTF_8), f)
     }
 }

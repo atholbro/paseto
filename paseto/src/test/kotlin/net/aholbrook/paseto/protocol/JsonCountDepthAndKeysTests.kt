@@ -24,14 +24,16 @@ class JsonCountDepthAndKeysTests {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = [
-        "}",
-        "[]}",
-        "{}]",
-        "}[]",
-        "][[[[[[]]]]]]",
-        "[[[[[[]]]]]]]"
-    ])
+    @ValueSource(
+        strings = [
+            "}",
+            "[]}",
+            "{}]",
+            "}[]",
+            "][[[[[[]]]]]]",
+            "[[[[[[]]]]]]]",
+        ],
+    )
     fun `corrupt json return invalid depth`(json: String) {
         jsonCountDepthAndKeys(json).first shouldBe -1
     }

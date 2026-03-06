@@ -8,6 +8,14 @@ import java.nio.charset.Charset
 
 class ConstantTimeEqualsTests {
     @Test
+    fun byteArray_constantTimeEquals_equalEmpty() {
+        val a = byteArrayOf()
+        val b = byteArrayOf()
+
+        a.constantTimeEquals(b) shouldBe true
+    }
+
+    @Test
     fun byteArray_constantTimeEquals_equal() {
         val a = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
         val b = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
@@ -29,6 +37,11 @@ class ConstantTimeEqualsTests {
         val b = byteArrayOf(10)
 
         a.constantTimeEquals(b) shouldBe false
+    }
+
+    @Test
+    fun string_constantTimeEquals_empty() {
+        "".constantTimeEquals("") shouldBe true
     }
 
     @Test

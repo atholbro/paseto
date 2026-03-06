@@ -62,7 +62,7 @@ private fun loadVectors(resourcePath: String): TestVectors = TestVectorsTests::c
     json.decodeFromString<TestVectors>(inputStream.readAllBytes().toString(Charsets.UTF_8))
 }
 
-class TestVectorsTests {
+internal class TestVectorsTests {
     @ParameterizedTest(name = "{0}")
     @MethodSource("loadJsonVectors")
     @Suppress("unused_parameter", "UnusedParameter")
@@ -102,7 +102,7 @@ class TestVectorsTests {
 
         private fun testEncrypt(paseto: Paseto, vector: TestVector) {
             val actual = paseto.encrypt(
-                payload = vector.payload!!,
+                m = vector.payload!!.toByteArray(Charsets.UTF_8),
                 key = SymmetricKey.ofHex(vector.key!!, paseto.version),
                 footer = vector.footer,
                 implicitAssertion = vector.implicitAssertion,
@@ -117,7 +117,7 @@ class TestVectorsTests {
                 footer = vector.footer,
                 implicitAssertion = vector.implicitAssertion,
             )
-            actual shouldBe vector.payload
+            actual.first shouldBe vector.payload
         }
 
         private fun testSign(paseto: Paseto, vector: TestVector) {
@@ -128,7 +128,7 @@ class TestVectorsTests {
             }
 
             val signed = paseto.sign(
-                payload = vector.payload!!,
+                m = vector.payload!!.toByteArray(Charsets.UTF_8),
                 secretKey = key,
                 footer = vector.footer,
                 implicitAssertion = vector.implicitAssertion,
@@ -139,13 +139,13 @@ class TestVectorsTests {
                 Version.V1 -> {
                     val publicKey = AsymmetricPublicKey.ofPem(vector.publicKey!!, paseto.version)
                     val actual = paseto.verify(signed, publicKey, vector.footer, vector.implicitAssertion)
-                    actual shouldBe vector.payload
+                    actual.first shouldBe vector.payload
                 }
 
                 Version.V3 -> {
                     val publicKey = AsymmetricPublicKey.ofHex(vector.publicKey!!, paseto.version)
                     val actual = paseto.verify(signed, publicKey, vector.footer, vector.implicitAssertion)
-                    actual shouldBe vector.payload
+                    actual.first shouldBe vector.payload
                 }
 
                 else -> {
@@ -167,7 +167,7 @@ class TestVectorsTests {
                 footer = vector.footer,
                 implicitAssertion = vector.implicitAssertion,
             )
-            actual shouldBe vector.payload
+            actual.first shouldBe vector.payload
         }
 
         @JvmStatic

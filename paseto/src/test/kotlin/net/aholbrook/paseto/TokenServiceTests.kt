@@ -127,34 +127,6 @@ class TokenServiceTests {
 
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
-    fun `null implicit assertion does not error regardless of version`(version: Version, purpose: Purpose) {
-        val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
-        val service = tokenService(version, purpose) {
-            rules = rules {
-                issuedInPast = IssuedInPast(clock = clock)
-                notExpired = NotExpired(clock = clock)
-            }
-        }
-        val token = pasetoToken {
-            issuedAt = clock.instant()
-            expiresAt = clock.instant().plus(Duration.ofMinutes(1))
-        }
-
-        var encoded = ""
-        withClue("encode") {
-            shouldNotThrow<ImplicitAssertionsNotSupportedException> {
-                encoded = service.encode(token, implicitAssertion = null)
-            }
-        }
-        withClue("decode") {
-            shouldNotThrow<ImplicitAssertionsNotSupportedException> {
-                service.decode(encoded, implicitAssertion = null)
-            }
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("allServiceConfigurations")
     fun `empty implicit assertion does not error regardless of version`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
@@ -171,12 +143,12 @@ class TokenServiceTests {
         var encoded = ""
         withClue("encode") {
             shouldNotThrow<ImplicitAssertionsNotSupportedException> {
-                encoded = service.encode(token, implicitAssertion = null)
+                encoded = service.encode(token, implicitAssertion = "")
             }
         }
         withClue("decode") {
             shouldNotThrow<ImplicitAssertionsNotSupportedException> {
-                service.decode(encoded, implicitAssertion = null)
+                service.decode(encoded, implicitAssertion = "")
             }
         }
     }
@@ -196,8 +168,8 @@ class TokenServiceTests {
             expiresAt = null
         }
 
-        val encrypted = service.encode(token, null)
-        val decrypted = service.decode(encrypted, null, null)
+        val encrypted = service.encode(token, "")
+        val decrypted = service.decode(encrypted, StringFooter(""), "")
 
         decrypted.issuedAt shouldBe token.issuedAt
         decrypted.expiresAt shouldBe null
@@ -214,7 +186,7 @@ class TokenServiceTests {
         }
 
         val ex = shouldThrow<MultipleValidationExceptions> {
-            service.encode(token, null)
+            service.encode(token, "")
         }
         ex.exceptions.map { it::class } shouldContain TokenExpiresBeforeIssuedException::class
     }
@@ -230,7 +202,7 @@ class TokenServiceTests {
         }
 
         val ex = shouldThrow<MultipleValidationExceptions> {
-            service.encode(token, null)
+            service.encode(token)
         }
         ex.exceptions.map { it::class } shouldContain TokenExpiresBeforeIssuedException::class
     }
@@ -247,7 +219,7 @@ class TokenServiceTests {
         }
 
         shouldNotThrowAny {
-            service.encode(token, null)
+            service.encode(token)
         }
     }
 
@@ -263,7 +235,7 @@ class TokenServiceTests {
         }
 
         shouldNotThrowAny {
-            service.encode(token, null)
+            service.encode(token)
         }
     }
 
@@ -283,7 +255,7 @@ class TokenServiceTests {
         }
 
         val ex = shouldThrow<MultipleValidationExceptions> {
-            service.encode(token, null)
+            service.encode(token)
         }
         ex.exceptions.map { it::class } shouldContain TokenIsNotValidUntilAfterExpiration::class
     }
@@ -304,7 +276,7 @@ class TokenServiceTests {
         }
 
         val ex = shouldThrow<MultipleValidationExceptions> {
-            service.encode(token, null)
+            service.encode(token)
         }
         ex.exceptions.map { it::class } shouldContain TokenIsNotValidUntilAfterExpiration::class
     }
@@ -324,7 +296,7 @@ class TokenServiceTests {
         }
 
         shouldNotThrow<TokenIsNotValidUntilAfterExpiration> {
-            service.encode(token, null)
+            service.encode(token)
         }
     }
 
@@ -344,7 +316,7 @@ class TokenServiceTests {
             footer = pasetoFooter("test footer value")
         }
 
-        val encoded = service.encode(token, null)
+        val encoded = service.encode(token)
         shouldThrow<InvalidFooterException> {
             service.decode(encoded, pasetoFooter("wrong"))
         }
@@ -366,7 +338,7 @@ class TokenServiceTests {
             footer = pasetoFooter("[1,2,3]")
         }
 
-        val encoded = service.encode(token, null)
+        val encoded = service.encode(token)
         val decoded = service.decode(encoded, token.footer)
         decoded.footer shouldBe pasetoFooter("[1,2,3]")
     }
@@ -387,7 +359,7 @@ class TokenServiceTests {
             footer = pasetoFooter("{")
         }
 
-        val encoded = service.encode(token, null)
+        val encoded = service.encode(token)
         val decoded = service.decode(encoded, token.footer)
         decoded.footer shouldBe pasetoFooter("{")
     }
@@ -402,7 +374,7 @@ class TokenServiceTests {
             footer = pasetoFooter("just a string")
         }
 
-        val encoded = service.encode(token, null)
+        val encoded = service.encode(token)
         val taintedFooter = service.insecureGetFooter(encoded)
 
         (taintedFooter as TaintedStringFooter).value shouldBe "just a string"
@@ -426,7 +398,7 @@ class TokenServiceTests {
             }
         }
 
-        val encoded = service.encode(token, null)
+        val encoded = service.encode(token)
         val taintedFooter = service.insecureGetFooter(encoded)
 
         with(taintedFooter as TaintedClaimFooter) {
@@ -448,7 +420,7 @@ class TokenServiceTests {
             footer = pasetoFooter("just a string")
         }
 
-        val encoded = service.encode(token, null)
+        val encoded = service.encode(token)
         val decoded = service.decode(encoded, token.footer)
         decoded.footer shouldBe token.footer
     }
@@ -469,7 +441,7 @@ class TokenServiceTests {
             }
         }
 
-        val encoded = service.encode(token, null)
+        val encoded = service.encode(token)
         val decoded = service.decode(encoded, token.footer)
         decoded.footer shouldBe token.footer
     }
@@ -485,7 +457,7 @@ class TokenServiceTests {
         }
         val expectedFooter = pasetoFooter("not the string")
 
-        val encoded = service.encode(token, null)
+        val encoded = service.encode(token)
         shouldThrow<InvalidFooterException> {
             service.decode(encoded, expectedFooter)
         }
@@ -508,7 +480,7 @@ class TokenServiceTests {
         }
         val expectedFooter = pasetoFooter { }
 
-        val encoded = service.encode(token, null)
+        val encoded = service.encode(token)
         shouldThrow<InvalidFooterException> {
             service.decode(encoded, expectedFooter)
         }
@@ -531,7 +503,7 @@ class TokenServiceTests {
         }
 
         shouldThrow<CannotSignWithoutSecretKey> {
-            service.encode(token, null)
+            service.encode(token)
         }
     }
 
@@ -545,7 +517,7 @@ class TokenServiceTests {
             expiresAt = Instant.now().plusSeconds(3600)
         }
 
-        val signed = signingService.encode(token, null)
+        val signed = signingService.encode(token)
         val decoded = shouldNotThrowAny {
             service.decode(signed, token.footer)
         }

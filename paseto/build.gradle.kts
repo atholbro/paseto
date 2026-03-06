@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `java-library`
     `java-test-fixtures`
@@ -41,6 +43,13 @@ tasks {
     withType<JavaCompile>().configureEach {
         options.release.set(17)
     }
+
+    withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            freeCompilerArgs.add("-opt-in=net.aholbrook.paseto.InternalApi")
+        }
+    }
+
 
     withType<AbstractPublishToMaven>().configureEach {
         dependsOn(rootProject.tasks.named("check"))

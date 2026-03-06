@@ -1,6 +1,8 @@
 package net.aholbrook.paseto.exception
 
-class ByteArrayLengthException(
+import net.aholbrook.paseto.InternalApi
+
+class ByteArrayLengthException @InternalApi constructor(
     val arg: String,
     val len: Int,
     val required: Int,
@@ -11,7 +13,7 @@ class ByteArrayLengthException(
     cause,
 )
 
-class ByteArrayRangeException(
+class ByteArrayRangeException @InternalApi constructor(
     val arg: String,
     val len: Int,
     val minBound: Int,

@@ -59,7 +59,7 @@ class PasetoV4Tests {
 
         try {
             shouldThrow<EncryptionException> {
-                PasetoV4.encrypt("abc", keyV4Local, null, null)
+                PasetoV4.encrypt("abc".toByteArray(Charsets.UTF_8), keyV4Local, "", "")
             }
         } finally {
             unmockkAll()
@@ -69,9 +69,10 @@ class PasetoV4Tests {
     @Test
     fun local_constantTimeEqualsFailingThrowsDecryptionException() {
         mockkStatic("net.aholbrook.paseto.crypto.ConstantTimeEqualsKt")
+        every { any<String>().constantTimeEquals("") } returns true
 
         try {
-            val encrypted = PasetoV4.encrypt("abc", keyV4Local, null, null)
+            val encrypted = PasetoV4.encrypt("abc".toByteArray(Charsets.UTF_8), keyV4Local)
             every { any<ByteArray>().constantTimeEquals(any()) } returns false
             shouldThrow<DecryptionException> {
                 PasetoV4.decrypt(encrypted, keyV4Local)
@@ -86,7 +87,7 @@ class PasetoV4Tests {
         mockkStatic("net.aholbrook.paseto.crypto.XChaCha20Kt")
 
         try {
-            val encrypted = PasetoV4.encrypt("abc", keyV4Local, null, null)
+            val encrypted = PasetoV4.encrypt("abc".toByteArray(Charsets.UTF_8), keyV4Local)
             every { chaCha20(any(), any(), any(), any()) } returns false
             shouldThrow<DecryptionException> {
                 PasetoV4.decrypt(encrypted, keyV4Local)
@@ -103,7 +104,7 @@ class PasetoV4Tests {
 
         try {
             shouldThrow<SigningException> {
-                PasetoV4.sign("abc", keyV4Public.secretKey!!, null, null)
+                PasetoV4.sign("abc".toByteArray(Charsets.UTF_8), keyV4Public.secretKey!!)
             }
         } finally {
             unmockkAll()
@@ -116,9 +117,9 @@ class PasetoV4Tests {
         every { ed25519Verify(any(), any(), any()) } returns false
 
         try {
-            val signed = PasetoV4.sign("abc", keyV4Public.secretKey!!, null, null)
+            val signed = PasetoV4.sign("abc".toByteArray(Charsets.UTF_8), keyV4Public.secretKey!!)
             shouldThrow<SignatureVerificationException> {
-                PasetoV4.verify(signed, keyV4Public.publicKey, null, null)
+                PasetoV4.verify(signed, keyV4Public.publicKey)
             }
         } finally {
             unmockkAll()

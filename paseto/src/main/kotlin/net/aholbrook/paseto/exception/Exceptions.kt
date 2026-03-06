@@ -1,45 +1,59 @@
 package net.aholbrook.paseto.exception
 
+import net.aholbrook.paseto.InternalApi
 import net.aholbrook.paseto.PasetoToken
 import net.aholbrook.paseto.protocol.Version
 
-open class CryptoProviderException(s: String?, throwable: Throwable?) : RuntimeException(s, throwable)
+open class CryptoProviderException @InternalApi constructor(s: String?, throwable: Throwable?) :
+    RuntimeException(s, throwable)
 
-open class PasetoException(msg: String, cause: Throwable? = null) : RuntimeException(msg, cause)
+open class PasetoException @InternalApi constructor(msg: String, cause: Throwable? = null) :
+    RuntimeException(msg, cause)
 
-class ImplicitAssertionsNotSupportedException(actual: Version) :
+class ImplicitAssertionsNotSupportedException @InternalApi constructor(actual: Version) :
     PasetoException("Implicit assertions are not supported for " + actual.name + " tokens.")
 
-class CannotSignWithoutSecretKey : PasetoException("Token services without a secret key do not support signing.")
+class CannotSignWithoutSecretKey @InternalApi constructor() :
+    PasetoException("Token services without a secret key do not support signing.")
 
-open class PasetoStringException(s: String, val token: String, cause: Throwable? = null) : PasetoException(s, cause)
+open class PasetoStringException @InternalApi constructor(s: String, val token: String, cause: Throwable? = null) :
+    PasetoException(s, cause)
 
-class EncryptionException : PasetoException("Failed to encrypt payload.")
+open class PasetoPayloadException @InternalApi constructor(
+    s: String,
+    val payload: ByteArray,
+    cause: Throwable? = null,
+) : PasetoException(s, cause)
 
-class DecryptionException(token: String) : PasetoStringException("Failed to decrypt token.", token)
+class EncryptionException @InternalApi constructor() : PasetoException("Failed to encrypt payload.")
 
-class InvalidFooterException(val given: String?, val expected: String, token: String) :
+class DecryptionException @InternalApi constructor(token: String) :
+    PasetoStringException("Failed to decrypt token.", token)
+
+class InvalidFooterException @InternalApi constructor(val given: String?, val expected: String, token: String) :
     PasetoStringException("Invalid footer in token: \"$given\" expected: \"$expected\".", token)
 
-class InvalidHeaderException(val given: String?, val expected: String, token: String) :
+class InvalidHeaderException @InternalApi constructor(val given: String?, val expected: String, token: String) :
     PasetoStringException("Invalid header in token: \"$given\", expected: \"$expected\".", token)
 
-class SigningException(payload: String) : PasetoStringException("Failed to sign payload.", payload)
+class SigningException @InternalApi constructor(payload: ByteArray) :
+    PasetoPayloadException("Failed to sign payload.", payload)
 
-class SignatureVerificationException(token: String) : PasetoStringException("Failed to verify token signature.", token)
+class SignatureVerificationException @InternalApi constructor(token: String) :
+    PasetoStringException("Failed to verify token signature.", token)
 
-open class PasetoTokenException(s: String, val token: PasetoToken) : PasetoException(s)
+open class PasetoTokenException @InternalApi constructor(s: String, val token: PasetoToken) : PasetoException(s)
 
-class TokenExpiresBeforeIssuedException(token: PasetoToken) :
+class TokenExpiresBeforeIssuedException @InternalApi constructor(token: PasetoToken) :
     PasetoTokenException("token would expire (${token.expiresAt}) before it was issued (${token.issuedAt})", token)
 
-class TokenIsNotValidUntilAfterExpiration(token: PasetoToken) :
+class TokenIsNotValidUntilAfterExpiration @InternalApi constructor(token: PasetoToken) :
     PasetoTokenException("token is not valid (${token.notBefore}) until after it expires (${token.expiresAt})", token)
 
-class MissingClaimException(val claim: String, token: PasetoToken) :
+class MissingClaimException @InternalApi constructor(val claim: String, token: PasetoToken) :
     PasetoTokenException("Token is missing required claim $claim.", token)
 
-class PasetoParseException(val reason: Reason, token: String) :
+class PasetoParseException @InternalApi constructor(val reason: Reason, token: String) :
     PasetoStringException(
         when (reason) {
             Reason.MISSING_SECTIONS ->

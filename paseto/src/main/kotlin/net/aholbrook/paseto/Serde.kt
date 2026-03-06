@@ -45,7 +45,7 @@ internal object PasetoTokenSerializer : KSerializer<PasetoToken> {
             issuedAt = takeInstant("iat"),
             tokenId = take("jti"),
             claims = claims.toClaim() as ClaimObject,
-            footer = null,
+            footer = StringFooter(""),
         )
     }
 

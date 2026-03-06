@@ -76,7 +76,7 @@ class AsymmetricPublicKey private constructor(private val material: ByteArray, v
 
             Version.V2, Version.V4 -> Ed25519PublicKeyParameters(
                 material.copyOfRange(0, ED25519_SECRETKEYBYTES - ED25519_PUBLICKEYBYTES),
-                0
+                0,
             ).let {
                 SubjectPublicKeyInfo(
                     AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519),
@@ -234,7 +234,7 @@ class AsymmetricSecretKey private constructor(private val material: ByteArray, v
                         AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519),
                         DEROctetString(rawKey),
                     ).encoded,
-                    "PRIVATE KEY"
+                    "PRIVATE KEY",
                 )
             }
         }

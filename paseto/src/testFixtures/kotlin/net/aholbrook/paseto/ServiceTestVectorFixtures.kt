@@ -50,7 +50,7 @@ fun tokenFromVector(vector: ServiceTestVector): PasetoToken {
             .toClaimElement() as ClaimObject
 
         footer = when (val f = vector.footer) {
-            null, is JsonNull -> null
+            null, is JsonNull -> StringFooter("")
 
             is JsonPrimitive -> pasetoFooter(f.content)
 
@@ -60,7 +60,7 @@ fun tokenFromVector(vector: ServiceTestVector): PasetoToken {
                 claims = JsonObject(f.filterNot { it.key in footerReserved }).toClaimElement() as ClaimObject
             }
 
-            else -> null
+            else -> StringFooter("")
         }
     }
 }

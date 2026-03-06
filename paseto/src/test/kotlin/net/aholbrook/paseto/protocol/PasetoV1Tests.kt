@@ -68,10 +68,11 @@ class PasetoV1Tests {
     @Test
     fun local_verifyError() {
         mockkStatic("net.aholbrook.paseto.crypto.ConstantTimeEqualsKt")
+        every { any<String>().constantTimeEquals("") } returns true
         every { any<ByteArray>().constantTimeEquals(any()) } returns false
 
         try {
-            val encrypted = PasetoV1.encrypt("abc", keyV1Local)
+            val encrypted = PasetoV1.encrypt("abc".toByteArray(Charsets.UTF_8), keyV1Local)
             shouldThrow<SignatureVerificationException> {
                 PasetoV1.decrypt(encrypted, keyV1Local)
             }
@@ -86,7 +87,7 @@ class PasetoV1Tests {
         every { rsaVerify(any(), any(), any()) } returns false
 
         try {
-            val signed = PasetoV1.sign("abc", keyV1Public.secretKey!!)
+            val signed = PasetoV1.sign("abc".toByteArray(Charsets.UTF_8), keyV1Public.secretKey!!)
             shouldThrow<SignatureVerificationException> {
                 PasetoV1.verify(signed, keyV1Public.publicKey)
             }

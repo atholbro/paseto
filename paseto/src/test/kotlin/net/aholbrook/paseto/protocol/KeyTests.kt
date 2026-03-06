@@ -43,12 +43,18 @@ class KeyTests {
     companion object {
         @JvmStatic
         fun keyPairsAllVersions(): Stream<Arguments> = listOf(
-            keyV1Public, keyV2Public, keyV3Public, keyV4Public
+            keyV1Public,
+            keyV2Public,
+            keyV3Public,
+            keyV4Public,
         ).map { Arguments.of(it) }.stream()
 
         @JvmStatic
         fun allVersions(): Stream<Arguments> = listOf(
-            Version.V1, Version.V2, Version.V3, Version.V4
+            Version.V1,
+            Version.V2,
+            Version.V3,
+            Version.V4,
         ).map { Arguments.of(it) }.stream()
     }
 

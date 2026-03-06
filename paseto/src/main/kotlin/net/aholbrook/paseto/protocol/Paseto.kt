@@ -50,37 +50,37 @@ internal enum class Purpose {
     PUBLIC,
 }
 
-sealed interface Paseto {
+internal sealed interface Paseto {
     val version: Version
     val supportsImplicitAssertion: Boolean
 
-    fun encrypt(payload: String, key: SymmetricKey, footer: String? = null, implicitAssertion: String? = null): String
+    fun encrypt(m: ByteArray, key: SymmetricKey, footer: String = "", implicitAssertion: String = ""): String
 
-    fun decrypt(token: String, key: SymmetricKey, footer: String? = null, implicitAssertion: String? = null): String
+    fun decrypt(
+        token: String,
+        key: SymmetricKey,
+        footer: String = "",
+        implicitAssertion: String = "",
+    ): Pair<String, String>
 
-    fun sign(
-        payload: String,
-        secretKey: AsymmetricSecretKey,
-        footer: String? = null,
-        implicitAssertion: String? = null,
-    ): String
+    fun sign(m: ByteArray, secretKey: AsymmetricSecretKey, footer: String = "", implicitAssertion: String = ""): String
 
     fun verify(
         token: String,
         publicKey: AsymmetricPublicKey,
-        footer: String? = null,
-        implicitAssertion: String? = null,
-    ): String
+        footer: String = "",
+        implicitAssertion: String = "",
+    ): Pair<String, String>
 }
 
-internal fun extractFooter(token: String): String? {
+internal fun extractFooter(token: String): String {
     val footer = split(token).footer
     if (footer.isNotEmpty()) {
         return Base64.UrlSafeNoPadding.decodeOrNull(footer)?.toString(Charsets.UTF_8)
             ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
     }
 
-    return null
+    return ""
 }
 
 internal data class PasetoSections(val version: String, val purpose: String, val payload: String, val footer: String)
@@ -116,7 +116,7 @@ internal fun checkHeader(token: String, sections: PasetoSections, expectedHeader
     }
 }
 
-internal fun decodeFooter(token: String, sections: PasetoSections, expectedFooter: String?): String {
+internal fun decodeFooter(token: String, sections: PasetoSections, expectedFooter: String): String {
     val userFooter = sections.footer
     val decodedFooter = Base64.UrlSafeNoPadding.decodeOrNull(userFooter)
         ?.toString(Charsets.UTF_8)
@@ -125,7 +125,7 @@ internal fun decodeFooter(token: String, sections: PasetoSections, expectedFoote
     // Check the footer if expected footer is not empty, otherwise we just return the footer without checking. This
     // is fine though, as the footer is covered by the token PAE signature. This check exists for proper error
     // reporting, and is not a requirement for security.
-    if (!expectedFooter.isNullOrEmpty() && !decodedFooter.constantTimeEquals(expectedFooter)) {
+    if (!decodedFooter.constantTimeEquals(expectedFooter)) {
         throw InvalidFooterException(decodedFooter, expectedFooter, token)
     }
 

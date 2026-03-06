@@ -18,7 +18,7 @@ data class PasetoToken internal constructor(
     val issuedAt: Instant?, // iat
     val tokenId: String?, // jti
     val claims: ClaimObject,
-    val footer: PasetoFooter?,
+    val footer: PasetoFooter,
 )
 
 @PasetoDslMarker
@@ -31,7 +31,7 @@ class PasetoTokenBuilder @PublishedApi internal constructor(clock: Clock) {
     var issuedAt: Instant? = clock.instant() // iat
     var tokenId: String? = null // jti
     var claims: ClaimObject = ClaimObject()
-    var footer: PasetoFooter? = null
+    var footer: PasetoFooter = StringFooter("")
 
     @PublishedApi
     internal fun build(): PasetoToken = PasetoToken(
@@ -112,8 +112,7 @@ data class TaintedClaimFooter internal constructor(
  * @receiver A [PasetoFooter] instance to turn taint.
  * @return A [TaintedPasetoFooter] representation of the given [PasetoFooter].
  */
-fun PasetoFooter?.taint(): TaintedPasetoFooter? = when (this) {
-    null -> null
+fun PasetoFooter.taint(): TaintedPasetoFooter? = when (this) {
     is ClaimFooter -> TaintedClaimFooter(keyId, wrappedKey, claims)
     is StringFooter -> TaintedStringFooter(value)
 }
@@ -125,5 +124,5 @@ fun PasetoFooter?.taint(): TaintedPasetoFooter? = when (this) {
  * It may change or be removed without notice if the underlying serialization strategy changes.
  */
 
-@Annotations
+@InternalApi
 fun PasetoToken.claimsJson(): JsonObject = claims.toJson() as JsonObject

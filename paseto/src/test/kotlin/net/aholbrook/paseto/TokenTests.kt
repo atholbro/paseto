@@ -61,7 +61,6 @@ class TokenTests {
     }
 
     @Test
-    @OptIn(Annotations::class)
     fun token_claims_jsonEscapeHatch() {
         val token = pasetoToken {
             claims = claimObject {
@@ -90,12 +89,6 @@ class TokenTests {
         }.footer as ClaimFooter
 
         footer.claims["key"]?.intOrNull shouldBe 1
-    }
-
-    @Test
-    fun footer_taintNull() {
-        val token = pasetoToken {}
-        token.footer.taint() shouldBe null
     }
 
     @Test

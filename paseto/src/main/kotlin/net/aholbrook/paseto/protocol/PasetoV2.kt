@@ -25,29 +25,28 @@ private const val VERSION = "v2"
 private const val HEADER_LOCAL: String = VERSION + SEPARATOR + PURPOSE_LOCAL + SEPARATOR // v2.local.
 private const val HEADER_PUBLIC: String = VERSION + SEPARATOR + PURPOSE_PUBLIC + SEPARATOR // v2.public.
 
-object PasetoV2 : Paseto {
+internal object PasetoV2 : Paseto {
     override val version: Version = Version.V2
     override val supportsImplicitAssertion: Boolean = false
 
-    override fun encrypt(payload: String, key: SymmetricKey, footer: String?, implicitAssertion: String?): String {
+    override fun encrypt(m: ByteArray, key: SymmetricKey, footer: String, implicitAssertion: String): String {
         val cleanup = mutableListOf<Runnable>()
 
         try {
             // Verify key version.
             val keyMaterial = key.getKeyMaterialFor(Version.V2, Purpose.LOCAL)
 
-            val payloadBytes = payload.toByteArray(Charsets.UTF_8)
-            val footerBytes = (footer ?: "").toByteArray(Charsets.UTF_8)
+            val footerBytes = footer.toByteArray(Charsets.UTF_8)
 
             val nonce: ByteArray = generateNonce(24)
             cleanup.add { nonce.fill(0) }
             val n = ByteArray(XCHACHA20_POLY1305_IETF_NPUBBYTES)
-            blake2b(n, nonce, payloadBytes)
+            blake2b(n, nonce, m)
 
             val preAuth = pae(HEADER_LOCAL.toByteArray(Charsets.UTF_8), n, footerBytes)
 
-            val c = ByteArray(payloadBytes.size + XCHACHA20_POLY1305_IETF_ABYTES)
-            if (!aeadXChaCha20Poly1305IetfEncrypt(c, payloadBytes, preAuth, n, keyMaterial)) {
+            val c = ByteArray(m.size + XCHACHA20_POLY1305_IETF_ABYTES)
+            if (!aeadXChaCha20Poly1305IetfEncrypt(c, m, preAuth, n, keyMaterial)) {
                 throw EncryptionException()
             }
 
@@ -67,7 +66,12 @@ object PasetoV2 : Paseto {
         }
     }
 
-    override fun decrypt(token: String, key: SymmetricKey, footer: String?, implicitAssertion: String?): String {
+    override fun decrypt(
+        token: String,
+        key: SymmetricKey,
+        footer: String,
+        implicitAssertion: String,
+    ): Pair<String, String> {
         try {
             // Verify key version.
             val keyMaterial = key.getKeyMaterialFor(Version.V2, Purpose.LOCAL)
@@ -102,34 +106,33 @@ object PasetoV2 : Paseto {
             }
 
             // Convert from JSON
-            return p.toString(Charsets.UTF_8)
+            return Pair(p.toString(Charsets.UTF_8), decodedFooter)
         } finally {
             key.clear()
         }
     }
 
     override fun sign(
-        payload: String,
+        m: ByteArray,
         secretKey: AsymmetricSecretKey,
-        footer: String?,
-        implicitAssertion: String?,
+        footer: String,
+        implicitAssertion: String,
     ): String {
         try {
             // Verify key version.
             val keyMaterial = secretKey.getKeyMaterialFor(Version.V2, Purpose.PUBLIC)
 
-            val payloadBytes = payload.toByteArray(Charsets.UTF_8)
-            val footerBytes = (footer ?: "").toByteArray(Charsets.UTF_8)
+            val footerBytes = footer.toByteArray(Charsets.UTF_8)
 
-            val m2 = pae(HEADER_PUBLIC.toByteArray(Charsets.UTF_8), payloadBytes, footerBytes)
+            val m2 = pae(HEADER_PUBLIC.toByteArray(Charsets.UTF_8), m, footerBytes)
             val sig = ByteArray(ED25519_BYTES)
             if (!ed25519Sign(sig, m2, keyMaterial)) {
-                throw SigningException(payload)
+                throw SigningException(m)
             }
 
-            val msig = ByteArray(payloadBytes.size + sig.size)
-            System.arraycopy(payloadBytes, 0, msig, 0, payloadBytes.size)
-            System.arraycopy(sig, 0, msig, payloadBytes.size, sig.size)
+            val msig = ByteArray(m.size + sig.size)
+            System.arraycopy(m, 0, msig, 0, m.size)
+            System.arraycopy(sig, 0, msig, m.size, sig.size)
 
             return if (footerBytes.isNotEmpty()) {
                 HEADER_PUBLIC + Base64.UrlSafeNoPadding.encode(msig) + SEPARATOR +
@@ -145,9 +148,9 @@ object PasetoV2 : Paseto {
     override fun verify(
         token: String,
         publicKey: AsymmetricPublicKey,
-        footer: String?,
-        implicitAssertion: String?,
-    ): String {
+        footer: String,
+        implicitAssertion: String,
+    ): Pair<String, String> {
         // Verify key version.
         val keyMaterial = publicKey.getKeyMaterialFor(Version.V2, Purpose.PUBLIC)
 
@@ -180,6 +183,6 @@ object PasetoV2 : Paseto {
         }
 
         // Convert from JSON
-        return m.toString(Charsets.UTF_8)
+        return Pair(m.toString(Charsets.UTF_8), decodedFooter)
     }
 }

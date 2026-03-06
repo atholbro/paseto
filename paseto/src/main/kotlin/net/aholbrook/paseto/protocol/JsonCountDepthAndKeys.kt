@@ -18,11 +18,13 @@ internal fun jsonCountDepthAndKeys(json: String): Pair<Int, Int> {
         } else {
             when (c) {
                 '"' -> inString = true
+
                 '{', '[' -> {
                     if (++depth > maxDepth) {
                         maxDepth = depth
                     }
                 }
+
                 '}', ']' -> {
                     if (--depth < 0) {
                         maxDepth = -1
@@ -30,6 +32,7 @@ internal fun jsonCountDepthAndKeys(json: String): Pair<Int, Int> {
                         break
                     }
                 }
+
                 ':' -> {
                     ++keys
                 }

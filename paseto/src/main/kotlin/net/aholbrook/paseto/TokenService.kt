@@ -4,7 +4,6 @@ package net.aholbrook.paseto
 
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 import net.aholbrook.paseto.exception.CannotSignWithoutSecretKey
 import net.aholbrook.paseto.exception.ImplicitAssertionsNotSupportedException
 import net.aholbrook.paseto.protocol.KeyPair
@@ -57,8 +56,8 @@ inline fun tokenService(version: Version, purpose: Purpose, init: TokenServiceBu
 }
 
 sealed interface TokenService {
-    fun encode(token: PasetoToken, implicitAssertion: String? = null): String
-    fun decode(token: String, footer: PasetoFooter? = null, implicitAssertion: String? = null): PasetoToken
+    fun encode(token: PasetoToken, implicitAssertion: String = ""): String
+    fun decode(token: String, footer: PasetoFooter = StringFooter(""), implicitAssertion: String = ""): PasetoToken
 
     /**
      * Decode the token's footer without verifying the token.
@@ -78,25 +77,25 @@ internal class LocalTokenService internal constructor(
     private val rules: Rules,
     private val json: Json = Json { explicitNulls = false },
 ) : TokenService {
-    override fun encode(token: PasetoToken, implicitAssertion: String?): String {
-        if (!implicitAssertion.isNullOrEmpty() && !paseto.supportsImplicitAssertion) {
+    override fun encode(token: PasetoToken, implicitAssertion: String): String {
+        if (implicitAssertion.isNotEmpty() && !paseto.supportsImplicitAssertion) {
             throw ImplicitAssertionsNotSupportedException(paseto.version)
         }
 
         rules.verifyAll(token, Rule.Mode.ENCODE)
         val encoded = json.encodeToString(PasetoTokenSerializer, token)
         val encodedFooter = json.encodeFooter(token.footer)
-        return paseto.encrypt(encoded, keyProvider(), encodedFooter, implicitAssertion)
+        return paseto.encrypt(encoded.toByteArray(Charsets.UTF_8), keyProvider(), encodedFooter, implicitAssertion)
     }
 
-    override fun decode(token: String, footer: PasetoFooter?, implicitAssertion: String?): PasetoToken {
-        if (!implicitAssertion.isNullOrEmpty() && !paseto.supportsImplicitAssertion) {
+    override fun decode(token: String, footer: PasetoFooter, implicitAssertion: String): PasetoToken {
+        if (implicitAssertion.isNotEmpty() && !paseto.supportsImplicitAssertion) {
             throw ImplicitAssertionsNotSupportedException(paseto.version)
         }
 
-        val encoded = paseto.decrypt(token, keyProvider(), json.encodeFooter(footer), implicitAssertion)
+        val (encoded, footer) = paseto.decrypt(token, keyProvider(), json.encodeFooter(footer), implicitAssertion)
         var decoded = json.decodeFromString(PasetoTokenSerializer, encoded)
-        json.decodeFooter(extractFooter(token))?.let { footer -> decoded = decoded.copy(footer = footer) }
+        json.decodeFooter(footer).let { footer -> decoded = decoded.copy(footer = footer) }
 
         rules.verifyAll(decoded, Rule.Mode.DECODE)
         return decoded
@@ -112,9 +111,9 @@ internal class PublicTokenService internal constructor(
     private val rules: Rules,
     private val json: Json = Json { explicitNulls = false },
 ) : TokenService {
-    override fun encode(token: PasetoToken, implicitAssertion: String?): String {
+    override fun encode(token: PasetoToken, implicitAssertion: String): String {
         // TODO expand service-test-vectors for v4 with implicit assertions
-        if (!implicitAssertion.isNullOrEmpty() && !paseto.supportsImplicitAssertion) {
+        if (implicitAssertion.isNotEmpty() && !paseto.supportsImplicitAssertion) {
             throw ImplicitAssertionsNotSupportedException(paseto.version)
         }
 
@@ -125,18 +124,23 @@ internal class PublicTokenService internal constructor(
         if (keyPair.secretKey == null) {
             throw CannotSignWithoutSecretKey()
         }
-        return paseto.sign(encoded, keyPair.secretKey, encodedFooter, implicitAssertion)
+        return paseto.sign(encoded.toByteArray(Charsets.UTF_8), keyPair.secretKey, encodedFooter, implicitAssertion)
     }
 
-    override fun decode(token: String, footer: PasetoFooter?, implicitAssertion: String?): PasetoToken {
+    override fun decode(token: String, footer: PasetoFooter, implicitAssertion: String): PasetoToken {
         // TODO expand service-test-vectors for v4 with implicit assertions
-        if (!implicitAssertion.isNullOrEmpty() && !paseto.supportsImplicitAssertion) {
+        if (implicitAssertion.isNotEmpty() && !paseto.supportsImplicitAssertion) {
             throw ImplicitAssertionsNotSupportedException(paseto.version)
         }
 
-        val encoded = paseto.verify(token, keyProvider().publicKey, json.encodeFooter(footer), implicitAssertion)
+        val (encoded, footer) = paseto.verify(
+            token = token,
+            publicKey = keyProvider().publicKey,
+            footer = json.encodeFooter(footer),
+            implicitAssertion = implicitAssertion,
+        )
         var decoded = json.decodeFromString(PasetoTokenSerializer, encoded)
-        json.decodeFooter(extractFooter(token))?.let { footer -> decoded = decoded.copy(footer = footer) }
+        json.decodeFooter(footer).let { footer -> decoded = decoded.copy(footer = footer) }
 
         rules.verifyAll(decoded, Rule.Mode.DECODE)
         return decoded
@@ -146,19 +150,17 @@ internal class PublicTokenService internal constructor(
         json.decodeFooter(extractFooter(token)).taint()
 }
 
-private fun Json.encodeFooter(footer: PasetoFooter?): String? = footer?.let { footer ->
-    when (footer) {
-        is ClaimFooter -> encodeToString(ClaimFooterSerializer, footer)
-        is StringFooter -> footer.value
-    }
+private fun Json.encodeFooter(footer: PasetoFooter): String = when (footer) {
+    is ClaimFooter -> encodeToString(ClaimFooterSerializer, footer)
+    is StringFooter -> footer.value
 }
 
-internal fun Json.decodeFooter(footer: String?): PasetoFooter? = footer?.let { footer ->
-    try {
-        decodeFromString(ClaimFooterSerializer, footer)
-    } catch (_: SerializationException) {
-        StringFooter(footer)
-    } catch (_: IllegalArgumentException) {
-        StringFooter(footer)
-    }
+internal fun Json.decodeFooter(footer: String): PasetoFooter = try {
+    decodeFromString(ClaimFooterSerializer, footer)
+} catch (_: SerializationException) {
+    StringFooter(footer)
+} catch (_: IllegalArgumentException) {
+    StringFooter(footer)
+} catch (_: Exception) {
+    StringFooter("")
 }

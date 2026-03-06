@@ -1,12 +1,13 @@
 package net.aholbrook.paseto.exception
 
+import net.aholbrook.paseto.InternalApi
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.security.NoSuchAlgorithmException
 import java.security.UnrecoverableKeyException
 import java.security.cert.CertificateException
 
-class Pkcs12LoadException(val reason: Reason, cause: Throwable? = null) :
+class Pkcs12LoadException @InternalApi constructor(val reason: Reason, cause: Throwable? = null) :
     PasetoException(
         when (reason) {
             Reason.FILE_NOT_FOUND -> "File not found."
@@ -21,12 +22,15 @@ class Pkcs12LoadException(val reason: Reason, cause: Throwable? = null) :
         cause,
     ) {
 
-    constructor(e: FileNotFoundException) : this(Reason.FILE_NOT_FOUND, e)
-    constructor(e: NoSuchAlgorithmException) : this(Reason.ALGORITHM_NOT_FOUND, e)
-    constructor(e: UnrecoverableKeyException) : this(Reason.UNRECOVERABLE_KEY, e)
-    constructor(e: CertificateException) : this(Reason.CERTIFICATE_ERROR, e)
+    @InternalApi constructor(e: FileNotFoundException) : this(Reason.FILE_NOT_FOUND, e)
 
-    constructor(e: IOException) : this(
+    @InternalApi constructor(e: NoSuchAlgorithmException) : this(Reason.ALGORITHM_NOT_FOUND, e)
+
+    @InternalApi constructor(e: UnrecoverableKeyException) : this(Reason.UNRECOVERABLE_KEY, e)
+
+    @InternalApi constructor(e: CertificateException) : this(Reason.CERTIFICATE_ERROR, e)
+
+    @InternalApi constructor(e: IOException) : this(
         reason = if (e.cause != null && e.cause is UnrecoverableKeyException) {
             Reason.INCORRECT_PASSWORD
         } else {

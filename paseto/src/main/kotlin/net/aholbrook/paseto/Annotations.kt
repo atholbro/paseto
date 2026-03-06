@@ -16,4 +16,4 @@ internal annotation class PasetoDslMarker
     AnnotationTarget.TYPEALIAS,
     AnnotationTarget.CONSTRUCTOR,
 )
-annotation class Annotations
+annotation class InternalApi

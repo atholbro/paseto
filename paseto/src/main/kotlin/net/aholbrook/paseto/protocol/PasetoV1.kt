@@ -18,7 +18,6 @@ import net.aholbrook.paseto.crypto.rsaVerify
 import net.aholbrook.paseto.decodeOrNull
 import net.aholbrook.paseto.exception.PasetoParseException
 import net.aholbrook.paseto.exception.SignatureVerificationException
-import java.security.PublicKey
 import kotlin.io.encoding.Base64
 
 private const val VERSION = "v1"
@@ -27,25 +26,24 @@ private const val HEADER_PUBLIC: String = VERSION + SEPARATOR + PURPOSE_PUBLIC +
 private val HKDF_INFO_EK: ByteArray = "paseto-encryption-key".toByteArray(Charsets.UTF_8)
 private val HKDF_INFO_AK: ByteArray = "paseto-auth-key-for-aead".toByteArray(Charsets.UTF_8)
 
-object PasetoV1 : Paseto {
+internal object PasetoV1 : Paseto {
     override val version: Version = Version.V1
     override val supportsImplicitAssertion: Boolean = false
 
-    override fun encrypt(payload: String, key: SymmetricKey, footer: String?, implicitAssertion: String?): String {
+    override fun encrypt(m: ByteArray, key: SymmetricKey, footer: String, implicitAssertion: String): String {
         val cleanup = mutableListOf<Runnable>()
 
         try {
             // Verify key version.
             val keyMaterial = key.getKeyMaterialFor(Version.V1, Purpose.LOCAL)
 
-            val payloadBytes = payload.toByteArray(Charsets.UTF_8)
-            val footerBytes = (footer ?: "").toByteArray(Charsets.UTF_8)
+            val footerBytes = footer.toByteArray(Charsets.UTF_8)
 
             // Generate n
             val random = generateNonce(32)
             cleanup.add { random.fill(0) }
             val n = ByteArray(32)
-            System.arraycopy(hmacSha384(payloadBytes, random), 0, n, 0, n.size)
+            System.arraycopy(hmacSha384(m, random), 0, n, 0, n.size)
 
             // Split N into salt/nonce
             val salt = ByteArray(HKDF_SALT_LEN)
@@ -59,7 +57,7 @@ object PasetoV1 : Paseto {
             val ak = hkdfExtractAndExpand(salt, keyMaterial, HKDF_INFO_AK)
             cleanup.add { ak.fill(0) }
 
-            val c = aes256CtrEncrypt(payloadBytes, ek, nonce)
+            val c = aes256CtrEncrypt(m, ek, nonce)
             val preAuth = pae(HEADER_LOCAL.toByteArray(Charsets.UTF_8), n, c, footerBytes)
             val t = hmacSha384(preAuth, ak)
 
@@ -80,7 +78,12 @@ object PasetoV1 : Paseto {
         }
     }
 
-    override fun decrypt(token: String, key: SymmetricKey, footer: String?, implicitAssertion: String?): String {
+    override fun decrypt(
+        token: String,
+        key: SymmetricKey,
+        footer: String,
+        implicitAssertion: String,
+    ): Pair<String, String> {
         val cleanup = mutableListOf<Runnable>()
 
         try {
@@ -137,7 +140,7 @@ object PasetoV1 : Paseto {
 
             val m = aes256CtrDecrypt(c, ek, nonce)
 
-            return m.toString(Charsets.UTF_8)
+            return Pair(m.toString(Charsets.UTF_8), decodedFooter)
         } finally {
             key.clear()
             cleanup.forEach { it.run() }
@@ -145,24 +148,23 @@ object PasetoV1 : Paseto {
     }
 
     override fun sign(
-        payload: String,
+        m: ByteArray,
         secretKey: AsymmetricSecretKey,
-        footer: String?,
-        implicitAssertion: String?,
+        footer: String,
+        implicitAssertion: String,
     ): String {
         try {
             // Verify key version.
             val keyMaterial = secretKey.getKeyMaterialFor(Version.V1, Purpose.PUBLIC)
 
-            val payloadBytes = payload.toByteArray(Charsets.UTF_8)
-            val footerBytes = (footer ?: "").toByteArray(Charsets.UTF_8)
+            val footerBytes = footer.toByteArray(Charsets.UTF_8)
 
-            val m2 = pae(HEADER_PUBLIC.toByteArray(Charsets.UTF_8), payloadBytes, footerBytes)
+            val m2 = pae(HEADER_PUBLIC.toByteArray(Charsets.UTF_8), m, footerBytes)
             val sig = rsaSign(m2, keyMaterial)
 
-            val msig = ByteArray(sig.size + payloadBytes.size)
-            System.arraycopy(payloadBytes, 0, msig, 0, payloadBytes.size)
-            System.arraycopy(sig, 0, msig, payloadBytes.size, sig.size)
+            val msig = ByteArray(sig.size + m.size)
+            System.arraycopy(m, 0, msig, 0, m.size)
+            System.arraycopy(sig, 0, msig, m.size, sig.size)
 
             return if (footerBytes.isNotEmpty()) {
                 HEADER_PUBLIC + Base64.UrlSafeNoPadding.encode(msig) + SEPARATOR +
@@ -178,9 +180,9 @@ object PasetoV1 : Paseto {
     override fun verify(
         token: String,
         publicKey: AsymmetricPublicKey,
-        footer: String?,
-        implicitAssertion: String?,
-    ): String {
+        footer: String,
+        implicitAssertion: String,
+    ): Pair<String, String> {
         // Verify key version.
         val keyMaterial = publicKey.getKeyMaterialFor(Version.V1, Purpose.PUBLIC)
 
@@ -212,6 +214,6 @@ object PasetoV1 : Paseto {
             throw SignatureVerificationException(token)
         }
 
-        return m.toString(Charsets.UTF_8)
+        return Pair(m.toString(Charsets.UTF_8), decodedFooter)
     }
 }

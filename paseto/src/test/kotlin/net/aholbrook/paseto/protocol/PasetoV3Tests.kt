@@ -72,9 +72,10 @@ class PasetoV3Tests {
     @Test
     fun local_constantTimeEqualsFailingThrowsDecryptionException() {
         mockkStatic("net.aholbrook.paseto.crypto.ConstantTimeEqualsKt")
+        every { any<String>().constantTimeEquals("") } returns true
 
         try {
-            val encrypted = PasetoV3.encrypt("abc", keyV3Local, null, null)
+            val encrypted = PasetoV3.encrypt("abc".toByteArray(Charsets.UTF_8), keyV3Local, "", "")
             every { any<ByteArray>().constantTimeEquals(any()) } returns false
             shouldThrow<DecryptionException> {
                 PasetoV3.decrypt(encrypted, keyV3Local)
@@ -91,7 +92,7 @@ class PasetoV3Tests {
 
         try {
             shouldThrow<SigningException> {
-                PasetoV3.sign("abc", keyV3Public.secretKey!!, null, null)
+                PasetoV3.sign("abc".toByteArray(Charsets.UTF_8), keyV3Public.secretKey!!)
             }
         } finally {
             unmockkAll()
@@ -104,9 +105,9 @@ class PasetoV3Tests {
         every { ecdsaP384Verify(any(), any(), any()) } returns false
 
         try {
-            val signed = PasetoV3.sign("abc", keyV3Public.secretKey!!, null, null)
+            val signed = PasetoV3.sign("abc".toByteArray(Charsets.UTF_8), keyV3Public.secretKey!!)
             shouldThrow<SignatureVerificationException> {
-                PasetoV3.verify(signed, keyV3Public.publicKey, null, null)
+                PasetoV3.verify(signed, keyV3Public.publicKey)
             }
         } finally {
             unmockkAll()
