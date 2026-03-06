@@ -61,6 +61,7 @@ class TokenTests {
     }
 
     @Test
+    @OptIn(Annotations::class)
     fun token_claims_jsonEscapeHatch() {
         val token = pasetoToken {
             claims = claimObject {

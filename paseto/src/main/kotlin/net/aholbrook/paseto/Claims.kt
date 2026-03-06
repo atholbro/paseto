@@ -69,6 +69,7 @@ value class ClaimPrimitive internal constructor(internal val primitive: JsonPrim
     override fun toString(): String = primitive.toString()
 }
 
+@PasetoDslMarker
 class ClaimObjectBuilder @PublishedApi internal constructor() {
     private val content: MutableMap<String, ClaimElement> = linkedMapOf()
 
@@ -91,6 +92,7 @@ inline fun claimObject(init: ClaimObjectBuilder.() -> Unit): ClaimObject {
     return builder.build()
 }
 
+@PasetoDslMarker
 class ClaimArrayBuilder @PublishedApi internal constructor() {
     private val content: MutableList<ClaimElement> = mutableListOf()
 

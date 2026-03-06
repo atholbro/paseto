@@ -1,4 +1,5 @@
 [versions]
+binaryCompatibilityValidator = "0.18.1"
 bouncycastle = "1.83"
 clikt = "5.1.0"
 detekt = "1.23.8"
@@ -30,6 +31,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [plugins]
+binaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibilityValidator" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 gradleVersions = { id = "com.github.ben-manes.versions", version.ref = "gradleVersions" }
 gradleVersions-filter = { id = "se.ascp.gradle.gradle-versions-filter", version.ref = "gradleFilterVersions" }

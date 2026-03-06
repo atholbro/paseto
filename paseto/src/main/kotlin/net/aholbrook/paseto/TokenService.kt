@@ -24,6 +24,7 @@ sealed interface Purpose {
     class Local(val keyProvider: () -> SymmetricKey) : Purpose
 }
 
+@PasetoDslMarker
 class TokenServiceBuilder @PublishedApi internal constructor() {
     var rules: Rules = rules()
 

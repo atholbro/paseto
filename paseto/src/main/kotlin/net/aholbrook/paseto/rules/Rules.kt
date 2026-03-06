@@ -1,5 +1,6 @@
 package net.aholbrook.paseto.rules
 
+import net.aholbrook.paseto.PasetoDslMarker
 import net.aholbrook.paseto.PasetoToken
 import net.aholbrook.paseto.exception.MultipleValidationExceptions
 import net.aholbrook.paseto.exception.PasetoTokenException
@@ -57,6 +58,7 @@ class Rules internal constructor(@PublishedApi internal val rules: List<Rule>) {
 inline fun <reified T> Map<Rule, RuleResult>.findByTypeOrNull(): Pair<Rule, RuleResult>? =
     entries.find { it.key::class == T::class }?.let { it.key to it.value }
 
+@PasetoDslMarker
 class RulesBuilder @PublishedApi internal constructor() {
     var forAudience: ForAudience? = null
     var identifiedBy: IdentifiedBy? = null

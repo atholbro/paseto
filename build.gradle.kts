@@ -12,11 +12,18 @@ plugins {
     alias(libs.plugins.gradleVersions)
     alias(libs.plugins.gradleVersions.filter)
     alias(libs.plugins.gradleVersions.update)
+    alias(libs.plugins.binaryCompatibilityValidator)
 }
 
 repositories {
     mavenLocal()
     mavenCentral()
+}
+
+apiValidation {
+    apiDumpDirectory = ".api-validation"
+    nonPublicMarkers += "net.aholbrook.paseto.InternalApi"
+    ignoredProjects.addAll(listOf("vector-gen"))
 }
 
 allprojects {
@@ -77,4 +84,8 @@ allprojects {
         buildUponDefaultConfig = true
         config.setFrom(files("${project.rootDir}/detekt-config.yml"))
     }
+}
+
+tasks.check {
+    dependsOn(tasks.apiCheck)
 }

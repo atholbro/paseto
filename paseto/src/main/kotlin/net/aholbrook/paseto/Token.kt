@@ -21,6 +21,7 @@ data class PasetoToken internal constructor(
     val footer: PasetoFooter?,
 )
 
+@PasetoDslMarker
 class PasetoTokenBuilder @PublishedApi internal constructor(clock: Clock) {
     var issuer: String? = null // iss
     var subject: String? = null // sub
@@ -64,6 +65,7 @@ data class ClaimFooter internal constructor(
     val claims: ClaimObject,
 ) : PasetoFooter
 
+@PasetoDslMarker
 class ClaimFooterBuilder @PublishedApi internal constructor() {
     var keyId: String? = null // kid
     var wrappedKey: String? = null // wpk
@@ -116,4 +118,12 @@ fun PasetoFooter?.taint(): TaintedPasetoFooter? = when (this) {
     is StringFooter -> TaintedStringFooter(value)
 }
 
+/**
+ * Escape hatch for direct access to the token's claims as a [JsonObject].
+ *
+ * This is an internal API because it couples the caller to the `kotlinx.serialization` JSON implementation.
+ * It may change or be removed without notice if the underlying serialization strategy changes.
+ */
+
+@Annotations
 fun PasetoToken.claimsJson(): JsonObject = claims.toJson() as JsonObject

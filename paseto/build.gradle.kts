@@ -42,6 +42,10 @@ tasks {
         options.release.set(17)
     }
 
+    withType<AbstractPublishToMaven>().configureEach {
+        dependsOn(rootProject.tasks.named("check"))
+    }
+
     withType<AbstractArchiveTask>().configureEach {
         isPreserveFileTimestamps = false
         isReproducibleFileOrder = true

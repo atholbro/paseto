@@ -60,3 +60,9 @@ update-check:
 # Automatically updates all dependencies in the version catalog.
 update-apply:
     {{gradlew}} versionCatalogUpdate
+
+api-check:
+    {{gradlew}} apiCheck
+
+api-dump:
+    {{gradlew}} apiDump
