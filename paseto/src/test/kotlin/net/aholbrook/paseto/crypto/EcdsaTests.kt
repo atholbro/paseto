@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import java.math.BigInteger
+import kotlin.io.encoding.Base64
 
 private val secretKey = p384Generate().first
 private val publicKey = p384SkToPk(secretKey)
@@ -405,18 +406,11 @@ class EcdsaTests {
 
     @Test
     fun `p384EncodeSkPkcs8 works correctly`() {
-        val sk = byteArrayOf(
-            10, 105, 47, -3, 40, 94, -72, -105, 116, -86, 106, -88, 55, 127, -12, -56, 82, -48, -91, -94, 12, -6, -121,
-            89, 112, -51, 116, 10, 48, 55, 121, -100, 68, -82, 115, 4, 38, -92, -47, -61, -123, -38, 33, 83, -112, -61,
-            85, -54,
-        )
+        val sk = Base64.Pem.decode("Cmkv/SheuJd0qmqoN3/0yFLQpaIM+odZcM10CjA3eZxErnMEJqTRw4XaIVOQw1XK")
 
         val encoded = p384EncodeSkPkcs8(sk)
-        encoded shouldBe byteArrayOf(
-            48, 87, 2, 1, 0, 48, 16, 6, 7, 42, -122, 72, -50, 61, 2, 1, 6, 5, 43, -127, 4, 0, 34, 4, 64, 48, 62, 2, 1,
-            1, 4, 48, 10, 105, 47, -3, 40, 94, -72, -105, 116, -86, 106, -88, 55, 127, -12, -56, 82, -48, -91, -94, 12,
-            -6, -121, 89, 112, -51, 116, 10, 48, 55, 121, -100, 68, -82, 115, 4, 38, -92, -47, -61, -123, -38, 33, 83,
-            -112, -61, 85, -54, -96, 7, 6, 5, 43, -127, 4, 0, 34,
+        encoded shouldBe Base64.Pem.decode(
+            "MFcCAQAwEAYHKoZIzj0CAQYFK4EEACIEQDA+AgEBBDAKaS/9KF64l3Sqaqg3f/TIUtClogz6h1lwzXQKMDd5nESucwQmpNHDhdohU5DDVcqgBwYFK4EEACI=",
         )
     }
 
@@ -453,19 +447,12 @@ class EcdsaTests {
 
     @Test
     fun `p384DecodeSkPkcs8 works correctly`() {
-        val encoded = byteArrayOf(
-            48, 87, 2, 1, 0, 48, 16, 6, 7, 42, -122, 72, -50, 61, 2, 1, 6, 5, 43, -127, 4, 0, 34, 4, 64, 48, 62, 2, 1,
-            1, 4, 48, 10, 105, 47, -3, 40, 94, -72, -105, 116, -86, 106, -88, 55, 127, -12, -56, 82, -48, -91, -94, 12,
-            -6, -121, 89, 112, -51, 116, 10, 48, 55, 121, -100, 68, -82, 115, 4, 38, -92, -47, -61, -123, -38, 33, 83,
-            -112, -61, 85, -54, -96, 7, 6, 5, 43, -127, 4, 0, 34,
+        val encoded = Base64.Pem.decode(
+            "MFcCAQAwEAYHKoZIzj0CAQYFK4EEACIEQDA+AgEBBDAKaS/9KF64l3Sqaqg3f/TIUtClogz6h1lwzXQKMDd5nESucwQmpNHDhdohU5DDVcqgBwYFK4EEACI=",
         )
 
         val sk = p384DecodeSkPkcs8(encoded)
-        sk shouldBe byteArrayOf(
-            10, 105, 47, -3, 40, 94, -72, -105, 116, -86, 106, -88, 55, 127, -12, -56, 82, -48, -91, -94, 12, -6, -121,
-            89, 112, -51, 116, 10, 48, 55, 121, -100, 68, -82, 115, 4, 38, -92, -47, -61, -123, -38, 33, 83, -112, -61,
-            85, -54,
-        )
+        sk shouldBe Base64.Pem.decode("Cmkv/SheuJd0qmqoN3/0yFLQpaIM+odZcM10CjA3eZxErnMEJqTRw4XaIVOQw1XK")
     }
 
     @Test
@@ -574,17 +561,11 @@ class EcdsaTests {
 
     @Test
     fun `p384EncodeSkSec1 works correctly`() {
-        val sk = byteArrayOf(
-            10, 105, 47, -3, 40, 94, -72, -105, 116, -86, 106, -88, 55, 127, -12, -56, 82, -48, -91, -94, 12, -6, -121,
-            89, 112, -51, 116, 10, 48, 55, 121, -100, 68, -82, 115, 4, 38, -92, -47, -61, -123, -38, 33, 83, -112, -61,
-            85, -54,
-        )
+        val sk = Base64.Pem.decode("Cmkv/SheuJd0qmqoN3/0yFLQpaIM+odZcM10CjA3eZxErnMEJqTRw4XaIVOQw1XK")
 
         val encoded = p384EncodeSkSec1(sk)
-        encoded shouldBe byteArrayOf(
-            48, 62, 2, 1, 1, 4, 48, 10, 105, 47, -3, 40, 94, -72, -105, 116, -86, 106, -88, 55, 127, -12, -56, 82, -48,
-            -91, -94, 12, -6, -121, 89, 112, -51, 116, 10, 48, 55, 121, -100, 68, -82, 115, 4, 38, -92, -47, -61, -123,
-            -38, 33, 83, -112, -61, 85, -54, -96, 7, 6, 5, 43, -127, 4, 0, 34,
+        encoded shouldBe Base64.Pem.decode(
+            "MIGkAgEBBDAKaS/9KF64l3Sqaqg3f/TIUtClogz6h1lwzXQKMDd5nESucwQmpNHDhdohU5DDVcqgBwYFK4EEACKhZANiAAQg6yyTeUvTOgcNWvv/q69vIHTi3qX5P7pJzaRtMkKXuW/vWRzzfGGszn52GbqO9ZUvvfwE35divaZY5MJ5e55HR9XdWS1ty+AKgq0BUopX1NLYgppngincGmpPFI4YEjU=",
         )
     }
 
@@ -621,18 +602,10 @@ class EcdsaTests {
 
     @Test
     fun `p384DecodeSkSec1 works correctly`() {
-        val encoded = byteArrayOf(
-            48, 62, 2, 1, 1, 4, 48, 10, 105, 47, -3, 40, 94, -72, -105, 116, -86, 106, -88, 55, 127, -12, -56, 82, -48,
-            -91, -94, 12, -6, -121, 89, 112, -51, 116, 10, 48, 55, 121, -100, 68, -82, 115, 4, 38, -92, -47, -61, -123,
-            -38, 33, 83, -112, -61, 85, -54, -96, 7, 6, 5, 43, -127, 4, 0, 34,
-        )
+        val encoded = Base64.Pem.decode("MD4CAQEEMAppL/0oXriXdKpqqDd/9MhS0KWiDPqHWXDNdAowN3mcRK5zBCak0cOF2iFTkMNVyqAHBgUrgQQAIg==")
 
         val sk = p384DecodeSkSec1(encoded)
-        sk shouldBe byteArrayOf(
-            10, 105, 47, -3, 40, 94, -72, -105, 116, -86, 106, -88, 55, 127, -12, -56, 82, -48, -91, -94, 12, -6, -121,
-            89, 112, -51, 116, 10, 48, 55, 121, -100, 68, -82, 115, 4, 38, -92, -47, -61, -123, -38, 33, 83, -112, -61,
-            85, -54,
-        )
+        sk shouldBe Base64.Pem.decode("Cmkv/SheuJd0qmqoN3/0yFLQpaIM+odZcM10CjA3eZxErnMEJqTRw4XaIVOQw1XK")
     }
 
     @Test
@@ -716,34 +689,20 @@ class EcdsaTests {
 
     @Test
     fun `p384EncodePkSpki works correctly`() {
-        val pk = byteArrayOf(
-            3, -46, 91, 61, -87, 49, -70, 0, -50, 92, -48, 21, 98, 64, -113, -5, -17, 46, -6, -83, 20, 95, -26, -2,
-            -119, 84, 1, -14, -13, -64, 11, -3, 71, 110, 102, 102, 53, 100, -15, 105, 61, -87, 8, -70, -122, 86, -116,
-            -4, -125,
-        )
+        val pk = Base64.Pem.decode("A9JbPakxugDOXNAVYkCP++8u+q0UX+b+iVQB8vPAC/1HbmZmNWTxaT2pCLqGVoz8gw==")
 
         val encoded = p384EncodePkSpki(pk)
-        encoded shouldBe byteArrayOf(
-            48, 70, 48, 16, 6, 7, 42, -122, 72, -50, 61, 2, 1, 6, 5, 43, -127, 4, 0, 34, 3, 50, 0, 3, -46, 91, 61, -87,
-            49, -70, 0, -50, 92, -48, 21, 98, 64, -113, -5, -17, 46, -6, -83, 20, 95, -26, -2, -119, 84, 1, -14, -13,
-            -64, 11, -3, 71, 110, 102, 102, 53, 100, -15, 105, 61, -87, 8, -70, -122, 86, -116, -4, -125,
+        encoded shouldBe Base64.Pem.decode(
+            "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE0ls9qTG6AM5c0BViQI/77y76rRRf5v6JVAHy88AL/UduZmY1ZPFpPakIuoZWjPyDezBTtokEMtobGzLAHPkKdZF09L+BOcN0zFANkDm2TUkF+sRKbjcAiD0JqFSHYdeD",
         )
     }
 
     @Test
     fun `p384DecodePkSpki works correctly`() {
-        val encoded = byteArrayOf(
-            48, 70, 48, 16, 6, 7, 42, -122, 72, -50, 61, 2, 1, 6, 5, 43, -127, 4, 0, 34, 3, 50, 0, 3, -46, 91, 61, -87,
-            49, -70, 0, -50, 92, -48, 21, 98, 64, -113, -5, -17, 46, -6, -83, 20, 95, -26, -2, -119, 84, 1, -14, -13,
-            -64, 11, -3, 71, 110, 102, 102, 53, 100, -15, 105, 61, -87, 8, -70, -122, 86, -116, -4, -125,
-        )
+        val encoded = Base64.Pem.decode("MEYwEAYHKoZIzj0CAQYFK4EEACIDMgAD0ls9qTG6AM5c0BViQI/77y76rRRf5v6JVAHy88AL/UduZmY1ZPFpPakIuoZWjPyD")
 
         val pk = p384DecodePkSpki(encoded)
-        pk shouldBe byteArrayOf(
-            3, -46, 91, 61, -87, 49, -70, 0, -50, 92, -48, 21, 98, 64, -113, -5, -17, 46, -6, -83, 20, 95, -26, -2,
-            -119, 84, 1, -14, -13, -64, 11, -3, 71, 110, 102, 102, 53, 100, -15, 105, 61, -87, 8, -70, -122, 86, -116,
-            -4, -125,
-        )
+        pk shouldBe Base64.Pem.decode("A9JbPakxugDOXNAVYkCP++8u+q0UX+b+iVQB8vPAC/1HbmZmNWTxaT2pCLqGVoz8gw==")
     }
 
     @Test

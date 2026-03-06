@@ -74,7 +74,10 @@ class AsymmetricPublicKey private constructor(private val material: ByteArray, v
 
             Version.V3 -> p384EncodePkSpki(material)
 
-            Version.V2, Version.V4 -> Ed25519PublicKeyParameters(material, 0).let {
+            Version.V2, Version.V4 -> Ed25519PublicKeyParameters(
+                material.copyOfRange(0, ED25519_SECRETKEYBYTES - ED25519_PUBLICKEYBYTES),
+                0
+            ).let {
                 SubjectPublicKeyInfo(
                     AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519),
                     it.encoded,
@@ -174,7 +177,7 @@ class AsymmetricPublicKey private constructor(private val material: ByteArray, v
             )
 
             Version.V3 -> ofRawBytes(
-                p384SkToPk(secretKey.getKeyMaterialFor(Version.V1, Purpose.PUBLIC)),
+                p384SkToPk(secretKey.getKeyMaterialFor(Version.V3, Purpose.PUBLIC)),
                 Version.V3,
             )
 
@@ -214,10 +217,10 @@ class AsymmetricSecretKey private constructor(private val material: ByteArray, v
     fun toHex(): String = Hex.toHexString(material)
     fun toBase64Url(): String = Base64.UrlSafe.encode(material)
     fun toPem(): String {
-        val der = when (version) {
-            Version.V1 -> material
+        val (der, type) = when (version) {
+            Version.V1 -> Pair(material, "PRIVATE KEY")
 
-            Version.V3 -> p384EncodeSkSec1(material)
+            Version.V3 -> Pair(p384EncodeSkSec1(material), "EC PRIVATE KEY")
 
             Version.V2, Version.V4 -> {
                 val rawKey = if (material.size == ED25519_SECRETKEYBYTES) {
@@ -225,15 +228,20 @@ class AsymmetricSecretKey private constructor(private val material: ByteArray, v
                 } else {
                     material
                 }
-                PrivateKeyInfo(
-                    AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519),
-                    DEROctetString(rawKey),
-                ).encoded
+
+                Pair(
+                    PrivateKeyInfo(
+                        AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519),
+                        DEROctetString(rawKey),
+                    ).encoded,
+                    "PRIVATE KEY"
+                )
             }
         }
+
         return StringWriter().also { sw ->
             PemWriter(sw).use { pw ->
-                pw.writeObject(PemObject("PRIVATE KEY", der))
+                pw.writeObject(PemObject(type, der))
             }
         }.toString()
     }

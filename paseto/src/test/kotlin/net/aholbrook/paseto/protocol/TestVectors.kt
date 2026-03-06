@@ -84,16 +84,20 @@ class TestVectorsTests {
     }
 
     companion object {
-        private fun testPemLoadingPublicKey(paseto: Paseto, vector: TestVector) {
+        private fun testPemPublicKey(paseto: Paseto, vector: TestVector) {
             val pemKey = AsymmetricPublicKey.ofPem(vector.publicKeyPem!!, paseto.version)
             val hexKey = AsymmetricPublicKey.ofHex(vector.publicKey!!, paseto.version)
             pemKey shouldBe hexKey
+
+            hexKey.toPem().trim() shouldBe vector.publicKeyPem.trim()
         }
 
-        private fun testPemLoadingSecretKey(paseto: Paseto, vector: TestVector) {
+        private fun testPemSecretKey(paseto: Paseto, vector: TestVector) {
             val pemKey = AsymmetricSecretKey.ofPem(vector.secretKeyPem!!, paseto.version)
             val hexKey = AsymmetricSecretKey.ofHex(vector.secretKey!!, paseto.version)
             pemKey shouldBe hexKey
+
+            hexKey.toPem().trim() shouldBe vector.secretKeyPem.trim()
         }
 
         private fun testEncrypt(paseto: Paseto, vector: TestVector) {
@@ -176,7 +180,7 @@ class TestVectorsTests {
                             "${vectors.name} - ${vector.name}: pem loading public key",
                             version,
                             vector,
-                            ::testPemLoadingPublicKey,
+                            ::testPemPublicKey,
                         ).takeIf { !vector.expectFail && vector.publicKeyPem != null && vector.publicKey != null },
 
                         // protocol
@@ -184,7 +188,7 @@ class TestVectorsTests {
                             "${vectors.name} - ${vector.name}: pem loading secret key",
                             version,
                             vector,
-                            ::testPemLoadingSecretKey,
+                            ::testPemSecretKey,
                         ).takeIf { !vector.expectFail && vector.secretKeyPem != null && vector.secretKey != null },
 
                         Arguments.of(

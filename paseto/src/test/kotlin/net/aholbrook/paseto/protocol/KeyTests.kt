@@ -17,6 +17,7 @@ import net.aholbrook.paseto.exception.KeyVersionException
 import net.aholbrook.paseto.exception.Pkcs12LoadException
 import net.aholbrook.paseto.keyV1Public
 import net.aholbrook.paseto.keyV2Public
+import net.aholbrook.paseto.keyV3Public
 import net.aholbrook.paseto.keyV4Local
 import net.aholbrook.paseto.keyV4Public
 import net.aholbrook.paseto.protocol.KeyPair.Companion.pkcs12Load
@@ -41,10 +42,14 @@ import kotlin.io.encoding.Base64
 class KeyTests {
     companion object {
         @JvmStatic
-        fun keyPairsAllVersions(): Stream<Arguments> = listOf(keyV1Public, keyV2Public, keyV4Public).map { Arguments.of(it) }.stream()
+        fun keyPairsAllVersions(): Stream<Arguments> = listOf(
+            keyV1Public, keyV2Public, keyV3Public, keyV4Public
+        ).map { Arguments.of(it) }.stream()
 
         @JvmStatic
-        fun allVersions(): Stream<Arguments> = listOf(Version.V1, Version.V2, Version.V4).map { Arguments.of(it) }.stream()
+        fun allVersions(): Stream<Arguments> = listOf(
+            Version.V1, Version.V2, Version.V3, Version.V4
+        ).map { Arguments.of(it) }.stream()
     }
 
     @ParameterizedTest

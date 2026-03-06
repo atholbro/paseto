@@ -4,6 +4,7 @@ import net.aholbrook.paseto.exception.ByteArrayLengthException
 import net.aholbrook.paseto.exception.KeyV3Exception
 import org.bouncycastle.asn1.ASN1ObjectIdentifier
 import org.bouncycastle.asn1.ASN1Primitive
+import org.bouncycastle.asn1.DERBitString
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo
 import org.bouncycastle.asn1.sec.ECPrivateKey
 import org.bouncycastle.asn1.sec.SECObjectIdentifiers
@@ -220,8 +221,10 @@ internal fun p384EncodeSkSec1(sk: ByteArray): ByteArray {
         throw KeyV3Exception("Invalid P-384 private key")
     }
 
+    val publicKey = DERBitString(params.g.multiply(d).normalize().getEncoded(false))
+
     @Suppress("MagicNumber")
-    val secretKey = ECPrivateKey(384, d, null, SECObjectIdentifiers.secp384r1)
+    val secretKey = ECPrivateKey(384, d, publicKey, SECObjectIdentifiers.secp384r1)
     return secretKey.encoded
 }
 
@@ -261,7 +264,7 @@ internal fun p384EncodePkSpki(pk: ByteArray): ByteArray {
 
     return SubjectPublicKeyInfo(
         AlgorithmIdentifier(X9ObjectIdentifiers.id_ecPublicKey, SECObjectIdentifiers.secp384r1),
-        q.getEncoded(true),
+        q.getEncoded(false), // false only for saving keys
     ).encoded
 }
 
