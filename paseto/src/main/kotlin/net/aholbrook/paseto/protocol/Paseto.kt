@@ -13,8 +13,6 @@ import net.aholbrook.paseto.exception.PasetoParseException
 import kotlin.io.encoding.Base64
 
 internal const val SEPARATOR: String = "."
-internal const val PURPOSE_LOCAL: String = "local"
-internal const val PURPOSE_PUBLIC: String = "public"
 
 enum class Version {
     V1,
@@ -108,12 +106,6 @@ internal fun split(token: String): PasetoSections {
     }
 
     throw PasetoParseException(PasetoParseException.Reason.MISSING_SECTIONS, token)
-}
-
-internal fun checkHeader(token: String, sections: PasetoSections, expectedHeader: String) {
-    if (!token.startsWith(expectedHeader)) {
-        throw InvalidHeaderException(sections.version + SEPARATOR + sections.purpose + SEPARATOR, expectedHeader, token)
-    }
 }
 
 internal fun decodeFooter(token: String, sections: PasetoSections, expectedFooter: String): String {
