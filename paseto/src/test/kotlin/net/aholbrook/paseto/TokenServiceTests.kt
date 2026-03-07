@@ -11,17 +11,23 @@ import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.serialization.json.Json
 import net.aholbrook.paseto.exception.CannotSignWithoutSecretKey
+import net.aholbrook.paseto.exception.FooterExceedsMaxDepthException
+import net.aholbrook.paseto.exception.FooterExceedsMaxKeysException
+import net.aholbrook.paseto.exception.FooterExceedsMaxLengthException
+import net.aholbrook.paseto.exception.GenericInvalidFooterException
 import net.aholbrook.paseto.exception.ImplicitAssertionsNotSupportedException
-import net.aholbrook.paseto.exception.InvalidFooterException
+import net.aholbrook.paseto.exception.MissingClaimException
 import net.aholbrook.paseto.exception.MultipleValidationExceptions
 import net.aholbrook.paseto.exception.PasetoParseException
 import net.aholbrook.paseto.exception.TokenExpiresBeforeIssuedException
 import net.aholbrook.paseto.exception.TokenIsNotValidUntilAfterExpiration
 import net.aholbrook.paseto.protocol.KeyPair
 import net.aholbrook.paseto.protocol.Version
+import net.aholbrook.paseto.rules.CustomRule
 import net.aholbrook.paseto.rules.IssuedInPast
 import net.aholbrook.paseto.rules.NotBefore
 import net.aholbrook.paseto.rules.NotExpired
+import net.aholbrook.paseto.rules.rules
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -191,6 +197,24 @@ class TokenServiceTests {
 
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
+    fun `can apply externally built rules in token service builder`(version: Version, purpose: Purpose) {
+        val rules = rules {
+            customRules += CustomRule { token, _, _ ->
+                throw MissingClaimException("external", token)
+            }
+        }
+        val service = tokenService(version, purpose) {
+            rules(rules)
+        }
+
+        val ex = shouldThrow<MultipleValidationExceptions> {
+            service.encode(pasetoToken { })
+        }
+        ex.exceptions.map { it::class } shouldContain MissingClaimException::class
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
     fun `rejects a token that expires when it was issued`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose)
@@ -315,7 +339,7 @@ class TokenServiceTests {
         }
 
         val encoded = service.encode(token)
-        shouldThrow<InvalidFooterException> {
+        shouldThrow<GenericInvalidFooterException> {
             service.decode(encoded, footer("wrong"))
         }
     }
@@ -360,6 +384,72 @@ class TokenServiceTests {
         val encoded = service.encode(token)
         val decoded = service.decode(encoded, token.footer)
         decoded.footer shouldBe footer("{")
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `footer validation rejects footer that exceeds max length`(version: Version, purpose: Purpose) {
+        val token = pasetoToken {
+            issuedAt = Instant.now()
+            expiresAt = Instant.now().plus(Duration.ofHours(1))
+            footer("123456")
+        }
+        val encoded = tokenService(version, purpose).encode(token)
+        val service = tokenService(version, purpose) {
+            footerValidation {
+                maxLength = 5
+            }
+        }
+
+        val ex = shouldThrow<FooterExceedsMaxLengthException> {
+            service.decode(encoded, token.footer)
+        }
+        ex.length shouldBe 6
+        ex.max shouldBe 5
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `footer validation rejects footer that exceeds max depth`(version: Version, purpose: Purpose) {
+        val token = pasetoToken {
+            issuedAt = Instant.now()
+            expiresAt = Instant.now().plus(Duration.ofHours(1))
+            footer("{\"a\":{\"b\":1}}")
+        }
+        val encoded = tokenService(version, purpose).encode(token)
+        val service = tokenService(version, purpose) {
+            footerValidation {
+                maxDepth = 1
+            }
+        }
+
+        val ex = shouldThrow<FooterExceedsMaxDepthException> {
+            service.decode(encoded, token.footer)
+        }
+        ex.depth shouldBe 2
+        ex.max shouldBe 1
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `footer validation rejects footer that exceeds max keys`(version: Version, purpose: Purpose) {
+        val token = pasetoToken {
+            issuedAt = Instant.now()
+            expiresAt = Instant.now().plus(Duration.ofHours(1))
+            footer("{\"a\":1,\"b\":2}")
+        }
+        val encoded = tokenService(version, purpose).encode(token)
+        val service = tokenService(version, purpose) {
+            footerValidation {
+                maxKeys = 1
+            }
+        }
+
+        val ex = shouldThrow<FooterExceedsMaxKeysException> {
+            service.decode(encoded, token.footer)
+        }
+        ex.keys shouldBe 2
+        ex.max shouldBe 1
     }
 
     @ParameterizedTest
@@ -456,7 +546,7 @@ class TokenServiceTests {
         val expectedFooter = footer("not the string")
 
         val encoded = service.encode(token)
-        shouldThrow<InvalidFooterException> {
+        shouldThrow<GenericInvalidFooterException> {
             service.decode(encoded, expectedFooter)
         }
     }
@@ -479,7 +569,7 @@ class TokenServiceTests {
         val expectedFooter = footer { }
 
         val encoded = service.encode(token)
-        shouldThrow<InvalidFooterException> {
+        shouldThrow<GenericInvalidFooterException> {
             service.decode(encoded, expectedFooter)
         }
     }
@@ -531,7 +621,7 @@ class TokenServiceTests {
 
         try {
             shouldNotThrow<IllegalArgumentException> {
-                (json.decodeFooter("abc") as StringFooter).value shouldBe "abc"
+                (json.decodeFooter(FooterValidation(), "abc") as StringFooter).value shouldBe "abc"
             }
         } finally {
             unmockkAll()
@@ -571,7 +661,7 @@ class TokenServiceTests {
     @MethodSource("allServiceConfigurations")
     fun `can encode and decode a token with custom claims in both the token and footer`(
         version: Version,
-        purpose: Purpose
+        purpose: Purpose,
     ) {
         val token = pasetoToken {
             claims {

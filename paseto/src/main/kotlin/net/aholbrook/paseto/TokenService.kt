@@ -2,15 +2,18 @@
 
 package net.aholbrook.paseto
 
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import net.aholbrook.paseto.exception.CannotSignWithoutSecretKey
+import net.aholbrook.paseto.exception.FooterExceedsMaxDepthException
+import net.aholbrook.paseto.exception.FooterExceedsMaxKeysException
+import net.aholbrook.paseto.exception.FooterExceedsMaxLengthException
 import net.aholbrook.paseto.exception.ImplicitAssertionsNotSupportedException
 import net.aholbrook.paseto.protocol.KeyPair
 import net.aholbrook.paseto.protocol.Paseto
 import net.aholbrook.paseto.protocol.SymmetricKey
 import net.aholbrook.paseto.protocol.Version
 import net.aholbrook.paseto.protocol.extractFooter
+import net.aholbrook.paseto.protocol.jsonCountDepthAndKeys
 import net.aholbrook.paseto.rules.Rule
 import net.aholbrook.paseto.rules.Rules
 import net.aholbrook.paseto.rules.RulesBuilder
@@ -24,7 +27,15 @@ sealed interface Purpose {
     class Local(val keyProvider: () -> SymmetricKey) : Purpose
 }
 
-data class FooterValidation(val maxLength: Int = 8192, val maxDepth: Int = 2, val maxKeys: Int = 512)
+internal data class FooterValidation(val maxLength: Int = 8192, val maxDepth: Int = 2, val maxKeys: Int = 512) {
+    operator fun invoke(footer: String) {
+        if (footer.length > maxLength) throw FooterExceedsMaxLengthException(footer.length, maxLength)
+        val (depth, keys) = jsonCountDepthAndKeys(footer)
+
+        if (depth > maxDepth) throw FooterExceedsMaxDepthException(depth, maxDepth)
+        if (keys > maxKeys) throw FooterExceedsMaxKeysException(keys, maxKeys)
+    }
+}
 
 @PasetoDslMarker
 class FooterValidationBuilder @PublishedApi internal constructor() {
@@ -72,6 +83,7 @@ class TokenServiceBuilder @PublishedApi internal constructor() {
                 PublicTokenService(
                     paseto = version.paseto,
                     keyProvider = purpose.keyProvider,
+                    footerValidation = footerValidation,
                     rules = rules,
                 )
             }
@@ -80,6 +92,7 @@ class TokenServiceBuilder @PublishedApi internal constructor() {
                 LocalTokenService(
                     paseto = version.paseto,
                     keyProvider = purpose.keyProvider,
+                    footerValidation = footerValidation,
                     rules = rules,
                 )
             }
@@ -113,6 +126,7 @@ internal class LocalTokenService internal constructor(
     private val paseto: Paseto,
     private val keyProvider: () -> SymmetricKey,
     private val rules: Rules,
+    private val footerValidation: FooterValidation,
     private val json: Json = Json { explicitNulls = false },
 ) : TokenService {
     override fun encode(token: PasetoToken, implicitAssertion: String): String {
@@ -123,6 +137,7 @@ internal class LocalTokenService internal constructor(
         rules.verifyAll(token, Rule.Mode.ENCODE)
         val encoded = json.encodeToString(PasetoTokenSerializer, token)
         val encodedFooter = json.encodeFooter(token.footer)
+        footerValidation(encoded)
         return paseto.encrypt(encoded.toByteArray(Charsets.UTF_8), keyProvider(), encodedFooter, implicitAssertion)
     }
 
@@ -133,20 +148,21 @@ internal class LocalTokenService internal constructor(
 
         val (encoded, footer) = paseto.decrypt(token, keyProvider(), json.encodeFooter(footer), implicitAssertion)
         var decoded = json.decodeFromString(PasetoTokenSerializer, encoded)
-        json.decodeFooter(footer).let { footer -> decoded = decoded.copy(footer = footer) }
+        json.decodeFooter(footerValidation, footer).let { footer -> decoded = decoded.copy(footer = footer) }
 
         rules.verifyAll(decoded, Rule.Mode.DECODE)
         return decoded
     }
 
     override fun insecureGetFooter(token: String): TaintedPasetoFooter? =
-        json.decodeFooter(extractFooter(token)).taint()
+        json.decodeFooter(footerValidation, extractFooter(token)).taint()
 }
 
 internal class PublicTokenService internal constructor(
     private val paseto: Paseto,
     private val keyProvider: () -> KeyPair,
     private val rules: Rules,
+    private val footerValidation: FooterValidation,
     private val json: Json = Json { explicitNulls = false },
 ) : TokenService {
     override fun encode(token: PasetoToken, implicitAssertion: String): String {
@@ -158,6 +174,7 @@ internal class PublicTokenService internal constructor(
         rules.verifyAll(token, Rule.Mode.ENCODE)
         val encoded = json.encodeToString(PasetoTokenSerializer, token)
         val encodedFooter = json.encodeFooter(token.footer)
+        footerValidation(encoded)
         val keyPair = keyProvider()
         if (keyPair.secretKey == null) {
             throw CannotSignWithoutSecretKey()
@@ -178,14 +195,14 @@ internal class PublicTokenService internal constructor(
             implicitAssertion = implicitAssertion,
         )
         var decoded = json.decodeFromString(PasetoTokenSerializer, encoded)
-        json.decodeFooter(footer).let { footer -> decoded = decoded.copy(footer = footer) }
+        json.decodeFooter(footerValidation, footer).let { footer -> decoded = decoded.copy(footer = footer) }
 
         rules.verifyAll(decoded, Rule.Mode.DECODE)
         return decoded
     }
 
     override fun insecureGetFooter(token: String): TaintedPasetoFooter? =
-        json.decodeFooter(extractFooter(token)).taint()
+        json.decodeFooter(footerValidation, extractFooter(token)).taint()
 }
 
 private fun Json.encodeFooter(footer: PasetoFooter): String = when (footer) {
@@ -193,12 +210,12 @@ private fun Json.encodeFooter(footer: PasetoFooter): String = when (footer) {
     is StringFooter -> footer.value
 }
 
-internal fun Json.decodeFooter(footer: String): PasetoFooter = try {
-    decodeFromString(ClaimFooterSerializer, footer)
-} catch (_: SerializationException) {
-    StringFooter(footer)
-} catch (_: IllegalArgumentException) {
-    StringFooter(footer)
-} catch (_: Exception) {
-    StringFooter("")
+internal fun Json.decodeFooter(footerValidation: FooterValidation, footer: String): PasetoFooter {
+    footerValidation(footer)
+
+    return try {
+        decodeFromString(ClaimFooterSerializer, footer)
+    } catch (_: Exception) {
+        StringFooter(footer)
+    }
 }

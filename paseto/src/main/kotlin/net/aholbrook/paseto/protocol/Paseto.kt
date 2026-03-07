@@ -7,6 +7,7 @@ import net.aholbrook.paseto.crypto.ED25519_PUBLICKEYBYTES
 import net.aholbrook.paseto.crypto.ED25519_SECRETKEYBYTES
 import net.aholbrook.paseto.crypto.constantTimeEquals
 import net.aholbrook.paseto.decodeOrNull
+import net.aholbrook.paseto.exception.GenericInvalidFooterException
 import net.aholbrook.paseto.exception.InvalidFooterException
 import net.aholbrook.paseto.exception.InvalidHeaderException
 import net.aholbrook.paseto.exception.PasetoParseException
@@ -118,7 +119,7 @@ internal fun decodeFooter(token: String, sections: PasetoSections, expectedFoote
     // is fine though, as the footer is covered by the token PAE signature. This check exists for proper error
     // reporting, and is not a requirement for security.
     if (!decodedFooter.constantTimeEquals(expectedFooter)) {
-        throw InvalidFooterException(decodedFooter, expectedFooter, token)
+        throw GenericInvalidFooterException(decodedFooter, expectedFooter)
     }
 
     return decodedFooter
