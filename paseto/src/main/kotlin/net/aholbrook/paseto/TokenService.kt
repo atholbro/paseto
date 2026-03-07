@@ -19,8 +19,8 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 sealed interface Purpose {
-    class Public(val keyProvider: () -> KeyPair) : Purpose
-    class Local(val keyProvider: () -> SymmetricKey) : Purpose
+    class Public(val keyProvider: (footer: TaintedFooter) -> KeyPair) : Purpose
+    class Local(val keyProvider: (footer: TaintedFooter) -> SymmetricKey) : Purpose
 }
 
 @PasetoDslMarker
@@ -81,23 +81,23 @@ inline fun tokenService(version: Version, purpose: Purpose, init: TokenServiceBu
 
 sealed interface TokenService {
     fun encode(token: Token, implicitAssertion: String = ""): String
-    fun decode(token: String, footer: PasetoFooter? = null, implicitAssertion: String = ""): Token
+    fun decode(token: String, footer: Footer? = null, implicitAssertion: String = ""): Token
 
     /**
      * Decode the token's footer without verifying the token.
      *
-     * This is useful if the token footer contains data required to decode the token. Returns an [TaintedPasetoFooter]
+     * This is useful if the token footer contains data required to decode the token. Returns an [TaintedFooter]
      * to prevent misuse as this footer should **never** be used when checking the footer during decoding.
      *
      * @param [token] paseto token to decode the footer of.
-     * @return [TaintedPasetoFooter] with the decoded footer contents.
+     * @return [TaintedFooter] with the decoded footer contents.
      */
-    fun insecureGetFooter(token: String): TaintedPasetoFooter?
+    fun insecureGetFooter(token: String): TaintedFooter
 }
 
 internal class LocalTokenService internal constructor(
     private val paseto: Paseto,
-    private val keyProvider: () -> SymmetricKey,
+    private val keyProvider: (footer: TaintedFooter) -> SymmetricKey,
     private val rules: Rules,
     private val footerOptions: FooterOptions,
     private val json: Json = Json { explicitNulls = false },
@@ -112,20 +112,20 @@ internal class LocalTokenService internal constructor(
         val encodedFooter = json.encodeFooter(footerOptions, token.footer)
         return paseto.encrypt(
             m = encoded.toByteArray(Charsets.UTF_8),
-            key = keyProvider(),
-            footer = encodedFooter ?: "",
+            key = keyProvider(token.footer.taint()),
+            footer = encodedFooter,
             implicitAssertion = implicitAssertion,
         )
     }
 
-    override fun decode(token: String, footer: PasetoFooter?, implicitAssertion: String): Token {
+    override fun decode(token: String, footer: Footer?, implicitAssertion: String): Token {
         if (implicitAssertion.isNotEmpty() && !paseto.supportsImplicitAssertion) {
             throw ImplicitAssertionsNotSupportedException(paseto.version)
         }
 
         val (encoded, footer) = paseto.decrypt(
             token = token,
-            key = keyProvider(),
+            key = keyProvider(insecureGetFooter(token)),
             footer = footer?.let { json.encodeFooter(footerOptions, it) },
             implicitAssertion = implicitAssertion,
         )
@@ -136,13 +136,13 @@ internal class LocalTokenService internal constructor(
         return decoded
     }
 
-    override fun insecureGetFooter(token: String): TaintedPasetoFooter? =
+    override fun insecureGetFooter(token: String): TaintedFooter =
         json.decodeFooter(footerOptions, extractFooter(token)).taint()
 }
 
 internal class PublicTokenService internal constructor(
     private val paseto: Paseto,
-    private val keyProvider: () -> KeyPair,
+    private val keyProvider: (footer: TaintedFooter) -> KeyPair,
     private val rules: Rules,
     private val footerOptions: FooterOptions,
     private val json: Json = Json { explicitNulls = false },
@@ -156,19 +156,19 @@ internal class PublicTokenService internal constructor(
         rules.verifyAll(token, Rule.Mode.ENCODE)
         val encoded = json.encodeToString(PasetoTokenSerializer, token)
         val encodedFooter = json.encodeFooter(footerOptions, token.footer)
-        val keyPair = keyProvider()
+        val keyPair = keyProvider(token.footer.taint())
         if (keyPair.secretKey == null) {
             throw CannotSignWithoutSecretKey()
         }
         return paseto.sign(
             m = encoded.toByteArray(Charsets.UTF_8),
             secretKey = keyPair.secretKey,
-            footer = encodedFooter ?: "",
+            footer = encodedFooter,
             implicitAssertion = implicitAssertion,
         )
     }
 
-    override fun decode(token: String, footer: PasetoFooter?, implicitAssertion: String): Token {
+    override fun decode(token: String, footer: Footer?, implicitAssertion: String): Token {
         // TODO expand service-test-vectors for v4 with implicit assertions
         if (implicitAssertion.isNotEmpty() && !paseto.supportsImplicitAssertion) {
             throw ImplicitAssertionsNotSupportedException(paseto.version)
@@ -176,7 +176,7 @@ internal class PublicTokenService internal constructor(
 
         val (encoded, footer) = paseto.verify(
             token = token,
-            publicKey = keyProvider().publicKey,
+            publicKey = keyProvider(insecureGetFooter(token)).publicKey,
             footer = footer?.let { json.encodeFooter(footerOptions, it) },
             implicitAssertion = implicitAssertion,
         )
@@ -187,6 +187,6 @@ internal class PublicTokenService internal constructor(
         return decoded
     }
 
-    override fun insecureGetFooter(token: String): TaintedPasetoFooter? =
+    override fun insecureGetFooter(token: String): TaintedFooter =
         json.decodeFooter(footerOptions, extractFooter(token)).taint()
 }

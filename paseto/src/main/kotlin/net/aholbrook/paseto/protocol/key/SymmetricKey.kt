@@ -1,16 +1,20 @@
 package net.aholbrook.paseto.protocol.key
 
 import net.aholbrook.paseto.crypto.randomBytes
+import net.aholbrook.paseto.exception.KeyClearedException
 import net.aholbrook.paseto.exception.KeyLengthException
 import net.aholbrook.paseto.exception.KeyPurposeException
-import net.aholbrook.paseto.exception.KeyReuseException
 import net.aholbrook.paseto.exception.KeyVersionException
 import net.aholbrook.paseto.protocol.Purpose
 import net.aholbrook.paseto.protocol.Version
 import org.bouncycastle.util.encoders.Hex
 import kotlin.io.encoding.Base64
 
-class SymmetricKey private constructor(private val material: ByteArray, val version: Version) {
+class SymmetricKey private constructor(
+    private val material: ByteArray,
+    val version: Version,
+    val lifecycle: KeyLifecycle,
+) {
     internal val purpose: Purpose = Purpose.LOCAL
     private var cleared: Boolean = false
 
@@ -20,18 +24,21 @@ class SymmetricKey private constructor(private val material: ByteArray, val vers
         }
     }
 
+    fun copy(lifecycle: KeyLifecycle = KeyLifecycle.EPHEMERAL): SymmetricKey =
+        SymmetricKey(material.copyOf(), version, lifecycle)
+
     fun toHex(): String {
-        if (cleared) throw KeyReuseException()
+        if (cleared) throw KeyClearedException()
         return Hex.toHexString(material)
     }
 
     fun toBase64Url(): String {
-        if (cleared) throw KeyReuseException()
+        if (cleared) throw KeyClearedException()
         return Base64.UrlSafe.encode(material)
     }
 
     internal fun getKeyMaterialFor(version: Version, purpose: Purpose): ByteArray {
-        if (cleared) throw KeyReuseException()
+        if (cleared) throw KeyClearedException()
         if (this.version != version) throw KeyVersionException(version, this.version)
         if (this.purpose != purpose) throw KeyPurposeException(purpose.toString(), this.purpose.toString())
         return material
@@ -40,6 +47,10 @@ class SymmetricKey private constructor(private val material: ByteArray, val vers
     internal fun clear() {
         material.fill(0)
         cleared = true
+    }
+
+    internal fun internalClear() {
+        if (lifecycle == KeyLifecycle.EPHEMERAL) clear()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -76,15 +87,19 @@ class SymmetricKey private constructor(private val material: ByteArray, val vers
 
     companion object {
         @JvmStatic
-        fun generate(version: Version) = ofRawBytes(randomBytes(version.symmetricKeySize), version)
+        fun generate(version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
+            ofRawBytes(randomBytes(version.symmetricKeySize), version, lifecycle)
 
         @JvmStatic
-        fun ofRawBytes(material: ByteArray, version: Version) = SymmetricKey(material, version)
+        fun ofRawBytes(material: ByteArray, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
+            SymmetricKey(material, version, lifecycle)
 
         @JvmStatic
-        fun ofHex(hex: String, version: Version) = SymmetricKey(Hex.decode(hex), version)
+        fun ofHex(hex: String, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
+            SymmetricKey(Hex.decode(hex), version, lifecycle)
 
         @JvmStatic
-        fun ofBase64Url(b64: String, version: Version) = SymmetricKey(Base64.UrlSafe.decode(b64), version)
+        fun ofBase64Url(b64: String, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
+            SymmetricKey(Base64.UrlSafe.decode(b64), version, lifecycle)
     }
 }

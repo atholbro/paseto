@@ -13,7 +13,6 @@ import kotlinx.serialization.json.encodeToStream
 import net.aholbrook.paseto.Purpose
 import net.aholbrook.paseto.ServiceTestVector
 import net.aholbrook.paseto.ServiceTestVectors
-import net.aholbrook.paseto.crypto.copy
 import net.aholbrook.paseto.crypto.withTestNonce
 import net.aholbrook.paseto.protocol.Version
 import net.aholbrook.paseto.protocol.key.AsymmetricPublicKey

@@ -33,7 +33,7 @@ class DecryptionException @InternalApi constructor(token: String) :
 open class InvalidFooterException @InternalApi constructor(msg: String, cause: Throwable? = null) :
     PasetoException(msg, cause)
 
-class GenericInvalidFooterException @InternalApi constructor(val given: String?, val expected: String) :
+class IncorrectFooterException @InternalApi constructor(val given: String?, val expected: String) :
     PasetoException("Invalid footer in token: \"$given\" expected: \"$expected\".")
 
 class FooterExceedsMaxLengthException @InternalApi constructor(val length: Int, val max: Int) :

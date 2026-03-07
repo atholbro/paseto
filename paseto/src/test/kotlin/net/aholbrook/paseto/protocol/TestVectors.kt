@@ -5,6 +5,7 @@ import io.kotest.matchers.shouldBe
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import net.aholbrook.paseto.InternalApi
 import net.aholbrook.paseto.crypto.withTestNonce
 import net.aholbrook.paseto.protocol.key.AsymmetricPublicKey
 import net.aholbrook.paseto.protocol.key.AsymmetricSecretKey

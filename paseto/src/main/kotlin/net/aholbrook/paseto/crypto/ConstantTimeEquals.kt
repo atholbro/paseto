@@ -15,7 +15,7 @@ import java.nio.charset.Charset
  * @param expected The expected byte array.
  * @return true if the arrays are equal, false if not.
  */
-internal fun ByteArray.constantTimeEquals(expected: ByteArray): Boolean {
+fun ByteArray.constantTimeEquals(expected: ByteArray): Boolean {
     if (size != expected.size) {
         var result = 0
         for (i in indices) {
@@ -44,5 +44,5 @@ internal fun ByteArray.constantTimeEquals(expected: ByteArray): Boolean {
  * @param expected The expected byte array.
  * @return true if the arrays are equal, false if not.
  */
-internal fun String.constantTimeEquals(expected: String, charset: Charset = Charsets.UTF_8): Boolean =
+fun String.constantTimeEquals(expected: String, charset: Charset = Charsets.UTF_8): Boolean =
     toByteArray(charset).constantTimeEquals(expected.toByteArray(charset))

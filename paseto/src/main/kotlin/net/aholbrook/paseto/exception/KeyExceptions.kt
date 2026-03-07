@@ -12,8 +12,8 @@ class KeyPurposeException @InternalApi constructor(val expected: String, val act
 class KeyVersionException @InternalApi constructor(val expected: Version, val actual: Version) :
     PasetoException("Got wrong Key version: $actual given, expected: $expected.")
 
-class KeyReuseException @InternalApi constructor() :
-    PasetoException("Key has already been used and cleared, please reload for each operation.")
+class KeyClearedException @InternalApi constructor() :
+    PasetoException("Key instance has already been consumed and cleared. Lpad a new key for each operation.")
 
 class KeyPemUnsupportedTypeException @InternalApi constructor(val type: String) :
     PasetoException("Unsupported PEM type: $type")

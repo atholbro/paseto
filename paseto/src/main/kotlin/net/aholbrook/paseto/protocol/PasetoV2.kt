@@ -54,7 +54,7 @@ internal object PasetoV2 : Paseto {
                     ".${Base64.UrlSafeNoPadding.encode(f)}"
                 }
         } finally {
-            key.clear()
+            key.internalClear()
             cleanup.forEach { it.run() }
         }
     }
@@ -97,7 +97,7 @@ internal object PasetoV2 : Paseto {
             // Convert from JSON
             return Pair(p.toString(Charsets.UTF_8), f)
         } finally {
-            key.clear()
+            key.internalClear()
         }
     }
 
@@ -126,7 +126,7 @@ internal object PasetoV2 : Paseto {
                     ".${Base64.UrlSafeNoPadding.encode(f)}"
                 }
         } finally {
-            secretKey.clear()
+            secretKey.internalClear()
         }
     }
 

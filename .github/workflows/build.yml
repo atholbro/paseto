@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-22.04
     container:
       image: eclipse-temurin:17.0.18_8-jdk-alpine-3.23

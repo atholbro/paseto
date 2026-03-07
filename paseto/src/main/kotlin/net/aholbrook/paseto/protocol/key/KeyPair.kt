@@ -33,6 +33,8 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
 
     val version: Version = publicKey.version
 
+    fun copy(): KeyPair = KeyPair(secretKey?.copy(), publicKey)
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -65,7 +67,7 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
 
     companion object {
         @JvmStatic
-        fun generate(version: Version): KeyPair {
+        fun generate(version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT): KeyPair {
             val (secretKey, publicKey) = when (version) {
                 Version.V1 -> rsaGenerate()
                 Version.V2 -> ed25519Generate()
@@ -74,14 +76,14 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
             }
 
             return KeyPair(
-                secretKey = AsymmetricSecretKey.ofRawBytes(secretKey, version),
+                secretKey = AsymmetricSecretKey.ofRawBytes(secretKey, version, lifecycle),
                 publicKey = AsymmetricPublicKey.ofRawBytes(publicKey, version),
             )
         }
 
         @JvmStatic
         @JvmOverloads
-        fun pkcs12Load(
+        fun ofPkcs12(
             keystoreFile: String,
             keystorePass: String,
             alias: String,

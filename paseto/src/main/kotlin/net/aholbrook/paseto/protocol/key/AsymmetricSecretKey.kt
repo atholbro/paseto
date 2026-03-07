@@ -7,10 +7,10 @@ import net.aholbrook.paseto.crypto.p384DecodeSkPkcs8
 import net.aholbrook.paseto.crypto.p384DecodeSkSec1
 import net.aholbrook.paseto.crypto.p384EncodeSkSec1
 import net.aholbrook.paseto.crypto.rsaPkcs1ToPkcs8
+import net.aholbrook.paseto.exception.KeyClearedException
 import net.aholbrook.paseto.exception.KeyLengthException
 import net.aholbrook.paseto.exception.KeyPemUnsupportedTypeException
 import net.aholbrook.paseto.exception.KeyPurposeException
-import net.aholbrook.paseto.exception.KeyReuseException
 import net.aholbrook.paseto.exception.KeyVersionException
 import net.aholbrook.paseto.protocol.Purpose
 import net.aholbrook.paseto.protocol.Version
@@ -23,7 +23,7 @@ import org.bouncycastle.internal.asn1.edec.EdECObjectIdentifiers
 import org.bouncycastle.util.encoders.Hex
 import kotlin.io.encoding.Base64
 
-class AsymmetricSecretKey private constructor(material: ByteArray, val version: Version) {
+class AsymmetricSecretKey private constructor(material: ByteArray, val version: Version, val lifecycle: KeyLifecycle) {
     internal val purpose: Purpose = Purpose.PUBLIC
     private val material: ByteArray
     private var cleared: Boolean = false
@@ -63,18 +63,21 @@ class AsymmetricSecretKey private constructor(material: ByteArray, val version: 
         }
     }
 
+    fun copy(lifecycle: KeyLifecycle = KeyLifecycle.EPHEMERAL): AsymmetricSecretKey =
+        AsymmetricSecretKey(material.copyOf(), version, lifecycle)
+
     fun toHex(): String {
-        if (cleared) throw KeyReuseException()
+        if (cleared) throw KeyClearedException()
         return Hex.toHexString(material)
     }
 
     fun toBase64Url(): String {
-        if (cleared) throw KeyReuseException()
+        if (cleared) throw KeyClearedException()
         return Base64.UrlSafe.encode(material)
     }
 
     fun toPem(): String {
-        if (cleared) throw KeyReuseException()
+        if (cleared) throw KeyClearedException()
 
         val (content, type) = when (version) {
             Version.V1 -> Pair(material, "PRIVATE KEY")
@@ -97,8 +100,17 @@ class AsymmetricSecretKey private constructor(material: ByteArray, val version: 
         return pemEncode(type, content)
     }
 
+    fun clear() {
+        material.fill(0)
+        cleared = true
+    }
+
+    internal fun internalClear() {
+        if (lifecycle == KeyLifecycle.EPHEMERAL) clear()
+    }
+
     internal fun getKeyMaterialFor(version: Version, purpose: Purpose): ByteArray {
-        if (cleared) throw KeyReuseException()
+        if (cleared) throw KeyClearedException()
         if (this.version != version) throw KeyVersionException(version, this.version)
         if (this.purpose != purpose) throw KeyPurposeException(purpose.toString(), this.purpose.toString())
         return material
@@ -108,11 +120,6 @@ class AsymmetricSecretKey private constructor(material: ByteArray, val version: 
         Version.V2 -> material.copyOf(ED25519_SECRETKEYBYTES - ED25519_PUBLICKEYBYTES)
         Version.V4 -> material.copyOf(ED25519_SECRETKEYBYTES - ED25519_PUBLICKEYBYTES)
         else -> material
-    }
-
-    internal fun clear() {
-        material.fill(0)
-        cleared = true
     }
 
     override fun equals(other: Any?): Boolean {
@@ -149,19 +156,27 @@ class AsymmetricSecretKey private constructor(material: ByteArray, val version: 
 
     companion object {
         @JvmStatic
-        fun ofRawBytes(material: ByteArray, version: Version) = AsymmetricSecretKey(material, version)
+        fun ofRawBytes(material: ByteArray, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
+            AsymmetricSecretKey(material, version, lifecycle)
 
         @JvmStatic
-        fun ofHex(hex: String, version: Version) = AsymmetricSecretKey(Hex.decode(hex), version)
+        fun ofHex(hex: String, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
+            AsymmetricSecretKey(Hex.decode(hex), version, lifecycle)
 
         @JvmStatic
-        fun ofBase64Url(b64: String, version: Version) = AsymmetricSecretKey(Base64.UrlSafe.decode(b64), version)
+        fun ofBase64Url(b64: String, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
+            AsymmetricSecretKey(Base64.UrlSafe.decode(b64), version, lifecycle)
 
         @JvmStatic
-        fun ofPem(pem: String, version: Version) = ofPem(pem.toByteArray(Charsets.UTF_8), version)
+        fun ofPem(pem: String, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
+            ofPem(pem.toByteArray(Charsets.UTF_8), version, lifecycle)
 
         @JvmStatic
-        fun ofPem(pem: ByteArray, version: Version): AsymmetricSecretKey {
+        fun ofPem(
+            pem: ByteArray,
+            version: Version,
+            lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT,
+        ): AsymmetricSecretKey {
             val (type, content) = pemDecode(pem)
 
             val encoded = when (version) {
@@ -192,7 +207,7 @@ class AsymmetricSecretKey private constructor(material: ByteArray, val version: 
                 }
             }
 
-            return AsymmetricSecretKey(encoded, version)
+            return AsymmetricSecretKey(encoded, version, lifecycle)
         }
     }
 }

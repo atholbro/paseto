@@ -69,7 +69,7 @@ class FooterOptionsBuilder @PublishedApi internal constructor() {
     )
 }
 
-internal fun Json.encodeFooter(footerOptions: FooterOptions, footer: PasetoFooter): String {
+internal fun Json.encodeFooter(footerOptions: FooterOptions, footer: Footer): String {
     val encoded = when (footer) {
         is ClaimFooter -> encodeToString(ClaimFooterSerializer, footer)
         is StringFooter -> footer.value
@@ -79,7 +79,7 @@ internal fun Json.encodeFooter(footerOptions: FooterOptions, footer: PasetoFoote
     return encoded
 }
 
-internal fun Json.decodeFooter(footerOptions: FooterOptions, footer: String): PasetoFooter {
+internal fun Json.decodeFooter(footerOptions: FooterOptions, footer: String): Footer {
     footerOptions.validateFooter(footer)
 
     return when (footerOptions.parseMode) {

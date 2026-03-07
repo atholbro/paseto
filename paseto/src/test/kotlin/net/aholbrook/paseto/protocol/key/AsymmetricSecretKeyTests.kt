@@ -1,14 +1,15 @@
 package net.aholbrook.paseto.protocol.key
 
+import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
+import net.aholbrook.paseto.exception.KeyClearedException
 import net.aholbrook.paseto.exception.KeyLengthException
 import net.aholbrook.paseto.exception.KeyPemUnsupportedTypeException
 import net.aholbrook.paseto.exception.KeyPurposeException
-import net.aholbrook.paseto.exception.KeyReuseException
 import net.aholbrook.paseto.exception.KeyVersionException
 import net.aholbrook.paseto.keyV1Public
 import net.aholbrook.paseto.keyV4Public
@@ -17,6 +18,7 @@ import net.aholbrook.paseto.protocol.Version
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.EnumSource
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 import kotlin.io.encoding.Base64
@@ -30,6 +32,18 @@ class AsymmetricSecretKeyTests {
             Version.V3,
             Version.V4,
         ).map { Arguments.of(it) }.stream()
+
+        @JvmStatic
+        fun allVersionsWithLifecycle(): Stream<Arguments> = listOf(
+            Pair(Version.V1, KeyLifecycle.PERSISTENT),
+            Pair(Version.V1, KeyLifecycle.EPHEMERAL),
+            Pair(Version.V2, KeyLifecycle.PERSISTENT),
+            Pair(Version.V2, KeyLifecycle.EPHEMERAL),
+            Pair(Version.V3, KeyLifecycle.PERSISTENT),
+            Pair(Version.V3, KeyLifecycle.EPHEMERAL),
+            Pair(Version.V4, KeyLifecycle.PERSISTENT),
+            Pair(Version.V4, KeyLifecycle.EPHEMERAL),
+        ).map { Arguments.of(it.first, it.second) }.stream()
     }
 
     @Test
@@ -106,60 +120,97 @@ class AsymmetricSecretKeyTests {
     }
 
     @Test
-    fun `AsymmetricSecretKey toHex throws KeyReuseException after clear`() {
-        val key = keyV4Public.secretKey!!
+    fun `AsymmetricSecretKey toHex throws KeyClearedException after clear`() {
+        val key = keyV4Public.secretKey!!.copy()
         key.clear()
-        shouldThrow<KeyReuseException> { key.toHex() }
+        shouldThrow<KeyClearedException> { key.toHex() }
     }
 
     @Test
-    fun `AsymmetricSecretKey toBase64Url throws KeyReuseException after clear`() {
-        val key = keyV4Public.secretKey!!
+    fun `AsymmetricSecretKey toBase64Url throws KeyClearedException after clear`() {
+        val key = keyV4Public.secretKey!!.copy()
         key.clear()
-        shouldThrow<KeyReuseException> { key.toBase64Url() }
+        shouldThrow<KeyClearedException> { key.toBase64Url() }
     }
 
     @Test
-    fun `AsymmetricSecretKey toPem throws KeyReuseException after clear`() {
-        val key = keyV4Public.secretKey!!
+    fun `AsymmetricSecretKey toPem throws KeyClearedException after clear`() {
+        val key = keyV4Public.secretKey!!.copy()
         key.clear()
-        shouldThrow<KeyReuseException> { key.toPem() }
+        shouldThrow<KeyClearedException> { key.toPem() }
     }
 
     @Test
-    fun `AsymmetricSecretKey getKeyMaterialFor throws KeyReuseException after clear`() {
-        val key = keyV4Public.secretKey!!
+    fun `AsymmetricSecretKey getKeyMaterialFor throws KeyClearedException after clear`() {
+        val key = keyV4Public.secretKey!!.copy()
         key.clear()
-        shouldThrow<KeyReuseException> { key.getKeyMaterialFor(Version.V4, Purpose.PUBLIC) }
+        shouldThrow<KeyClearedException> { key.getKeyMaterialFor(Version.V4, Purpose.PUBLIC) }
     }
 
     @ParameterizedTest
-    @MethodSource("allVersions")
-    fun asymmetricSecretKey_canSaveHex(version: Version) {
+    @EnumSource(KeyLifecycle::class)
+    fun `AsymmetricSecretKey internalClear respects lifecycle`(lifecycle: KeyLifecycle) {
+        val key = keyV4Public.secretKey!!.copy(lifecycle)
+        try {
+            key.internalClear()
+
+            when (lifecycle) {
+                KeyLifecycle.PERSISTENT ->
+                    shouldNotThrow<KeyClearedException> { key.getKeyMaterialFor(Version.V4, Purpose.PUBLIC) }
+
+                KeyLifecycle.EPHEMERAL ->
+                    shouldThrow<KeyClearedException> { key.getKeyMaterialFor(Version.V4, Purpose.PUBLIC) }
+            }
+        } finally {
+            key.clear()
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("allVersionsWithLifecycle")
+    fun asymmetricSecretKey_canSaveLoadBytes(version: Version, lifecycle: KeyLifecycle) {
+        val key = KeyPair.generate(version)
+        val saved = key.secretKey!!.getKeyMaterialFor(key.version, Purpose.PUBLIC)
+        val loaded = AsymmetricSecretKey.ofRawBytes(saved, version, lifecycle)
+
+        loaded shouldBe key.secretKey
+        loaded.lifecycle shouldBe lifecycle
+        loaded.clear()
+    }
+
+    @ParameterizedTest
+    @MethodSource("allVersionsWithLifecycle")
+    fun asymmetricSecretKey_canSaveLoadHex(version: Version, lifecycle: KeyLifecycle) {
         val key = KeyPair.generate(version)
         val saved = key.secretKey!!.toHex()
-        val loaded = AsymmetricSecretKey.ofHex(saved, version)
+        val loaded = AsymmetricSecretKey.ofHex(saved, version, lifecycle)
 
         loaded shouldBe key.secretKey
+        loaded.lifecycle shouldBe lifecycle
+        loaded.clear()
     }
 
     @ParameterizedTest
-    @MethodSource("allVersions")
-    fun asymmetricSecretKey_canSaveBase64Url(version: Version) {
+    @MethodSource("allVersionsWithLifecycle")
+    fun asymmetricSecretKey_canSaveLoadBase64Url(version: Version, lifecycle: KeyLifecycle) {
         val key = KeyPair.generate(version)
         val saved = key.secretKey!!.toBase64Url()
-        val loaded = AsymmetricSecretKey.ofBase64Url(saved, version)
+        val loaded = AsymmetricSecretKey.ofBase64Url(saved, version, lifecycle)
 
         loaded shouldBe key.secretKey
+        loaded.lifecycle shouldBe lifecycle
+        loaded.clear()
     }
 
     @ParameterizedTest
-    @MethodSource("allVersions")
-    fun asymmetricSecretKey_canSavePem(version: Version) {
+    @MethodSource("allVersionsWithLifecycle")
+    fun asymmetricSecretKey_canSaveLoadPem(version: Version, lifecycle: KeyLifecycle) {
         val key = KeyPair.generate(version)
         val saved = key.secretKey!!.toPem()
-        val loaded = AsymmetricSecretKey.ofPem(saved, version)
+        val loaded = AsymmetricSecretKey.ofPem(saved, version, lifecycle)
 
         loaded shouldBe key.secretKey
+        loaded.lifecycle shouldBe lifecycle
+        loaded.clear()
     }
 }

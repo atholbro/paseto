@@ -5,7 +5,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
-import net.aholbrook.paseto.crypto.copy
 import net.aholbrook.paseto.exception.KeyPurposeException
 import net.aholbrook.paseto.exception.KeyVersionException
 import net.aholbrook.paseto.keyV2Public

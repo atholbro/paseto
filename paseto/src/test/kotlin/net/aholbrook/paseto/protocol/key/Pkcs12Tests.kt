@@ -30,7 +30,7 @@ import java.util.stream.Stream
 class Pkcs12Tests {
     @Test
     fun pkcs12Load_withDefaultKeyPassword() {
-        val keys = KeyPair.pkcs12Load(
+        val keys = KeyPair.ofPkcs12(
             keystoreFile = TestFiles.p12ResourcePath("rfc_v1_rsa.p12"),
             keystorePass = "testtest",
             alias = "test",
@@ -42,7 +42,7 @@ class Pkcs12Tests {
 
     @Test
     fun pkcs12Load_withExplicitKeyPassword() {
-        val keys = KeyPair.pkcs12Load(
+        val keys = KeyPair.ofPkcs12(
             keystoreFile = TestFiles.p12ResourcePath("test_v1_rsa.p12"),
             keystorePass = "password",
             alias = "test",
@@ -58,7 +58,7 @@ class Pkcs12Tests {
         val missingFile = File.createTempFile("missing-p12", ".p12").apply { delete() }
 
         val ex = shouldThrow<Pkcs12LoadException> {
-            KeyPair.pkcs12Load(
+            KeyPair.ofPkcs12(
                 keystoreFile = missingFile.path,
                 keystorePass = "testtest",
                 alias = "test",
@@ -72,7 +72,7 @@ class Pkcs12Tests {
     @Test
     fun pkcs12Load_wrongPassword() {
         val ex = shouldThrow<Pkcs12LoadException> {
-            KeyPair.pkcs12Load(
+            KeyPair.ofPkcs12(
                 keystoreFile = TestFiles.p12ResourcePath("rfc_v1_rsa.p12"),
                 keystorePass = "wrong",
                 alias = "test",
@@ -86,7 +86,7 @@ class Pkcs12Tests {
     @Test
     fun pkcs12Load_wrongAlias() {
         val ex = shouldThrow<Pkcs12LoadException> {
-            KeyPair.pkcs12Load(
+            KeyPair.ofPkcs12(
                 keystoreFile = TestFiles.p12ResourcePath("rfc_v1_rsa.p12"),
                 keystorePass = "testtest",
                 alias = "wrong",
@@ -100,7 +100,7 @@ class Pkcs12Tests {
     @Test
     fun pkcs12Load_wrongKeyPassword() {
         val ex = shouldThrow<Pkcs12LoadException> {
-            KeyPair.pkcs12Load(
+            KeyPair.ofPkcs12(
                 keystoreFile = TestFiles.p12ResourcePath("rfc_v1_rsa.p12"),
                 keystorePass = "testtest",
                 alias = "test",
@@ -114,7 +114,7 @@ class Pkcs12Tests {
     @Test
     fun pkcs12Load_noCertificate() {
         val ex = shouldThrow<Pkcs12LoadException> {
-            KeyPair.pkcs12Load(
+            KeyPair.ofPkcs12(
                 keystoreFile = TestFiles.p12ResourcePath("test_v1_rsa_nopub.p12"),
                 keystorePass = "password",
                 alias = "test",
@@ -128,7 +128,7 @@ class Pkcs12Tests {
     @Test
     fun pkcs12Load_corruptFile() {
         val ex = shouldThrow<Pkcs12LoadException> {
-            KeyPair.pkcs12Load(
+            KeyPair.ofPkcs12(
                 keystoreFile = TestFiles.p12ResourcePath("test_v1_rsa_corrupt.p12"),
                 keystorePass = "password",
                 alias = "test",
@@ -175,7 +175,7 @@ class Pkcs12Tests {
             every { KeyStore.getInstance(any()) } throws KeyStoreException()
 
             val ex = shouldThrow<RuntimeException> {
-                KeyPair.pkcs12Load("", "", "", "")
+                KeyPair.ofPkcs12("", "", "", "")
             }
             withClue("check type KeyStoreException") {
                 (ex.cause is KeyStoreException) shouldBe true
@@ -189,7 +189,7 @@ class Pkcs12Tests {
             every { mockKeyStore.load(any(), any()) } throws CertificateException()
 
             val ex = shouldThrow<Pkcs12LoadException> {
-                KeyPair.pkcs12Load(
+                KeyPair.ofPkcs12(
                     keystoreFile = TestFiles.p12ResourcePath("rfc_v1_rsa.p12"),
                     keystorePass = "testtest",
                     alias = "test",
@@ -207,7 +207,7 @@ class Pkcs12Tests {
             every { mockKeyStore.load(any(), any()) } throws NoSuchAlgorithmException()
 
             val ex = shouldThrow<Pkcs12LoadException> {
-                KeyPair.pkcs12Load(
+                KeyPair.ofPkcs12(
                     keystoreFile = TestFiles.p12ResourcePath("rfc_v1_rsa.p12"),
                     keystorePass = "testtest",
                     alias = "test",

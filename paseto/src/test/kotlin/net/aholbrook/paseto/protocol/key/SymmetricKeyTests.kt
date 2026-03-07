@@ -1,17 +1,15 @@
 package net.aholbrook.paseto.protocol.key
 
+import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
+import net.aholbrook.paseto.exception.KeyClearedException
 import net.aholbrook.paseto.exception.KeyLengthException
 import net.aholbrook.paseto.exception.KeyPurposeException
-import net.aholbrook.paseto.exception.KeyReuseException
 import net.aholbrook.paseto.exception.KeyVersionException
-import net.aholbrook.paseto.keyV1Public
-import net.aholbrook.paseto.keyV2Public
-import net.aholbrook.paseto.keyV3Public
 import net.aholbrook.paseto.keyV4Local
 import net.aholbrook.paseto.keyV4Public
 import net.aholbrook.paseto.protocol.Purpose
@@ -19,6 +17,7 @@ import net.aholbrook.paseto.protocol.Version
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.EnumSource
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 import kotlin.io.encoding.Base64
@@ -26,12 +25,16 @@ import kotlin.io.encoding.Base64
 class SymmetricKeyTests {
     companion object {
         @JvmStatic
-        fun allVersions(): Stream<Arguments> = listOf(
-            Version.V1,
-            Version.V2,
-            Version.V3,
-            Version.V4,
-        ).map { Arguments.of(it) }.stream()
+        fun allVersionsWithLifecycle(): Stream<Arguments> = listOf(
+            Pair(Version.V1, KeyLifecycle.PERSISTENT),
+            Pair(Version.V1, KeyLifecycle.EPHEMERAL),
+            Pair(Version.V2, KeyLifecycle.PERSISTENT),
+            Pair(Version.V2, KeyLifecycle.EPHEMERAL),
+            Pair(Version.V3, KeyLifecycle.PERSISTENT),
+            Pair(Version.V3, KeyLifecycle.EPHEMERAL),
+            Pair(Version.V4, KeyLifecycle.PERSISTENT),
+            Pair(Version.V4, KeyLifecycle.EPHEMERAL),
+        ).map { Arguments.of(it.first, it.second) }.stream()
     }
 
     @Test
@@ -83,43 +86,78 @@ class SymmetricKeyTests {
     }
 
     @Test
-    fun `SymmetricKey toHex throws KeyReuseException after clear`() {
-        val key = keyV4Local
+    fun `SymmetricKey toHex throws KeyClearedException after clear`() {
+        val key = keyV4Local.copy()
         key.clear()
-        shouldThrow<KeyReuseException> { key.toHex() }
+        shouldThrow<KeyClearedException> { key.toHex() }
     }
 
     @Test
-    fun `SymmetricKey toBase64Url throws KeyReuseException after clear`() {
-        val key = keyV4Local
+    fun `SymmetricKey toBase64Url throws KeyClearedException after clear`() {
+        val key = keyV4Local.copy()
         key.clear()
-        shouldThrow<KeyReuseException> { key.toBase64Url() }
+        shouldThrow<KeyClearedException> { key.toBase64Url() }
     }
 
     @Test
-    fun `SymmetricKey getKeyMaterialFor throws KeyReuseException after clear`() {
-        val key = keyV4Local
+    fun `SymmetricKey getKeyMaterialFor throws KeyClearedException after clear`() {
+        val key = keyV4Local.copy()
         key.clear()
-        shouldThrow<KeyReuseException> { key.getKeyMaterialFor(Version.V4, Purpose.LOCAL) }
+        shouldThrow<KeyClearedException> { key.getKeyMaterialFor(Version.V4, Purpose.LOCAL) }
     }
 
     @ParameterizedTest
-    @MethodSource("allVersions")
-    fun symmetricKey_canSaveHex(version: Version) {
+    @EnumSource(KeyLifecycle::class)
+    fun `SymmetricKey internalClear respects lifecycle`(lifecycle: KeyLifecycle) {
+        val key = keyV4Local.copy(lifecycle)
+        try {
+            key.internalClear()
+
+            when (lifecycle) {
+                KeyLifecycle.PERSISTENT ->
+                    shouldNotThrow<KeyClearedException> { key.getKeyMaterialFor(Version.V4, Purpose.LOCAL) }
+
+                KeyLifecycle.EPHEMERAL ->
+                    shouldThrow<KeyClearedException> { key.getKeyMaterialFor(Version.V4, Purpose.LOCAL) }
+            }
+        } finally {
+            key.clear()
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("allVersionsWithLifecycle")
+    fun symmetricKey_canSaveLoadBytes(version: Version, lifecycle: KeyLifecycle) {
+        val key = SymmetricKey.generate(version)
+        val saved = key.getKeyMaterialFor(version, Purpose.LOCAL)
+        val loaded = SymmetricKey.ofRawBytes(saved, version, lifecycle)
+
+        loaded shouldBe key
+        loaded.lifecycle shouldBe lifecycle
+        loaded.clear()
+    }
+
+    @ParameterizedTest
+    @MethodSource("allVersionsWithLifecycle")
+    fun symmetricKey_canSaveLoadHex(version: Version, lifecycle: KeyLifecycle) {
         val key = SymmetricKey.generate(version)
         val saved = key.toHex()
-        val loaded = SymmetricKey.ofHex(saved, version)
+        val loaded = SymmetricKey.ofHex(saved, version, lifecycle)
 
         loaded shouldBe key
+        loaded.lifecycle shouldBe lifecycle
+        loaded.clear()
     }
 
     @ParameterizedTest
-    @MethodSource("allVersions")
-    fun symmetricKey_canSaveBase64Url(version: Version) {
+    @MethodSource("allVersionsWithLifecycle")
+    fun symmetricKey_canSaveLoadBase64Url(version: Version, lifecycle: KeyLifecycle) {
         val key = SymmetricKey.generate(version)
         val saved = key.toBase64Url()
-        val loaded = SymmetricKey.ofBase64Url(saved, version)
+        val loaded = SymmetricKey.ofBase64Url(saved, version, lifecycle)
 
         loaded shouldBe key
+        loaded.lifecycle shouldBe lifecycle
+        loaded.clear()
     }
 }

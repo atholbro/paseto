@@ -18,7 +18,7 @@ data class Token internal constructor(
     val issuedAt: Instant?, // iat
     val tokenId: String?, // jti
     val claims: ClaimObject,
-    val footer: PasetoFooter,
+    val footer: Footer,
 )
 
 @PasetoDslMarker
@@ -31,7 +31,7 @@ class TokenBuilder @PublishedApi internal constructor(clock: Clock) {
     var issuedAt: Instant? = clock.instant() // iat
     var tokenId: String? = null // jti
     private var claims: ClaimObject = ClaimObject()
-    private var footer: PasetoFooter = StringFooter("")
+    private var footer: Footer = StringFooter("")
 
     @OptIn(ExperimentalContracts::class)
     fun claims(init: ClaimObjectBuilder.() -> Unit) {
@@ -46,7 +46,7 @@ class TokenBuilder @PublishedApi internal constructor(clock: Clock) {
         this.claims = claims
     }
 
-    fun footer(footer: PasetoFooter) {
+    fun footer(footer: Footer) {
         this.footer = footer
     }
 

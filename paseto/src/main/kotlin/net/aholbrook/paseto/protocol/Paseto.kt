@@ -7,7 +7,7 @@ import net.aholbrook.paseto.crypto.ED25519_PUBLICKEYBYTES
 import net.aholbrook.paseto.crypto.ED25519_SECRETKEYBYTES
 import net.aholbrook.paseto.crypto.constantTimeEquals
 import net.aholbrook.paseto.decodeOrNull
-import net.aholbrook.paseto.exception.GenericInvalidFooterException
+import net.aholbrook.paseto.exception.IncorrectFooterException
 import net.aholbrook.paseto.exception.PasetoParseException
 import net.aholbrook.paseto.protocol.key.AsymmetricPublicKey
 import net.aholbrook.paseto.protocol.key.AsymmetricSecretKey
@@ -117,7 +117,7 @@ internal fun decodeFooter(token: String, sections: PasetoSections, expectedFoote
         ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
 
     if (expectedFooter != null && !decodedFooter.constantTimeEquals(expectedFooter)) {
-        throw GenericInvalidFooterException(decodedFooter, expectedFooter)
+        throw IncorrectFooterException(decodedFooter, expectedFooter)
     }
 
     return decodedFooter
