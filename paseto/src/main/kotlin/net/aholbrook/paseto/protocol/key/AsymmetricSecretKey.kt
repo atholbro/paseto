@@ -155,8 +155,7 @@ class AsymmetricSecretKey private constructor(material: ByteArray, val version: 
         fun ofHex(hex: String, version: Version) = AsymmetricSecretKey(Hex.decode(hex), version)
 
         @JvmStatic
-        fun ofBase64Url(b64: String, version: Version) =
-            AsymmetricSecretKey(Base64.UrlSafe.decode(b64), version)
+        fun ofBase64Url(b64: String, version: Version) = AsymmetricSecretKey(Base64.UrlSafe.decode(b64), version)
 
         @JvmStatic
         fun ofPem(pem: String, version: Version) = ofPem(pem.toByteArray(Charsets.UTF_8), version)

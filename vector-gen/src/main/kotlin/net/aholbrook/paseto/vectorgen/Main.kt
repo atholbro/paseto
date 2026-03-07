@@ -15,11 +15,11 @@ import net.aholbrook.paseto.ServiceTestVector
 import net.aholbrook.paseto.ServiceTestVectors
 import net.aholbrook.paseto.crypto.copy
 import net.aholbrook.paseto.crypto.withTestNonce
+import net.aholbrook.paseto.protocol.Version
 import net.aholbrook.paseto.protocol.key.AsymmetricPublicKey
 import net.aholbrook.paseto.protocol.key.AsymmetricSecretKey
 import net.aholbrook.paseto.protocol.key.KeyPair
 import net.aholbrook.paseto.protocol.key.SymmetricKey
-import net.aholbrook.paseto.protocol.Version
 import net.aholbrook.paseto.tokenFromVector
 import net.aholbrook.paseto.tokenService
 import org.bouncycastle.util.encoders.Hex

@@ -22,8 +22,8 @@ import net.aholbrook.paseto.exception.MultipleValidationExceptions
 import net.aholbrook.paseto.exception.PasetoParseException
 import net.aholbrook.paseto.exception.TokenExpiresBeforeIssuedException
 import net.aholbrook.paseto.exception.TokenIsNotValidUntilAfterExpiration
-import net.aholbrook.paseto.protocol.key.KeyPair
 import net.aholbrook.paseto.protocol.Version
+import net.aholbrook.paseto.protocol.key.KeyPair
 import net.aholbrook.paseto.rules.CustomRule
 import net.aholbrook.paseto.rules.IssuedInPast
 import net.aholbrook.paseto.rules.NotBefore
@@ -84,7 +84,7 @@ class TokenServiceTests {
         }
 
         val service = tokenService(version, purpose)
-        val token = pasetoToken { }
+        val token = token { }
 
         withClue("encode") {
             shouldThrow<ImplicitAssertionsNotSupportedException> {
@@ -112,7 +112,7 @@ class TokenServiceTests {
                 notExpired = NotExpired(clock = clock)
             }
         }
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             expiresAt = clock.instant().plus(Duration.ofHours(1))
         }
@@ -140,7 +140,7 @@ class TokenServiceTests {
                 notExpired = NotExpired(clock = clock)
             }
         }
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             expiresAt = clock.instant().plus(Duration.ofMinutes(1))
         }
@@ -168,7 +168,7 @@ class TokenServiceTests {
                 issuedInPast = IssuedInPast(clock = clock)
             }
         }
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             expiresAt = null
         }
@@ -185,7 +185,7 @@ class TokenServiceTests {
     fun `rejects a token that expires before it was issued`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant().plusSeconds(1)
             expiresAt = clock.instant()
         }
@@ -209,7 +209,7 @@ class TokenServiceTests {
         }
 
         val ex = shouldThrow<MultipleValidationExceptions> {
-            service.encode(pasetoToken { })
+            service.encode(token { })
         }
         ex.exceptions.map { it::class } shouldContain MissingClaimException::class
     }
@@ -219,7 +219,7 @@ class TokenServiceTests {
     fun `rejects a token that expires when it was issued`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             expiresAt = clock.instant()
         }
@@ -235,7 +235,7 @@ class TokenServiceTests {
     fun `accepts a token that is issued after it becomes valid`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             notBefore = clock.instant().minusSeconds(1)
             expiresAt = clock.instant().plusSeconds(1)
@@ -251,7 +251,7 @@ class TokenServiceTests {
     fun `accepts a token that is issued at the same time it becomes valid`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             notBefore = issuedAt
             expiresAt = clock.instant().plusSeconds(1)
@@ -271,7 +271,7 @@ class TokenServiceTests {
                 notBefore = NotBefore(clock = clock)
             }
         }
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             notBefore = clock.instant().plusSeconds(2)
             expiresAt = clock.instant().plusSeconds(1)
@@ -292,7 +292,7 @@ class TokenServiceTests {
                 notBefore = NotBefore(clock = clock)
             }
         }
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             notBefore = clock.instant().plusSeconds(1)
             expiresAt = notBefore
@@ -313,7 +313,7 @@ class TokenServiceTests {
                 notExpired = null
             }
         }
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             notBefore = clock.instant().plusSeconds(1)
         }
@@ -333,7 +333,7 @@ class TokenServiceTests {
                 notExpired = NotExpired(clock = clock)
             }
         }
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             expiresAt = clock.instant().plus(Duration.ofHours(1))
             footer("test footer value")
@@ -358,7 +358,7 @@ class TokenServiceTests {
                 parseMode = FooterParseMode.AUTO
             }
         }
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             expiresAt = clock.instant().plus(Duration.ofHours(1))
             footer("[1,2,3]")
@@ -379,7 +379,7 @@ class TokenServiceTests {
                 notExpired = NotExpired(clock = clock)
             }
         }
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             expiresAt = clock.instant().plus(Duration.ofHours(1))
             footer("{")
@@ -393,7 +393,7 @@ class TokenServiceTests {
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
     fun `footer parse mode auto validation rejects footer that exceeds max length`(version: Version, purpose: Purpose) {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("123456")
@@ -415,7 +415,7 @@ class TokenServiceTests {
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
     fun `footer parse mode auto validation rejects footer that exceeds max depth`(version: Version, purpose: Purpose) {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("{\"a\":{\"b\":1}}")
@@ -437,7 +437,7 @@ class TokenServiceTests {
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
     fun `footer parse mode auto validation rejects footer that exceeds max keys`(version: Version, purpose: Purpose) {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("{\"a\":1,\"b\":2}")
@@ -460,7 +460,7 @@ class TokenServiceTests {
     @MethodSource("allServiceConfigurations")
     fun `parse mode auto can decode a string footer without decoding the token`(version: Version, purpose: Purpose) {
         val service = tokenService(version, purpose)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("just a string")
@@ -478,7 +478,7 @@ class TokenServiceTests {
     @MethodSource("allServiceConfigurations")
     fun `parse mode auto can decode a claim footer without decoding the token`(version: Version, purpose: Purpose) {
         val service = tokenService(version, purpose)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer {
@@ -511,7 +511,7 @@ class TokenServiceTests {
                 maxKeys = 2
             }
         }
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("::::")
@@ -535,7 +535,7 @@ class TokenServiceTests {
                 parseMode = FooterParseMode.CLAIMS
             }
         }
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             expiresAt = clock.instant().plus(Duration.ofHours(1))
             footer("{")
@@ -550,7 +550,7 @@ class TokenServiceTests {
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
     fun `footer parse mode claims validation rejects footer that exceeds max length`(version: Version, purpose: Purpose) {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("123456")
@@ -573,7 +573,7 @@ class TokenServiceTests {
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
     fun `footer parse mode claims validation rejects footer that exceeds max depth`(version: Version, purpose: Purpose) {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("{\"a\":{\"b\":1}}")
@@ -596,7 +596,7 @@ class TokenServiceTests {
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
     fun `footer parse mode claims validation rejects footer that exceeds max keys`(version: Version, purpose: Purpose) {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("{\"a\":1,\"b\":2}")
@@ -629,7 +629,7 @@ class TokenServiceTests {
                 parseMode = FooterParseMode.STRING
             }
         }
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             expiresAt = clock.instant().plus(Duration.ofHours(1))
             footer("{")
@@ -643,7 +643,7 @@ class TokenServiceTests {
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
     fun `footer parse mode string validation rejects footer that exceeds max length`(version: Version, purpose: Purpose) {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("123456")
@@ -666,7 +666,7 @@ class TokenServiceTests {
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
     fun `footer parse mode string ignores max depth`(version: Version, purpose: Purpose) {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("{\"a\":{\"b\":1}}")
@@ -686,7 +686,7 @@ class TokenServiceTests {
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
     fun `footer parse mode string ignores max keys`(version: Version, purpose: Purpose) {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("{\"a\":1,\"b\":2}")
@@ -707,7 +707,7 @@ class TokenServiceTests {
     @MethodSource("allServiceConfigurations")
     fun `token footer verification does not apply if argument is not given`(version: Version, purpose: Purpose) {
         val service = tokenService(version, purpose)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("just a string")
@@ -723,7 +723,7 @@ class TokenServiceTests {
     @MethodSource("allServiceConfigurations")
     fun `token footer verification applies for empty string (no footer)`(version: Version, purpose: Purpose) {
         val service = tokenService(version, purpose)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("just a string")
@@ -739,7 +739,7 @@ class TokenServiceTests {
     @MethodSource("allServiceConfigurations")
     fun `token footer verification works for string footer`(version: Version, purpose: Purpose) {
         val service = tokenService(version, purpose)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("just a string")
@@ -754,7 +754,7 @@ class TokenServiceTests {
     @MethodSource("allServiceConfigurations")
     fun `token footer verification works for claim footer`(version: Version, purpose: Purpose) {
         val service = tokenService(version, purpose)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer {
@@ -775,7 +775,7 @@ class TokenServiceTests {
     @MethodSource("allServiceConfigurations")
     fun `token footer verification catches errors in string footers`(version: Version, purpose: Purpose) {
         val service = tokenService(version, purpose)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer("just a string")
@@ -792,7 +792,7 @@ class TokenServiceTests {
     @MethodSource("allServiceConfigurations")
     fun `token footer verification catches errors in claim footers`(version: Version, purpose: Purpose) {
         val service = tokenService(version, purpose)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
             footer {
@@ -822,7 +822,7 @@ class TokenServiceTests {
                 notExpired = NotExpired(clock = clock)
             }
         }
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant()
             expiresAt = clock.instant().plus(Duration.ofHours(1))
         }
@@ -837,7 +837,7 @@ class TokenServiceTests {
     fun `can verify without a secret key`(version: Version, purpose: Purpose, signingPurpose: Purpose) {
         val service = tokenService(version, purpose)
         val signingService = tokenService(version, signingPurpose)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plusSeconds(3600)
         }
@@ -900,7 +900,7 @@ class TokenServiceTests {
         version: Version,
         purpose: Purpose,
     ) {
-        val token = pasetoToken {
+        val token = token {
             claims {
                 put("pi", Math.PI)
             }
@@ -931,7 +931,7 @@ class TokenServiceTests {
                 put("e", Math.E)
             }
         }
-        val token = pasetoToken {
+        val token = token {
             claims {
                 put("pi", Math.PI)
             }

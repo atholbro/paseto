@@ -1,7 +1,6 @@
 package net.aholbrook.paseto.rules
 
-import net.aholbrook.paseto.InternalApi
-import net.aholbrook.paseto.PasetoToken
+import net.aholbrook.paseto.Token
 import net.aholbrook.paseto.exception.ExpiredTokenException
 import net.aholbrook.paseto.exception.IssuedInFutureException
 import net.aholbrook.paseto.exception.MissingClaimException
@@ -10,8 +9,6 @@ import net.aholbrook.paseto.exception.TokenExpiresBeforeIssuedException
 import net.aholbrook.paseto.exception.TokenIsNotValidUntilAfterExpiration
 import net.aholbrook.paseto.rules.Rule.Mode
 import java.time.Clock
-import java.time.Duration
-import java.time.Instant
 
 /**
  * Verifies that the token is not expired or validated before it's "Not Before" time.
@@ -22,7 +19,7 @@ import java.time.Instant
 data class ValidAt internal constructor(private val clock: Clock) : Rule {
     constructor() : this(Clock.systemUTC())
 
-    override operator fun invoke(token: PasetoToken, mode: Mode, currentResults: Map<Rule, RuleResult>) {
+    override operator fun invoke(token: Token, mode: Mode, currentResults: Map<Rule, RuleResult>) {
         if (token.issuedAt == null) {
             throw MissingClaimException("iat", token)
         }

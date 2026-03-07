@@ -6,14 +6,14 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import net.aholbrook.paseto.exception.IncorrectAudienceException
 import net.aholbrook.paseto.exception.MissingClaimException
-import net.aholbrook.paseto.pasetoToken
+import net.aholbrook.paseto.token
 import org.junit.jupiter.api.Test
 
 class ForAudienceTests {
     @Test
     fun validAudience() {
         val forAudience = ForAudience("abc")
-        val token = pasetoToken { audience = "abc" }
+        val token = token { audience = "abc" }
 
         shouldNotThrowAny {
             forAudience(token, Rule.Mode.DECODE, emptyMap())
@@ -23,7 +23,7 @@ class ForAudienceTests {
     @Test
     fun missingAudience() {
         val forAudience = ForAudience("abc")
-        val token = pasetoToken { }
+        val token = token { }
 
         val ex = shouldThrow<MissingClaimException> {
             forAudience(token, Rule.Mode.DECODE, emptyMap())
@@ -35,7 +35,7 @@ class ForAudienceTests {
     @Test
     fun emptyAudienceIsConsideredMissing() {
         val forAudience = ForAudience("abc")
-        val token = pasetoToken { audience = "" }
+        val token = token { audience = "" }
 
         val ex = shouldThrow<MissingClaimException> {
             forAudience(token, Rule.Mode.DECODE, emptyMap())
@@ -47,7 +47,7 @@ class ForAudienceTests {
     @Test
     fun incorrectAudience() {
         val forAudience = ForAudience("abc")
-        val token = pasetoToken { audience = "def" }
+        val token = token { audience = "def" }
 
         val ex = shouldThrow<IncorrectAudienceException> {
             forAudience(token, Rule.Mode.DECODE, emptyMap())

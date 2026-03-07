@@ -1,7 +1,6 @@
 package net.aholbrook.paseto
 
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -20,12 +19,12 @@ import java.time.format.DateTimeFormatter
 
 private val RFC3339_FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss'Z'").withZone(ZoneOffset.UTC)
 
-internal object PasetoTokenSerializer : KSerializer<PasetoToken> {
+internal object PasetoTokenSerializer : KSerializer<Token> {
     private val reserved = setOf("iss", "sub", "aud", "exp", "nbf", "iat", "jti")
 
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("PasetoToken")
 
-    override fun deserialize(decoder: Decoder): PasetoToken {
+    override fun deserialize(decoder: Decoder): Token {
         val obj = (decoder as JsonDecoder).decodeJsonElement().jsonObject
 
         fun take(name: String) = obj[name]?.jsonPrimitive?.contentOrNull
@@ -36,7 +35,7 @@ internal object PasetoTokenSerializer : KSerializer<PasetoToken> {
             obj.filterNot { it.key in reserved }.forEach { put(it.key, it.value) }
         }
 
-        return PasetoToken(
+        return Token(
             issuer = take("iss"),
             subject = take("sub"),
             audience = take("aud"),
@@ -49,7 +48,7 @@ internal object PasetoTokenSerializer : KSerializer<PasetoToken> {
         )
     }
 
-    override fun serialize(encoder: Encoder, value: PasetoToken) {
+    override fun serialize(encoder: Encoder, value: Token) {
         val output = encoder as JsonEncoder
 
         val obj = buildJsonObject {
@@ -73,44 +72,5 @@ internal object PasetoTokenSerializer : KSerializer<PasetoToken> {
         }
 
         output.encodeJsonElement(obj)
-    }
-}
-
-internal object ClaimFooterSerializer : KSerializer<ClaimFooter> {
-    private val reserved = setOf("kid", "wpk")
-
-    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ClaimFooter")
-
-    override fun deserialize(decoder: Decoder): ClaimFooter {
-        when (val element = (decoder as JsonDecoder).decodeJsonElement()) {
-            is JsonObject -> {
-                fun take(name: String) = element.jsonObject[name]?.jsonPrimitive?.contentOrNull
-
-                val claims = buildJsonObject {
-                    element.jsonObject.filterNot { it.key in reserved }.forEach { put(it.key, it.value) }
-                }
-
-                return ClaimFooter(
-                    keyId = take("kid"),
-                    wrappedKey = take("wpk"),
-                    claims = claims.toClaim() as ClaimObject,
-                )
-            }
-
-            else -> throw SerializationException("expected object, got $element")
-        }
-    }
-
-    override fun serialize(encoder: Encoder, value: ClaimFooter) {
-        val output = encoder as JsonEncoder
-        val element = buildJsonObject {
-            value.keyId?.let { put("kid", JsonPrimitive(it)) }
-            value.wrappedKey?.let { put("wpk", JsonPrimitive(it)) }
-
-            (value.claims.toJson() as JsonObject)
-                .filterNot { it.key in reserved }
-                .forEach { (k, v) -> put(k, v) }
-        }
-        output.encodeJsonElement(element)
     }
 }

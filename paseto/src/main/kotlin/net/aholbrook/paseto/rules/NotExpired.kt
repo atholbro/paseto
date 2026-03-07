@@ -1,6 +1,6 @@
 package net.aholbrook.paseto.rules
 
-import net.aholbrook.paseto.PasetoToken
+import net.aholbrook.paseto.Token
 import net.aholbrook.paseto.exception.ExpiredTokenException
 import net.aholbrook.paseto.exception.MissingClaimException
 import net.aholbrook.paseto.exception.TokenExpiresBeforeIssuedException
@@ -16,7 +16,7 @@ import java.time.Clock
 data class NotExpired internal constructor(private val clock: Clock) : Rule {
     constructor() : this(Clock.systemUTC())
 
-    override operator fun invoke(token: PasetoToken, mode: Mode, currentResults: Map<Rule, RuleResult>) {
+    override operator fun invoke(token: Token, mode: Mode, currentResults: Map<Rule, RuleResult>) {
         if (token.expiresAt == null) {
             throw MissingClaimException("exp", token)
         }

@@ -6,14 +6,14 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import net.aholbrook.paseto.exception.IncorrectTokenIdException
 import net.aholbrook.paseto.exception.MissingClaimException
-import net.aholbrook.paseto.pasetoToken
+import net.aholbrook.paseto.token
 import org.junit.jupiter.api.Test
 
 class IdentifiedByTests {
     @Test
     fun validTokenId() {
         val identifiedBy = IdentifiedBy("abc")
-        val token = pasetoToken { tokenId = "abc" }
+        val token = token { tokenId = "abc" }
 
         shouldNotThrowAny {
             identifiedBy(token, Rule.Mode.DECODE, emptyMap())
@@ -23,7 +23,7 @@ class IdentifiedByTests {
     @Test
     fun missingTokenId() {
         val identifiedBy = IdentifiedBy("abc")
-        val token = pasetoToken { }
+        val token = token { }
 
         val ex = shouldThrow<MissingClaimException> {
             identifiedBy(token, Rule.Mode.DECODE, emptyMap())
@@ -35,7 +35,7 @@ class IdentifiedByTests {
     @Test
     fun emptyTokenIdIsConsideredMissing() {
         val identifiedBy = IdentifiedBy("abc")
-        val token = pasetoToken { tokenId = "" }
+        val token = token { tokenId = "" }
 
         val ex = shouldThrow<MissingClaimException> {
             identifiedBy(token, Rule.Mode.DECODE, emptyMap())
@@ -47,7 +47,7 @@ class IdentifiedByTests {
     @Test
     fun incorrectTokenId() {
         val identifiedBy = IdentifiedBy("abc")
-        val token = pasetoToken { tokenId = "def" }
+        val token = token { tokenId = "def" }
 
         val ex = shouldThrow<IncorrectTokenIdException> {
             identifiedBy(token, Rule.Mode.DECODE, emptyMap())

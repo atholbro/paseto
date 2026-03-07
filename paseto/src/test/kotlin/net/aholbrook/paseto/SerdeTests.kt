@@ -15,7 +15,7 @@ class SerdeTests {
     @ParameterizedTest
     @ValueSource(strings = ["iss", "sub", "aud", "exp", "nbf", "iat", "jti"])
     fun serialize_builtinClaimsAreNotOverridden(claim: String) {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = null
             expiresAt = null
             claims {
@@ -36,7 +36,7 @@ class SerdeTests {
 
     @Test
     fun serialize_boolean() {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = null
             expiresAt = null
             claims {
@@ -56,7 +56,7 @@ class SerdeTests {
 
     @Test
     fun serialize_int() {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = null
             expiresAt = null
             claims {
@@ -76,7 +76,7 @@ class SerdeTests {
 
     @Test
     fun serialize_long() {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = null
             expiresAt = null
             claims {
@@ -96,7 +96,7 @@ class SerdeTests {
 
     @Test
     fun serialize_double() {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = null
             expiresAt = null
             claims {
@@ -116,7 +116,7 @@ class SerdeTests {
 
     @Test
     fun serialize_double2() {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = null
             expiresAt = null
             claims {
@@ -136,7 +136,7 @@ class SerdeTests {
 
     @Test
     fun serialize_string() {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = null
             expiresAt = null
             claims {
@@ -156,7 +156,7 @@ class SerdeTests {
 
     @Test
     fun serialize_null() {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = null
             expiresAt = null
             claims {
@@ -176,7 +176,7 @@ class SerdeTests {
 
     @Test
     fun serialize_nestedClaimObject() {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = null
             expiresAt = null
             claims {
@@ -201,7 +201,7 @@ class SerdeTests {
 
     @Test
     fun serialize_claimArray() {
-        val token = pasetoToken {
+        val token = token {
             issuedAt = null
             expiresAt = null
             claims {

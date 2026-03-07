@@ -1,11 +1,10 @@
 package net.aholbrook.paseto.rules
 
-import net.aholbrook.paseto.PasetoToken
+import net.aholbrook.paseto.Token
 import net.aholbrook.paseto.exception.IssuedInFutureException
 import net.aholbrook.paseto.exception.MissingClaimException
 import net.aholbrook.paseto.rules.Rule.Mode
 import java.time.Clock
-import java.time.Duration
 
 /**
  * Ensures that the token was issued in the past (or current instant).
@@ -17,7 +16,7 @@ import java.time.Duration
 data class IssuedInPast internal constructor(private val clock: Clock) : Rule {
     constructor() : this(Clock.systemUTC())
 
-    override operator fun invoke(token: PasetoToken, mode: Rule.Mode, currentResults: Map<Rule, RuleResult>) {
+    override operator fun invoke(token: Token, mode: Rule.Mode, currentResults: Map<Rule, RuleResult>) {
         if (token.issuedAt == null) {
             throw MissingClaimException("iat", token)
         }

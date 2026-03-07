@@ -5,10 +5,8 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import net.aholbrook.paseto.exception.ExpiredTokenException
 import net.aholbrook.paseto.exception.MissingClaimException
-import net.aholbrook.paseto.exception.NotYetValidTokenException
 import net.aholbrook.paseto.exception.TokenExpiresBeforeIssuedException
-import net.aholbrook.paseto.exception.TokenIsNotValidUntilAfterExpiration
-import net.aholbrook.paseto.pasetoToken
+import net.aholbrook.paseto.token
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
@@ -22,7 +20,7 @@ class NotExpiredTests {
     @ParameterizedTest
     @EnumSource(value = Rule.Mode::class)
     fun `requires claim`(mode: Rule.Mode) {
-        val token = pasetoToken {
+        val token = token {
             expiresAt = null
         }
         val notExpired = NotExpired()
@@ -37,7 +35,7 @@ class NotExpiredTests {
     @ValueSource(longs = [0L, 1L])
     fun `when encoding if a issuedAt is provided then it must be before the expiresAt time`(offset: Long) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneId.of("UTC"))
-        val token = pasetoToken(clock) {
+        val token = token(clock) {
             issuedAt = clock.instant().plusSeconds(offset)
             expiresAt = clock.instant()
         }
@@ -51,7 +49,7 @@ class NotExpiredTests {
     @Test
     fun `expiry before issued check only applies when issuedAt is non-null`() {
         val clock = Clock.fixed(Instant.EPOCH, ZoneId.of("UTC"))
-        val token = pasetoToken(clock) {
+        val token = token(clock) {
             issuedAt = null
         }
         val notExpired = NotExpired(clock = clock)
@@ -64,7 +62,7 @@ class NotExpiredTests {
     @Test
     fun `expiry before issued check only applies when issuedAt check only applies during encoding`() {
         val clock = Clock.fixed(Instant.EPOCH, ZoneId.of("UTC"))
-        val token = pasetoToken(clock) {
+        val token = token(clock) {
             issuedAt = clock.instant()
             expiresAt = clock.instant().minusSeconds(3600)
         }
@@ -78,7 +76,7 @@ class NotExpiredTests {
     @Test
     fun `encoding works with a valid token`() {
         val clock = Clock.fixed(Instant.EPOCH, ZoneId.of("UTC"))
-        val token = pasetoToken(clock) {}
+        val token = token(clock) {}
         val notExpired = NotExpired(clock = clock)
 
         shouldNotThrowAny {
@@ -89,7 +87,7 @@ class NotExpiredTests {
     @Test
     fun `decoding works with a valid token`() {
         val clock = Clock.fixed(Instant.EPOCH, ZoneId.of("UTC"))
-        val token = pasetoToken(clock) { }
+        val token = token(clock) { }
         val notExpired = NotExpired(clock = clock)
 
         shouldNotThrowAny {
@@ -101,7 +99,7 @@ class NotExpiredTests {
     @ValueSource(longs = [0L, 1L])
     fun `decoding bounds check`(offset: Long) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneId.of("UTC"))
-        val token = pasetoToken(clock) {
+        val token = token(clock) {
             issuedAt = clock.instant()
             expiresAt = clock.instant().plusSeconds(offset)
         }
@@ -115,7 +113,7 @@ class NotExpiredTests {
     @Test
     fun `decoding bounds check - 1 second after`() {
         val clock = Clock.fixed(Instant.EPOCH, ZoneId.of("UTC"))
-        val token = pasetoToken(clock) {
+        val token = token(clock) {
             issuedAt = clock.instant().minusSeconds(3600)
             expiresAt = clock.instant().minusSeconds(1)
         }

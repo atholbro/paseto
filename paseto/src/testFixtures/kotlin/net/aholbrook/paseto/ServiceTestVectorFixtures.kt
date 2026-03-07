@@ -34,11 +34,11 @@ data class ServiceTestVector(
     val token: String,
 )
 
-fun tokenFromVector(vector: ServiceTestVector): PasetoToken {
+fun tokenFromVector(vector: ServiceTestVector): Token {
     val tokenReserved = setOf("iss", "sub", "aud", "exp", "nbf", "iat", "jti")
     val footerReserved = setOf("kid", "wpk")
 
-    return pasetoToken {
+    return token {
         issuer = vector.payload["iss"]?.jsonPrimitive?.contentOrNull
         subject = vector.payload["sub"]?.jsonPrimitive?.contentOrNull
         audience = vector.payload["aud"]?.jsonPrimitive?.contentOrNull

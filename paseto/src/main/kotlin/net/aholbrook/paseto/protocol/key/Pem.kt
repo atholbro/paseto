@@ -7,12 +7,11 @@ import java.io.ByteArrayInputStream
 import java.io.InputStreamReader
 import java.io.StringWriter
 
-internal fun pemEncode(type: String, content: ByteArray): String =
-    StringWriter().also { sw ->
-        PemWriter(sw).use { pw ->
-            pw.writeObject(PemObject(type, content))
-        }
-    }.toString()
+internal fun pemEncode(type: String, content: ByteArray): String = StringWriter().also { sw ->
+    PemWriter(sw).use { pw ->
+        pw.writeObject(PemObject(type, content))
+    }
+}.toString()
 
 internal fun pemDecode(pem: ByteArray): Pair<String, ByteArray> {
     val obj = PemReader(InputStreamReader(ByteArrayInputStream(pem))).use { reader ->

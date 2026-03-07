@@ -1,7 +1,7 @@
 package net.aholbrook.paseto.rules
 
 import net.aholbrook.paseto.PasetoDslMarker
-import net.aholbrook.paseto.PasetoToken
+import net.aholbrook.paseto.Token
 import net.aholbrook.paseto.exception.MultipleValidationExceptions
 import net.aholbrook.paseto.exception.PasetoTokenException
 import kotlin.contracts.ExperimentalContracts
@@ -21,7 +21,7 @@ sealed interface Rule {
      * @param token Token to check.
      * @param currentResults The results of all rules which have run before this rule.
      */
-    operator fun invoke(token: PasetoToken, mode: Mode, currentResults: Map<Rule, RuleResult>)
+    operator fun invoke(token: Token, mode: Mode, currentResults: Map<Rule, RuleResult>)
 
     enum class Mode {
         ENCODE,
@@ -32,7 +32,7 @@ sealed interface Rule {
 fun interface CustomRule : Rule
 
 class Rules internal constructor(@PublishedApi internal val rules: List<Rule>) {
-    fun verifyAll(token: PasetoToken, mode: Rule.Mode): Map<Rule, RuleResult> {
+    fun verifyAll(token: Token, mode: Rule.Mode): Map<Rule, RuleResult> {
         val context = mutableMapOf<Rule, RuleResult>()
         val mre = MultipleValidationExceptions(token)
 

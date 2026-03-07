@@ -228,6 +228,7 @@ internal fun p384EncodeSkSec1(sk: ByteArray): ByteArray {
     return secretKey.encoded
 }
 
+@Suppress("NestedBlockDepth")
 internal fun p384DecodeSkSec1(der: ByteArray): ByteArray {
     try {
         val key = ECPrivateKey.getInstance(ASN1Primitive.fromByteArray(der))

@@ -6,14 +6,14 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import net.aholbrook.paseto.exception.IncorrectSubjectException
 import net.aholbrook.paseto.exception.MissingClaimException
-import net.aholbrook.paseto.pasetoToken
+import net.aholbrook.paseto.token
 import org.junit.jupiter.api.Test
 
 class SubjectTests {
     @Test
     fun validSubject() {
         val subject = Subject("abc")
-        val token = pasetoToken { this.subject = "abc" }
+        val token = token { this.subject = "abc" }
 
         shouldNotThrowAny {
             subject(token, Rule.Mode.DECODE, emptyMap())
@@ -23,7 +23,7 @@ class SubjectTests {
     @Test
     fun missingSubject() {
         val subject = Subject("abc")
-        val token = pasetoToken { }
+        val token = token { }
 
         val ex = shouldThrow<MissingClaimException> {
             subject(token, Rule.Mode.DECODE, emptyMap())
@@ -35,7 +35,7 @@ class SubjectTests {
     @Test
     fun emptySubjectIsConsideredMissing() {
         val subject = Subject("abc")
-        val token = pasetoToken { this.subject = "" }
+        val token = token { this.subject = "" }
 
         val ex = shouldThrow<MissingClaimException> {
             subject(token, Rule.Mode.DECODE, emptyMap())
@@ -47,7 +47,7 @@ class SubjectTests {
     @Test
     fun incorrectSubject() {
         val subject = Subject("abc")
-        val token = pasetoToken { this.subject = "def" }
+        val token = token { this.subject = "def" }
 
         val ex = shouldThrow<IncorrectSubjectException> {
             subject(token, Rule.Mode.DECODE, emptyMap())

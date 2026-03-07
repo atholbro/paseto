@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import net.aholbrook.paseto.exception.IssuedInFutureException
 import net.aholbrook.paseto.exception.MissingClaimException
-import net.aholbrook.paseto.pasetoToken
+import net.aholbrook.paseto.token
 import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.Instant
@@ -16,7 +16,7 @@ class IssuedInPastTests {
     @Test
     fun defaults_validToken() {
         val issuedInPast = IssuedInPast()
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now().minusSeconds(3600L)
         }
 
@@ -28,7 +28,7 @@ class IssuedInPastTests {
     @Test
     fun defaults_issuedInFuture() {
         val issuedInPast = IssuedInPast()
-        val token = pasetoToken {
+        val token = token {
             issuedAt = Instant.now().plusSeconds(3600L)
         }
 
@@ -43,7 +43,7 @@ class IssuedInPastTests {
     @Test
     fun defaults_missingIssuedAt() {
         val issuedInPast = IssuedInPast()
-        val token = pasetoToken {
+        val token = token {
             issuedAt = null
             expiresAt = null
         }
@@ -63,7 +63,7 @@ class IssuedInPastTests {
 
         shouldNotThrowAny {
             issuedInPast(
-                pasetoToken {
+                token {
                     issuedAt = clock.instant()
                 },
                 Rule.Mode.DECODE,
@@ -80,7 +80,7 @@ class IssuedInPastTests {
 
         shouldThrow<IssuedInFutureException> {
             issuedInPast(
-                pasetoToken {
+                token {
                     issuedAt = clock.instant().plusSeconds(1)
                 },
                 Rule.Mode.DECODE,
@@ -92,7 +92,7 @@ class IssuedInPastTests {
     @Test
     fun encode_missingIssuedAtThrows() {
         val issuedInPast = IssuedInPast()
-        val token = pasetoToken {
+        val token = token {
             issuedAt = null
             expiresAt = null
         }
@@ -107,7 +107,7 @@ class IssuedInPastTests {
     fun encode_skipsIssuedInFutureCheck() {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val issuedInPast = IssuedInPast(clock = clock)
-        val token = pasetoToken {
+        val token = token {
             issuedAt = clock.instant().plusSeconds(3600)
         }
 

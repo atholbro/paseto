@@ -1,7 +1,7 @@
 package net.aholbrook.paseto.exception
 
 import net.aholbrook.paseto.InternalApi
-import net.aholbrook.paseto.PasetoToken
+import net.aholbrook.paseto.Token
 import net.aholbrook.paseto.protocol.Version
 
 open class CryptoProviderException @InternalApi constructor(s: String?, throwable: Throwable?) :
@@ -57,15 +57,15 @@ class SigningException @InternalApi constructor(payload: ByteArray) :
 class SignatureVerificationException @InternalApi constructor(token: String) :
     PasetoStringException("Failed to verify token signature.", token)
 
-open class PasetoTokenException @InternalApi constructor(s: String, val token: PasetoToken) : PasetoException(s)
+open class PasetoTokenException @InternalApi constructor(s: String, val token: Token) : PasetoException(s)
 
-class TokenExpiresBeforeIssuedException @InternalApi constructor(token: PasetoToken) :
+class TokenExpiresBeforeIssuedException @InternalApi constructor(token: Token) :
     PasetoTokenException("token would expire (${token.expiresAt}) before it was issued (${token.issuedAt})", token)
 
-class TokenIsNotValidUntilAfterExpiration @InternalApi constructor(token: PasetoToken) :
+class TokenIsNotValidUntilAfterExpiration @InternalApi constructor(token: Token) :
     PasetoTokenException("token is not valid (${token.notBefore}) until after it expires (${token.expiresAt})", token)
 
-class MissingClaimException @InternalApi constructor(val claim: String, token: PasetoToken) :
+class MissingClaimException @InternalApi constructor(val claim: String, token: Token) :
     PasetoTokenException("Token is missing required claim $claim.", token)
 
 class PasetoParseException @InternalApi constructor(val reason: Reason, token: String) :

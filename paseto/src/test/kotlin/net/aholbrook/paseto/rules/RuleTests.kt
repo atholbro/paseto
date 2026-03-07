@@ -11,12 +11,8 @@ import net.aholbrook.paseto.exception.IncorrectAudienceException
 import net.aholbrook.paseto.exception.IncorrectIssuerException
 import net.aholbrook.paseto.exception.IncorrectSubjectException
 import net.aholbrook.paseto.exception.MultipleValidationExceptions
-import net.aholbrook.paseto.pasetoToken
+import net.aholbrook.paseto.token
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.NullSource
-import org.junit.jupiter.params.provider.ValueSource
-import java.time.Duration
 
 class RuleTests {
     @Test
@@ -34,7 +30,7 @@ class RuleTests {
 
     @Test
     fun verifyAll_happyPath() {
-        val token = pasetoToken {
+        val token = token {
             audience = "abc"
             issuer = "def"
         }
@@ -55,7 +51,7 @@ class RuleTests {
 
     @Test
     fun verifyAll_claimContextIsUpdated() {
-        val token = pasetoToken {
+        val token = token {
             audience = "abc"
         }
 
@@ -82,7 +78,7 @@ class RuleTests {
 
     @Test
     fun verifyAll_collectsAllRuleErrors() {
-        val token = pasetoToken {
+        val token = token {
             issuer = "x"
             audience = "y"
             subject = "z"
@@ -107,7 +103,7 @@ class RuleTests {
 
     @Test
     fun multipleRuleValidationExceptions_toString() {
-        val token = pasetoToken {}
+        val token = token {}
         val rules = rules {
             validAt = null
             issuedInPast = null

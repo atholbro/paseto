@@ -1,5 +1,6 @@
 package net.aholbrook.paseto.protocol
 
+@Suppress("NestedBlockDepth")
 internal fun jsonCountDepthAndKeys(json: String): Pair<Int, Int> {
     var depth = 0
     var maxDepth = 0
