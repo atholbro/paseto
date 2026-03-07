@@ -18,7 +18,7 @@ class SerdeTests {
         val token = pasetoToken {
             issuedAt = null
             expiresAt = null
-            claims = claimObject {
+            claims {
                 put(claim, "incorrect")
             }
         }
@@ -39,7 +39,7 @@ class SerdeTests {
         val token = pasetoToken {
             issuedAt = null
             expiresAt = null
-            claims = claimObject {
+            claims {
                 put("v", true)
             }
         }
@@ -59,7 +59,7 @@ class SerdeTests {
         val token = pasetoToken {
             issuedAt = null
             expiresAt = null
-            claims = claimObject {
+            claims {
                 put("v", Int.MIN_VALUE)
             }
         }
@@ -79,7 +79,7 @@ class SerdeTests {
         val token = pasetoToken {
             issuedAt = null
             expiresAt = null
-            claims = claimObject {
+            claims {
                 put("v", Long.MAX_VALUE)
             }
         }
@@ -99,7 +99,7 @@ class SerdeTests {
         val token = pasetoToken {
             issuedAt = null
             expiresAt = null
-            claims = claimObject {
+            claims {
                 put("v", 100.0)
             }
         }
@@ -119,7 +119,7 @@ class SerdeTests {
         val token = pasetoToken {
             issuedAt = null
             expiresAt = null
-            claims = claimObject {
+            claims {
                 put("v", 100.0123)
             }
         }
@@ -139,7 +139,7 @@ class SerdeTests {
         val token = pasetoToken {
             issuedAt = null
             expiresAt = null
-            claims = claimObject {
+            claims {
                 put("v", "100")
             }
         }
@@ -159,7 +159,7 @@ class SerdeTests {
         val token = pasetoToken {
             issuedAt = null
             expiresAt = null
-            claims = claimObject {
+            claims {
                 put("v", null)
             }
         }
@@ -179,7 +179,7 @@ class SerdeTests {
         val token = pasetoToken {
             issuedAt = null
             expiresAt = null
-            claims = claimObject {
+            claims {
                 put(
                     "more",
                     claimObject {
@@ -204,7 +204,7 @@ class SerdeTests {
         val token = pasetoToken {
             issuedAt = null
             expiresAt = null
-            claims = claimObject {
+            claims {
                 put(
                     "v",
                     claimArray {

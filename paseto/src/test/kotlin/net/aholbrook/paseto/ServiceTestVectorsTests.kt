@@ -33,7 +33,7 @@ private fun localService(version: Version, vector: ServiceTestVector, currentTim
     val clock = currentTime?.let { Clock.fixed(it, ZoneOffset.UTC) }
 
     return tokenService(version, Purpose.Local { SymmetricKey.ofHex(vector.key!!, version) }) {
-        rules = rules {
+        rules {
             issuedInPast = clock?.let { issuedInPast?.copy(clock = clock) }
             notExpired = clock?.let { notExpired?.copy(clock = clock) }
         }
@@ -59,7 +59,7 @@ private fun publicService(version: Version, vector: ServiceTestVector, currentTi
             }
         },
     ) {
-        rules = rules {
+        rules {
             issuedInPast = clock?.let { issuedInPast?.copy(clock = clock) }
             notExpired = clock?.let { notExpired?.copy(clock = clock) }
         }

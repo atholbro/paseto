@@ -13,6 +13,7 @@ import net.aholbrook.paseto.protocol.Version
 import net.aholbrook.paseto.protocol.extractFooter
 import net.aholbrook.paseto.rules.Rule
 import net.aholbrook.paseto.rules.Rules
+import net.aholbrook.paseto.rules.RulesBuilder
 import net.aholbrook.paseto.rules.rules
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -23,9 +24,46 @@ sealed interface Purpose {
     class Local(val keyProvider: () -> SymmetricKey) : Purpose
 }
 
+data class FooterValidation(val maxLength: Int = 8192, val maxDepth: Int = 2, val maxKeys: Int = 512)
+
+@PasetoDslMarker
+class FooterValidationBuilder @PublishedApi internal constructor() {
+    var maxLength: Int = 8192
+    var maxDepth: Int = 2
+    var maxKeys: Int = 512
+
+    @PublishedApi
+    internal fun build(): FooterValidation = FooterValidation(
+        maxLength = maxLength,
+        maxDepth = maxDepth,
+        maxKeys = maxKeys,
+    )
+}
+
 @PasetoDslMarker
 class TokenServiceBuilder @PublishedApi internal constructor() {
-    var rules: Rules = rules()
+    private var rules: Rules = rules()
+    private var footerValidation: FooterValidation = FooterValidation()
+
+    fun rules(init: RulesBuilder.() -> Unit) {
+        rules = rules(rules, init)
+    }
+
+    fun rules(rules: Rules) {
+        this.rules = rules
+    }
+
+    fun footerValidation(init: FooterValidationBuilder.() -> Unit) {
+        val current = footerValidation
+        footerValidation = FooterValidationBuilder()
+            .apply {
+                maxLength = current.maxLength
+                maxDepth = current.maxDepth
+                maxKeys = current.maxKeys
+            }
+            .apply(init)
+            .build()
+    }
 
     @PublishedApi
     internal fun build(version: Version, purpose: Purpose): TokenService = purpose.let { purpose ->

@@ -46,21 +46,23 @@ fun tokenFromVector(vector: ServiceTestVector): PasetoToken {
         notBefore = vector.payload["nbf"]?.jsonPrimitive?.contentOrNull?.let { Instant.parse(it) }
         issuedAt = vector.payload["iat"]?.jsonPrimitive?.contentOrNull?.let { Instant.parse(it) }
         tokenId = vector.payload["jti"]?.jsonPrimitive?.contentOrNull
-        claims = JsonObject(vector.payload.filterNot { it.key in tokenReserved })
-            .toClaimElement() as ClaimObject
+        claims(
+            JsonObject(vector.payload.filterNot { it.key in tokenReserved })
+                .toClaimElement() as ClaimObject,
+        )
 
-        footer = when (val f = vector.footer) {
-            null, is JsonNull -> StringFooter("")
+        when (val f = vector.footer) {
+            null, is JsonNull -> footer("")
 
-            is JsonPrimitive -> pasetoFooter(f.content)
+            is JsonPrimitive -> footer(f.content)
 
-            is JsonObject -> pasetoFooter {
+            is JsonObject -> footer {
                 keyId = f["kid"]?.jsonPrimitive?.contentOrNull
                 wrappedKey = f["wpk"]?.jsonPrimitive?.contentOrNull
-                claims = JsonObject(f.filterNot { it.key in footerReserved }).toClaimElement() as ClaimObject
+                claims(JsonObject(f.filterNot { it.key in footerReserved }).toClaimElement() as ClaimObject)
             }
 
-            else -> StringFooter("")
+            else -> footer("")
         }
     }
 }

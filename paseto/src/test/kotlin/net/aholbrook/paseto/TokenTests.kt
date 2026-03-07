@@ -51,7 +51,7 @@ class TokenTests {
     @Test
     fun token_claims() {
         val token = pasetoToken {
-            claims = claimObject {
+            claims {
                 put("test", "data")
             }
         }
@@ -63,7 +63,7 @@ class TokenTests {
     @Test
     fun token_claims_jsonEscapeHatch() {
         val token = pasetoToken {
-            claims = claimObject {
+            claims {
                 put("test", "data")
             }
         }
@@ -74,15 +74,15 @@ class TokenTests {
     @Test
     fun token_stringFooter() {
         pasetoToken {
-            footer = pasetoFooter("abc")
-        }.footer shouldBe pasetoFooter("abc")
+            footer("abc")
+        }.footer shouldBe footer("abc")
     }
 
     @Test
     fun token_mapFooter() {
         val footer = pasetoToken {
-            footer = pasetoFooter {
-                claims = claimObject {
+            footer {
+                claims {
                     put("key", 1)
                 }
             }

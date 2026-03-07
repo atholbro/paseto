@@ -22,8 +22,6 @@ import net.aholbrook.paseto.protocol.Version
 import net.aholbrook.paseto.rules.IssuedInPast
 import net.aholbrook.paseto.rules.NotBefore
 import net.aholbrook.paseto.rules.NotExpired
-import net.aholbrook.paseto.rules.ValidAt
-import net.aholbrook.paseto.rules.rules
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -102,7 +100,7 @@ class TokenServiceTests {
 
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
-            rules = rules {
+            rules {
                 issuedInPast = IssuedInPast(clock = clock)
                 notExpired = NotExpired(clock = clock)
             }
@@ -130,7 +128,7 @@ class TokenServiceTests {
     fun `empty implicit assertion does not error regardless of version`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
-            rules = rules {
+            rules {
                 issuedInPast = IssuedInPast(clock = clock)
                 notExpired = NotExpired(clock = clock)
             }
@@ -158,7 +156,7 @@ class TokenServiceTests {
     fun `allows tokens without expiration set`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
-            rules = rules {
+            rules {
                 notExpired = null
                 issuedInPast = IssuedInPast(clock = clock)
             }
@@ -244,7 +242,7 @@ class TokenServiceTests {
     fun `rejects a token that expires before it becomes valid`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
-            rules = rules {
+            rules {
                 notBefore = NotBefore(clock = clock)
             }
         }
@@ -265,7 +263,7 @@ class TokenServiceTests {
     fun `rejects a token that expires as it becomes valid`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
-            rules = rules {
+            rules {
                 notBefore = NotBefore(clock = clock)
             }
         }
@@ -286,7 +284,7 @@ class TokenServiceTests {
     fun `allows a token that has notBefore without expiration`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
-            rules = rules {
+            rules {
                 notExpired = null
             }
         }
@@ -305,7 +303,7 @@ class TokenServiceTests {
     fun `errors on footer mismatch`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
-            rules = rules {
+            rules {
                 issuedInPast = IssuedInPast(clock = clock)
                 notExpired = NotExpired(clock = clock)
             }
@@ -313,12 +311,12 @@ class TokenServiceTests {
         val token = pasetoToken {
             issuedAt = clock.instant()
             expiresAt = clock.instant().plus(Duration.ofHours(1))
-            footer = pasetoFooter("test footer value")
+            footer("test footer value")
         }
 
         val encoded = service.encode(token)
         shouldThrow<InvalidFooterException> {
-            service.decode(encoded, pasetoFooter("wrong"))
+            service.decode(encoded, footer("wrong"))
         }
     }
 
@@ -327,7 +325,7 @@ class TokenServiceTests {
     fun `token footer reverts to string if not a json object`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
-            rules = rules {
+            rules {
                 issuedInPast = IssuedInPast(clock = clock)
                 notExpired = NotExpired(clock = clock)
             }
@@ -335,12 +333,12 @@ class TokenServiceTests {
         val token = pasetoToken {
             issuedAt = clock.instant()
             expiresAt = clock.instant().plus(Duration.ofHours(1))
-            footer = pasetoFooter("[1,2,3]")
+            footer("[1,2,3]")
         }
 
         val encoded = service.encode(token)
         val decoded = service.decode(encoded, token.footer)
-        decoded.footer shouldBe pasetoFooter("[1,2,3]")
+        decoded.footer shouldBe footer("[1,2,3]")
     }
 
     @ParameterizedTest
@@ -348,7 +346,7 @@ class TokenServiceTests {
     fun `token footer decode handles invalid json`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
-            rules = rules {
+            rules {
                 issuedInPast = IssuedInPast(clock = clock)
                 notExpired = NotExpired(clock = clock)
             }
@@ -356,12 +354,12 @@ class TokenServiceTests {
         val token = pasetoToken {
             issuedAt = clock.instant()
             expiresAt = clock.instant().plus(Duration.ofHours(1))
-            footer = pasetoFooter("{")
+            footer("{")
         }
 
         val encoded = service.encode(token)
         val decoded = service.decode(encoded, token.footer)
-        decoded.footer shouldBe pasetoFooter("{")
+        decoded.footer shouldBe footer("{")
     }
 
     @ParameterizedTest
@@ -371,7 +369,7 @@ class TokenServiceTests {
         val token = pasetoToken {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
-            footer = pasetoFooter("just a string")
+            footer("just a string")
         }
 
         val encoded = service.encode(token)
@@ -389,10 +387,10 @@ class TokenServiceTests {
         val token = pasetoToken {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
-            footer = pasetoFooter {
+            footer {
                 keyId = "key-3"
                 wrappedKey = "invalid"
-                claims = claimObject {
+                claims {
                     put("custom", "also works?")
                 }
             }
@@ -417,7 +415,7 @@ class TokenServiceTests {
         val token = pasetoToken {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
-            footer = pasetoFooter("just a string")
+            footer("just a string")
         }
 
         val encoded = service.encode(token)
@@ -432,10 +430,10 @@ class TokenServiceTests {
         val token = pasetoToken {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
-            footer = pasetoFooter {
+            footer {
                 keyId = "key-3"
                 wrappedKey = "invalid"
-                claims = claimObject {
+                claims {
                     put("custom", "also works?")
                 }
             }
@@ -453,9 +451,9 @@ class TokenServiceTests {
         val token = pasetoToken {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
-            footer = pasetoFooter("just a string")
+            footer("just a string")
         }
-        val expectedFooter = pasetoFooter("not the string")
+        val expectedFooter = footer("not the string")
 
         val encoded = service.encode(token)
         shouldThrow<InvalidFooterException> {
@@ -470,15 +468,15 @@ class TokenServiceTests {
         val token = pasetoToken {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
-            footer = pasetoFooter {
+            footer {
                 keyId = "key-3"
                 wrappedKey = "invalid"
-                claims = claimObject {
+                claims {
                     put("custom", "also works?")
                 }
             }
         }
-        val expectedFooter = pasetoFooter { }
+        val expectedFooter = footer { }
 
         val encoded = service.encode(token)
         shouldThrow<InvalidFooterException> {
@@ -492,7 +490,7 @@ class TokenServiceTests {
     fun `cannot sign without a secret key`(version: Version, purpose: Purpose, signingPurpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
-            rules = rules {
+            rules {
                 issuedInPast = IssuedInPast(clock = clock)
                 notExpired = NotExpired(clock = clock)
             }
@@ -567,5 +565,60 @@ class TokenServiceTests {
             service.insecureGetFooter(token) shouldBe null
         }
         ex.reason shouldBe PasetoParseException.Reason.INVALID_BASE64
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `can encode and decode a token with custom claims in both the token and footer`(
+        version: Version,
+        purpose: Purpose
+    ) {
+        val token = pasetoToken {
+            claims {
+                put("pi", Math.PI)
+            }
+            footer {
+                keyId = "key-1"
+                claims {
+                    put("e", Math.E)
+                }
+            }
+        }
+        val service = tokenService(version, purpose)
+
+        val encoded = service.encode(token)
+        val decoded = service.decode(encoded, token.footer)
+
+        decoded shouldBe token
+        decoded.claims["pi"]?.doubleOrNull shouldBe Math.PI
+        val footer = decoded.footer as ClaimFooter
+        footer.claims["e"]?.doubleOrNull shouldBe Math.E
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `can pass a footer into the token builder`(version: Version, purpose: Purpose) {
+        val footer = footer {
+            keyId = "key-1"
+            claims {
+                put("e", Math.E)
+            }
+        }
+        val token = pasetoToken {
+            claims {
+                put("pi", Math.PI)
+            }
+            footer(footer)
+        }
+        val service = tokenService(version, purpose)
+
+        val encoded = service.encode(token)
+        val decoded = service.decode(encoded, token.footer)
+
+        decoded shouldBe token
+        decoded.claims["pi"]?.doubleOrNull shouldBe Math.PI
+        val decodedFooter = decoded.footer as ClaimFooter
+        decodedFooter shouldBe footer
+        decodedFooter.claims["e"]?.doubleOrNull shouldBe Math.E
     }
 }

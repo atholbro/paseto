@@ -30,8 +30,35 @@ class PasetoTokenBuilder @PublishedApi internal constructor(clock: Clock) {
     var notBefore: Instant? = null // nbf
     var issuedAt: Instant? = clock.instant() // iat
     var tokenId: String? = null // jti
-    var claims: ClaimObject = ClaimObject()
-    var footer: PasetoFooter = StringFooter("")
+    private var claims: ClaimObject = ClaimObject()
+    private var footer: PasetoFooter = StringFooter("")
+
+    @OptIn(ExperimentalContracts::class)
+    fun claims(init: ClaimObjectBuilder.() -> Unit) {
+        contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
+
+        val builder = ClaimObjectBuilder()
+        builder.init()
+        claims = builder.build()
+    }
+
+    fun claims(claims: ClaimObject) {
+        this.claims = claims
+    }
+
+    fun footer(footer: PasetoFooter) {
+        this.footer = footer
+    }
+
+    fun footer(footer: String) {
+        this.footer = StringFooter(footer)
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    fun footer(init: ClaimFooterBuilder.() -> Unit) {
+        contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
+        footer = ClaimFooterBuilder().apply(init).build()
+    }
 
     @PublishedApi
     internal fun build(): PasetoToken = PasetoToken(
@@ -69,7 +96,20 @@ data class ClaimFooter internal constructor(
 class ClaimFooterBuilder @PublishedApi internal constructor() {
     var keyId: String? = null // kid
     var wrappedKey: String? = null // wpk
-    var claims: ClaimObject = ClaimObject()
+    private var claims: ClaimObject = ClaimObject()
+
+    @OptIn(ExperimentalContracts::class)
+    fun claims(init: ClaimObjectBuilder.() -> Unit) {
+        contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
+
+        val builder = ClaimObjectBuilder()
+        builder.init()
+        claims = builder.build()
+    }
+
+    fun claims(claims: ClaimObject) {
+        this.claims = claims
+    }
 
     @PublishedApi
     internal fun build(): ClaimFooter = ClaimFooter(
@@ -79,10 +119,10 @@ class ClaimFooterBuilder @PublishedApi internal constructor() {
     )
 }
 
-fun pasetoFooter(footer: String) = StringFooter(footer)
+fun footer(footer: String) = StringFooter(footer)
 
 @OptIn(ExperimentalContracts::class)
-inline fun pasetoFooter(init: ClaimFooterBuilder.() -> Unit): ClaimFooter {
+inline fun footer(init: ClaimFooterBuilder.() -> Unit): ClaimFooter {
     contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
     return ClaimFooterBuilder().apply(init).build()
 }
@@ -108,7 +148,7 @@ data class TaintedClaimFooter internal constructor(
 /**
  * Converts a [PasetoFooter] to it's [TaintedPasetoFooter] variant.
  *
- * This can be used to compare an [TaintedClaimFooter] against a [ClaimFooter] built using the [pasetoFooter] builder.
+ * This can be used to compare an [TaintedClaimFooter] against a [ClaimFooter] built using the [footer] builder.
  * @receiver A [PasetoFooter] instance to turn taint.
  * @return A [TaintedPasetoFooter] representation of the given [PasetoFooter].
  */
