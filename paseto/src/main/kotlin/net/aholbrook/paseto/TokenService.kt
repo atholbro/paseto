@@ -137,7 +137,7 @@ internal class LocalTokenService internal constructor(
         rules.verifyAll(token, Rule.Mode.ENCODE)
         val encoded = json.encodeToString(PasetoTokenSerializer, token)
         val encodedFooter = json.encodeFooter(token.footer)
-        footerValidation(encoded)
+        footerValidation(encodedFooter)
         return paseto.encrypt(encoded.toByteArray(Charsets.UTF_8), keyProvider(), encodedFooter, implicitAssertion)
     }
 
@@ -174,7 +174,7 @@ internal class PublicTokenService internal constructor(
         rules.verifyAll(token, Rule.Mode.ENCODE)
         val encoded = json.encodeToString(PasetoTokenSerializer, token)
         val encodedFooter = json.encodeFooter(token.footer)
-        footerValidation(encoded)
+        footerValidation(encodedFooter)
         val keyPair = keyProvider()
         if (keyPair.secretKey == null) {
             throw CannotSignWithoutSecretKey()
