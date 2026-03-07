@@ -1,0 +1,90 @@
+package net.aholbrook.paseto.protocol.key
+
+import net.aholbrook.paseto.crypto.randomBytes
+import net.aholbrook.paseto.exception.KeyLengthException
+import net.aholbrook.paseto.exception.KeyPurposeException
+import net.aholbrook.paseto.exception.KeyReuseException
+import net.aholbrook.paseto.exception.KeyVersionException
+import net.aholbrook.paseto.protocol.Purpose
+import net.aholbrook.paseto.protocol.Version
+import org.bouncycastle.util.encoders.Hex
+import kotlin.io.encoding.Base64
+
+class SymmetricKey private constructor(private val material: ByteArray, val version: Version) {
+    internal val purpose: Purpose = Purpose.LOCAL
+    private var cleared: Boolean = false
+
+    init {
+        if (version.symmetricKeySize != material.size) {
+            throw KeyLengthException(material.size, arrayOf(version.symmetricKeySize))
+        }
+    }
+
+    fun toHex(): String {
+        if (cleared) throw KeyReuseException()
+        return Hex.toHexString(material)
+    }
+
+    fun toBase64Url(): String {
+        if (cleared) throw KeyReuseException()
+        return Base64.UrlSafe.encode(material)
+    }
+
+    internal fun getKeyMaterialFor(version: Version, purpose: Purpose): ByteArray {
+        if (cleared) throw KeyReuseException()
+        if (this.version != version) throw KeyVersionException(version, this.version)
+        if (this.purpose != purpose) throw KeyPurposeException(purpose.toString(), this.purpose.toString())
+        return material
+    }
+
+    internal fun clear() {
+        material.fill(0)
+        cleared = true
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+        if (javaClass != other?.javaClass) {
+            return false
+        }
+
+        other as SymmetricKey
+
+        if (version != other.version) {
+            return false
+        }
+        if (purpose != other.purpose) {
+            return false
+        }
+        if (!material.contentEquals(other.material)) {
+            return false
+        }
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = material.contentHashCode()
+        result = 31 * result + version.hashCode()
+        result = 31 * result + purpose.hashCode()
+        return result
+    }
+
+    override fun toString(): String = "SymmetricKey(material=*****, version=$version, purpose=$purpose)"
+
+    companion object {
+        @JvmStatic
+        fun generate(version: Version) = ofRawBytes(randomBytes(version.symmetricKeySize), version)
+
+        @JvmStatic
+        fun ofRawBytes(material: ByteArray, version: Version) = SymmetricKey(material, version)
+
+        @JvmStatic
+        fun ofHex(hex: String, version: Version) = SymmetricKey(Hex.decode(hex), version)
+
+        @JvmStatic
+        fun ofBase64Url(b64: String, version: Version) = SymmetricKey(Base64.UrlSafe.decode(b64), version)
+    }
+}

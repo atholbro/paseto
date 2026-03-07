@@ -6,6 +6,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import net.aholbrook.paseto.crypto.withTestNonce
+import net.aholbrook.paseto.protocol.key.AsymmetricPublicKey
+import net.aholbrook.paseto.protocol.key.AsymmetricSecretKey
+import net.aholbrook.paseto.protocol.key.SymmetricKey
 import org.bouncycastle.util.encoders.Hex
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments

@@ -9,9 +9,9 @@ import net.aholbrook.paseto.exception.FooterExceedsMaxKeysException
 import net.aholbrook.paseto.exception.FooterExceedsMaxLengthException
 import net.aholbrook.paseto.exception.FooterJsonParseException
 import net.aholbrook.paseto.exception.ImplicitAssertionsNotSupportedException
-import net.aholbrook.paseto.protocol.KeyPair
+import net.aholbrook.paseto.protocol.key.KeyPair
 import net.aholbrook.paseto.protocol.Paseto
-import net.aholbrook.paseto.protocol.SymmetricKey
+import net.aholbrook.paseto.protocol.key.SymmetricKey
 import net.aholbrook.paseto.protocol.Version
 import net.aholbrook.paseto.protocol.extractFooter
 import net.aholbrook.paseto.protocol.jsonCountDepthAndKeys

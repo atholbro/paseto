@@ -8,9 +8,10 @@ import net.aholbrook.paseto.crypto.ED25519_SECRETKEYBYTES
 import net.aholbrook.paseto.crypto.constantTimeEquals
 import net.aholbrook.paseto.decodeOrNull
 import net.aholbrook.paseto.exception.GenericInvalidFooterException
-import net.aholbrook.paseto.exception.InvalidFooterException
-import net.aholbrook.paseto.exception.InvalidHeaderException
 import net.aholbrook.paseto.exception.PasetoParseException
+import net.aholbrook.paseto.protocol.key.AsymmetricPublicKey
+import net.aholbrook.paseto.protocol.key.AsymmetricSecretKey
+import net.aholbrook.paseto.protocol.key.SymmetricKey
 import kotlin.io.encoding.Base64
 
 internal const val SEPARATOR: String = "."

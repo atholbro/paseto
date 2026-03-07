@@ -3,12 +3,11 @@ package net.aholbrook.paseto
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.json.Json
 import net.aholbrook.paseto.crypto.withTestNonce
-import net.aholbrook.paseto.protocol.AsymmetricPublicKey
-import net.aholbrook.paseto.protocol.AsymmetricSecretKey
-import net.aholbrook.paseto.protocol.KeyPair
-import net.aholbrook.paseto.protocol.SymmetricKey
+import net.aholbrook.paseto.protocol.key.AsymmetricPublicKey
+import net.aholbrook.paseto.protocol.key.AsymmetricSecretKey
+import net.aholbrook.paseto.protocol.key.KeyPair
+import net.aholbrook.paseto.protocol.key.SymmetricKey
 import net.aholbrook.paseto.protocol.Version
-import net.aholbrook.paseto.rules.rules
 import org.bouncycastle.util.encoders.Hex
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments

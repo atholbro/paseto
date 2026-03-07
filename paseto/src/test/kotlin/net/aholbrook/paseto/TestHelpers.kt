@@ -1,8 +1,8 @@
 package net.aholbrook.paseto
 
 import net.aholbrook.paseto.crypto.copy
-import net.aholbrook.paseto.protocol.KeyPair
-import net.aholbrook.paseto.protocol.SymmetricKey
+import net.aholbrook.paseto.protocol.key.KeyPair
+import net.aholbrook.paseto.protocol.key.SymmetricKey
 import net.aholbrook.paseto.protocol.Version
 import java.io.File
 

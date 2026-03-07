@@ -4,7 +4,6 @@ package net.aholbrook.paseto.protocol
 
 import net.aholbrook.paseto.UrlSafeNoPadding
 import net.aholbrook.paseto.crypto.ECDSA_P384_BYTES
-import net.aholbrook.paseto.crypto.RSA_SIGNATURE_LEN
 import net.aholbrook.paseto.crypto.aes256CtrDecrypt
 import net.aholbrook.paseto.crypto.aes256CtrEncrypt
 import net.aholbrook.paseto.crypto.constantTimeEquals
@@ -15,14 +14,15 @@ import net.aholbrook.paseto.crypto.hkdfSha384
 import net.aholbrook.paseto.crypto.hmacSha384
 import net.aholbrook.paseto.crypto.p384SkToPk
 import net.aholbrook.paseto.crypto.pae
-import net.aholbrook.paseto.crypto.rsaSign
-import net.aholbrook.paseto.crypto.rsaVerify
 import net.aholbrook.paseto.decodeOrNull
 import net.aholbrook.paseto.exception.DecryptionException
 import net.aholbrook.paseto.exception.InvalidHeaderException
 import net.aholbrook.paseto.exception.PasetoParseException
 import net.aholbrook.paseto.exception.SignatureVerificationException
 import net.aholbrook.paseto.exception.SigningException
+import net.aholbrook.paseto.protocol.key.AsymmetricPublicKey
+import net.aholbrook.paseto.protocol.key.AsymmetricSecretKey
+import net.aholbrook.paseto.protocol.key.SymmetricKey
 import kotlin.io.encoding.Base64
 
 private val HKDF_INFO_EK: ByteArray = "paseto-encryption-key".toByteArray(Charsets.UTF_8)

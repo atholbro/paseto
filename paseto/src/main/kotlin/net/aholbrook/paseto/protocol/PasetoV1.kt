@@ -19,6 +19,9 @@ import net.aholbrook.paseto.decodeOrNull
 import net.aholbrook.paseto.exception.InvalidHeaderException
 import net.aholbrook.paseto.exception.PasetoParseException
 import net.aholbrook.paseto.exception.SignatureVerificationException
+import net.aholbrook.paseto.protocol.key.AsymmetricPublicKey
+import net.aholbrook.paseto.protocol.key.AsymmetricSecretKey
+import net.aholbrook.paseto.protocol.key.SymmetricKey
 import kotlin.io.encoding.Base64
 
 private val HKDF_INFO_EK: ByteArray = "paseto-encryption-key".toByteArray(Charsets.UTF_8)

@@ -98,6 +98,14 @@ class PasetoV4Tests {
     }
 
     @Test
+    fun local_decryptLengthCheck() {
+        val ex = shouldThrow<PasetoParseException> {
+            PasetoV4.decrypt("v4.local.YWJj", keyV4Local)
+        }
+        ex.minLength shouldBe 65
+    }
+
+    @Test
     fun public_signError() {
         mockkStatic("net.aholbrook.paseto.crypto.Ed25519Kt")
         every { ed25519Sign(any(), any(), any()) } returns false

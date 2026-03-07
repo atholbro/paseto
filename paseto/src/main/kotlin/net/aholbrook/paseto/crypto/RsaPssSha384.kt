@@ -2,6 +2,7 @@ package net.aholbrook.paseto.crypto
 
 import net.aholbrook.paseto.exception.ByteArrayLengthException
 import net.aholbrook.paseto.exception.CryptoProviderException
+import org.bouncycastle.asn1.ASN1Primitive
 import org.bouncycastle.asn1.DERNull
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo
@@ -96,6 +97,12 @@ internal fun rsaSkToPk(secretKey: ByteArray): ByteArray {
         algo,
         RSAPublicKey(rsa.modulus, rsa.publicExponent),
     )
+}
+
+internal fun rsaPkcs1ToPkcs8(pkcs1Der: ByteArray): ByteArray {
+    val rsa = RSAPrivateKey.getInstance(ASN1Primitive.fromByteArray(pkcs1Der))
+    val alg = AlgorithmIdentifier(PKCSObjectIdentifiers.rsaEncryption, DERNull.INSTANCE)
+    return PrivateKeyInfo(alg, rsa).encoded
 }
 
 internal fun rsaGenerate(): Pair<ByteArray, ByteArray> {

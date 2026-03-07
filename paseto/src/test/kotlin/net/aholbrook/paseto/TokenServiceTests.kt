@@ -22,7 +22,7 @@ import net.aholbrook.paseto.exception.MultipleValidationExceptions
 import net.aholbrook.paseto.exception.PasetoParseException
 import net.aholbrook.paseto.exception.TokenExpiresBeforeIssuedException
 import net.aholbrook.paseto.exception.TokenIsNotValidUntilAfterExpiration
-import net.aholbrook.paseto.protocol.KeyPair
+import net.aholbrook.paseto.protocol.key.KeyPair
 import net.aholbrook.paseto.protocol.Version
 import net.aholbrook.paseto.rules.CustomRule
 import net.aholbrook.paseto.rules.IssuedInPast
