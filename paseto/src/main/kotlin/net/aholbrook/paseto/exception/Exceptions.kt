@@ -30,7 +30,8 @@ class EncryptionException @InternalApi constructor() : PasetoException("Failed t
 class DecryptionException @InternalApi constructor(token: String) :
     PasetoStringException("Failed to decrypt token.", token)
 
-open class InvalidFooterException @InternalApi constructor(msg: String) : PasetoException(msg)
+open class InvalidFooterException @InternalApi constructor(msg: String, cause: Throwable? = null) :
+    PasetoException(msg, cause)
 
 class GenericInvalidFooterException @InternalApi constructor(val given: String?, val expected: String) :
     PasetoException("Invalid footer in token: \"$given\" expected: \"$expected\".")
@@ -43,6 +44,9 @@ class FooterExceedsMaxDepthException @InternalApi constructor(val depth: Int, va
 
 class FooterExceedsMaxKeysException @InternalApi constructor(val keys: Int, val max: Int) :
     InvalidFooterException("Json footer with keys $keys exceeds maximum keys $max.")
+
+class FooterJsonParseException @InternalApi constructor(message: String?, cause: Throwable) :
+    InvalidFooterException(message ?: "", cause)
 
 class InvalidHeaderException @InternalApi constructor(val given: String?, val expected: String, token: String) :
     PasetoStringException("Invalid header in token: \"$given\", expected: \"$expected\".", token)

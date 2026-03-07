@@ -13,6 +13,7 @@ import net.aholbrook.paseto.crypto.copy
 import net.aholbrook.paseto.exception.KeyLengthException
 import net.aholbrook.paseto.exception.KeyPemUnsupportedTypeException
 import net.aholbrook.paseto.exception.KeyPurposeException
+import net.aholbrook.paseto.exception.KeyReuseException
 import net.aholbrook.paseto.exception.KeyVersionException
 import net.aholbrook.paseto.exception.Pkcs12LoadException
 import net.aholbrook.paseto.keyV1Public
@@ -315,6 +316,55 @@ class KeyTests {
             AsymmetricSecretKey.ofPem(pem, version)
         }
         ex.type shouldBe "CORRUPT PRIVATE KEY"
+    }
+
+    @Test
+    fun `AsymmetricSecretKey toHex throws KeyReuseException after clear`() {
+        val key = keyV4Public.secretKey!!
+        key.clear()
+        shouldThrow<KeyReuseException> { key.toHex() }
+    }
+
+    @Test
+    fun `AsymmetricSecretKey toBase64Url throws KeyReuseException after clear`() {
+        val key = keyV4Public.secretKey!!
+        key.clear()
+        shouldThrow<KeyReuseException> { key.toBase64Url() }
+    }
+
+    @Test
+    fun `AsymmetricSecretKey toPem throws KeyReuseException after clear`() {
+        val key = keyV4Public.secretKey!!
+        key.clear()
+        shouldThrow<KeyReuseException> { key.toPem() }
+    }
+
+    @Test
+    fun `AsymmetricSecretKey getKeyMaterialFor throws KeyReuseException after clear`() {
+        val key = keyV4Public.secretKey!!
+        key.clear()
+        shouldThrow<KeyReuseException> { key.getKeyMaterialFor(Version.V4, Purpose.PUBLIC) }
+    }
+
+    @Test
+    fun `SymmetricKey toHex throws KeyReuseException after clear`() {
+        val key = keyV4Local
+        key.clear()
+        shouldThrow<KeyReuseException> { key.toHex() }
+    }
+
+    @Test
+    fun `SymmetricKey toBase64Url throws KeyReuseException after clear`() {
+        val key = keyV4Local
+        key.clear()
+        shouldThrow<KeyReuseException> { key.toBase64Url() }
+    }
+
+    @Test
+    fun `SymmetricKey getKeyMaterialFor throws KeyReuseException after clear`() {
+        val key = keyV4Local
+        key.clear()
+        shouldThrow<KeyReuseException> { key.getKeyMaterialFor(Version.V4, Purpose.LOCAL) }
     }
 
     @ParameterizedTest

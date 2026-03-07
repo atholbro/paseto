@@ -259,15 +259,29 @@ public final class net/aholbrook/paseto/ClaimsKt {
 	public static final fun primitiveValue (Ljava/lang/Void;)Lkotlinx/serialization/json/JsonPrimitive;
 }
 
-public final class net/aholbrook/paseto/FooterValidationBuilder {
+public final class net/aholbrook/paseto/EmptyFooter : net/aholbrook/paseto/PasetoFooter {
+	public static final field INSTANCE Lnet/aholbrook/paseto/EmptyFooter;
+}
+
+public final class net/aholbrook/paseto/FooterOptionsBuilder {
 	public fun <init> ()V
-	public final fun build ()Lnet/aholbrook/paseto/FooterValidation;
 	public final fun getMaxDepth ()I
 	public final fun getMaxKeys ()I
 	public final fun getMaxLength ()I
+	public final fun getParseMode ()Lnet/aholbrook/paseto/FooterParseMode;
 	public final fun setMaxDepth (I)V
 	public final fun setMaxKeys (I)V
 	public final fun setMaxLength (I)V
+	public final fun setParseMode (Lnet/aholbrook/paseto/FooterParseMode;)V
+}
+
+public final class net/aholbrook/paseto/FooterParseMode : java/lang/Enum {
+	public static final field AUTO Lnet/aholbrook/paseto/FooterParseMode;
+	public static final field CLAIMS Lnet/aholbrook/paseto/FooterParseMode;
+	public static final field STRING Lnet/aholbrook/paseto/FooterParseMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/aholbrook/paseto/FooterParseMode;
+	public static fun values ()[Lnet/aholbrook/paseto/FooterParseMode;
 }
 
 public abstract interface annotation class net/aholbrook/paseto/InternalApi : java/lang/annotation/Annotation {
@@ -362,6 +376,10 @@ public final class net/aholbrook/paseto/TaintedClaimFooter : net/aholbrook/paset
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class net/aholbrook/paseto/TaintedEmptyFooter : net/aholbrook/paseto/TaintedPasetoFooter {
+	public static final field INSTANCE Lnet/aholbrook/paseto/TaintedEmptyFooter;
+}
+
 public abstract interface class net/aholbrook/paseto/TaintedPasetoFooter {
 }
 
@@ -403,7 +421,7 @@ public final class net/aholbrook/paseto/TokenService$DefaultImpls {
 public final class net/aholbrook/paseto/TokenServiceBuilder {
 	public fun <init> ()V
 	public final fun build (Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/Purpose;)Lnet/aholbrook/paseto/TokenService;
-	public final fun footerValidation (Lkotlin/jvm/functions/Function1;)V
+	public final fun footerOptions (Lkotlin/jvm/functions/Function1;)V
 	public final fun rules (Lkotlin/jvm/functions/Function1;)V
 	public final fun rules (Lnet/aholbrook/paseto/rules/Rules;)V
 }
@@ -455,6 +473,9 @@ public final class net/aholbrook/paseto/exception/FooterExceedsMaxKeysException 
 public final class net/aholbrook/paseto/exception/FooterExceedsMaxLengthException : net/aholbrook/paseto/exception/InvalidFooterException {
 	public final fun getLength ()I
 	public final fun getMax ()I
+}
+
+public final class net/aholbrook/paseto/exception/FooterJsonParseException : net/aholbrook/paseto/exception/InvalidFooterException {
 }
 
 public final class net/aholbrook/paseto/exception/GenericInvalidFooterException : net/aholbrook/paseto/exception/PasetoException {

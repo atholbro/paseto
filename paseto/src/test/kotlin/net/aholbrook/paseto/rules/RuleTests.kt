@@ -144,6 +144,7 @@ class RuleTests {
         val customRule1: CustomRule = { _, _, _ -> }
         val customRule2: CustomRule = { _, _, _ -> }
         val rules1 = rules {
+            identifiedBy = IdentifiedBy("tk1")
             forAudience = ForAudience("abc")
             issuedBy = IssuedBy("def")
             subject = Subject("xyz")
@@ -152,6 +153,7 @@ class RuleTests {
         }
 
         rules(rules1) {
+            identifiedBy shouldBeSameInstanceAs rules1.findByTypeOrNull<IdentifiedBy>()
             validAt shouldBeSameInstanceAs rules1.findByTypeOrNull<ValidAt>()
             forAudience shouldBeSameInstanceAs rules1.findByTypeOrNull<ForAudience>()
             issuedBy shouldBeSameInstanceAs rules1.findByTypeOrNull<IssuedBy>()

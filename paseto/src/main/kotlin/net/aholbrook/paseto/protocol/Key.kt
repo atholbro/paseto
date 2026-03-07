@@ -230,9 +230,19 @@ class AsymmetricSecretKey private constructor(material: ByteArray, val version: 
         }
     }
 
-    fun toHex(): String = Hex.toHexString(material)
-    fun toBase64Url(): String = Base64.UrlSafe.encode(material)
+    fun toHex(): String {
+        if (cleared) throw KeyReuseException()
+        return Hex.toHexString(material)
+    }
+
+    fun toBase64Url(): String {
+        if (cleared) throw KeyReuseException()
+        return Base64.UrlSafe.encode(material)
+    }
+
     fun toPem(): String {
+        if (cleared) throw KeyReuseException()
+
         val (der, type) = when (version) {
             Version.V1 -> Pair(material, "PRIVATE KEY")
 
@@ -372,8 +382,15 @@ class SymmetricKey private constructor(private val material: ByteArray, val vers
         }
     }
 
-    fun toHex(): String = Hex.toHexString(material)
-    fun toBase64Url(): String = Base64.UrlSafe.encode(material)
+    fun toHex(): String {
+        if (cleared) throw KeyReuseException()
+        return Hex.toHexString(material)
+    }
+
+    fun toBase64Url(): String {
+        if (cleared) throw KeyReuseException()
+        return Base64.UrlSafe.encode(material)
+    }
 
     internal fun getKeyMaterialFor(version: Version, purpose: Purpose): ByteArray {
         if (cleared) throw KeyReuseException()

@@ -14,6 +14,7 @@ import net.aholbrook.paseto.exception.CannotSignWithoutSecretKey
 import net.aholbrook.paseto.exception.FooterExceedsMaxDepthException
 import net.aholbrook.paseto.exception.FooterExceedsMaxKeysException
 import net.aholbrook.paseto.exception.FooterExceedsMaxLengthException
+import net.aholbrook.paseto.exception.FooterJsonParseException
 import net.aholbrook.paseto.exception.GenericInvalidFooterException
 import net.aholbrook.paseto.exception.ImplicitAssertionsNotSupportedException
 import net.aholbrook.paseto.exception.MissingClaimException
@@ -346,12 +347,15 @@ class TokenServiceTests {
 
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
-    fun `token footer reverts to string if not a json object`(version: Version, purpose: Purpose) {
+    fun `token footer parse mode auto reverts to string if not a json object`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
             rules {
                 issuedInPast = IssuedInPast(clock = clock)
                 notExpired = NotExpired(clock = clock)
+            }
+            footerOptions {
+                parseMode = FooterParseMode.AUTO
             }
         }
         val token = pasetoToken {
@@ -367,7 +371,7 @@ class TokenServiceTests {
 
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
-    fun `token footer decode handles invalid json`(version: Version, purpose: Purpose) {
+    fun `token footer parse mode auto handles invalid json`(version: Version, purpose: Purpose) {
         val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
         val service = tokenService(version, purpose) {
             rules {
@@ -388,7 +392,7 @@ class TokenServiceTests {
 
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
-    fun `footer validation rejects footer that exceeds max length`(version: Version, purpose: Purpose) {
+    fun `footer parse mode auto validation rejects footer that exceeds max length`(version: Version, purpose: Purpose) {
         val token = pasetoToken {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
@@ -396,7 +400,7 @@ class TokenServiceTests {
         }
         val encoded = tokenService(version, purpose).encode(token)
         val service = tokenService(version, purpose) {
-            footerValidation {
+            footerOptions {
                 maxLength = 5
             }
         }
@@ -410,7 +414,7 @@ class TokenServiceTests {
 
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
-    fun `footer validation rejects footer that exceeds max depth`(version: Version, purpose: Purpose) {
+    fun `footer parse mode auto validation rejects footer that exceeds max depth`(version: Version, purpose: Purpose) {
         val token = pasetoToken {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
@@ -418,7 +422,7 @@ class TokenServiceTests {
         }
         val encoded = tokenService(version, purpose).encode(token)
         val service = tokenService(version, purpose) {
-            footerValidation {
+            footerOptions {
                 maxDepth = 1
             }
         }
@@ -432,7 +436,7 @@ class TokenServiceTests {
 
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
-    fun `footer validation rejects footer that exceeds max keys`(version: Version, purpose: Purpose) {
+    fun `footer parse mode auto validation rejects footer that exceeds max keys`(version: Version, purpose: Purpose) {
         val token = pasetoToken {
             issuedAt = Instant.now()
             expiresAt = Instant.now().plus(Duration.ofHours(1))
@@ -440,7 +444,7 @@ class TokenServiceTests {
         }
         val encoded = tokenService(version, purpose).encode(token)
         val service = tokenService(version, purpose) {
-            footerValidation {
+            footerOptions {
                 maxKeys = 1
             }
         }
@@ -454,7 +458,7 @@ class TokenServiceTests {
 
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
-    fun `can decode a string footer without decoding the token`(version: Version, purpose: Purpose) {
+    fun `parse mode auto can decode a string footer without decoding the token`(version: Version, purpose: Purpose) {
         val service = tokenService(version, purpose)
         val token = pasetoToken {
             issuedAt = Instant.now()
@@ -472,7 +476,7 @@ class TokenServiceTests {
 
     @ParameterizedTest
     @MethodSource("allServiceConfigurations")
-    fun `can decode a claim footer without decoding the token`(version: Version, purpose: Purpose) {
+    fun `parse mode auto can decode a claim footer without decoding the token`(version: Version, purpose: Purpose) {
         val service = tokenService(version, purpose)
         val token = pasetoToken {
             issuedAt = Instant.now()
@@ -496,6 +500,239 @@ class TokenServiceTests {
         }
 
         taintedFooter shouldBe token.footer.taint()
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `parse mode auto only applies validations to object-like footer`(version: Version, purpose: Purpose) {
+        val service = tokenService(version, purpose) {
+            footerOptions {
+                parseMode = FooterParseMode.AUTO
+                maxKeys = 2
+            }
+        }
+        val token = pasetoToken {
+            issuedAt = Instant.now()
+            expiresAt = Instant.now().plus(Duration.ofHours(1))
+            footer("::::")
+        }
+
+        val encoded = service.encode(token)
+        val decoded = service.decode(encoded)
+        decoded.footer shouldBe token.footer
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `token footer parse mode claims errors on invalid json`(version: Version, purpose: Purpose) {
+        val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
+        val service = tokenService(version, purpose) {
+            rules {
+                issuedInPast = IssuedInPast(clock = clock)
+                notExpired = NotExpired(clock = clock)
+            }
+            footerOptions {
+                parseMode = FooterParseMode.CLAIMS
+            }
+        }
+        val token = pasetoToken {
+            issuedAt = clock.instant()
+            expiresAt = clock.instant().plus(Duration.ofHours(1))
+            footer("{")
+        }
+
+        val encoded = service.encode(token)
+        shouldThrow<FooterJsonParseException> {
+            service.decode(encoded, token.footer)
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `footer parse mode claims validation rejects footer that exceeds max length`(version: Version, purpose: Purpose) {
+        val token = pasetoToken {
+            issuedAt = Instant.now()
+            expiresAt = Instant.now().plus(Duration.ofHours(1))
+            footer("123456")
+        }
+        val encoded = tokenService(version, purpose).encode(token)
+        val service = tokenService(version, purpose) {
+            footerOptions {
+                parseMode = FooterParseMode.CLAIMS
+                maxLength = 5
+            }
+        }
+
+        val ex = shouldThrow<FooterExceedsMaxLengthException> {
+            service.decode(encoded, token.footer)
+        }
+        ex.length shouldBe 6
+        ex.max shouldBe 5
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `footer parse mode claims validation rejects footer that exceeds max depth`(version: Version, purpose: Purpose) {
+        val token = pasetoToken {
+            issuedAt = Instant.now()
+            expiresAt = Instant.now().plus(Duration.ofHours(1))
+            footer("{\"a\":{\"b\":1}}")
+        }
+        val encoded = tokenService(version, purpose).encode(token)
+        val service = tokenService(version, purpose) {
+            footerOptions {
+                parseMode = FooterParseMode.CLAIMS
+                maxDepth = 1
+            }
+        }
+
+        val ex = shouldThrow<FooterExceedsMaxDepthException> {
+            service.decode(encoded, token.footer)
+        }
+        ex.depth shouldBe 2
+        ex.max shouldBe 1
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `footer parse mode claims validation rejects footer that exceeds max keys`(version: Version, purpose: Purpose) {
+        val token = pasetoToken {
+            issuedAt = Instant.now()
+            expiresAt = Instant.now().plus(Duration.ofHours(1))
+            footer("{\"a\":1,\"b\":2}")
+        }
+        val encoded = tokenService(version, purpose).encode(token)
+        val service = tokenService(version, purpose) {
+            footerOptions {
+                parseMode = FooterParseMode.CLAIMS
+                maxKeys = 1
+            }
+        }
+
+        val ex = shouldThrow<FooterExceedsMaxKeysException> {
+            service.decode(encoded, token.footer)
+        }
+        ex.keys shouldBe 2
+        ex.max shouldBe 1
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `token footer parse mode string ignores invalid json`(version: Version, purpose: Purpose) {
+        val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
+        val service = tokenService(version, purpose) {
+            rules {
+                issuedInPast = IssuedInPast(clock = clock)
+                notExpired = NotExpired(clock = clock)
+            }
+            footerOptions {
+                parseMode = FooterParseMode.STRING
+            }
+        }
+        val token = pasetoToken {
+            issuedAt = clock.instant()
+            expiresAt = clock.instant().plus(Duration.ofHours(1))
+            footer("{")
+        }
+
+        val encoded = service.encode(token)
+        val decoded = service.decode(encoded, token.footer)
+        decoded.footer shouldBe footer("{")
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `footer parse mode string validation rejects footer that exceeds max length`(version: Version, purpose: Purpose) {
+        val token = pasetoToken {
+            issuedAt = Instant.now()
+            expiresAt = Instant.now().plus(Duration.ofHours(1))
+            footer("123456")
+        }
+        val encoded = tokenService(version, purpose).encode(token)
+        val service = tokenService(version, purpose) {
+            footerOptions {
+                parseMode = FooterParseMode.STRING
+                maxLength = 5
+            }
+        }
+
+        val ex = shouldThrow<FooterExceedsMaxLengthException> {
+            service.decode(encoded, token.footer)
+        }
+        ex.length shouldBe 6
+        ex.max shouldBe 5
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `footer parse mode string ignores max depth`(version: Version, purpose: Purpose) {
+        val token = pasetoToken {
+            issuedAt = Instant.now()
+            expiresAt = Instant.now().plus(Duration.ofHours(1))
+            footer("{\"a\":{\"b\":1}}")
+        }
+        val encoded = tokenService(version, purpose).encode(token)
+        val service = tokenService(version, purpose) {
+            footerOptions {
+                parseMode = FooterParseMode.STRING
+                maxDepth = 1
+            }
+        }
+
+        val decoded = service.decode(encoded, token.footer)
+        decoded.footer shouldBe token.footer
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `footer parse mode string ignores max keys`(version: Version, purpose: Purpose) {
+        val token = pasetoToken {
+            issuedAt = Instant.now()
+            expiresAt = Instant.now().plus(Duration.ofHours(1))
+            footer("{\"a\":1,\"b\":2}")
+        }
+        val encoded = tokenService(version, purpose).encode(token)
+        val service = tokenService(version, purpose) {
+            footerOptions {
+                parseMode = FooterParseMode.STRING
+                maxKeys = 1
+            }
+        }
+
+        val decoded = service.decode(encoded, token.footer)
+        decoded.footer shouldBe token.footer
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `token footer verification does not apply if argument is not given`(version: Version, purpose: Purpose) {
+        val service = tokenService(version, purpose)
+        val token = pasetoToken {
+            issuedAt = Instant.now()
+            expiresAt = Instant.now().plus(Duration.ofHours(1))
+            footer("just a string")
+        }
+
+        val encoded = service.encode(token)
+        shouldNotThrow<GenericInvalidFooterException> {
+            service.decode(encoded)
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("allServiceConfigurations")
+    fun `token footer verification applies for empty string (no footer)`(version: Version, purpose: Purpose) {
+        val service = tokenService(version, purpose)
+        val token = pasetoToken {
+            issuedAt = Instant.now()
+            expiresAt = Instant.now().plus(Duration.ofHours(1))
+            footer("just a string")
+        }
+
+        val encoded = service.encode(token)
+        shouldThrow<GenericInvalidFooterException> {
+            service.decode(encoded, footer(""))
+        }
     }
 
     @ParameterizedTest
@@ -621,7 +858,7 @@ class TokenServiceTests {
 
         try {
             shouldNotThrow<IllegalArgumentException> {
-                (json.decodeFooter(FooterValidation(), "abc") as StringFooter).value shouldBe "abc"
+                (json.decodeFooter(FooterOptions(), "abc") as StringFooter).value shouldBe "abc"
             }
         } finally {
             unmockkAll()

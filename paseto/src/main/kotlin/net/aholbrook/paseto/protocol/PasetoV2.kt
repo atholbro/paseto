@@ -59,7 +59,7 @@ internal object PasetoV2 : Paseto {
     override fun decrypt(
         token: String,
         key: SymmetricKey,
-        footer: String,
+        footer: String?,
         implicitAssertion: String,
     ): Pair<String, String> {
         try {
@@ -130,7 +130,7 @@ internal object PasetoV2 : Paseto {
     override fun verify(
         token: String,
         publicKey: AsymmetricPublicKey,
-        footer: String,
+        footer: String?,
         implicitAssertion: String,
     ): Pair<String, String> {
         val k = publicKey.getKeyMaterialFor(Version.V2, Purpose.PUBLIC)

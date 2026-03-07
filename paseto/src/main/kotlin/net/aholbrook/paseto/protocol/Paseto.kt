@@ -58,7 +58,7 @@ internal sealed interface Paseto {
     fun decrypt(
         token: String,
         key: SymmetricKey,
-        footer: String = "",
+        footer: String? = null,
         implicitAssertion: String = "",
     ): Pair<String, String>
 
@@ -67,7 +67,7 @@ internal sealed interface Paseto {
     fun verify(
         token: String,
         publicKey: AsymmetricPublicKey,
-        footer: String = "",
+        footer: String? = null,
         implicitAssertion: String = "",
     ): Pair<String, String>
 }
@@ -109,13 +109,13 @@ internal fun split(token: String): PasetoSections {
     throw PasetoParseException(PasetoParseException.Reason.MISSING_SECTIONS, token)
 }
 
-internal fun decodeFooter(token: String, sections: PasetoSections, expectedFooter: String): String {
+internal fun decodeFooter(token: String, sections: PasetoSections, expectedFooter: String?): String {
     val userFooter = sections.footer
     val decodedFooter = Base64.UrlSafeNoPadding.decodeOrNull(userFooter)
         ?.toString(Charsets.UTF_8)
         ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
 
-    if (!decodedFooter.constantTimeEquals(expectedFooter)) {
+    if (expectedFooter != null && !decodedFooter.constantTimeEquals(expectedFooter)) {
         throw GenericInvalidFooterException(decodedFooter, expectedFooter)
     }
 

@@ -82,6 +82,8 @@ inline fun pasetoToken(clock: Clock = Clock.systemUTC(), init: PasetoTokenBuilde
 
 sealed interface PasetoFooter
 
+object EmptyFooter : PasetoFooter
+
 @JvmInline
 value class StringFooter internal constructor(val value: String) : PasetoFooter
 
@@ -135,6 +137,8 @@ inline fun footer(init: ClaimFooterBuilder.() -> Unit): ClaimFooter {
  */
 sealed interface TaintedPasetoFooter
 
+object TaintedEmptyFooter : TaintedPasetoFooter
+
 @JvmInline
 value class TaintedStringFooter(val value: String) : TaintedPasetoFooter
 
@@ -153,6 +157,7 @@ data class TaintedClaimFooter internal constructor(
  * @return A [TaintedPasetoFooter] representation of the given [PasetoFooter].
  */
 fun PasetoFooter.taint(): TaintedPasetoFooter? = when (this) {
+    is EmptyFooter -> TaintedEmptyFooter
     is ClaimFooter -> TaintedClaimFooter(keyId, wrappedKey, claims)
     is StringFooter -> TaintedStringFooter(value)
 }

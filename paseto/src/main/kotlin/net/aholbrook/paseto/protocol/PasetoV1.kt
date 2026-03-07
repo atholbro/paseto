@@ -69,7 +69,7 @@ internal object PasetoV1 : Paseto {
     override fun decrypt(
         token: String,
         key: SymmetricKey,
-        footer: String,
+        footer: String?,
         implicitAssertion: String,
     ): Pair<String, String> {
         val cleanup = mutableListOf<Runnable>()
@@ -151,7 +151,7 @@ internal object PasetoV1 : Paseto {
     override fun verify(
         token: String,
         publicKey: AsymmetricPublicKey,
-        footer: String,
+        footer: String?,
         implicitAssertion: String,
     ): Pair<String, String> {
         val pk = publicKey.getKeyMaterialFor(Version.V1, Purpose.PUBLIC)
