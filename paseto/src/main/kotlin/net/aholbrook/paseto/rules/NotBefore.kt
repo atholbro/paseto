@@ -31,7 +31,7 @@ data class NotBefore internal constructor(private val clock: Clock) : Rule {
 
         if (mode == Mode.DECODE) {
             if (clock.instant().isBefore(token.notBefore)) {
-                throw NotYetValidTokenException(clock.instant(), this, token)
+                throw NotYetValidTokenException(token.notBefore, this, token)
             }
         }
     }

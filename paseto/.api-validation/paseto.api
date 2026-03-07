@@ -118,10 +118,10 @@ public final class net/aholbrook/paseto/ClaimFooter : net/aholbrook/paseto/Paset
 public final class net/aholbrook/paseto/ClaimFooterBuilder {
 	public fun <init> ()V
 	public final fun build ()Lnet/aholbrook/paseto/ClaimFooter;
-	public final fun getClaims-nFTQMBc ()Ljava/util/Map;
+	public final fun claims (Lkotlin/jvm/functions/Function1;)V
+	public final fun claims-qP3gXR0 (Ljava/util/Map;)V
 	public final fun getKeyId ()Ljava/lang/String;
 	public final fun getWrappedKey ()Ljava/lang/String;
-	public final fun setClaims-qP3gXR0 (Ljava/util/Map;)V
 	public final fun setKeyId (Ljava/lang/String;)V
 	public final fun setWrappedKey (Ljava/lang/String;)V
 }
@@ -259,6 +259,17 @@ public final class net/aholbrook/paseto/ClaimsKt {
 	public static final fun primitiveValue (Ljava/lang/Void;)Lkotlinx/serialization/json/JsonPrimitive;
 }
 
+public final class net/aholbrook/paseto/FooterValidationBuilder {
+	public fun <init> ()V
+	public final fun build ()Lnet/aholbrook/paseto/FooterValidation;
+	public final fun getMaxDepth ()I
+	public final fun getMaxKeys ()I
+	public final fun getMaxLength ()I
+	public final fun setMaxDepth (I)V
+	public final fun setMaxKeys (I)V
+	public final fun setMaxLength (I)V
+}
+
 public abstract interface annotation class net/aholbrook/paseto/InternalApi : java/lang/annotation/Annotation {
 }
 
@@ -292,19 +303,20 @@ public final class net/aholbrook/paseto/PasetoToken {
 public final class net/aholbrook/paseto/PasetoTokenBuilder {
 	public fun <init> (Ljava/time/Clock;)V
 	public final fun build ()Lnet/aholbrook/paseto/PasetoToken;
+	public final fun claims (Lkotlin/jvm/functions/Function1;)V
+	public final fun claims-qP3gXR0 (Ljava/util/Map;)V
+	public final fun footer (Ljava/lang/String;)V
+	public final fun footer (Lkotlin/jvm/functions/Function1;)V
+	public final fun footer (Lnet/aholbrook/paseto/PasetoFooter;)V
 	public final fun getAudience ()Ljava/lang/String;
-	public final fun getClaims-nFTQMBc ()Ljava/util/Map;
 	public final fun getExpiresAt ()Ljava/time/Instant;
-	public final fun getFooter ()Lnet/aholbrook/paseto/PasetoFooter;
 	public final fun getIssuedAt ()Ljava/time/Instant;
 	public final fun getIssuer ()Ljava/lang/String;
 	public final fun getNotBefore ()Ljava/time/Instant;
 	public final fun getSubject ()Ljava/lang/String;
 	public final fun getTokenId ()Ljava/lang/String;
 	public final fun setAudience (Ljava/lang/String;)V
-	public final fun setClaims-qP3gXR0 (Ljava/util/Map;)V
 	public final fun setExpiresAt (Ljava/time/Instant;)V
-	public final fun setFooter (Lnet/aholbrook/paseto/PasetoFooter;)V
 	public final fun setIssuedAt (Ljava/time/Instant;)V
 	public final fun setIssuer (Ljava/lang/String;)V
 	public final fun setNotBefore (Ljava/time/Instant;)V
@@ -368,8 +380,8 @@ public final class net/aholbrook/paseto/TaintedStringFooter : net/aholbrook/pase
 }
 
 public final class net/aholbrook/paseto/TokenKt {
-	public static final fun pasetoFooter (Ljava/lang/String;)Ljava/lang/String;
-	public static final fun pasetoFooter (Lkotlin/jvm/functions/Function1;)Lnet/aholbrook/paseto/ClaimFooter;
+	public static final fun footer (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun footer (Lkotlin/jvm/functions/Function1;)Lnet/aholbrook/paseto/ClaimFooter;
 	public static final fun pasetoToken (Ljava/time/Clock;Lkotlin/jvm/functions/Function1;)Lnet/aholbrook/paseto/PasetoToken;
 	public static synthetic fun pasetoToken$default (Ljava/time/Clock;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lnet/aholbrook/paseto/PasetoToken;
 	public static final fun taint (Lnet/aholbrook/paseto/PasetoFooter;)Lnet/aholbrook/paseto/TaintedPasetoFooter;
@@ -391,8 +403,9 @@ public final class net/aholbrook/paseto/TokenService$DefaultImpls {
 public final class net/aholbrook/paseto/TokenServiceBuilder {
 	public fun <init> ()V
 	public final fun build (Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/Purpose;)Lnet/aholbrook/paseto/TokenService;
-	public final fun getRules ()Lnet/aholbrook/paseto/rules/Rules;
-	public final fun setRules (Lnet/aholbrook/paseto/rules/Rules;)V
+	public final fun footerValidation (Lkotlin/jvm/functions/Function1;)V
+	public final fun rules (Lkotlin/jvm/functions/Function1;)V
+	public final fun rules (Lnet/aholbrook/paseto/rules/Rules;)V
 }
 
 public final class net/aholbrook/paseto/TokenServiceKt {
@@ -429,6 +442,26 @@ public final class net/aholbrook/paseto/exception/EncryptionException : net/ahol
 public final class net/aholbrook/paseto/exception/ExpiredTokenException : net/aholbrook/paseto/exception/RuleValidationException {
 }
 
+public final class net/aholbrook/paseto/exception/FooterExceedsMaxDepthException : net/aholbrook/paseto/exception/InvalidFooterException {
+	public final fun getDepth ()I
+	public final fun getMax ()I
+}
+
+public final class net/aholbrook/paseto/exception/FooterExceedsMaxKeysException : net/aholbrook/paseto/exception/InvalidFooterException {
+	public final fun getKeys ()I
+	public final fun getMax ()I
+}
+
+public final class net/aholbrook/paseto/exception/FooterExceedsMaxLengthException : net/aholbrook/paseto/exception/InvalidFooterException {
+	public final fun getLength ()I
+	public final fun getMax ()I
+}
+
+public final class net/aholbrook/paseto/exception/GenericInvalidFooterException : net/aholbrook/paseto/exception/PasetoException {
+	public final fun getExpected ()Ljava/lang/String;
+	public final fun getGiven ()Ljava/lang/String;
+}
+
 public final class net/aholbrook/paseto/exception/ImplicitAssertionsNotSupportedException : net/aholbrook/paseto/exception/PasetoException {
 }
 
@@ -448,13 +481,11 @@ public final class net/aholbrook/paseto/exception/IncorrectSubjectException : ne
 }
 
 public final class net/aholbrook/paseto/exception/IncorrectTokenIdException : net/aholbrook/paseto/exception/RuleValidationException {
-	public final fun getAudience ()Ljava/lang/String;
 	public final fun getExpected ()Ljava/lang/String;
+	public final fun getTokenId ()Ljava/lang/String;
 }
 
-public final class net/aholbrook/paseto/exception/InvalidFooterException : net/aholbrook/paseto/exception/PasetoStringException {
-	public final fun getExpected ()Ljava/lang/String;
-	public final fun getGiven ()Ljava/lang/String;
+public class net/aholbrook/paseto/exception/InvalidFooterException : net/aholbrook/paseto/exception/PasetoException {
 }
 
 public final class net/aholbrook/paseto/exception/InvalidHeaderException : net/aholbrook/paseto/exception/PasetoStringException {
@@ -477,6 +508,9 @@ public final class net/aholbrook/paseto/exception/KeyPemUnsupportedTypeException
 public final class net/aholbrook/paseto/exception/KeyPurposeException : net/aholbrook/paseto/exception/PasetoException {
 	public final fun getActual ()Ljava/lang/String;
 	public final fun getExpected ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/exception/KeyReuseException : net/aholbrook/paseto/exception/PasetoException {
 }
 
 public final class net/aholbrook/paseto/exception/KeyV3Exception : net/aholbrook/paseto/exception/PasetoException {

@@ -66,7 +66,7 @@ internal object PasetoV2 : Paseto {
             val k = key.getKeyMaterialFor(Version.V2, Purpose.LOCAL)
             val h = "v2.local."
             val sections = split(token)
-            val f = decodeFooter(token, sections, footer) // TODO review
+            val f = decodeFooter(token, sections, footer)
 
             // Check header
             if (!token.startsWith(h)) {
@@ -136,7 +136,7 @@ internal object PasetoV2 : Paseto {
         val k = publicKey.getKeyMaterialFor(Version.V2, Purpose.PUBLIC)
         val h = "v2.public."
         val sections = split(token)
-        val f = decodeFooter(token, sections, footer) // TODO review
+        val f = decodeFooter(token, sections, footer)
 
         // Check header
         if (!token.startsWith(h)) {

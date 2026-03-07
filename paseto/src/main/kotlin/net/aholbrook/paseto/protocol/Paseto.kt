@@ -115,9 +115,6 @@ internal fun decodeFooter(token: String, sections: PasetoSections, expectedFoote
         ?.toString(Charsets.UTF_8)
         ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
 
-    // Check the footer if expected footer is not empty, otherwise we just return the footer without checking. This
-    // is fine though, as the footer is covered by the token PAE signature. This check exists for proper error
-    // reporting, and is not a requirement for security.
     if (!decodedFooter.constantTimeEquals(expectedFooter)) {
         throw GenericInvalidFooterException(decodedFooter, expectedFooter)
     }

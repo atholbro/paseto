@@ -124,7 +124,7 @@ class GenerateCommand : CliktCommand(name = "vector-gen") {
         val token = tokenFromVector(vector)
         val encoded = withTestNonce(nonce) {
             val service = tokenService(pasetoVersion ?: inputVersion, Purpose.Local { key.copy() }) {
-                rules = rules {
+                rules {
                     issuedInPast = null
                     notExpired = null
                 }
@@ -173,7 +173,7 @@ class GenerateCommand : CliktCommand(name = "vector-gen") {
         val token = tokenFromVector(vector)
         val encoded = withTestNonce(vector.nonce?.toByteArray()) {
             val service = tokenService(pasetoVersion ?: inputVersion, Purpose.Public { keyPair.copy() }) {
-                rules = rules {
+                rules {
                     issuedInPast = null
                     notExpired = null
                 }

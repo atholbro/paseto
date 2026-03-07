@@ -18,6 +18,7 @@ import net.aholbrook.paseto.crypto.rsaSkToPk
 import net.aholbrook.paseto.exception.KeyLengthException
 import net.aholbrook.paseto.exception.KeyPemUnsupportedTypeException
 import net.aholbrook.paseto.exception.KeyPurposeException
+import net.aholbrook.paseto.exception.KeyReuseException
 import net.aholbrook.paseto.exception.KeyVersionException
 import net.aholbrook.paseto.exception.Pkcs12LoadException
 import org.bouncycastle.asn1.ASN1Primitive
@@ -189,8 +190,10 @@ class AsymmetricPublicKey private constructor(private val material: ByteArray, v
     }
 }
 
-class AsymmetricSecretKey private constructor(private val material: ByteArray, val version: Version) {
+class AsymmetricSecretKey private constructor(material: ByteArray, val version: Version) {
     internal val purpose: Purpose = Purpose.PUBLIC
+    private val material: ByteArray
+    private var cleared: Boolean = false
 
     init {
         val allowedKeySizes = when (version) {
@@ -211,6 +214,19 @@ class AsymmetricSecretKey private constructor(private val material: ByteArray, v
 
         if (allowedKeySizes.isNotEmpty() && !allowedKeySizes.contains(material.size)) {
             throw KeyLengthException(material.size, allowedKeySizes)
+        }
+
+        // Recreate public key if missing
+        this.material = when (version) {
+            Version.V2, Version.V4 -> {
+                if (material.size != version.asymmetricSecretKeySize) {
+                    material + ed25519SkToPk(material)
+                } else {
+                    material
+                }
+            }
+
+            else -> material
         }
     }
 
@@ -247,12 +263,9 @@ class AsymmetricSecretKey private constructor(private val material: ByteArray, v
     }
 
     internal fun getKeyMaterialFor(version: Version, purpose: Purpose): ByteArray {
-        if (this.version != version) {
-            throw KeyVersionException(version, this.version)
-        }
-        if (this.purpose != purpose) {
-            throw KeyPurposeException(purpose.toString(), this.purpose.toString())
-        }
+        if (cleared) throw KeyReuseException()
+        if (this.version != version) throw KeyVersionException(version, this.version)
+        if (this.purpose != purpose) throw KeyPurposeException(purpose.toString(), this.purpose.toString())
         return material
     }
 
@@ -264,6 +277,7 @@ class AsymmetricSecretKey private constructor(private val material: ByteArray, v
 
     internal fun clear() {
         material.fill(0)
+        cleared = true
     }
 
     override fun equals(other: Any?): Boolean {
@@ -350,6 +364,7 @@ class AsymmetricSecretKey private constructor(private val material: ByteArray, v
 
 class SymmetricKey private constructor(private val material: ByteArray, val version: Version) {
     internal val purpose: Purpose = Purpose.LOCAL
+    private var cleared: Boolean = false
 
     init {
         if (version.symmetricKeySize != material.size) {
@@ -361,17 +376,15 @@ class SymmetricKey private constructor(private val material: ByteArray, val vers
     fun toBase64Url(): String = Base64.UrlSafe.encode(material)
 
     internal fun getKeyMaterialFor(version: Version, purpose: Purpose): ByteArray {
-        if (this.version != version) {
-            throw KeyVersionException(version, this.version)
-        }
-        if (this.purpose != purpose) {
-            throw KeyPurposeException(purpose.toString(), this.purpose.toString())
-        }
+        if (cleared) throw KeyReuseException()
+        if (this.version != version) throw KeyVersionException(version, this.version)
+        if (this.purpose != purpose) throw KeyPurposeException(purpose.toString(), this.purpose.toString())
         return material
     }
 
     internal fun clear() {
         material.fill(0)
+        cleared = true
     }
 
     override fun equals(other: Any?): Boolean {

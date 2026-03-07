@@ -8,7 +8,7 @@ import net.aholbrook.paseto.exception.MissingClaimException
 /**
  * Verifies that the token id (jti) claim matches the given value.
  *
- * @param audience The expected audience for the token.
+ * @param tokenId The expected tokenId for the token.
  */
 data class IdentifiedBy(val tokenId: String) : Rule {
     override operator fun invoke(token: PasetoToken, mode: Rule.Mode, currentResults: Map<Rule, RuleResult>) {

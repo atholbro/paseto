@@ -24,10 +24,10 @@ class IncorrectAudienceException @InternalApi constructor(
 
 class IncorrectTokenIdException @InternalApi constructor(
     val expected: String,
-    val audience: String?,
+    val tokenId: String?,
     rule: Rule,
     token: PasetoToken,
-) : RuleValidationException("Token ID is \"$audience\", required: \"$expected\"", "jti", rule, token)
+) : RuleValidationException("Token ID is \"$tokenId\", required: \"$expected\"", "jti", rule, token)
 
 class IncorrectIssuerException @InternalApi constructor(
     val expected: String,

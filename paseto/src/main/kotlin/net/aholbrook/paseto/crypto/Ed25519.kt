@@ -52,7 +52,7 @@ internal fun ed25519Verify(sig: ByteArray, m: ByteArray, pk: ByteArray): Boolean
 }
 
 internal fun ed25519SkToPk(sk: ByteArray): ByteArray {
-    if (sk.size != ED25519_SECRETKEYBYTES) {
+    if (sk.size != ED25519_SECRETKEYBYTES && sk.size != ED25519_SECRETKEYBYTES - ED25519_PUBLICKEYBYTES) {
         throw ByteArrayLengthException("sk", sk.size, ED25519_SECRETKEYBYTES)
     }
 
