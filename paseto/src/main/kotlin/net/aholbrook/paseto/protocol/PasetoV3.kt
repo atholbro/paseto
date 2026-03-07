@@ -36,17 +36,12 @@ internal object PasetoV3 : Paseto {
         val cleanup = mutableListOf<Runnable>()
 
         try {
-            // Verify key version.
             val k = key.getKeyMaterialFor(Version.V3, Purpose.LOCAL)
-
             val h = "v3.local."
             val f = footer.toByteArray(Charsets.UTF_8)
             val i = implicitAssertion.toByteArray(Charsets.UTF_8)
-
-            // Generate n
             val n = generateNonce(32)
 
-            // Create ek/ak for AEAD
             val tmp = hkdfSha384(48, k, HKDF_INFO_EK + n, null)
             val ek = ByteArray(32)
             val n2 = ByteArray(16)
@@ -98,18 +93,15 @@ internal object PasetoV3 : Paseto {
             // Decrypt
             val nct = Base64.UrlSafeNoPadding.decodeOrNull(sections.payload)
                 ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
-            val n = ByteArray(32)
-            val t = ByteArray(48)
             // verify length
-            if (nct.size < n.size + t.size + 1) {
+            if (nct.size < 81) {
                 throw PasetoParseException(PasetoParseException.Reason.PAYLOAD_LENGTH, token).apply {
-                    minLength = n.size + t.size + 1
+                    minLength = 81
                 }
             }
-            val c = ByteArray(nct.size - n.size - t.size)
-            System.arraycopy(nct, 0, n, 0, n.size)
-            System.arraycopy(nct, n.size, c, 0, c.size)
-            System.arraycopy(nct, n.size + c.size, t, 0, t.size)
+            val n = nct.copyOfRange(0, 32)
+            val t = nct.copyOfRange(nct.size - 48, nct.size)
+            val c = nct.copyOfRange(n.size, nct.size - t.size)
 
             // Create ek/ak for AEAD
             val tmp = hkdfSha384(48, k, HKDF_INFO_EK + n, null)

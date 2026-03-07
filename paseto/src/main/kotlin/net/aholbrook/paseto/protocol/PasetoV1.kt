@@ -16,13 +16,11 @@ import net.aholbrook.paseto.crypto.pae
 import net.aholbrook.paseto.crypto.rsaSign
 import net.aholbrook.paseto.crypto.rsaVerify
 import net.aholbrook.paseto.decodeOrNull
+import net.aholbrook.paseto.exception.InvalidHeaderException
 import net.aholbrook.paseto.exception.PasetoParseException
 import net.aholbrook.paseto.exception.SignatureVerificationException
 import kotlin.io.encoding.Base64
 
-private const val VERSION = "v1"
-private const val HEADER_LOCAL: String = VERSION + SEPARATOR + PURPOSE_LOCAL + SEPARATOR // v1.local.
-private const val HEADER_PUBLIC: String = VERSION + SEPARATOR + PURPOSE_PUBLIC + SEPARATOR // v1.public.
 private val HKDF_INFO_EK: ByteArray = "paseto-encryption-key".toByteArray(Charsets.UTF_8)
 private val HKDF_INFO_AK: ByteArray = "paseto-auth-key-for-aead".toByteArray(Charsets.UTF_8)
 
@@ -30,48 +28,38 @@ internal object PasetoV1 : Paseto {
     override val version: Version = Version.V1
     override val supportsImplicitAssertion: Boolean = false
 
+    private fun getNonce(m: ByteArray, n: ByteArray) = hmacSha384(m, n).copyOfRange(0, 32)
+
     override fun encrypt(m: ByteArray, key: SymmetricKey, footer: String, implicitAssertion: String): String {
         val cleanup = mutableListOf<Runnable>()
 
         try {
-            // Verify key version.
-            val keyMaterial = key.getKeyMaterialFor(Version.V1, Purpose.LOCAL)
+            val k = key.getKeyMaterialFor(Version.V1, Purpose.LOCAL)
+            val h = "v1.local."
+            val f = footer.toByteArray(Charsets.UTF_8)
+            val b = generateNonce(32)
+            cleanup.add { b.fill(0) }
+            val n = getNonce(m, b)
 
-            val footerBytes = footer.toByteArray(Charsets.UTF_8)
-
-            // Generate n
-            val random = generateNonce(32)
-            cleanup.add { random.fill(0) }
-            val n = ByteArray(32)
-            System.arraycopy(hmacSha384(m, random), 0, n, 0, n.size)
-
-            // Split N into salt/nonce
-            val salt = ByteArray(HKDF_SALT_LEN)
-            val nonce = ByteArray(HKDF_SALT_LEN)
-            System.arraycopy(n, 0, salt, 0, salt.size)
-            System.arraycopy(n, salt.size, nonce, 0, nonce.size)
+            val salt = n.copyOfRange(0, HKDF_SALT_LEN)
+            val nonce = n.copyOfRange(HKDF_SALT_LEN, HKDF_SALT_LEN * 2)
 
             // Create ek/ak for AEAD
-            val ek = hkdfExtractAndExpand(salt, keyMaterial, HKDF_INFO_EK)
+            val ek = hkdfExtractAndExpand(salt, k, HKDF_INFO_EK)
             cleanup.add { ek.fill(0) }
-            val ak = hkdfExtractAndExpand(salt, keyMaterial, HKDF_INFO_AK)
+            val ak = hkdfExtractAndExpand(salt, k, HKDF_INFO_AK)
             cleanup.add { ak.fill(0) }
 
             val c = aes256CtrEncrypt(m, ek, nonce)
-            val preAuth = pae(HEADER_LOCAL.toByteArray(Charsets.UTF_8), n, c, footerBytes)
+            val preAuth = pae(h.toByteArray(Charsets.UTF_8), n, c, f)
             val t = hmacSha384(preAuth, ak)
 
-            val nct = ByteArray(n.size + c.size + t.size)
-            System.arraycopy(n, 0, nct, 0, n.size)
-            System.arraycopy(c, 0, nct, n.size, c.size)
-            System.arraycopy(t, 0, nct, n.size + c.size, t.size)
-
-            return if (footerBytes.isNotEmpty()) {
-                HEADER_LOCAL + Base64.UrlSafeNoPadding.encode(nct) + SEPARATOR +
-                    Base64.UrlSafeNoPadding.encode(footerBytes)
-            } else {
-                HEADER_LOCAL + Base64.UrlSafeNoPadding.encode(nct)
-            }
+            return h + Base64.UrlSafeNoPadding.encode(n + c + t) +
+                if (f.isEmpty()) {
+                    ""
+                } else {
+                    ".${Base64.UrlSafeNoPadding.encode(f)}"
+                }
         } finally {
             key.clear()
             cleanup.forEach { it.run() }
@@ -87,52 +75,40 @@ internal object PasetoV1 : Paseto {
         val cleanup = mutableListOf<Runnable>()
 
         try {
-            // Verify key version.
-            val keyMaterial = key.getKeyMaterialFor(Version.V1, Purpose.LOCAL)
-
-            // Split token into sections
+            val k = key.getKeyMaterialFor(Version.V1, Purpose.LOCAL)
+            val h = "v1.local."
             val sections = split(token)
+            val f = decodeFooter(token, sections, footer) // TODO review
 
             // Check header
-            checkHeader(token, sections, HEADER_LOCAL)
-
-            // Decode footer
-            val decodedFooter = decodeFooter(token, sections, footer)
+            if (!token.startsWith(h)) {
+                throw InvalidHeaderException(sections.version + SEPARATOR + sections.purpose + SEPARATOR, h, token)
+            }
 
             // Decrypt
             val nct = Base64.UrlSafeNoPadding.decodeOrNull(sections.payload)
                 ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
-            val n = ByteArray(32)
-            val t = ByteArray(SHA384_OUT_LEN)
             // verify length
-            if (nct.size < n.size + t.size + 1) {
+            if (nct.size < 32 + SHA384_OUT_LEN + 1) {
                 throw PasetoParseException(PasetoParseException.Reason.PAYLOAD_LENGTH, token).apply {
-                    minLength = n.size + t.size + 1
+                    minLength = 32 + SHA384_OUT_LEN + 1
                 }
             }
-            val c = ByteArray(nct.size - n.size - t.size)
-            System.arraycopy(nct, 0, n, 0, n.size)
-            System.arraycopy(nct, n.size, c, 0, c.size)
-            System.arraycopy(nct, n.size + c.size, t, 0, t.size)
+            val n = nct.copyOfRange(0, 32)
+            val t = nct.copyOfRange(nct.size - SHA384_OUT_LEN, nct.size)
+            val c = nct.copyOfRange(32, nct.size - SHA384_OUT_LEN)
 
             // Split N into salt/nonce
-            val salt = ByteArray(HKDF_SALT_LEN)
-            val nonce = ByteArray(HKDF_SALT_LEN)
-            System.arraycopy(n, 0, salt, 0, salt.size)
-            System.arraycopy(n, salt.size, nonce, 0, nonce.size)
+            val salt = n.copyOfRange(0, HKDF_SALT_LEN)
+            val nonce = n.copyOfRange(HKDF_SALT_LEN, HKDF_SALT_LEN * 2)
 
             // Create ek/ak for AEAD
-            val ek = hkdfExtractAndExpand(salt, keyMaterial, HKDF_INFO_EK)
+            val ek = hkdfExtractAndExpand(salt, k, HKDF_INFO_EK)
             cleanup.add { ek.fill(0) }
-            val ak = hkdfExtractAndExpand(salt, keyMaterial, HKDF_INFO_AK)
+            val ak = hkdfExtractAndExpand(salt, k, HKDF_INFO_AK)
             cleanup.add { ak.fill(0) }
 
-            val preAuth = pae(
-                HEADER_LOCAL.toByteArray(Charsets.UTF_8),
-                n,
-                c,
-                decodedFooter.toByteArray(Charsets.UTF_8),
-            )
+            val preAuth = pae(h.toByteArray(Charsets.UTF_8), n, c, f.toByteArray(Charsets.UTF_8))
             val t2 = hmacSha384(preAuth, ak)
             if (!t.constantTimeEquals(t2)) {
                 throw SignatureVerificationException(token)
@@ -140,7 +116,7 @@ internal object PasetoV1 : Paseto {
 
             val m = aes256CtrDecrypt(c, ek, nonce)
 
-            return Pair(m.toString(Charsets.UTF_8), decodedFooter)
+            return Pair(m.toString(Charsets.UTF_8), f)
         } finally {
             key.clear()
             cleanup.forEach { it.run() }
@@ -154,24 +130,19 @@ internal object PasetoV1 : Paseto {
         implicitAssertion: String,
     ): String {
         try {
-            // Verify key version.
-            val keyMaterial = secretKey.getKeyMaterialFor(Version.V1, Purpose.PUBLIC)
+            val k = secretKey.getKeyMaterialFor(Version.V1, Purpose.PUBLIC)
+            val h = "v1.public."
+            val f = footer.toByteArray(Charsets.UTF_8)
 
-            val footerBytes = footer.toByteArray(Charsets.UTF_8)
+            val m2 = pae(h.toByteArray(Charsets.UTF_8), m, f)
+            val sig = rsaSign(m2, k)
 
-            val m2 = pae(HEADER_PUBLIC.toByteArray(Charsets.UTF_8), m, footerBytes)
-            val sig = rsaSign(m2, keyMaterial)
-
-            val msig = ByteArray(sig.size + m.size)
-            System.arraycopy(m, 0, msig, 0, m.size)
-            System.arraycopy(sig, 0, msig, m.size, sig.size)
-
-            return if (footerBytes.isNotEmpty()) {
-                HEADER_PUBLIC + Base64.UrlSafeNoPadding.encode(msig) + SEPARATOR +
-                    Base64.UrlSafeNoPadding.encode(footerBytes)
-            } else {
-                HEADER_PUBLIC + Base64.UrlSafeNoPadding.encode(msig)
-            }
+            return h + Base64.UrlSafeNoPadding.encode(m + sig) +
+                if (f.isEmpty()) {
+                    ""
+                } else {
+                    ".${Base64.UrlSafeNoPadding.encode(f)}"
+                }
         } finally {
             secretKey.clear()
         }
@@ -183,37 +154,33 @@ internal object PasetoV1 : Paseto {
         footer: String,
         implicitAssertion: String,
     ): Pair<String, String> {
-        // Verify key version.
-        val keyMaterial = publicKey.getKeyMaterialFor(Version.V1, Purpose.PUBLIC)
-
-        // Split token into sections
+        val pk = publicKey.getKeyMaterialFor(Version.V1, Purpose.PUBLIC)
+        val h = "v1.public."
         val sections = split(token)
+        val f = decodeFooter(token, sections, footer) // TODO review
 
         // Check header
-        checkHeader(token, sections, HEADER_PUBLIC)
-
-        // Decode footer
-        val decodedFooter = decodeFooter(token, sections, footer)
+        if (!token.startsWith(h)) {
+            throw InvalidHeaderException(sections.version + SEPARATOR + sections.purpose + SEPARATOR, h, token)
+        }
 
         // Verify
-        val msig = Base64.UrlSafeNoPadding.decodeOrNull(sections.payload)
+        val sm = Base64.UrlSafeNoPadding.decodeOrNull(sections.payload)
             ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
-        val s = ByteArray(RSA_SIGNATURE_LEN)
         // verify length
-        if (msig.size < s.size + 1) {
+        if (sm.size < RSA_SIGNATURE_LEN + 1) {
             throw PasetoParseException(PasetoParseException.Reason.PAYLOAD_LENGTH, token).apply {
-                minLength = s.size + 1
+                minLength = RSA_SIGNATURE_LEN + 1
             }
         }
-        val m = ByteArray(msig.size - s.size)
-        System.arraycopy(msig, msig.size - s.size, s, 0, s.size)
-        System.arraycopy(msig, 0, m, 0, m.size)
+        val s = sm.copyOfRange(sm.size - RSA_SIGNATURE_LEN, sm.size)
+        val m = sm.copyOfRange(0, sm.size - RSA_SIGNATURE_LEN)
 
-        val m2 = pae(HEADER_PUBLIC.toByteArray(Charsets.UTF_8), m, decodedFooter.toByteArray(Charsets.UTF_8))
-        if (!rsaVerify(m2, s, keyMaterial)) {
+        val m2 = pae(h.toByteArray(Charsets.UTF_8), m, f.toByteArray(Charsets.UTF_8))
+        if (!rsaVerify(m2, s, pk)) {
             throw SignatureVerificationException(token)
         }
 
-        return Pair(m.toString(Charsets.UTF_8), decodedFooter)
+        return Pair(m.toString(Charsets.UTF_8), f)
     }
 }

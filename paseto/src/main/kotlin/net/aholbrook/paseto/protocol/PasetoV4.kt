@@ -1,4 +1,4 @@
-@file:Suppress("MagicNumber")
+@file:Suppress("MagicNumber", "DuplicatedCode")
 
 package net.aholbrook.paseto.protocol
 
@@ -14,22 +14,11 @@ import net.aholbrook.paseto.crypto.pae
 import net.aholbrook.paseto.decodeOrNull
 import net.aholbrook.paseto.exception.DecryptionException
 import net.aholbrook.paseto.exception.EncryptionException
+import net.aholbrook.paseto.exception.InvalidHeaderException
 import net.aholbrook.paseto.exception.PasetoParseException
 import net.aholbrook.paseto.exception.SignatureVerificationException
 import net.aholbrook.paseto.exception.SigningException
-import java.util.Arrays
 import kotlin.io.encoding.Base64
-
-private const val VERSION = "v4"
-private const val HEADER_LOCAL: String = VERSION + SEPARATOR + PURPOSE_LOCAL + SEPARATOR // v4.local.
-private const val HEADER_PUBLIC: String = VERSION + SEPARATOR + PURPOSE_PUBLIC + SEPARATOR // v4.public.
-
-private fun concat(a: ByteArray, b: ByteArray): ByteArray {
-    val result = ByteArray(a.size + b.size)
-    System.arraycopy(a, 0, result, 0, a.size)
-    System.arraycopy(b, 0, result, a.size, b.size)
-    return result
-}
 
 internal object PasetoV4 : Paseto {
     override val version: Version = Version.V4
@@ -40,40 +29,36 @@ internal object PasetoV4 : Paseto {
 
         try {
             // Verify key version.
-            val keyMaterial = key.getKeyMaterialFor(Version.V4, Purpose.LOCAL)
-            val footerBytes = footer.toByteArray(Charsets.UTF_8)
-            val implicitAssertionBytes = implicitAssertion.toByteArray(Charsets.UTF_8)
-
+            val k = key.getKeyMaterialFor(Version.V4, Purpose.LOCAL)
+            val h = "v4.local."
+            val f = footer.toByteArray(Charsets.UTF_8)
+            val i = implicitAssertion.toByteArray(Charsets.UTF_8)
             val n = generateNonce(32)
+
             val tmp = ByteArray(56)
             cleanup.add { tmp.fill(0) }
-            blake2b(tmp, keyMaterial, concat("paseto-encryption-key".toByteArray(Charsets.UTF_8), n))
-            val ek = Arrays.copyOfRange(tmp, 0, 32)
+            blake2b(tmp, k, "paseto-encryption-key".toByteArray(Charsets.UTF_8) + n)
+            val ek = tmp.copyOfRange(0, 32)
             cleanup.add { ek.fill(0) }
-            val n2 = Arrays.copyOfRange(tmp, 32, 56)
+            val n2 = tmp.copyOfRange(32, 56)
             cleanup.add { n2.fill(0) }
             val ak = ByteArray(32)
             cleanup.add { ak.fill(0) }
-            blake2b(ak, keyMaterial, "paseto-auth-key-for-aead".toByteArray(Charsets.UTF_8), n)
+            blake2b(ak, k, "paseto-auth-key-for-aead".toByteArray(Charsets.UTF_8), n)
             val c = ByteArray(m.size)
             if (!chaCha20(c, m, n2, ek)) {
                 throw EncryptionException()
             }
-            val preAuth = pae(HEADER_LOCAL.toByteArray(Charsets.UTF_8), n, c, footerBytes, implicitAssertionBytes)
+            val preAuth = pae(h.toByteArray(Charsets.UTF_8), n, c, f, i)
             val t = ByteArray(32)
             blake2b(t, ak, preAuth)
 
-            val nct = ByteArray(n.size + c.size + t.size)
-            System.arraycopy(n, 0, nct, 0, n.size)
-            System.arraycopy(c, 0, nct, n.size, c.size)
-            System.arraycopy(t, 0, nct, n.size + c.size, t.size)
-
-            return if (footerBytes.isNotEmpty()) {
-                HEADER_LOCAL + Base64.UrlSafeNoPadding.encode(nct) + SEPARATOR +
-                    Base64.UrlSafeNoPadding.encode(footerBytes)
-            } else {
-                HEADER_LOCAL + Base64.UrlSafeNoPadding.encode(nct)
-            }
+            return h + Base64.UrlSafeNoPadding.encode(n + c + t) +
+                if (f.isEmpty()) {
+                    ""
+                } else {
+                    ".${Base64.UrlSafeNoPadding.encode(f)}"
+                }
         } finally {
             key.clear()
             cleanup.forEach { it.run() }
@@ -89,39 +74,40 @@ internal object PasetoV4 : Paseto {
         val cleanup = mutableListOf<Runnable>()
 
         try {
-            // Verify key version.
-            val keyMaterial = key.getKeyMaterialFor(Version.V4, Purpose.LOCAL)
-
-            // Split token into sections
+            val k = key.getKeyMaterialFor(Version.V4, Purpose.LOCAL)
+            val h = "v4.local."
             val sections = split(token)
+            val f = decodeFooter(token, sections, footer) // TODO review
+            val i = implicitAssertion.toByteArray(Charsets.UTF_8)
 
             // Check header
-            checkHeader(token, sections, HEADER_LOCAL)
-
-            // Decode footer
-            val decodedFooter = decodeFooter(token, sections, footer)
-            val footerBytes = decodedFooter.toByteArray(Charsets.UTF_8)
-
-            val implicitAssertionBytes = implicitAssertion.toByteArray(Charsets.UTF_8)
+            if (!token.startsWith(h)) {
+                throw InvalidHeaderException(sections.version + SEPARATOR + sections.purpose + SEPARATOR, h, token)
+            }
 
             // Decrypt
             val nct = Base64.UrlSafeNoPadding.decodeOrNull(sections.payload)
                 ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
-            val n = Arrays.copyOfRange(nct, 0, 32)
-            val t = Arrays.copyOfRange(nct, nct.size - 32, nct.size)
-            val c = Arrays.copyOfRange(nct, n.size, nct.size - t.size)
+            if (nct.size < 64 + 1) {
+                throw PasetoParseException(PasetoParseException.Reason.PAYLOAD_LENGTH, token).apply {
+                    minLength = 64 + 1
+                }
+            }
+            val n = nct.copyOfRange(0, 32)
+            val t = nct.copyOfRange(nct.size - 32, nct.size)
+            val c = nct.copyOfRange(32, nct.size - 32)
 
             val tmp = ByteArray(56)
             cleanup.add { tmp.fill(0) }
-            blake2b(tmp, keyMaterial, "paseto-encryption-key".toByteArray(Charsets.UTF_8), n)
-            val ek = Arrays.copyOfRange(tmp, 0, 32)
+            blake2b(tmp, k, "paseto-encryption-key".toByteArray(Charsets.UTF_8), n)
+            val ek = tmp.copyOfRange(0, 32)
             cleanup.add { ek.fill(0) }
-            val n2 = Arrays.copyOfRange(tmp, 32, 56)
+            val n2 = tmp.copyOfRange(32, 56)
             cleanup.add { n2.fill(0) }
             val ak = ByteArray(32)
             cleanup.add { ak.fill(0) }
-            blake2b(ak, keyMaterial, "paseto-auth-key-for-aead".toByteArray(Charsets.UTF_8), n)
-            val preAuth = pae(HEADER_LOCAL.toByteArray(Charsets.UTF_8), n, c, footerBytes, implicitAssertionBytes)
+            blake2b(ak, k, "paseto-auth-key-for-aead".toByteArray(Charsets.UTF_8), n)
+            val preAuth = pae(h.toByteArray(Charsets.UTF_8), n, c, f.toByteArray(Charsets.UTF_8), i)
             val t2 = ByteArray(32)
             blake2b(t2, ak, preAuth)
             if (!t.constantTimeEquals(t2)) {
@@ -132,7 +118,7 @@ internal object PasetoV4 : Paseto {
                 throw DecryptionException(token)
             }
 
-            return Pair(p.toString(Charsets.UTF_8), decodedFooter)
+            return Pair(p.toString(Charsets.UTF_8), f)
         } finally {
             key.clear()
             cleanup.forEach { it.run() }
@@ -146,31 +132,23 @@ internal object PasetoV4 : Paseto {
         implicitAssertion: String,
     ): String {
         try {
-            // Verify key version.
-            val keyMaterial = secretKey.getKeyMaterialFor(Version.V4, Purpose.PUBLIC)
-            val footerBytes = footer.toByteArray(Charsets.UTF_8)
+            val k = secretKey.getKeyMaterialFor(Version.V4, Purpose.PUBLIC)
+            val h = "v4.public."
+            val f = footer.toByteArray(Charsets.UTF_8)
+            val i = implicitAssertion.toByteArray(Charsets.UTF_8)
 
-            val m2 = pae(
-                HEADER_PUBLIC.toByteArray(Charsets.UTF_8),
-                m,
-                footerBytes,
-                implicitAssertion.toByteArray(Charsets.UTF_8),
-            )
+            val m2 = pae(h.toByteArray(Charsets.UTF_8), m, f, i)
             val sig = ByteArray(ED25519_BYTES)
-            if (!ed25519Sign(sig, m2, keyMaterial)) {
+            if (!ed25519Sign(sig, m2, k)) {
                 throw SigningException(m)
             }
 
-            val msig = ByteArray(m.size + sig.size)
-            System.arraycopy(m, 0, msig, 0, m.size)
-            System.arraycopy(sig, 0, msig, m.size, sig.size)
-
-            return if (footerBytes.isNotEmpty()) {
-                HEADER_PUBLIC + Base64.UrlSafeNoPadding.encode(msig) + SEPARATOR +
-                    Base64.UrlSafeNoPadding.encode(footerBytes)
-            } else {
-                HEADER_PUBLIC + Base64.UrlSafeNoPadding.encode(msig)
-            }
+            return h + Base64.UrlSafeNoPadding.encode(m + sig) +
+                if (f.isEmpty()) {
+                    ""
+                } else {
+                    ".${Base64.UrlSafeNoPadding.encode(f)}"
+                }
         } finally {
             secretKey.clear()
         }
@@ -182,44 +160,34 @@ internal object PasetoV4 : Paseto {
         footer: String,
         implicitAssertion: String,
     ): Pair<String, String> {
-        // Verify key version.
-        val keyMaterial = publicKey.getKeyMaterialFor(Version.V4, Purpose.PUBLIC)
-
-        // Split token into sections
+        val pk = publicKey.getKeyMaterialFor(Version.V4, Purpose.PUBLIC)
+        val h = "v4.public."
         val sections = split(token)
+        val f = decodeFooter(token, sections, footer) // TODO review
+        val i = implicitAssertion.toByteArray(Charsets.UTF_8)
 
         // Check header
-        checkHeader(token, sections, HEADER_PUBLIC)
-
-        // Decode footer
-        val decodedFooter = decodeFooter(token, sections, footer)
+        if (!token.startsWith(h)) {
+            throw InvalidHeaderException(sections.version + SEPARATOR + sections.purpose + SEPARATOR, h, token)
+        }
 
         // Verify
-        val msig = Base64.UrlSafeNoPadding.decodeOrNull(sections.payload)
+        val sm = Base64.UrlSafeNoPadding.decodeOrNull(sections.payload)
             ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
-
-        val s = ByteArray(ED25519_BYTES)
-        // verify length
-        if (msig.size < s.size + 1) {
+        if (sm.size < ED25519_BYTES + 1) {
             throw PasetoParseException(PasetoParseException.Reason.PAYLOAD_LENGTH, token).apply {
-                minLength = s.size + 1
+                minLength = ED25519_BYTES + 1
             }
         }
-        val m = ByteArray(msig.size - s.size)
-        System.arraycopy(msig, msig.size - s.size, s, 0, s.size)
-        System.arraycopy(msig, 0, m, 0, m.size)
+        val s = sm.copyOfRange(sm.size - ED25519_BYTES, sm.size)
+        val m = sm.copyOfRange(0, sm.size - s.size)
 
-        val m2 = pae(
-            HEADER_PUBLIC.toByteArray(Charsets.UTF_8),
-            m,
-            decodedFooter.toByteArray(Charsets.UTF_8),
-            (implicitAssertion ?: "").toByteArray(Charsets.UTF_8),
-        )
-        if (!ed25519Verify(s, m2, keyMaterial)) {
+        val m2 = pae(h.toByteArray(Charsets.UTF_8), m, f.toByteArray(Charsets.UTF_8), i)
+        if (!ed25519Verify(s, m2, pk)) {
             throw SignatureVerificationException(token)
         }
 
         // Convert from JSON
-        return Pair(m.toString(Charsets.UTF_8), decodedFooter)
+        return Pair(m.toString(Charsets.UTF_8), f)
     }
 }
