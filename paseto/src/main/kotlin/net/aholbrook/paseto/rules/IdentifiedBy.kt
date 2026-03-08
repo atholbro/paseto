@@ -17,7 +17,7 @@ data class IdentifiedBy(val tokenId: String) : Rule {
         }
 
         if (!token.tokenId.constantTimeEquals(tokenId)) {
-            throw IncorrectTokenIdException(tokenId, token.tokenId, this, token)
+            throw IncorrectTokenIdException(tokenId, token.tokenId, token)
         }
     }
 }

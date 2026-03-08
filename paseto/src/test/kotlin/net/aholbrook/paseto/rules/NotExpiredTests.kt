@@ -29,6 +29,7 @@ class NotExpiredTests {
             notExpired(token, mode, emptyMap())
         }
         ex.claim shouldBe "exp"
+        ex.rule shouldBe null
     }
 
     @ParameterizedTest
@@ -41,9 +42,10 @@ class NotExpiredTests {
         }
         val notExpired = NotExpired(clock = clock)
 
-        shouldThrow<TokenExpiresBeforeIssuedException> {
+        val ex = shouldThrow<TokenExpiresBeforeIssuedException> {
             notExpired(token, Rule.Mode.ENCODE, emptyMap())
         }
+        ex.rule shouldBe null
     }
 
     @Test
@@ -68,9 +70,10 @@ class NotExpiredTests {
         }
         val notExpired = NotExpired(clock = clock)
 
-        shouldThrow<ExpiredTokenException> {
+        val ex = shouldThrow<ExpiredTokenException> {
             notExpired(token, Rule.Mode.DECODE, emptyMap())
         }
+        ex.rule shouldBe null
     }
 
     @Test
@@ -119,8 +122,9 @@ class NotExpiredTests {
         }
         val notExpired = NotExpired(clock = clock)
 
-        shouldThrow<ExpiredTokenException> {
+        val ex = shouldThrow<ExpiredTokenException> {
             notExpired(token, Rule.Mode.DECODE, emptyMap())
         }
+        ex.rule shouldBe null
     }
 }

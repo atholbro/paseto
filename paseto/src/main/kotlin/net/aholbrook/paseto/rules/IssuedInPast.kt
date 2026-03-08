@@ -25,7 +25,7 @@ data class IssuedInPast internal constructor(private val clock: Clock) : Rule {
             val now = clock.instant()
 
             if (now.isBefore(token.issuedAt)) {
-                throw IssuedInFutureException(now, token.issuedAt, this, token)
+                throw IssuedInFutureException(now, token.issuedAt, token)
             }
         }
     }

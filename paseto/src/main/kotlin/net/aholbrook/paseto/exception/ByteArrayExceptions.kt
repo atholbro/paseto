@@ -8,7 +8,7 @@ class ByteArrayLengthException @InternalApi constructor(
     val required: Int,
     val isExact: Boolean = true,
     cause: Throwable? = null,
-) : CryptoProviderException(
+) : PasetoException(
     "$arg: $required ${if (isExact) "exact " else ""}bytes required, given $len bytes.",
     cause,
 )
@@ -19,4 +19,4 @@ class ByteArrayRangeException @InternalApi constructor(
     val minBound: Int,
     val maxBound: Int,
     throwable: Throwable? = null,
-) : CryptoProviderException("$arg: length outside of range $minBound..$maxBound.", throwable)
+) : PasetoException("$arg: length outside of range $minBound..$maxBound.", throwable)

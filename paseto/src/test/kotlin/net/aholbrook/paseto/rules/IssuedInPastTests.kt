@@ -36,8 +36,8 @@ class IssuedInPastTests {
             issuedInPast(token, Rule.Mode.DECODE, emptyMap())
         }
         ex.claim shouldBe "iat"
-        ex.rule shouldBeSameInstanceAs issuedInPast
         ex.token shouldBeSameInstanceAs token
+        ex.rule shouldBe null
     }
 
     @Test
@@ -53,6 +53,7 @@ class IssuedInPastTests {
         }
         ex.claim shouldBe "iat"
         ex.token shouldBeSameInstanceAs token
+        ex.rule shouldBe null
     }
 
     @Test
@@ -78,7 +79,7 @@ class IssuedInPastTests {
 
         val issuedInPast = IssuedInPast(clock = clock)
 
-        shouldThrow<IssuedInFutureException> {
+        val ex = shouldThrow<IssuedInFutureException> {
             issuedInPast(
                 token {
                     issuedAt = clock.instant().plusSeconds(1)
@@ -87,6 +88,7 @@ class IssuedInPastTests {
                 emptyMap(),
             )
         }
+        ex.rule shouldBe null
     }
 
     @Test
@@ -101,6 +103,7 @@ class IssuedInPastTests {
             issuedInPast(token, Rule.Mode.ENCODE, emptyMap())
         }
         ex.claim shouldBe "iat"
+        ex.rule shouldBe null
     }
 
     @Test

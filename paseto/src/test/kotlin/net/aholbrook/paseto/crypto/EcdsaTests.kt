@@ -10,7 +10,7 @@ import io.mockk.mockkStatic
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import net.aholbrook.paseto.exception.ByteArrayLengthException
-import net.aholbrook.paseto.exception.KeyV3Exception
+import net.aholbrook.paseto.exception.EcKeyException
 import org.bouncycastle.asn1.ASN1Primitive
 import org.bouncycastle.asn1.sec.ECPrivateKey
 import org.bouncycastle.asn1.sec.SECObjectIdentifiers
@@ -66,7 +66,7 @@ class EcdsaTests {
 
     @Test
     fun `ecdsaP384Sign rejects 0 secret key`() {
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             val secretKey = BigIntegers.asUnsignedByteArray(ECDSA_P384_SECRETKEYBYTES, BigInteger.ZERO)
             ecdsaP384Sign(ByteArray(ECDSA_P384_BYTES), "test".toByteArray(), secretKey)
         }
@@ -75,7 +75,7 @@ class EcdsaTests {
     @ParameterizedTest
     @ValueSource(longs = [0L, 1L])
     fun `ecdsaP384Sign checks secret key against n`(offset: Long) {
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             val curveParams = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
             val secretKey = BigIntegers.asUnsignedByteArray(ECDSA_P384_SECRETKEYBYTES, curveParams.n.plus(BigInteger.valueOf(offset)))
             ecdsaP384Sign(ByteArray(ECDSA_P384_BYTES), "test".toByteArray(), secretKey)
@@ -177,7 +177,7 @@ class EcdsaTests {
     @ParameterizedTest
     @ValueSource(bytes = [0x01, 0x04])
     fun `ecdsaP384Verify validates public key - rejects non-compressed points`(firstByte: Byte) {
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             val pk = publicKey.copyOf()
             pk[0] = firstByte
 
@@ -200,7 +200,7 @@ class EcdsaTests {
             every { mockParams.getCurve() } returns mockCurve
             every { mockCurve.decodePoint(any()) } throws IllegalArgumentException()
 
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 val pk = byteArrayOf(0x02) + BigInteger.ONE.toByteArray().copyOf(48)
 
                 ecdsaP384Verify(
@@ -226,7 +226,7 @@ class EcdsaTests {
             every { mockParams.getCurve() } returns mockCurve
             every { mockCurve.decodePoint(any()) } returns curveParams.curve.infinity
 
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 val pk = byteArrayOf(0x02) + BigInteger.ONE.toByteArray().copyOf(48)
 
                 ecdsaP384Verify(
@@ -254,7 +254,7 @@ class EcdsaTests {
             every { mockQ.isInfinity } returns false
             every { mockQ.isValid } returns false
 
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 val pk = byteArrayOf(0x02) + BigInteger.ONE.toByteArray().copyOf(48)
 
                 ecdsaP384Verify(
@@ -385,7 +385,7 @@ class EcdsaTests {
     fun `p384SkToPk rejects 0 d`() {
         val sk = BigIntegers.asUnsignedByteArray(ECDSA_P384_SECRETKEYBYTES, BigInteger.ZERO)
 
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             p384SkToPk(sk)
         }
     }
@@ -399,7 +399,7 @@ class EcdsaTests {
             params.n.plus(BigInteger.valueOf(offset)),
         )
 
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             p384SkToPk(sk)
         }
     }
@@ -426,7 +426,7 @@ class EcdsaTests {
     fun `p384EncodeSkPkcs8 rejects 0 d`() {
         val sk = BigIntegers.asUnsignedByteArray(ECDSA_P384_SECRETKEYBYTES, BigInteger.ZERO)
 
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             p384EncodeSkPkcs8(sk)
         }
     }
@@ -440,7 +440,7 @@ class EcdsaTests {
             params.n.plus(BigInteger.valueOf(offset)),
         )
 
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             p384EncodeSkPkcs8(sk)
         }
     }
@@ -457,14 +457,14 @@ class EcdsaTests {
 
     @Test
     fun `p384DecodeSkPkcs8 throws on empty array`() {
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             p384DecodeSkPkcs8(ByteArray(0))
         }
     }
 
     @Test
     fun `p384DecodeSkPkcs8 throws on incorrect key length`() {
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             p384DecodeSkPkcs8(ByteArray(3))
         }
     }
@@ -475,7 +475,7 @@ class EcdsaTests {
             mockkStatic("org.bouncycastle.crypto.util.PrivateKeyFactory")
             every { PrivateKeyFactory.createKey(any<ByteArray>()) } returns mockk<Ed25519PrivateKeyParameters>()
 
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodeSkPkcs8(ByteArray(89))
             }
         } finally {
@@ -509,7 +509,7 @@ class EcdsaTests {
         @Test
         fun `wrong curve`() {
             every { mockDomainParams.curve } returns CustomNamedCurves.getByOID(SECObjectIdentifiers.secp521r1).curve
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodeSkPkcs8(ByteArray(89))
             }
         }
@@ -517,7 +517,7 @@ class EcdsaTests {
         @Test
         fun `wrong g`() {
             every { mockDomainParams.g } returns CustomNamedCurves.getByOID(SECObjectIdentifiers.secp521r1).g
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodeSkPkcs8(ByteArray(89))
             }
         }
@@ -525,7 +525,7 @@ class EcdsaTests {
         @Test
         fun `wrong n`() {
             every { mockDomainParams.n } returns BigInteger.ZERO
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodeSkPkcs8(ByteArray(89))
             }
         }
@@ -533,7 +533,7 @@ class EcdsaTests {
         @Test
         fun `wrong h`() {
             every { mockDomainParams.h } returns BigInteger.ZERO
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodeSkPkcs8(ByteArray(89))
             }
         }
@@ -542,7 +542,7 @@ class EcdsaTests {
         fun `p384DecodeSkPkcs8 0 d`() {
             every { mockKeyParams.d } returns BigInteger.ZERO
 
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodeSkPkcs8(ByteArray(0))
             }
         }
@@ -553,7 +553,7 @@ class EcdsaTests {
             every { mockKeyParams.d } returns
                 CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1).n.plus(BigInteger.valueOf(offset))
 
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodeSkPkcs8(ByteArray(0))
             }
         }
@@ -581,7 +581,7 @@ class EcdsaTests {
     fun `p384EncodeSkSec1 rejects 0 d`() {
         val sk = BigIntegers.asUnsignedByteArray(ECDSA_P384_SECRETKEYBYTES, BigInteger.ZERO)
 
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             p384EncodeSkSec1(sk)
         }
     }
@@ -595,7 +595,7 @@ class EcdsaTests {
             params.n.plus(BigInteger.valueOf(offset)),
         )
 
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             p384EncodeSkSec1(sk)
         }
     }
@@ -610,14 +610,14 @@ class EcdsaTests {
 
     @Test
     fun `p384DecodeSkSec1 throws on empty array`() {
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             p384DecodeSkSec1(ByteArray(0))
         }
     }
 
     @Test
     fun `p384DecodeSkSec1 throws on incorrect key length`() {
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             p384DecodeSkSec1(ByteArray(3))
         }
     }
@@ -642,7 +642,7 @@ class EcdsaTests {
         @Test
         fun `throws when given wrong curve`() {
             every { mockKey.parametersObject } returns SECObjectIdentifiers.secp521r1
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodeSkSec1(ByteArray(89))
             }
         }
@@ -650,7 +650,7 @@ class EcdsaTests {
         @Test
         fun `throws when given unsupported curve parameters`() {
             every { mockKey.parametersObject } returns mockk()
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodeSkSec1(ByteArray(89))
             }
         }
@@ -658,7 +658,7 @@ class EcdsaTests {
         @Test
         fun `throws when key has no curve information`() {
             every { mockKey.parametersObject } returns null
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodeSkSec1(ByteArray(89))
             }
         }
@@ -668,7 +668,7 @@ class EcdsaTests {
             every { mockKey.parametersObject } returns SECObjectIdentifiers.secp384r1
             every { mockKey.key } returns BigInteger.ZERO
 
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodeSkSec1(ByteArray(89))
             }
         }
@@ -681,7 +681,7 @@ class EcdsaTests {
             every { mockKey.parametersObject } returns SECObjectIdentifiers.secp384r1
             every { mockKey.key } returns curveParams.n.plus(BigInteger.valueOf(offset))
 
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodeSkSec1(ByteArray(89))
             }
         }
@@ -707,14 +707,14 @@ class EcdsaTests {
 
     @Test
     fun `p384DecodePkSpki throws on empty array`() {
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             p384DecodePkSpki(ByteArray(0))
         }
     }
 
     @Test
     fun `p384DecodePkSpki throws on incorrect key length`() {
-        shouldThrow<KeyV3Exception> {
+        shouldThrow<EcKeyException> {
             p384DecodePkSpki(ByteArray(3))
         }
     }
@@ -725,7 +725,7 @@ class EcdsaTests {
             mockkStatic("org.bouncycastle.crypto.util.PublicKeyFactory")
             every { PublicKeyFactory.createKey(any<ByteArray>()) } returns null
 
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodePkSpki(ByteArray(89))
             }
         } finally {
@@ -759,7 +759,7 @@ class EcdsaTests {
         @Test
         fun `wrong curve`() {
             every { mockDomainParams.curve } returns CustomNamedCurves.getByOID(SECObjectIdentifiers.secp521r1).curve
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodePkSpki(ByteArray(89))
             }
         }
@@ -767,7 +767,7 @@ class EcdsaTests {
         @Test
         fun `wrong g`() {
             every { mockDomainParams.g } returns CustomNamedCurves.getByOID(SECObjectIdentifiers.secp521r1).g
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodePkSpki(ByteArray(89))
             }
         }
@@ -775,7 +775,7 @@ class EcdsaTests {
         @Test
         fun `wrong n`() {
             every { mockDomainParams.n } returns BigInteger.ZERO
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodePkSpki(ByteArray(89))
             }
         }
@@ -783,7 +783,7 @@ class EcdsaTests {
         @Test
         fun `wrong h`() {
             every { mockDomainParams.h } returns BigInteger.ZERO
-            shouldThrow<KeyV3Exception> {
+            shouldThrow<EcKeyException> {
                 p384DecodePkSpki(ByteArray(89))
             }
         }

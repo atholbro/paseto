@@ -2,7 +2,7 @@ package net.aholbrook.paseto.rules
 
 import net.aholbrook.paseto.Token
 import net.aholbrook.paseto.exception.MissingClaimException
-import net.aholbrook.paseto.exception.NotYetValidTokenException
+import net.aholbrook.paseto.exception.NotYetValidException
 import net.aholbrook.paseto.exception.TokenIsNotValidUntilAfterExpiration
 import net.aholbrook.paseto.rules.Rule.Mode
 import java.time.Clock
@@ -29,7 +29,7 @@ data class NotBefore internal constructor(private val clock: Clock) : Rule {
 
         if (mode == Mode.DECODE) {
             if (clock.instant().isBefore(token.notBefore)) {
-                throw NotYetValidTokenException(token.notBefore, this, token)
+                throw NotYetValidException(token.notBefore, token)
             }
         }
     }

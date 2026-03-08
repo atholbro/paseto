@@ -30,6 +30,7 @@ class IssuedByTests {
         }
         ex.claim shouldBe "iss"
         ex.token shouldBeSameInstanceAs token
+        ex.rule shouldBe null
     }
 
     @Test
@@ -42,6 +43,7 @@ class IssuedByTests {
         }
         ex.claim shouldBe "iss"
         ex.token shouldBeSameInstanceAs token
+        ex.rule shouldBe null
     }
 
     @Test
@@ -53,7 +55,9 @@ class IssuedByTests {
             issuedBy(token, Rule.Mode.DECODE, emptyMap())
         }
         ex.claim shouldBe "iss"
-        ex.rule shouldBeSameInstanceAs issuedBy
         ex.token shouldBeSameInstanceAs token
+        ex.expected shouldBe "abc"
+        ex.issuer shouldBe "def"
+        ex.rule shouldBe null
     }
 }

@@ -30,6 +30,7 @@ class SubjectTests {
         }
         ex.claim shouldBe "sub"
         ex.token shouldBeSameInstanceAs token
+        ex.rule shouldBe null
     }
 
     @Test
@@ -42,6 +43,7 @@ class SubjectTests {
         }
         ex.claim shouldBe "sub"
         ex.token shouldBeSameInstanceAs token
+        ex.rule shouldBe null
     }
 
     @Test
@@ -53,7 +55,9 @@ class SubjectTests {
             subject(token, Rule.Mode.DECODE, emptyMap())
         }
         ex.claim shouldBe "sub"
-        ex.rule shouldBeSameInstanceAs subject
         ex.token shouldBeSameInstanceAs token
+        ex.expected shouldBe "abc"
+        ex.subject shouldBe "def"
+        ex.rule shouldBe null
     }
 }

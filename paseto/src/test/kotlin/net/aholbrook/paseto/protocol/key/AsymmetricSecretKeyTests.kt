@@ -48,23 +48,29 @@ class AsymmetricSecretKeyTests {
 
     @Test
     fun `AsymmetricSecretKey enforces key lengths`() {
-        shouldThrow<KeyLengthException> {
+        val ex = shouldThrow<KeyLengthException> {
             AsymmetricSecretKey.ofHex("0".repeat(10), Version.V4)
         }
+        ex.actual shouldBe 5
+        ex.allowed shouldBe arrayOf(64, 32)
     }
 
     @Test
     fun `AsymmetricSecretKey enforces version match on getKeyMaterialFor`() {
-        shouldThrow<KeyVersionException> {
+        val ex = shouldThrow<KeyVersionException> {
             keyV4Public.secretKey!!.getKeyMaterialFor(Version.V2, Purpose.PUBLIC)
         }
+        ex.expected shouldBe Version.V2
+        ex.actual shouldBe Version.V4
     }
 
     @Test
     fun `AsymmetricSecretKey enforces purpose match on getKeyMaterialFor`() {
-        shouldThrow<KeyPurposeException> {
+        val ex = shouldThrow<KeyPurposeException> {
             keyV4Public.secretKey!!.getKeyMaterialFor(Version.V4, Purpose.LOCAL)
         }
+        ex.expected shouldBe "LOCAL"
+        ex.actual shouldBe "PUBLIC"
     }
 
     @Test

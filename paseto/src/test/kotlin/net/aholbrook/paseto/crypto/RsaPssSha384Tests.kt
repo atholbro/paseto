@@ -6,7 +6,7 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import net.aholbrook.paseto.exception.ByteArrayLengthException
-import net.aholbrook.paseto.exception.CryptoProviderException
+import net.aholbrook.paseto.exception.CryptoException as PasetoCryptoException
 import org.bouncycastle.crypto.CryptoException
 import org.bouncycastle.crypto.signers.PSSSigner
 import org.junit.jupiter.api.AfterEach
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 class RsaPssSha384Tests {
     @Test
     fun rsaSign_badKey() {
-        shouldThrow<CryptoProviderException> {
+        shouldThrow<PasetoCryptoException> {
             rsaSign("test".toByteArray(), byteArrayOf(0x01))
         }
     }
@@ -38,7 +38,7 @@ class RsaPssSha384Tests {
 
     @Test
     fun rsaVerify_badKey() {
-        shouldThrow<CryptoProviderException> {
+        shouldThrow<PasetoCryptoException> {
             rsaVerify("test".toByteArray(), ByteArray(RSA_SIGNATURE_LEN), byteArrayOf(0x01))
         }
     }
@@ -87,11 +87,11 @@ class RsaPssSha384Tests {
 
         @Test
         @DisplayName("rsaSign correctly handles a CryptoException if thrown")
-        fun rsaSign_CryptoProviderException() {
+        fun rsaSign_PasetoCryptoException() {
             val m = ByteArray(16)
             val keyPair = rsaGenerate()
 
-            shouldThrow<CryptoProviderException> {
+            shouldThrow<PasetoCryptoException> {
                 rsaSign(m, keyPair.first)
             }
         }

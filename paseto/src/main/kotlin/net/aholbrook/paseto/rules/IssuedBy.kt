@@ -17,7 +17,7 @@ data class IssuedBy(val issuer: String) : Rule {
         }
 
         if (!token.issuer.constantTimeEquals(issuer)) {
-            throw IncorrectIssuerException(issuer, token.issuer, this, token)
+            throw IncorrectIssuerException(issuer, token.issuer, token)
         }
     }
 }

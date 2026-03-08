@@ -49,23 +49,29 @@ class AsymmetricPublicKeyTests {
 
     @Test
     fun `AsymmetricPublicKey enforces key lengths`() {
-        shouldThrow<KeyLengthException> {
+        val ex = shouldThrow<KeyLengthException> {
             AsymmetricPublicKey.ofHex("0".repeat(10), Version.V4)
         }
+        ex.actual shouldBe 5
+        ex.allowed shouldBe arrayOf(32)
     }
 
     @Test
     fun `AsymmetricPublicKey enforces version match on getKeyMaterialFor`() {
-        shouldThrow<KeyVersionException> {
+        val ex = shouldThrow<KeyVersionException> {
             keyV4Public.publicKey.getKeyMaterialFor(Version.V2, Purpose.PUBLIC)
         }
+        ex.expected shouldBe Version.V2
+        ex.actual shouldBe Version.V4
     }
 
     @Test
     fun `AsymmetricPublicKey enforces purpose match on getKeyMaterialFor`() {
-        shouldThrow<KeyPurposeException> {
+        val ex = shouldThrow<KeyPurposeException> {
             keyV4Public.publicKey.getKeyMaterialFor(Version.V4, Purpose.LOCAL)
         }
+        ex.expected shouldBe "LOCAL"
+        ex.actual shouldBe "PUBLIC"
     }
 
     @Test

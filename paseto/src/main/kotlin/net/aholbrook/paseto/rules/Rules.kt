@@ -2,8 +2,8 @@ package net.aholbrook.paseto.rules
 
 import net.aholbrook.paseto.PasetoDslMarker
 import net.aholbrook.paseto.Token
-import net.aholbrook.paseto.exception.MultipleValidationExceptions
-import net.aholbrook.paseto.exception.PasetoTokenException
+import net.aholbrook.paseto.exception.MultipleValidationErrorsException
+import net.aholbrook.paseto.exception.RuleValidationException
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -12,7 +12,7 @@ sealed interface RuleResult
 object RuleVerified : RuleResult
 
 @JvmInline
-value class RuleFailed(val cause: PasetoTokenException) : RuleResult
+value class RuleFailed(val cause: RuleValidationException) : RuleResult
 
 sealed interface Rule {
     /**
@@ -34,13 +34,14 @@ fun interface CustomRule : Rule
 class Rules internal constructor(@PublishedApi internal val rules: List<Rule>) {
     fun verifyAll(token: Token, mode: Rule.Mode): Map<Rule, RuleResult> {
         val context = mutableMapOf<Rule, RuleResult>()
-        val mre = MultipleValidationExceptions(token)
+        val mre = MultipleValidationErrorsException(token)
 
         for (rule in rules) {
             try {
                 rule(token, mode, context)
                 context[rule] = RuleVerified
-            } catch (re: PasetoTokenException) {
+            } catch (re: RuleValidationException) {
+                re.rule = rule
                 mre.add(re)
                 context[rule] = RuleFailed(re)
             }

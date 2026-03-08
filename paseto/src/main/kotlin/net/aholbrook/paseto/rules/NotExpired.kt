@@ -29,7 +29,7 @@ data class NotExpired internal constructor(private val clock: Clock) : Rule {
 
         if (mode == Mode.DECODE) {
             if (clock.instant().isAfter(token.expiresAt)) {
-                throw ExpiredTokenException(token.expiresAt, this, token)
+                throw ExpiredTokenException(token.expiresAt, token)
             }
         }
     }

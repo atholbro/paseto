@@ -10,7 +10,7 @@ import io.kotest.matchers.types.shouldBeSameInstanceAs
 import net.aholbrook.paseto.exception.IncorrectAudienceException
 import net.aholbrook.paseto.exception.IncorrectIssuerException
 import net.aholbrook.paseto.exception.IncorrectSubjectException
-import net.aholbrook.paseto.exception.MultipleValidationExceptions
+import net.aholbrook.paseto.exception.MultipleValidationErrorsException
 import net.aholbrook.paseto.token
 import org.junit.jupiter.api.Test
 
@@ -91,7 +91,7 @@ class RuleTests {
             subject = Subject("ghi")
         }
 
-        val ex = shouldThrow<MultipleValidationExceptions> {
+        val ex = shouldThrow<MultipleValidationErrorsException> {
             rules.verifyAll(token, Rule.Mode.DECODE)
         }
 
@@ -112,12 +112,12 @@ class RuleTests {
             issuedBy = IssuedBy("def")
         }
 
-        val ex = shouldThrow<MultipleValidationExceptions> {
+        val ex = shouldThrow<MultipleValidationErrorsException> {
             rules.verifyAll(token, Rule.Mode.DECODE)
         }
 
         ex.toString() shouldBe """
-            |net.aholbrook.paseto.exception.MultipleValidationExceptions: Multiple verification errors:
+            |net.aholbrook.paseto.exception.MultipleValidationErrorsException: Multiple verification errors:
             |  net.aholbrook.paseto.exception.MissingClaimException: Token is missing required claim aud.
             |  net.aholbrook.paseto.exception.MissingClaimException: Token is missing required claim iss.
         """.trimMargin()

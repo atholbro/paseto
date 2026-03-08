@@ -5,57 +5,65 @@ import net.aholbrook.paseto.Token
 import net.aholbrook.paseto.rules.Rule
 import java.time.Instant
 
-open class RuleValidationException @InternalApi constructor(
+
+open class RuleValidationException (
     msg: String,
     val claim: String,
-    val rule: Rule?,
-    token: Token,
-) : PasetoTokenException(msg, token)
+    val token: Token,
+) : PasetoException(msg) {
+    var rule: Rule? = null
+        internal set
+}
 
-class ExpiredTokenException @InternalApi constructor(time: Instant, rule: Rule, token: Token) :
-    RuleValidationException("Token expired at $time.", "exp", rule, token)
+class TokenExpiresBeforeIssuedException(token: Token) :
+    RuleValidationException("token would expire (${token.expiresAt}) before it was issued (${token.issuedAt})", "iat", token)
 
-class IncorrectAudienceException @InternalApi constructor(
+class TokenIsNotValidUntilAfterExpiration(token: Token, ) :
+    RuleValidationException("token is not valid (${token.notBefore}) until after it expires (${token.expiresAt})", "exp", token)
+
+class MissingClaimException(claim: String, token: Token, ) :
+    RuleValidationException("Token is missing required claim $claim.", claim, token)
+
+class ExpiredTokenException(time: Instant, token: Token) :
+    RuleValidationException("Token expired at $time.", "exp", token)
+
+class IncorrectAudienceException(
     val expected: String,
     val audience: String?,
-    rule: Rule,
     token: Token,
-) : RuleValidationException("Token audience is \"$audience\", required: \"$expected\"", "aud", rule, token)
+) : RuleValidationException("Token audience is \"$audience\", required: \"$expected\"", "aud", token)
 
-class IncorrectTokenIdException @InternalApi constructor(
+class IncorrectTokenIdException(
     val expected: String,
     val tokenId: String?,
-    rule: Rule,
     token: Token,
-) : RuleValidationException("Token ID is \"$tokenId\", required: \"$expected\"", "jti", rule, token)
+) : RuleValidationException("Token ID is \"$tokenId\", required: \"$expected\"", "jti", token)
 
-class IncorrectIssuerException @InternalApi constructor(
+class IncorrectIssuerException(
     val expected: String,
     val issuer: String?,
-    rule: Rule,
     token: Token,
-) : RuleValidationException("Token issued by \"$issuer\", required: \"$expected\"", "iss", rule, token)
+) : RuleValidationException("Token issued by \"$issuer\", required: \"$expected\"", "iss", token)
 
-class IncorrectSubjectException @InternalApi constructor(
-    val expected: String?,
+class IncorrectSubjectException(
+    val expected: String,
     val subject: String,
-    rule: Rule,
     token: Token,
-) : RuleValidationException("Token subject is \"$subject\", required: \"$expected\"", "sub", rule, token)
+) : RuleValidationException("Token subject is \"$subject\", required: \"$expected\"", "sub", token)
 
-class IssuedInFutureException @InternalApi constructor(now: Instant, issuedAt: Instant?, rule: Rule, token: Token) :
-    RuleValidationException("Token was issued at a future date/time $issuedAt, currently: $now", "iat", rule, token)
+class IssuedInFutureException(now: Instant, issuedAt: Instant?, token: Token) :
+    RuleValidationException("Token was issued at a future date/time $issuedAt, currently: $now", "iat", token)
 
-class NotYetValidTokenException @InternalApi constructor(time: Instant, rule: Rule, token: Token) :
-    RuleValidationException("Token is not valid until $time.", "nbf", rule, token)
+class NotYetValidException(time: Instant, token: Token) :
+    RuleValidationException("Token is not valid until $time.", "nbf", token)
 
-class MultipleValidationExceptions @InternalApi constructor(token: Token) :
-    PasetoTokenException("Multiple verification errors.", token) {
+class MultipleValidationErrorsException @InternalApi constructor(val token: Token) :
+    PasetoException("Multiple verification errors.") {
 
-    private val internalExceptions = mutableListOf<PasetoTokenException>()
-    val exceptions: List<PasetoTokenException> get() = internalExceptions
+    private val internalExceptions = mutableListOf<RuleValidationException>()
+    val exceptions: List<RuleValidationException> get() = internalExceptions
 
-    fun add(e: PasetoTokenException) {
+    internal fun add(e: RuleValidationException) {
         internalExceptions.add(e)
     }
 

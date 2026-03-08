@@ -12,7 +12,7 @@ data class Subject(val subject: String) : Rule {
         }
 
         if (!token.subject.constantTimeEquals(subject)) {
-            throw IncorrectSubjectException(subject, token.subject, this, token)
+            throw IncorrectSubjectException(subject, token.subject, token)
         }
     }
 }

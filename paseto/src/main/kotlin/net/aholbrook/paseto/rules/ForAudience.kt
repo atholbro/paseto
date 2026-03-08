@@ -17,7 +17,7 @@ data class ForAudience(val audience: String) : Rule {
         }
 
         if (!token.audience.constantTimeEquals(audience)) {
-            throw IncorrectAudienceException(audience, token.audience, this, token)
+            throw IncorrectAudienceException(audience, token.audience, token)
         }
     }
 }

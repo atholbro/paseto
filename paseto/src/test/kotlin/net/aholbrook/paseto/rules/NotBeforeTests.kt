@@ -4,7 +4,7 @@ import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import net.aholbrook.paseto.exception.MissingClaimException
-import net.aholbrook.paseto.exception.NotYetValidTokenException
+import net.aholbrook.paseto.exception.NotYetValidException
 import net.aholbrook.paseto.exception.TokenIsNotValidUntilAfterExpiration
 import net.aholbrook.paseto.token
 import org.junit.jupiter.api.Test
@@ -26,6 +26,7 @@ class NotBeforeTests {
             notBefore(token, mode, emptyMap())
         }
         ex.claim shouldBe "nbf"
+        ex.rule shouldBe null
     }
 
     @ParameterizedTest
@@ -38,9 +39,10 @@ class NotBeforeTests {
         }
         val notBefore = NotBefore(clock = clock)
 
-        shouldThrow<TokenIsNotValidUntilAfterExpiration> {
+        val ex = shouldThrow<TokenIsNotValidUntilAfterExpiration> {
             notBefore(token, Rule.Mode.ENCODE, emptyMap())
         }
+        ex.rule shouldBe null
     }
 
     @Test
@@ -66,9 +68,10 @@ class NotBeforeTests {
         }
         val notBefore = NotBefore(clock = clock)
 
-        shouldThrow<NotYetValidTokenException> {
+        val ex = shouldThrow<NotYetValidException> {
             notBefore(token, Rule.Mode.DECODE, emptyMap())
         }
+        ex.rule shouldBe null
     }
 
     @Test
@@ -120,8 +123,9 @@ class NotBeforeTests {
         }
         val notBefore = NotBefore(clock = clock)
 
-        shouldThrow<NotYetValidTokenException> {
+        val ex = shouldThrow<NotYetValidException> {
             notBefore(token, Rule.Mode.DECODE, emptyMap())
         }
+        ex.rule shouldBe null
     }
 }

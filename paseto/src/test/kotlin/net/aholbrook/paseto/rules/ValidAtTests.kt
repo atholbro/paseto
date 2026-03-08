@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldBe
 import net.aholbrook.paseto.exception.ExpiredTokenException
 import net.aholbrook.paseto.exception.IssuedInFutureException
 import net.aholbrook.paseto.exception.MissingClaimException
-import net.aholbrook.paseto.exception.NotYetValidTokenException
+import net.aholbrook.paseto.exception.NotYetValidException
 import net.aholbrook.paseto.exception.TokenExpiresBeforeIssuedException
 import net.aholbrook.paseto.exception.TokenIsNotValidUntilAfterExpiration
 import net.aholbrook.paseto.token
@@ -32,6 +32,7 @@ class ValidAtTests {
             validAt(token, mode, emptyMap())
         }
         ex.claim shouldBe "iat"
+        ex.rule shouldBe null
     }
 
     @ParameterizedTest
@@ -44,6 +45,7 @@ class ValidAtTests {
             validAt(token, mode, emptyMap())
         }
         ex.claim shouldBe "nbf"
+        ex.rule shouldBe null
     }
 
     @ParameterizedTest
@@ -59,6 +61,7 @@ class ValidAtTests {
             validAt(token, mode, emptyMap())
         }
         ex.claim shouldBe "exp"
+        ex.rule shouldBe null
     }
 
     @ParameterizedTest
@@ -73,9 +76,10 @@ class ValidAtTests {
         val validAt = ValidAt(clock = clock)
 
         if (offset > 0) {
-            shouldThrow<TokenExpiresBeforeIssuedException> {
+            val ex = shouldThrow<TokenExpiresBeforeIssuedException> {
                 validAt(token, Rule.Mode.ENCODE, emptyMap())
             }
+            ex.rule shouldBe null
         } else {
             shouldNotThrowAny {
                 validAt(token, Rule.Mode.ENCODE, emptyMap())
@@ -93,9 +97,10 @@ class ValidAtTests {
         }
         val validAt = ValidAt(clock = clock)
 
-        shouldThrow<ExpiredTokenException> {
+        val ex = shouldThrow<ExpiredTokenException> {
             validAt(token, Rule.Mode.DECODE, emptyMap())
         }
+        ex.rule shouldBe null
     }
 
     @ParameterizedTest
@@ -110,9 +115,10 @@ class ValidAtTests {
         val validAt = ValidAt(clock = clock)
 
         if (offset >= 0) {
-            shouldThrow<TokenIsNotValidUntilAfterExpiration> {
+            val ex = shouldThrow<TokenIsNotValidUntilAfterExpiration> {
                 validAt(token, Rule.Mode.ENCODE, emptyMap())
             }
+            ex.rule shouldBe null
         } else {
             shouldNotThrowAny {
                 validAt(token, Rule.Mode.ENCODE, emptyMap())
@@ -130,9 +136,10 @@ class ValidAtTests {
         }
         val validAt = ValidAt(clock = clock)
 
-        shouldThrow<NotYetValidTokenException> {
+        val ex = shouldThrow<NotYetValidException> {
             validAt(token, Rule.Mode.DECODE, emptyMap())
         }
+        ex.rule shouldBe null
     }
 
     @ParameterizedTest
@@ -165,9 +172,10 @@ class ValidAtTests {
                 validAt(token, Rule.Mode.DECODE, emptyMap())
             }
         } else {
-            shouldThrow<ExpiredTokenException> {
+            val ex = shouldThrow<ExpiredTokenException> {
                 validAt(token, Rule.Mode.DECODE, emptyMap())
             }
+            ex.rule shouldBe null
         }
     }
 
@@ -187,9 +195,10 @@ class ValidAtTests {
                 validAt(token, Rule.Mode.DECODE, emptyMap())
             }
         } else {
-            shouldThrow<IssuedInFutureException> {
+            val ex = shouldThrow<IssuedInFutureException> {
                 validAt(token, Rule.Mode.DECODE, emptyMap())
             }
+            ex.rule shouldBe null
         }
     }
 
@@ -209,9 +218,10 @@ class ValidAtTests {
                 validAt(token, Rule.Mode.DECODE, emptyMap())
             }
         } else {
-            shouldThrow<NotYetValidTokenException> {
+            val ex = shouldThrow<NotYetValidException> {
                 validAt(token, Rule.Mode.DECODE, emptyMap())
             }
+            ex.rule shouldBe null
         }
     }
 }

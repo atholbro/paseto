@@ -30,6 +30,7 @@ class ForAudienceTests {
         }
         ex.claim shouldBe "aud"
         ex.token shouldBeSameInstanceAs token
+        ex.rule shouldBe null
     }
 
     @Test
@@ -42,6 +43,7 @@ class ForAudienceTests {
         }
         ex.claim shouldBe "aud"
         ex.token shouldBeSameInstanceAs token
+        ex.rule shouldBe null
     }
 
     @Test
@@ -53,7 +55,9 @@ class ForAudienceTests {
             forAudience(token, Rule.Mode.DECODE, emptyMap())
         }
         ex.claim shouldBe "aud"
-        ex.rule shouldBeSameInstanceAs forAudience
         ex.token shouldBeSameInstanceAs token
+        ex.expected shouldBe "abc"
+        ex.audience shouldBe "def"
+        ex.rule shouldBe null
     }
 }

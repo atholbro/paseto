@@ -1,7 +1,7 @@
 package net.aholbrook.paseto.crypto
 
 import net.aholbrook.paseto.exception.ByteArrayLengthException
-import net.aholbrook.paseto.exception.KeyV3Exception
+import net.aholbrook.paseto.exception.EcKeyException
 import org.bouncycastle.asn1.ASN1ObjectIdentifier
 import org.bouncycastle.asn1.ASN1Primitive
 import org.bouncycastle.asn1.DERBitString
@@ -11,7 +11,6 @@ import org.bouncycastle.asn1.sec.SECObjectIdentifiers
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.asn1.x9.X9ObjectIdentifiers
-import org.bouncycastle.crypto.CryptoException
 import org.bouncycastle.crypto.digests.SHA384Digest
 import org.bouncycastle.crypto.ec.CustomNamedCurves
 import org.bouncycastle.crypto.generators.ECKeyPairGenerator
@@ -19,8 +18,6 @@ import org.bouncycastle.crypto.params.ECDomainParameters
 import org.bouncycastle.crypto.params.ECKeyGenerationParameters
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters
 import org.bouncycastle.crypto.params.ECPublicKeyParameters
-import org.bouncycastle.crypto.params.RSAKeyParameters
-import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters
 import org.bouncycastle.crypto.signers.ECDSASigner
 import org.bouncycastle.crypto.signers.HMacDSAKCalculator
 import org.bouncycastle.crypto.util.PrivateKeyFactory
@@ -49,7 +46,7 @@ internal fun ecdsaP384Sign(sig: ByteArray, m: ByteArray, sk: ByteArray, enforceL
 
     val d = BigInteger(1, sk)
     if (d.signum() <= 0 || d >= params.n) {
-        throw KeyV3Exception("Invalid P-384 private key")
+        throw EcKeyException("Invalid P-384 private key")
     }
     val secretKey = ECPrivateKeyParameters(d, params)
 
@@ -134,7 +131,7 @@ internal fun p384SkToPk(sk: ByteArray): ByteArray {
     val params = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
     val d = BigInteger(1, sk)
     if (d.signum() <= 0 || d >= params.n) {
-        throw KeyV3Exception("Invalid P-384 private key")
+        throw EcKeyException("Invalid P-384 private key")
     }
     val q = params.g.multiply(d).normalize()
     return q.getEncoded(true)
@@ -145,21 +142,21 @@ internal fun p384VerifyPk(pk: ByteArray): ECPoint {
         throw ByteArrayLengthException("pk", pk.size, ECDSA_P384_PUBLICKEYBYTES)
     }
     if (pk[0] != 0x02.toByte() && pk[0] != 0x03.toByte()) {
-        throw KeyV3Exception("must use point compression")
+        throw EcKeyException("must use point compression")
     }
 
     val params = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
     val q = try {
         params.curve.decodePoint(pk)
     } catch (ex: IllegalArgumentException) {
-        throw KeyV3Exception("decode point", ex)
+        throw EcKeyException("decode point", ex)
     }
 
     if (q.isInfinity) {
-        throw KeyV3Exception("Point at infinity")
+        throw EcKeyException("Point at infinity")
     }
     if (!q.isValid) {
-        throw KeyV3Exception("Point not on curve")
+        throw EcKeyException("Point not on curve")
     }
 
     return q
@@ -173,7 +170,7 @@ internal fun p384EncodeSkPkcs8(sk: ByteArray): ByteArray {
     val d = BigInteger(1, sk)
 
     if (d.signum() <= 0 || d >= params.n) {
-        throw KeyV3Exception("Invalid P-384 private key")
+        throw EcKeyException("Invalid P-384 private key")
     }
 
     @Suppress("MagicNumber")
@@ -190,23 +187,23 @@ internal fun p384EncodeSkPkcs8(sk: ByteArray): ByteArray {
 internal fun p384DecodeSkPkcs8(der: ByteArray): ByteArray {
     try {
         val params = PrivateKeyFactory.createKey(der) as? ECPrivateKeyParameters
-            ?: throw KeyV3Exception("Private key is not on secp384r1")
+            ?: throw EcKeyException("Private key is not on secp384r1")
         val domain = params.parameters
         val expected = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
 
         if (domain.curve != expected.curve || domain.g != expected.g || domain.n != expected.n ||
             domain.h != expected.h
         ) {
-            throw KeyV3Exception("Private key is not on secp384r1")
+            throw EcKeyException("Private key is not on secp384r1")
         }
 
         if (params.d.signum() <= 0 || params.d >= domain.n) {
-            throw KeyV3Exception("Invalid private key")
+            throw EcKeyException("Invalid private key")
         }
 
         return BigIntegers.asUnsignedByteArray(ECDSA_P384_SECRETKEYBYTES, params.d)
     } catch (ex: Throwable) {
-        throw KeyV3Exception("invalid private key", ex)
+        throw EcKeyException("invalid private key", ex)
     }
 }
 
@@ -218,7 +215,7 @@ internal fun p384EncodeSkSec1(sk: ByteArray): ByteArray {
     val params = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
     val d = BigInteger(1, sk)
     if (d.signum() <= 0 || d >= params.n) {
-        throw KeyV3Exception("Invalid P-384 private key")
+        throw EcKeyException("Invalid P-384 private key")
     }
 
     val publicKey = DERBitString(params.g.multiply(d).normalize().getEncoded(false))
@@ -232,31 +229,31 @@ internal fun p384EncodeSkSec1(sk: ByteArray): ByteArray {
 internal fun p384DecodeSkSec1(der: ByteArray): ByteArray {
     try {
         val key = ECPrivateKey.getInstance(ASN1Primitive.fromByteArray(der))
-            ?: throw KeyV3Exception("Invalid private key")
+            ?: throw EcKeyException("Invalid private key")
         val curveParams = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
 
         key.parametersObject?.let { params ->
             when (params) {
                 is ASN1ObjectIdentifier -> {
                     if (params != SECObjectIdentifiers.secp384r1) {
-                        throw KeyV3Exception("SEC1 key not on secp384r1")
+                        throw EcKeyException("SEC1 key not on secp384r1")
                     }
                 }
 
                 else -> {
-                    throw KeyV3Exception("Unsupported curve parameters")
+                    throw EcKeyException("Unsupported curve parameters")
                 }
             }
-        } ?: throw KeyV3Exception("SEC1 key must include curve parameters")
+        } ?: throw EcKeyException("SEC1 key must include curve parameters")
 
         val d = key.key
         if (d.signum() <= 0 || d >= curveParams.n) {
-            throw KeyV3Exception("Invalid P-384 private key")
+            throw EcKeyException("Invalid P-384 private key")
         }
 
         return BigIntegers.asUnsignedByteArray(ECDSA_P384_SECRETKEYBYTES, d)
     } catch (ex: Throwable) {
-        throw KeyV3Exception("Invalid private key", ex)
+        throw EcKeyException("Invalid private key", ex)
     }
 }
 
@@ -272,21 +269,21 @@ internal fun p384EncodePkSpki(pk: ByteArray): ByteArray {
 internal fun p384DecodePkSpki(der: ByteArray): ByteArray {
     try {
         val params = PublicKeyFactory.createKey(der) as? ECPublicKeyParameters
-            ?: throw KeyV3Exception("Public key is not on secp384r1")
+            ?: throw EcKeyException("Public key is not on secp384r1")
         val domain = params.parameters
         val expected = CustomNamedCurves.getByOID(SECObjectIdentifiers.secp384r1)
 
         if (domain.curve != expected.curve || domain.g != expected.g || domain.n != expected.n ||
             domain.h != expected.h
         ) {
-            throw KeyV3Exception("Public key is not on secp384r1")
+            throw EcKeyException("Public key is not on secp384r1")
         }
 
         return params.q.getEncoded(true).also {
             p384VerifyPk(it)
         }
     } catch (ex: Throwable) {
-        throw KeyV3Exception("invalid public key", ex)
+        throw EcKeyException("invalid public key", ex)
     }
 }
 

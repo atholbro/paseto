@@ -8,7 +8,7 @@ import net.aholbrook.paseto.crypto.ED25519_SECRETKEYBYTES
 import net.aholbrook.paseto.crypto.constantTimeEquals
 import net.aholbrook.paseto.decodeOrNull
 import net.aholbrook.paseto.exception.IncorrectFooterException
-import net.aholbrook.paseto.exception.PasetoParseException
+import net.aholbrook.paseto.exception.TokenParseException
 import net.aholbrook.paseto.protocol.key.AsymmetricPublicKey
 import net.aholbrook.paseto.protocol.key.AsymmetricSecretKey
 import net.aholbrook.paseto.protocol.key.SymmetricKey
@@ -77,7 +77,7 @@ internal fun extractFooter(token: String): String {
     val footer = split(token).footer
     if (footer.isNotEmpty()) {
         return Base64.UrlSafeNoPadding.decodeOrNull(footer)?.toString(Charsets.UTF_8)
-            ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
+            ?: throw TokenParseException(TokenParseException.Reason.INVALID_BASE64, token)
     }
 
     return ""
@@ -107,14 +107,14 @@ internal fun split(token: String): PasetoSections {
         }
     }
 
-    throw PasetoParseException(PasetoParseException.Reason.MISSING_SECTIONS, token)
+    throw TokenParseException(TokenParseException.Reason.MISSING_SECTIONS, token)
 }
 
 internal fun decodeFooter(token: String, sections: PasetoSections, expectedFooter: String?): String {
     val userFooter = sections.footer
     val decodedFooter = Base64.UrlSafeNoPadding.decodeOrNull(userFooter)
         ?.toString(Charsets.UTF_8)
-        ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
+        ?: throw TokenParseException(TokenParseException.Reason.INVALID_BASE64, token)
 
     if (expectedFooter != null && !decodedFooter.constantTimeEquals(expectedFooter)) {
         throw IncorrectFooterException(decodedFooter, expectedFooter)

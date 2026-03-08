@@ -658,7 +658,7 @@ val service = tokenService(Version.V4, Purpose.Public { keyPair }) {
 ```
 
 If any rule fails during validation, decoding will throw a
-`MultipleValidationExceptions` containing all rule failures.
+`MultipleValidationErrorsException` containing all rule failures.
 
 ### Rule Execution
 Rules are executed sequentially in the following order:
@@ -672,10 +672,10 @@ Each rule receives:
 
 Rules may either:
 - complete successfully (RuleVerified)
-- throw a PasetoTokenException (RuleFailed)
+- throw a RuleValidationException (RuleFailed)
 
 All rule failures are collected and reported together as a
-`MultipleValidationExceptions`.
+`MultipleValidationErrorsException`.
 
 ### Built-in Rules
 Several rules that validate common PASETO claims are included with the library.
@@ -720,7 +720,7 @@ val customRule = CustomRule { token, mode, results ->
     val tier = token.claims["tier"]?.asType<String>() ?: return@CustomRule
 
     if (!tier.constantTimeEquals("premium")) {
-        throw PasetoTokenException("premium tier required")
+        throw RuleValidationException("premium tier required", "tier", token)
     }
 }
 
@@ -772,7 +772,7 @@ rules {
         val tier = token.claims["tier"]?.asType<String>() ?: return@CustomRule
 
         if (!tier.constantTimeEquals("premium")) {
-            throw PasetoTokenException("premium tier required")
+            throw RuleValidationException("premium tier required", "tier", token)
         }
     }
 }

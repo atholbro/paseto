@@ -17,7 +17,7 @@ import net.aholbrook.paseto.crypto.pae
 import net.aholbrook.paseto.decodeOrNull
 import net.aholbrook.paseto.exception.DecryptionException
 import net.aholbrook.paseto.exception.InvalidHeaderException
-import net.aholbrook.paseto.exception.PasetoParseException
+import net.aholbrook.paseto.exception.TokenParseException
 import net.aholbrook.paseto.exception.SignatureVerificationException
 import net.aholbrook.paseto.exception.SigningException
 import net.aholbrook.paseto.protocol.key.AsymmetricPublicKey
@@ -92,10 +92,10 @@ internal object PasetoV3 : Paseto {
 
             // Decrypt
             val nct = Base64.UrlSafeNoPadding.decodeOrNull(sections.payload)
-                ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
+                ?: throw TokenParseException(TokenParseException.Reason.INVALID_BASE64, token)
             // verify length
             if (nct.size < 81) {
-                throw PasetoParseException(PasetoParseException.Reason.PAYLOAD_LENGTH, token).apply {
+                throw TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token).apply {
                     minLength = 81
                 }
             }
@@ -177,9 +177,9 @@ internal object PasetoV3 : Paseto {
         }
 
         val sm = Base64.UrlSafeNoPadding.decodeOrNull(sections.payload)
-            ?: throw PasetoParseException(PasetoParseException.Reason.INVALID_BASE64, token)
+            ?: throw TokenParseException(TokenParseException.Reason.INVALID_BASE64, token)
         if (sm.size < ECDSA_P384_BYTES) {
-            throw PasetoParseException(PasetoParseException.Reason.PAYLOAD_LENGTH, token).apply {
+            throw TokenParseException(TokenParseException.Reason.PAYLOAD_LENGTH, token).apply {
                 minLength = ECDSA_P384_BYTES
             }
         }

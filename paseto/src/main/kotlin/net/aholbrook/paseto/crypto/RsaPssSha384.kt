@@ -1,7 +1,7 @@
 package net.aholbrook.paseto.crypto
 
 import net.aholbrook.paseto.exception.ByteArrayLengthException
-import net.aholbrook.paseto.exception.CryptoProviderException
+import net.aholbrook.paseto.exception.CryptoException as PasetoCryptoException
 import org.bouncycastle.asn1.ASN1Primitive
 import org.bouncycastle.asn1.DERNull
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers
@@ -50,7 +50,7 @@ internal fun pssSha384(forSigning: Boolean, key: ByteArray): PSSSigner {
 
         return pss
     } catch (e: IOException) {
-        throw CryptoProviderException("IOException", e)
+        throw PasetoCryptoException("IOException", e)
     }
 }
 
@@ -68,7 +68,7 @@ internal fun rsaSign(m: ByteArray, privateKey: ByteArray): ByteArray {
         return pss.generateSignature()
     } catch (e: CryptoException) {
         // Not documented
-        throw CryptoProviderException("CryptoException", e)
+        throw PasetoCryptoException("CryptoException", e)
     }
 }
 

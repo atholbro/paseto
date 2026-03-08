@@ -6,7 +6,6 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
-import net.aholbrook.paseto.StringFooter
 import net.aholbrook.paseto.crypto.aeadXChaCha20Poly1305IetfDecrypt
 import net.aholbrook.paseto.crypto.aeadXChaCha20Poly1305IetfEncrypt
 import net.aholbrook.paseto.crypto.ed25519Sign
@@ -14,7 +13,7 @@ import net.aholbrook.paseto.crypto.ed25519Verify
 import net.aholbrook.paseto.exception.DecryptionException
 import net.aholbrook.paseto.exception.EncryptionException
 import net.aholbrook.paseto.exception.InvalidHeaderException
-import net.aholbrook.paseto.exception.PasetoParseException
+import net.aholbrook.paseto.exception.TokenParseException
 import net.aholbrook.paseto.exception.SignatureVerificationException
 import net.aholbrook.paseto.exception.SigningException
 import net.aholbrook.paseto.keyV2Local
@@ -33,41 +32,41 @@ class PasetoV2Tests {
 
     @Test
     fun local_missingSections() {
-        val ex = shouldThrow<PasetoParseException> {
+        val ex = shouldThrow<TokenParseException> {
             PasetoV2.decrypt("", keyV2Local)
         }
 
-        ex.reason shouldBe PasetoParseException.Reason.MISSING_SECTIONS
+        ex.reason shouldBe TokenParseException.Reason.MISSING_SECTIONS
         ex.minLength shouldBe 0
     }
 
     @Test
     fun public_missingSections() {
-        val ex = shouldThrow<PasetoParseException> {
+        val ex = shouldThrow<TokenParseException> {
             PasetoV2.verify("", keyV2Public.publicKey)
         }
 
-        ex.reason shouldBe PasetoParseException.Reason.MISSING_SECTIONS
+        ex.reason shouldBe TokenParseException.Reason.MISSING_SECTIONS
         ex.minLength shouldBe 0
     }
 
     @Test
     fun local_payloadLength() {
-        val ex = shouldThrow<PasetoParseException> {
+        val ex = shouldThrow<TokenParseException> {
             PasetoV2.decrypt("v2.local.YWIK", keyV2Local)
         }
 
-        ex.reason shouldBe PasetoParseException.Reason.PAYLOAD_LENGTH
+        ex.reason shouldBe TokenParseException.Reason.PAYLOAD_LENGTH
         ex.minLength shouldBe 25
     }
 
     @Test
     fun public_payloadLength() {
-        val ex = shouldThrow<PasetoParseException> {
+        val ex = shouldThrow<TokenParseException> {
             PasetoV2.verify("v2.public.YWIK", keyV2Public.publicKey)
         }
 
-        ex.reason shouldBe PasetoParseException.Reason.PAYLOAD_LENGTH
+        ex.reason shouldBe TokenParseException.Reason.PAYLOAD_LENGTH
         ex.minLength shouldBe 65
     }
 
@@ -132,46 +131,58 @@ class PasetoV2Tests {
     @ParameterizedTest
     @ValueSource(strings = ["v1", "v4"])
     fun local_rejectsIncorrectVersions(version: String) {
-        shouldThrow<InvalidHeaderException> {
+        val ex = shouldThrow<InvalidHeaderException> {
             PasetoV2.decrypt("$version.local.abc", keyV2Local)
         }
+        ex.given shouldBe "$version.local."
+        ex.expected shouldBe "v2.local."
+        ex.token shouldBe "$version.local.abc"
     }
 
     @Test
     fun local_rejectsIncorrectPurpose() {
-        shouldThrow<InvalidHeaderException> {
+        val ex = shouldThrow<InvalidHeaderException> {
             PasetoV2.decrypt("v2.public.abc", keyV2Local)
         }
+        ex.given shouldBe "v2.public."
+        ex.expected shouldBe "v2.local."
+        ex.token shouldBe "v2.public.abc"
     }
 
     @ParameterizedTest
     @ValueSource(strings = ["v1", "v4"])
     fun public_rejectsIncorrectVersions(version: String) {
-        shouldThrow<InvalidHeaderException> {
+        val ex = shouldThrow<InvalidHeaderException> {
             PasetoV2.verify("$version.public.abc", keyV2Public.publicKey)
         }
+        ex.given shouldBe "$version.public."
+        ex.expected shouldBe "v2.public."
+        ex.token shouldBe "$version.public.abc"
     }
 
     @Test
     fun public_rejectsIncorrectPurpose() {
-        shouldThrow<InvalidHeaderException> {
+        val ex = shouldThrow<InvalidHeaderException> {
             PasetoV2.verify("v2.local.abc", keyV2Public.publicKey)
         }
+        ex.given shouldBe "v2.local."
+        ex.expected shouldBe "v2.public."
+        ex.token shouldBe "v2.local.abc"
     }
 
     @Test
     fun local_rejectsPaddedBase64() {
-        val ex = shouldThrow<PasetoParseException> {
+        val ex = shouldThrow<TokenParseException> {
             PasetoV2.decrypt("v2.local.YWJjCg==", keyV2Local)
         }
-        ex.reason shouldBe PasetoParseException.Reason.INVALID_BASE64
+        ex.reason shouldBe TokenParseException.Reason.INVALID_BASE64
     }
 
     @Test
     fun public_rejectsPaddedBase64() {
-        val ex = shouldThrow<PasetoParseException> {
+        val ex = shouldThrow<TokenParseException> {
             PasetoV2.verify("v2.public.YWJjCg==", keyV2Public.publicKey)
         }
-        ex.reason shouldBe PasetoParseException.Reason.INVALID_BASE64
+        ex.reason shouldBe TokenParseException.Reason.INVALID_BASE64
     }
 }

@@ -30,6 +30,7 @@ class IdentifiedByTests {
         }
         ex.claim shouldBe "jti"
         ex.token shouldBeSameInstanceAs token
+        ex.rule shouldBe null
     }
 
     @Test
@@ -42,6 +43,7 @@ class IdentifiedByTests {
         }
         ex.claim shouldBe "jti"
         ex.token shouldBeSameInstanceAs token
+        ex.rule shouldBe null
     }
 
     @Test
@@ -53,7 +55,9 @@ class IdentifiedByTests {
             identifiedBy(token, Rule.Mode.DECODE, emptyMap())
         }
         ex.claim shouldBe "jti"
-        ex.rule shouldBeSameInstanceAs identifiedBy
         ex.token shouldBeSameInstanceAs token
+        ex.expected shouldBe "abc"
+        ex.tokenId shouldBe "def"
+        ex.rule shouldBe null
     }
 }

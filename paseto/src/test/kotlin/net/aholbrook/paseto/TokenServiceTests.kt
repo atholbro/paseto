@@ -9,7 +9,7 @@ import io.kotest.matchers.shouldBe
 import net.aholbrook.paseto.exception.CannotSignWithoutSecretKey
 import net.aholbrook.paseto.exception.ImplicitAssertionsNotSupportedException
 import net.aholbrook.paseto.exception.MissingClaimException
-import net.aholbrook.paseto.exception.MultipleValidationExceptions
+import net.aholbrook.paseto.exception.MultipleValidationErrorsException
 import net.aholbrook.paseto.exception.TokenExpiresBeforeIssuedException
 import net.aholbrook.paseto.exception.TokenIsNotValidUntilAfterExpiration
 import net.aholbrook.paseto.protocol.Version
@@ -178,7 +178,7 @@ class TokenServiceTests {
             expiresAt = clock.instant()
         }
 
-        val ex = shouldThrow<MultipleValidationExceptions> {
+        val ex = shouldThrow<MultipleValidationErrorsException> {
             service.encode(token, "")
         }
         ex.exceptions.map { it::class } shouldContain TokenExpiresBeforeIssuedException::class
@@ -196,7 +196,7 @@ class TokenServiceTests {
             rules(rules)
         }
 
-        val ex = shouldThrow<MultipleValidationExceptions> {
+        val ex = shouldThrow<MultipleValidationErrorsException> {
             service.encode(token { })
         }
         ex.exceptions.map { it::class } shouldContain MissingClaimException::class
@@ -212,7 +212,7 @@ class TokenServiceTests {
             expiresAt = clock.instant()
         }
 
-        val ex = shouldThrow<MultipleValidationExceptions> {
+        val ex = shouldThrow<MultipleValidationErrorsException> {
             service.encode(token)
         }
         ex.exceptions.map { it::class } shouldContain TokenExpiresBeforeIssuedException::class
@@ -265,7 +265,7 @@ class TokenServiceTests {
             expiresAt = clock.instant().plusSeconds(1)
         }
 
-        val ex = shouldThrow<MultipleValidationExceptions> {
+        val ex = shouldThrow<MultipleValidationErrorsException> {
             service.encode(token)
         }
         ex.exceptions.map { it::class } shouldContain TokenIsNotValidUntilAfterExpiration::class
@@ -286,7 +286,7 @@ class TokenServiceTests {
             expiresAt = notBefore
         }
 
-        val ex = shouldThrow<MultipleValidationExceptions> {
+        val ex = shouldThrow<MultipleValidationErrorsException> {
             service.encode(token)
         }
         ex.exceptions.map { it::class } shouldContain TokenIsNotValidUntilAfterExpiration::class
