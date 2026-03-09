@@ -17,9 +17,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import java.io.File
-import java.io.FileNotFoundException
 import java.io.IOException
+import java.io.InputStream
 import java.security.KeyStore
 import java.security.KeyStoreException
 import java.security.NoSuchAlgorithmException
@@ -31,7 +30,7 @@ class Pkcs12Tests {
     @Test
     fun pkcs12Load_withDefaultKeyPassword() {
         val keys = KeyPair.ofPkcs12(
-            keystoreFile = TestFiles.p12ResourcePath("rfc_v1_rsa.p12"),
+            input = TestFiles.p12ResourceStream("rfc_v1_rsa.p12"),
             keystorePass = "testtest",
             alias = "test",
         )
@@ -43,7 +42,7 @@ class Pkcs12Tests {
     @Test
     fun pkcs12Load_withExplicitKeyPassword() {
         val keys = KeyPair.ofPkcs12(
-            keystoreFile = TestFiles.p12ResourcePath("test_v1_rsa.p12"),
+            input = TestFiles.p12ResourceStream("test_v1_rsa.p12"),
             keystorePass = "password",
             alias = "test",
             keyPass = "password",
@@ -54,26 +53,10 @@ class Pkcs12Tests {
     }
 
     @Test
-    fun pkcs12Load_notFound() {
-        val missingFile = File.createTempFile("missing-p12", ".p12").apply { delete() }
-
-        val ex = shouldThrow<Pkcs12LoadException> {
-            KeyPair.ofPkcs12(
-                keystoreFile = missingFile.path,
-                keystorePass = "testtest",
-                alias = "test",
-                keyPass = "testtest",
-            )
-        }
-
-        ex.reason shouldBe Pkcs12LoadException.Reason.FILE_NOT_FOUND
-    }
-
-    @Test
     fun pkcs12Load_wrongPassword() {
         val ex = shouldThrow<Pkcs12LoadException> {
             KeyPair.ofPkcs12(
-                keystoreFile = TestFiles.p12ResourcePath("rfc_v1_rsa.p12"),
+                input = TestFiles.p12ResourceStream("rfc_v1_rsa.p12"),
                 keystorePass = "wrong",
                 alias = "test",
                 keyPass = "testtest",
@@ -87,7 +70,7 @@ class Pkcs12Tests {
     fun pkcs12Load_wrongAlias() {
         val ex = shouldThrow<Pkcs12LoadException> {
             KeyPair.ofPkcs12(
-                keystoreFile = TestFiles.p12ResourcePath("rfc_v1_rsa.p12"),
+                input = TestFiles.p12ResourceStream("rfc_v1_rsa.p12"),
                 keystorePass = "testtest",
                 alias = "wrong",
                 keyPass = "testtest",
@@ -101,7 +84,7 @@ class Pkcs12Tests {
     fun pkcs12Load_wrongKeyPassword() {
         val ex = shouldThrow<Pkcs12LoadException> {
             KeyPair.ofPkcs12(
-                keystoreFile = TestFiles.p12ResourcePath("rfc_v1_rsa.p12"),
+                input = TestFiles.p12ResourceStream("rfc_v1_rsa.p12"),
                 keystorePass = "testtest",
                 alias = "test",
                 keyPass = "wrong",
@@ -115,7 +98,7 @@ class Pkcs12Tests {
     fun pkcs12Load_noCertificate() {
         val ex = shouldThrow<Pkcs12LoadException> {
             KeyPair.ofPkcs12(
-                keystoreFile = TestFiles.p12ResourcePath("test_v1_rsa_nopub.p12"),
+                input = TestFiles.p12ResourceStream("test_v1_rsa_nopub.p12"),
                 keystorePass = "password",
                 alias = "test",
                 keyPass = "password",
@@ -129,7 +112,7 @@ class Pkcs12Tests {
     fun pkcs12Load_corruptFile() {
         val ex = shouldThrow<Pkcs12LoadException> {
             KeyPair.ofPkcs12(
-                keystoreFile = TestFiles.p12ResourcePath("test_v1_rsa_corrupt.p12"),
+                input = TestFiles.p12ResourceStream("test_v1_rsa_corrupt.p12"),
                 keystorePass = "password",
                 alias = "test",
                 keyPass = "password",
@@ -147,7 +130,6 @@ class Pkcs12Tests {
         expected: Pkcs12LoadException.Reason,
     ) {
         val actual = when (cause) {
-            is FileNotFoundException -> Pkcs12LoadException(cause)
             is NoSuchAlgorithmException -> Pkcs12LoadException(cause)
             is UnrecoverableKeyException -> Pkcs12LoadException(cause)
             is CertificateException -> Pkcs12LoadException(cause)
@@ -175,7 +157,7 @@ class Pkcs12Tests {
             every { KeyStore.getInstance(any()) } throws KeyStoreException()
 
             val ex = shouldThrow<RuntimeException> {
-                KeyPair.ofPkcs12("", "", "", "")
+                KeyPair.ofPkcs12(InputStream.nullInputStream(), "", "", "")
             }
             withClue("check type KeyStoreException") {
                 (ex.cause is KeyStoreException) shouldBe true
@@ -190,7 +172,7 @@ class Pkcs12Tests {
 
             val ex = shouldThrow<Pkcs12LoadException> {
                 KeyPair.ofPkcs12(
-                    keystoreFile = TestFiles.p12ResourcePath("rfc_v1_rsa.p12"),
+                    input = TestFiles.p12ResourceStream("rfc_v1_rsa.p12"),
                     keystorePass = "testtest",
                     alias = "test",
                 )
@@ -208,7 +190,7 @@ class Pkcs12Tests {
 
             val ex = shouldThrow<Pkcs12LoadException> {
                 KeyPair.ofPkcs12(
-                    keystoreFile = TestFiles.p12ResourcePath("rfc_v1_rsa.p12"),
+                    input = TestFiles.p12ResourceStream("rfc_v1_rsa.p12"),
                     keystorePass = "testtest",
                     alias = "test",
                 )
@@ -222,11 +204,6 @@ class Pkcs12Tests {
     companion object {
         @JvmStatic
         fun reasonMappings(): Stream<Arguments> = Stream.of(
-            Arguments.of(
-                "FileNotFoundException -> FILE_NOT_FOUND",
-                FileNotFoundException(),
-                Pkcs12LoadException.Reason.FILE_NOT_FOUND,
-            ),
             Arguments.of(
                 "NoSuchAlgorithmException -> ALGORITHM_NOT_FOUND",
                 NoSuchAlgorithmException(),

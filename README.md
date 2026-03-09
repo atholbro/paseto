@@ -241,7 +241,7 @@ Key Pairs:
 
 | Method                              | Description                                |
 |-------------------------------------|--------------------------------------------|
-| `KeyPair.ofPkcs12()`                | Load private/public key from a .p12 file   |
+| `KeyPair.ofPkcs12()`                | Load private/public key from a .p12 stream |
 
 ### Key Rings
 The key loading lambda (keyProvider() function) receives the token's tainted

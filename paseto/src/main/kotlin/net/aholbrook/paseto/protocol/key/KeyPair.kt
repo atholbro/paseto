@@ -8,9 +8,8 @@ import net.aholbrook.paseto.exception.KeyVersionException
 import net.aholbrook.paseto.exception.Pkcs12LoadException
 import net.aholbrook.paseto.protocol.Purpose
 import net.aholbrook.paseto.protocol.Version
-import java.io.FileInputStream
-import java.io.FileNotFoundException
 import java.io.IOException
+import java.io.InputStream
 import java.security.KeyStore
 import java.security.KeyStoreException
 import java.security.NoSuchAlgorithmException
@@ -105,11 +104,11 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
         }
 
         /**
-         * Load an RSA key pair from a PKCS#12 keystore.
+         * Load an RSA key pair from a PKCS#12 keystore stream.
          *
          * This helper is intended for `v1.public` key material.
          *
-         * @param keystoreFile Path to `.p12`/`.pfx` file.
+         * @param input Stream providing the `.p12`/`.pfx` keystore data.
          * @param keystorePass Keystore password.
          * @param alias Alias containing key/certificate entries.
          * @param keyPass Private key password (defaults to [keystorePass]).
@@ -118,14 +117,14 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
         @JvmStatic
         @JvmOverloads
         fun ofPkcs12(
-            keystoreFile: String,
+            input: InputStream,
             keystorePass: String,
             alias: String,
             keyPass: String = keystorePass,
         ): KeyPair {
             try {
                 val p12 = KeyStore.getInstance("PKCS12")
-                p12.load(FileInputStream(keystoreFile), keystorePass.toCharArray())
+                p12.load(input, keystorePass.toCharArray())
 
                 val privateKey = p12.getKey(alias, keyPass.toCharArray()) as? PrivateKey
                     ?: throw Pkcs12LoadException(Pkcs12LoadException.Reason.PRIVATE_KEY_NOT_FOUND)
@@ -137,8 +136,6 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
                     AsymmetricSecretKey.ofRawBytes(privateKey.encoded, Version.V1),
                     AsymmetricPublicKey.ofRawBytes(publicKey.encoded, Version.V1),
                 )
-            } catch (e: FileNotFoundException) {
-                throw Pkcs12LoadException(e)
             } catch (e: CertificateException) {
                 throw Pkcs12LoadException(e) // Unlikely to ever throw.
             } catch (e: NoSuchAlgorithmException) {

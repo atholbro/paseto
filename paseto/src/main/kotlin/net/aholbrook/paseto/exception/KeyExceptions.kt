@@ -2,7 +2,6 @@ package net.aholbrook.paseto.exception
 
 import net.aholbrook.paseto.InternalApi
 import net.aholbrook.paseto.protocol.Version
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.security.NoSuchAlgorithmException
 import java.security.UnrecoverableKeyException
@@ -75,7 +74,6 @@ class EcKeyException @InternalApi constructor(msg: String, cause: Throwable? = n
 class Pkcs12LoadException @InternalApi constructor(val reason: Reason, cause: Throwable? = null) :
     KeyException(
         when (reason) {
-            Reason.FILE_NOT_FOUND -> "File not found."
             Reason.ALGORITHM_NOT_FOUND -> "Key algorithm not found - $cause"
             Reason.UNRECOVERABLE_KEY -> "Unrecoverable key - $cause"
             Reason.IO_EXCEPTION -> "IO exception - $cause"
@@ -86,9 +84,6 @@ class Pkcs12LoadException @InternalApi constructor(val reason: Reason, cause: Th
         },
         cause,
     ) {
-
-    /** @param e Wrapped [FileNotFoundException]. */
-    @InternalApi constructor(e: FileNotFoundException) : this(Reason.FILE_NOT_FOUND, e)
 
     /** @param e Wrapped [NoSuchAlgorithmException]. */
     @InternalApi constructor(e: NoSuchAlgorithmException) : this(Reason.ALGORITHM_NOT_FOUND, e)
@@ -113,9 +108,6 @@ class Pkcs12LoadException @InternalApi constructor(val reason: Reason, cause: Th
 
     /** Categorical failure reason when loading a PKCS#12 keystore. */
     enum class Reason {
-        /** Keystore path does not exist. */
-        FILE_NOT_FOUND,
-
         /** Required crypto algorithm is unavailable. */
         ALGORITHM_NOT_FOUND,
 

@@ -580,7 +580,6 @@ public final class net/aholbrook/paseto/exception/Pkcs12LoadException : net/ahol
 public final class net/aholbrook/paseto/exception/Pkcs12LoadException$Reason : java/lang/Enum {
 	public static final field ALGORITHM_NOT_FOUND Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
 	public static final field CERTIFICATE_ERROR Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
-	public static final field FILE_NOT_FOUND Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
 	public static final field INCORRECT_PASSWORD Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
 	public static final field IO_EXCEPTION Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
 	public static final field PRIVATE_KEY_NOT_FOUND Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
@@ -717,16 +716,16 @@ public final class net/aholbrook/paseto/protocol/key/KeyPair {
 	public final fun getSecretKey ()Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
 	public final fun getVersion ()Lnet/aholbrook/paseto/protocol/Version;
 	public fun hashCode ()I
-	public static final fun ofPkcs12 (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
-	public static final fun ofPkcs12 (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public static final fun ofPkcs12 (Ljava/io/InputStream;Ljava/lang/String;Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public static final fun ofPkcs12 (Ljava/io/InputStream;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
 }
 
 public final class net/aholbrook/paseto/protocol/key/KeyPair$Companion {
 	public final fun generate (Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
 	public static synthetic fun generate$default (Lnet/aholbrook/paseto/protocol/key/KeyPair$Companion;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
-	public final fun ofPkcs12 (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
-	public final fun ofPkcs12 (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
-	public static synthetic fun ofPkcs12$default (Lnet/aholbrook/paseto/protocol/key/KeyPair$Companion;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public final fun ofPkcs12 (Ljava/io/InputStream;Ljava/lang/String;Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public final fun ofPkcs12 (Ljava/io/InputStream;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public static synthetic fun ofPkcs12$default (Lnet/aholbrook/paseto/protocol/key/KeyPair$Companion;Ljava/io/InputStream;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
 }
 
 public final class net/aholbrook/paseto/protocol/key/SymmetricKey {
