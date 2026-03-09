@@ -23,6 +23,12 @@ import org.bouncycastle.internal.asn1.edec.EdECObjectIdentifiers
 import org.bouncycastle.util.encoders.Hex
 import kotlin.io.encoding.Base64
 
+/**
+ * Asymmetric secret key used for `v*.public` signing.
+ *
+ * @property version PASETO [Version] this key is bound to.
+ * @property lifecycle [KeyLifecycle] behavior for key material retention.
+ */
 class AsymmetricSecretKey private constructor(material: ByteArray, val version: Version, val lifecycle: KeyLifecycle) {
     internal val purpose: Purpose = Purpose.PUBLIC
     private val material: ByteArray
@@ -63,6 +69,14 @@ class AsymmetricSecretKey private constructor(material: ByteArray, val version: 
         }
     }
 
+    /**
+     * Copy this key into a new instance.
+     *
+     * The default copy is [KeyLifecycle.EPHEMERAL] to reduce accidental long-lived key reuse.
+     *
+     * @param lifecycle Lifecycle to assign to the copied key.
+     * @return Copied [AsymmetricSecretKey].
+     */
     fun copy(lifecycle: KeyLifecycle = KeyLifecycle.EPHEMERAL): AsymmetricSecretKey =
         AsymmetricSecretKey(material.copyOf(), version, lifecycle)
 
@@ -155,22 +169,62 @@ class AsymmetricSecretKey private constructor(material: ByteArray, val version: 
     override fun toString(): String = "AsymmetricSecretKey(material=*****, version=$version, purpose=$purpose)"
 
     companion object {
+        /**
+         * Create a secret key from raw bytes.
+         *
+         * @param material Raw secret-key bytes.
+         * @param version PASETO [Version].
+         * @param lifecycle [KeyLifecycle] policy for returned key.
+         * @return [AsymmetricSecretKey]  for [version].
+         */
         @JvmStatic
         fun ofRawBytes(material: ByteArray, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
             AsymmetricSecretKey(material, version, lifecycle)
 
+        /**
+         * Create a secret key from a hex-encoded string.
+         *
+         * @param hex Hex-encoded secret key bytes.
+         * @param version PASETO [Version].
+         * @param lifecycle [KeyLifecycle] policy for returned key.
+         * @return [AsymmetricSecretKey]  for [version].
+         */
         @JvmStatic
         fun ofHex(hex: String, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
             AsymmetricSecretKey(Hex.decode(hex), version, lifecycle)
 
+        /**
+         * Create a secret key from URL-safe base64 text.
+         *
+         * @param b64 Base64url-encoded secret key bytes.
+         * @param version PASETO [Version].
+         * @param lifecycle [KeyLifecycle] policy for returned key.
+         * @return [AsymmetricSecretKey]  for [version].
+         */
         @JvmStatic
         fun ofBase64Url(b64: String, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
             AsymmetricSecretKey(Base64.UrlSafe.decode(b64), version, lifecycle)
 
+        /**
+         * Create a secret key from PEM text.
+         *
+         * @param pem PEM text.
+         * @param version PASETO [Version].
+         * @param lifecycle [KeyLifecycle] policy for returned key.
+         * @return [AsymmetricSecretKey]  for [version].
+         */
         @JvmStatic
         fun ofPem(pem: String, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
             ofPem(pem.toByteArray(Charsets.UTF_8), version, lifecycle)
 
+        /**
+         * Create a secret key from PEM bytes.
+         *
+         * @param pem PEM bytes.
+         * @param version PASETO [Version].
+         * @param lifecycle [KeyLifecycle] policy for returned key.
+         * @return [AsymmetricSecretKey]  for [version].
+         */
         @JvmStatic
         fun ofPem(
             pem: ByteArray,

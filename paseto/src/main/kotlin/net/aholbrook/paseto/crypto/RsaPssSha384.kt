@@ -1,7 +1,6 @@
 package net.aholbrook.paseto.crypto
 
 import net.aholbrook.paseto.exception.ByteArrayLengthException
-import net.aholbrook.paseto.exception.CryptoException as PasetoCryptoException
 import org.bouncycastle.asn1.ASN1Primitive
 import org.bouncycastle.asn1.DERNull
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers
@@ -23,6 +22,7 @@ import org.bouncycastle.jcajce.provider.asymmetric.util.KeyUtil
 import org.bouncycastle.jcajce.provider.asymmetric.util.PrimeCertaintyCalculator
 import java.io.IOException
 import java.math.BigInteger
+import net.aholbrook.paseto.exception.CryptoException as PasetoCryptoException
 
 internal const val SHA384_OUT_LEN = 48
 internal const val RSA_SIGNATURE_LEN = 256

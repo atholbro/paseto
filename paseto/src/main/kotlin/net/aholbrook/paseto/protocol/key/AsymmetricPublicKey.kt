@@ -22,6 +22,12 @@ import org.bouncycastle.internal.asn1.edec.EdECObjectIdentifiers
 import org.bouncycastle.util.encoders.Hex
 import kotlin.io.encoding.Base64
 
+/**
+ * Asymmetric public key used for `v*.public` verification.
+ *
+ * @property material Raw public-key bytes.
+ * @property version PASETO [Version] this key is bound to.
+ */
 class AsymmetricPublicKey private constructor(private val material: ByteArray, val version: Version) {
     internal val purpose: Purpose = Purpose.PUBLIC
 
@@ -101,18 +107,53 @@ class AsymmetricPublicKey private constructor(private val material: ByteArray, v
     override fun toString(): String = "AsymmetricPublicKey(material=*****, version=$version, purpose=$purpose)"
 
     companion object {
+        /**
+         * Create a public key from raw bytes.
+         *
+         * @param material Raw public-key bytes.
+         * @param version PASETO [Version].
+         * @return [AsymmetricPublicKey] for [version].
+         */
         @JvmStatic
         fun ofRawBytes(material: ByteArray, version: Version) = AsymmetricPublicKey(material, version)
 
+        /**
+         * Create a public key from a hex-encoded string.
+         *
+         * @param hex Hex-encoded public key bytes.
+         * @param version PASETO [Version].
+         * @return [AsymmetricPublicKey] for [version].
+         */
         @JvmStatic
         fun ofHex(hex: String, version: Version) = AsymmetricPublicKey(Hex.decode(hex), version)
 
+        /**
+         * Create a public key from URL-safe base64 text.
+         *
+         * @param b64 Base64url-encoded public key bytes.
+         * @param version PASETO [Version].
+         * @return [AsymmetricPublicKey] for [version].
+         */
         @JvmStatic
         fun ofBase64Url(b64: String, version: Version) = AsymmetricPublicKey(Base64.UrlSafe.decode(b64), version)
 
+        /**
+         * Create a public key from PEM text.
+         *
+         * @param pem PEM text.
+         * @param version PASETO [Version].
+         * @return [AsymmetricPublicKey] for [version].
+         */
         @JvmStatic
         fun ofPem(pem: String, version: Version) = ofPem(pem.toByteArray(Charsets.UTF_8), version)
 
+        /**
+         * Create a public key from PEM bytes.
+         *
+         * @param pem PEM bytes.
+         * @param version PASETO [Version].
+         * @return [AsymmetricPublicKey] for [version].
+         */
         @JvmStatic
         fun ofPem(pem: ByteArray, version: Version): AsymmetricPublicKey {
             val (type, der) = pemDecode(pem)
@@ -131,6 +172,12 @@ class AsymmetricPublicKey private constructor(private val material: ByteArray, v
             return AsymmetricPublicKey(encoded, version)
         }
 
+        /**
+         * Derive the corresponding public key from a secret key.
+         *
+         * @param secretKey [AsymmetricSecretKey] to derive from.
+         * @return Derived [AsymmetricPublicKey].
+         */
         @JvmStatic
         fun fromSecretKey(secretKey: AsymmetricSecretKey): AsymmetricPublicKey = when (secretKey.version) {
             Version.V1 -> ofRawBytes(

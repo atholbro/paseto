@@ -432,14 +432,14 @@ public final class net/aholbrook/paseto/crypto/ConstantTimeEqualsKt {
 	public static synthetic fun constantTimeEquals$default (Ljava/lang/String;Ljava/lang/String;Ljava/nio/charset/Charset;ILjava/lang/Object;)Z
 }
 
-public final class net/aholbrook/paseto/exception/ByteArrayLengthException : net/aholbrook/paseto/exception/CryptoProviderException {
+public final class net/aholbrook/paseto/exception/ByteArrayLengthException : net/aholbrook/paseto/exception/PasetoException {
 	public final fun getArg ()Ljava/lang/String;
 	public final fun getLen ()I
 	public final fun getRequired ()I
 	public final fun isExact ()Z
 }
 
-public final class net/aholbrook/paseto/exception/ByteArrayRangeException : net/aholbrook/paseto/exception/CryptoProviderException {
+public final class net/aholbrook/paseto/exception/ByteArrayRangeException : net/aholbrook/paseto/exception/PasetoException {
 	public final fun getArg ()Ljava/lang/String;
 	public final fun getLen ()I
 	public final fun getMaxBound ()I
@@ -449,16 +449,24 @@ public final class net/aholbrook/paseto/exception/ByteArrayRangeException : net/
 public final class net/aholbrook/paseto/exception/CannotSignWithoutSecretKey : net/aholbrook/paseto/exception/PasetoException {
 }
 
-public class net/aholbrook/paseto/exception/CryptoProviderException : java/lang/RuntimeException {
+public class net/aholbrook/paseto/exception/CryptoException : net/aholbrook/paseto/exception/PasetoException {
 }
 
-public final class net/aholbrook/paseto/exception/DecryptionException : net/aholbrook/paseto/exception/PasetoStringException {
+public final class net/aholbrook/paseto/exception/DecryptionException : net/aholbrook/paseto/exception/EncodedTokenException {
+}
+
+public final class net/aholbrook/paseto/exception/EcKeyException : net/aholbrook/paseto/exception/KeyException {
+}
+
+public class net/aholbrook/paseto/exception/EncodedTokenException : net/aholbrook/paseto/exception/PasetoException {
+	public final fun getToken ()Ljava/lang/String;
 }
 
 public final class net/aholbrook/paseto/exception/EncryptionException : net/aholbrook/paseto/exception/PasetoException {
 }
 
 public final class net/aholbrook/paseto/exception/ExpiredTokenException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/time/Instant;Lnet/aholbrook/paseto/Token;)V
 }
 
 public final class net/aholbrook/paseto/exception/FooterExceedsMaxDepthException : net/aholbrook/paseto/exception/InvalidFooterException {
@@ -483,26 +491,30 @@ public final class net/aholbrook/paseto/exception/ImplicitAssertionsNotSupported
 }
 
 public final class net/aholbrook/paseto/exception/IncorrectAudienceException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lnet/aholbrook/paseto/Token;)V
 	public final fun getAudience ()Ljava/lang/String;
 	public final fun getExpected ()Ljava/lang/String;
 }
 
-public final class net/aholbrook/paseto/exception/IncorrectFooterException : net/aholbrook/paseto/exception/PasetoException {
+public final class net/aholbrook/paseto/exception/IncorrectFooterException : net/aholbrook/paseto/exception/InvalidFooterException {
 	public final fun getExpected ()Ljava/lang/String;
 	public final fun getGiven ()Ljava/lang/String;
 }
 
 public final class net/aholbrook/paseto/exception/IncorrectIssuerException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lnet/aholbrook/paseto/Token;)V
 	public final fun getExpected ()Ljava/lang/String;
 	public final fun getIssuer ()Ljava/lang/String;
 }
 
 public final class net/aholbrook/paseto/exception/IncorrectSubjectException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lnet/aholbrook/paseto/Token;)V
 	public final fun getExpected ()Ljava/lang/String;
 	public final fun getSubject ()Ljava/lang/String;
 }
 
 public final class net/aholbrook/paseto/exception/IncorrectTokenIdException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lnet/aholbrook/paseto/Token;)V
 	public final fun getExpected ()Ljava/lang/String;
 	public final fun getTokenId ()Ljava/lang/String;
 }
@@ -510,82 +522,58 @@ public final class net/aholbrook/paseto/exception/IncorrectTokenIdException : ne
 public class net/aholbrook/paseto/exception/InvalidFooterException : net/aholbrook/paseto/exception/PasetoException {
 }
 
-public final class net/aholbrook/paseto/exception/InvalidHeaderException : net/aholbrook/paseto/exception/PasetoStringException {
+public final class net/aholbrook/paseto/exception/InvalidHeaderException : net/aholbrook/paseto/exception/EncodedTokenException {
 	public final fun getExpected ()Ljava/lang/String;
 	public final fun getGiven ()Ljava/lang/String;
 }
 
 public final class net/aholbrook/paseto/exception/IssuedInFutureException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/time/Instant;Ljava/time/Instant;Lnet/aholbrook/paseto/Token;)V
 }
 
-public final class net/aholbrook/paseto/exception/KeyClearedException : net/aholbrook/paseto/exception/PasetoException {
+public final class net/aholbrook/paseto/exception/KeyClearedException : net/aholbrook/paseto/exception/KeyException {
 }
 
-public final class net/aholbrook/paseto/exception/KeyLengthException : net/aholbrook/paseto/exception/PasetoException {
+public class net/aholbrook/paseto/exception/KeyException : net/aholbrook/paseto/exception/PasetoException {
+}
+
+public final class net/aholbrook/paseto/exception/KeyLengthException : net/aholbrook/paseto/exception/KeyException {
 	public final fun getActual ()I
 	public final fun getAllowed ()[Ljava/lang/Integer;
 }
 
-public final class net/aholbrook/paseto/exception/KeyPemUnsupportedTypeException : net/aholbrook/paseto/exception/PasetoException {
+public final class net/aholbrook/paseto/exception/KeyPemUnsupportedTypeException : net/aholbrook/paseto/exception/KeyException {
 	public final fun getType ()Ljava/lang/String;
 }
 
-public final class net/aholbrook/paseto/exception/KeyPurposeException : net/aholbrook/paseto/exception/PasetoException {
+public final class net/aholbrook/paseto/exception/KeyPurposeException : net/aholbrook/paseto/exception/KeyException {
 	public final fun getActual ()Ljava/lang/String;
 	public final fun getExpected ()Ljava/lang/String;
 }
 
-public final class net/aholbrook/paseto/exception/KeyV3Exception : net/aholbrook/paseto/exception/PasetoException {
-}
-
-public final class net/aholbrook/paseto/exception/KeyVersionException : net/aholbrook/paseto/exception/PasetoException {
+public final class net/aholbrook/paseto/exception/KeyVersionException : net/aholbrook/paseto/exception/KeyException {
 	public final fun getActual ()Lnet/aholbrook/paseto/protocol/Version;
 	public final fun getExpected ()Lnet/aholbrook/paseto/protocol/Version;
 }
 
-public final class net/aholbrook/paseto/exception/MissingClaimException : net/aholbrook/paseto/exception/PasetoTokenException {
-	public final fun getClaim ()Ljava/lang/String;
+public final class net/aholbrook/paseto/exception/MissingClaimException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/lang/String;Lnet/aholbrook/paseto/Token;)V
 }
 
-public final class net/aholbrook/paseto/exception/MultipleValidationExceptions : net/aholbrook/paseto/exception/PasetoTokenException {
-	public final fun add (Lnet/aholbrook/paseto/exception/PasetoTokenException;)V
+public final class net/aholbrook/paseto/exception/MultipleValidationErrorsException : net/aholbrook/paseto/exception/PasetoException {
 	public final fun getExceptions ()Ljava/util/List;
 	public fun getMessage ()Ljava/lang/String;
+	public final fun getToken ()Lnet/aholbrook/paseto/Token;
 }
 
-public final class net/aholbrook/paseto/exception/NotYetValidTokenException : net/aholbrook/paseto/exception/RuleValidationException {
+public final class net/aholbrook/paseto/exception/NotYetValidException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/time/Instant;Lnet/aholbrook/paseto/Token;)V
 }
 
 public class net/aholbrook/paseto/exception/PasetoException : java/lang/RuntimeException {
 }
 
-public final class net/aholbrook/paseto/exception/PasetoParseException : net/aholbrook/paseto/exception/PasetoStringException {
-	public final fun getMinLength ()I
-	public final fun getReason ()Lnet/aholbrook/paseto/exception/PasetoParseException$Reason;
-}
-
-public final class net/aholbrook/paseto/exception/PasetoParseException$Reason : java/lang/Enum {
-	public static final field INVALID_BASE64 Lnet/aholbrook/paseto/exception/PasetoParseException$Reason;
-	public static final field MISSING_SECTIONS Lnet/aholbrook/paseto/exception/PasetoParseException$Reason;
-	public static final field PAYLOAD_LENGTH Lnet/aholbrook/paseto/exception/PasetoParseException$Reason;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lnet/aholbrook/paseto/exception/PasetoParseException$Reason;
-	public static fun values ()[Lnet/aholbrook/paseto/exception/PasetoParseException$Reason;
-}
-
-public class net/aholbrook/paseto/exception/PasetoPayloadException : net/aholbrook/paseto/exception/PasetoException {
-	public final fun getPayload ()[B
-}
-
-public class net/aholbrook/paseto/exception/PasetoStringException : net/aholbrook/paseto/exception/PasetoException {
-	public final fun getToken ()Ljava/lang/String;
-}
-
-public class net/aholbrook/paseto/exception/PasetoTokenException : net/aholbrook/paseto/exception/PasetoException {
-	public final fun getToken ()Lnet/aholbrook/paseto/Token;
-}
-
-public final class net/aholbrook/paseto/exception/Pkcs12LoadException : net/aholbrook/paseto/exception/PasetoException {
+public final class net/aholbrook/paseto/exception/Pkcs12LoadException : net/aholbrook/paseto/exception/KeyException {
 	public final fun getReason ()Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
 }
 
@@ -603,21 +591,40 @@ public final class net/aholbrook/paseto/exception/Pkcs12LoadException$Reason : j
 	public static fun values ()[Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
 }
 
-public class net/aholbrook/paseto/exception/RuleValidationException : net/aholbrook/paseto/exception/PasetoTokenException {
+public class net/aholbrook/paseto/exception/RuleValidationException : net/aholbrook/paseto/exception/PasetoException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lnet/aholbrook/paseto/Token;)V
 	public final fun getClaim ()Ljava/lang/String;
 	public final fun getRule ()Lnet/aholbrook/paseto/rules/Rule;
+	public final fun getToken ()Lnet/aholbrook/paseto/Token;
 }
 
-public final class net/aholbrook/paseto/exception/SignatureVerificationException : net/aholbrook/paseto/exception/PasetoStringException {
+public final class net/aholbrook/paseto/exception/SignatureVerificationException : net/aholbrook/paseto/exception/EncodedTokenException {
 }
 
-public final class net/aholbrook/paseto/exception/SigningException : net/aholbrook/paseto/exception/PasetoPayloadException {
+public final class net/aholbrook/paseto/exception/SigningException : net/aholbrook/paseto/exception/PasetoException {
+	public final fun getPayload ()[B
 }
 
-public final class net/aholbrook/paseto/exception/TokenExpiresBeforeIssuedException : net/aholbrook/paseto/exception/PasetoTokenException {
+public final class net/aholbrook/paseto/exception/TokenExpiresBeforeIssuedException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Lnet/aholbrook/paseto/Token;)V
 }
 
-public final class net/aholbrook/paseto/exception/TokenIsNotValidUntilAfterExpiration : net/aholbrook/paseto/exception/PasetoTokenException {
+public final class net/aholbrook/paseto/exception/TokenIsNotValidUntilAfterExpiration : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Lnet/aholbrook/paseto/Token;)V
+}
+
+public final class net/aholbrook/paseto/exception/TokenParseException : net/aholbrook/paseto/exception/EncodedTokenException {
+	public final fun getMinLength ()I
+	public final fun getReason ()Lnet/aholbrook/paseto/exception/TokenParseException$Reason;
+}
+
+public final class net/aholbrook/paseto/exception/TokenParseException$Reason : java/lang/Enum {
+	public static final field INVALID_BASE64 Lnet/aholbrook/paseto/exception/TokenParseException$Reason;
+	public static final field MISSING_SECTIONS Lnet/aholbrook/paseto/exception/TokenParseException$Reason;
+	public static final field PAYLOAD_LENGTH Lnet/aholbrook/paseto/exception/TokenParseException$Reason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/aholbrook/paseto/exception/TokenParseException$Reason;
+	public static fun values ()[Lnet/aholbrook/paseto/exception/TokenParseException$Reason;
 }
 
 public final class net/aholbrook/paseto/protocol/Version : java/lang/Enum {
@@ -702,7 +709,8 @@ public final class net/aholbrook/paseto/protocol/key/KeyLifecycle : java/lang/En
 public final class net/aholbrook/paseto/protocol/key/KeyPair {
 	public static final field Companion Lnet/aholbrook/paseto/protocol/key/KeyPair$Companion;
 	public fun <init> (Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;)V
-	public final fun copy ()Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public final fun copy (Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public static synthetic fun copy$default (Lnet/aholbrook/paseto/protocol/key/KeyPair;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
 	public fun equals (Ljava/lang/Object;)Z
 	public static final fun generate (Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
 	public final fun getPublicKey ()Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
@@ -826,17 +834,17 @@ public final class net/aholbrook/paseto/rules/Rule$Mode : java/lang/Enum {
 }
 
 public final class net/aholbrook/paseto/rules/RuleFailed : net/aholbrook/paseto/rules/RuleResult {
-	public static final synthetic fun box-impl (Lnet/aholbrook/paseto/exception/PasetoTokenException;)Lnet/aholbrook/paseto/rules/RuleFailed;
-	public static fun constructor-impl (Lnet/aholbrook/paseto/exception/PasetoTokenException;)Lnet/aholbrook/paseto/exception/PasetoTokenException;
+	public static final synthetic fun box-impl (Lnet/aholbrook/paseto/exception/RuleValidationException;)Lnet/aholbrook/paseto/rules/RuleFailed;
+	public static fun constructor-impl (Lnet/aholbrook/paseto/exception/RuleValidationException;)Lnet/aholbrook/paseto/exception/RuleValidationException;
 	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (Lnet/aholbrook/paseto/exception/PasetoTokenException;Ljava/lang/Object;)Z
-	public static final fun equals-impl0 (Lnet/aholbrook/paseto/exception/PasetoTokenException;Lnet/aholbrook/paseto/exception/PasetoTokenException;)Z
-	public final fun getCause ()Lnet/aholbrook/paseto/exception/PasetoTokenException;
+	public static fun equals-impl (Lnet/aholbrook/paseto/exception/RuleValidationException;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Lnet/aholbrook/paseto/exception/RuleValidationException;Lnet/aholbrook/paseto/exception/RuleValidationException;)Z
+	public final fun getCause ()Lnet/aholbrook/paseto/exception/RuleValidationException;
 	public fun hashCode ()I
-	public static fun hashCode-impl (Lnet/aholbrook/paseto/exception/PasetoTokenException;)I
+	public static fun hashCode-impl (Lnet/aholbrook/paseto/exception/RuleValidationException;)I
 	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (Lnet/aholbrook/paseto/exception/PasetoTokenException;)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()Lnet/aholbrook/paseto/exception/PasetoTokenException;
+	public static fun toString-impl (Lnet/aholbrook/paseto/exception/RuleValidationException;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Lnet/aholbrook/paseto/exception/RuleValidationException;
 }
 
 public abstract interface class net/aholbrook/paseto/rules/RuleResult {

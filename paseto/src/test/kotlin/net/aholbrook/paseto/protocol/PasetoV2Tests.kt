@@ -13,9 +13,9 @@ import net.aholbrook.paseto.crypto.ed25519Verify
 import net.aholbrook.paseto.exception.DecryptionException
 import net.aholbrook.paseto.exception.EncryptionException
 import net.aholbrook.paseto.exception.InvalidHeaderException
-import net.aholbrook.paseto.exception.TokenParseException
 import net.aholbrook.paseto.exception.SignatureVerificationException
 import net.aholbrook.paseto.exception.SigningException
+import net.aholbrook.paseto.exception.TokenParseException
 import net.aholbrook.paseto.keyV2Local
 import net.aholbrook.paseto.keyV2Public
 import org.junit.jupiter.api.Test

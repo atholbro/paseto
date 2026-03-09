@@ -6,13 +6,13 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import net.aholbrook.paseto.exception.ByteArrayLengthException
-import net.aholbrook.paseto.exception.CryptoException as PasetoCryptoException
 import org.bouncycastle.crypto.CryptoException
 import org.bouncycastle.crypto.signers.PSSSigner
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import net.aholbrook.paseto.exception.CryptoException as PasetoCryptoException
 
 class RsaPssSha384Tests {
     @Test

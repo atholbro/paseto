@@ -2,6 +2,15 @@ package net.aholbrook.paseto.exception
 
 import net.aholbrook.paseto.InternalApi
 
+/**
+ * Thrown when a byte array has invalid exact/expected length.
+ *
+ * @property arg Argument name associated with failure.
+ * @property len Provided byte array length.
+ * @property required Required length.
+ * @property isExact Whether [required] is exact (`true`) or minimum (`false`).
+ * @param cause Optional source exception.
+ */
 class ByteArrayLengthException @InternalApi constructor(
     val arg: String,
     val len: Int,
@@ -13,6 +22,15 @@ class ByteArrayLengthException @InternalApi constructor(
     cause,
 )
 
+/**
+ * Thrown when a byte array length is outside an inclusive range.
+ *
+ * @property arg Argument name associated with failure.
+ * @property len Provided byte array length.
+ * @property minBound Inclusive lower bound.
+ * @property maxBound Inclusive upper bound.
+ * @param throwable Optional source exception.
+ */
 class ByteArrayRangeException @InternalApi constructor(
     val arg: String,
     val len: Int,

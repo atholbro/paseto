@@ -10,6 +10,12 @@ import net.aholbrook.paseto.protocol.Version
 import org.bouncycastle.util.encoders.Hex
 import kotlin.io.encoding.Base64
 
+/**
+ * Symmetric key used for `v*.local` encryption/decryption.
+ *
+ * @property version PASETO [Version] this key is bound to.
+ * @property lifecycle [KeyLifecycle] behavior for key material retention.
+ */
 class SymmetricKey private constructor(
     private val material: ByteArray,
     val version: Version,
@@ -24,6 +30,14 @@ class SymmetricKey private constructor(
         }
     }
 
+    /**
+     * Copy this key into a new instance.
+     *
+     * The default copy is [KeyLifecycle.EPHEMERAL] to reduce accidental long-lived key reuse.
+     *
+     * @param lifecycle Lifecycle to assign to the copied key.
+     * @return Copied [SymmetricKey].
+     */
     fun copy(lifecycle: KeyLifecycle = KeyLifecycle.EPHEMERAL): SymmetricKey =
         SymmetricKey(material.copyOf(), version, lifecycle)
 
@@ -86,18 +100,49 @@ class SymmetricKey private constructor(
     override fun toString(): String = "SymmetricKey(material=*****, version=$version, purpose=$purpose)"
 
     companion object {
+        /**
+         * Generate a symmetric key for the given [version].
+         *
+         * @param version PASETO [Version].
+         * @param lifecycle [KeyLifecycle] policy for returned key.
+         * @return Generated [SymmetricKey].
+         */
         @JvmStatic
         fun generate(version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
             ofRawBytes(randomBytes(version.symmetricKeySize), version, lifecycle)
 
+        /**
+         * Create a key from raw bytes.
+         *
+         * @param material Raw key bytes.
+         * @param version PASETO [Version].
+         * @param lifecycle [KeyLifecycle] policy for returned key.
+         * @return [SymmetricKey] instance.
+         */
         @JvmStatic
         fun ofRawBytes(material: ByteArray, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
             SymmetricKey(material, version, lifecycle)
 
+        /**
+         * Create a key from a hex-encoded string.
+         *
+         * @param hex Hex-encoded key bytes.
+         * @param version PASETO [Version].
+         * @param lifecycle [KeyLifecycle] policy for returned key.
+         * @return [SymmetricKey] instance.
+         */
         @JvmStatic
         fun ofHex(hex: String, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
             SymmetricKey(Hex.decode(hex), version, lifecycle)
 
+        /**
+         * Create a key from URL-safe base64 text.
+         *
+         * @param b64 Base64url-encoded key bytes.
+         * @param version PASETO [Version].
+         * @param lifecycle [KeyLifecycle] policy for returned key.
+         * @return [SymmetricKey] instance.
+         */
         @JvmStatic
         fun ofBase64Url(b64: String, version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT) =
             SymmetricKey(Base64.UrlSafe.decode(b64), version, lifecycle)

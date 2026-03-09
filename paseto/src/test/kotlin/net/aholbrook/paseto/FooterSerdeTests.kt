@@ -32,7 +32,7 @@ import kotlin.io.encoding.Base64
 
 enum class FooterApi {
     DECODE,
-    INSECURE_GET_FOOTER;
+    INSECURE_GET_FOOTER,
 }
 
 class FooterSerdeTests {
@@ -297,6 +297,7 @@ class FooterSerdeTests {
                     val decoded = service.decode(encoded)
                     decoded.footer shouldBe footer("[1,2,3]")
                 }
+
                 FooterApi.INSECURE_GET_FOOTER -> {
                     val decodedFooter = service.insecureGetFooter(encoded)
                     decodedFooter shouldBe footer("[1,2,3]").taint()
@@ -327,6 +328,7 @@ class FooterSerdeTests {
                     val decoded = service.decode(encoded)
                     decoded.footer shouldBe footer("{")
                 }
+
                 FooterApi.INSECURE_GET_FOOTER -> {
                     val decodedFooter = service.insecureGetFooter(encoded)
                     decodedFooter shouldBe footer("{").taint()
@@ -427,6 +429,7 @@ class FooterSerdeTests {
                     (decoded.footer as StringFooter).value shouldBe "just a string"
                     decoded.footer shouldBe token.footer
                 }
+
                 FooterApi.INSECURE_GET_FOOTER -> {
                     val taintedFooter = service.insecureGetFooter(encoded)
                     (taintedFooter as TaintedStringFooter).value shouldBe "just a string"
@@ -463,6 +466,7 @@ class FooterSerdeTests {
                     }
                     decoded.footer shouldBe token.footer
                 }
+
                 FooterApi.INSECURE_GET_FOOTER -> {
                     val taintedFooter = service.insecureGetFooter(encoded)
                     with(taintedFooter as TaintedClaimFooter) {
@@ -497,6 +501,7 @@ class FooterSerdeTests {
                     val decoded = service.decode(encoded)
                     decoded.footer shouldBe token.footer
                 }
+
                 FooterApi.INSECURE_GET_FOOTER -> {
                     val decodedFooter = service.insecureGetFooter(encoded)
                     decodedFooter shouldBe token.footer.taint()
@@ -637,6 +642,7 @@ class FooterSerdeTests {
                     val decoded = service.decode(encoded)
                     decoded.footer shouldBe footer("{")
                 }
+
                 FooterApi.INSECURE_GET_FOOTER -> {
                     val decodedFooter = service.insecureGetFooter(encoded)
                     decodedFooter shouldBe footer("{").taint()
@@ -691,6 +697,7 @@ class FooterSerdeTests {
                     val decoded = service.decode(encoded)
                     decoded.footer shouldBe token.footer
                 }
+
                 FooterApi.INSECURE_GET_FOOTER -> {
                     val decodedFooter = service.insecureGetFooter(encoded)
                     decodedFooter shouldBe token.footer.taint()
@@ -719,6 +726,7 @@ class FooterSerdeTests {
                     val decoded = service.decode(encoded)
                     decoded.footer shouldBe token.footer
                 }
+
                 FooterApi.INSECURE_GET_FOOTER -> {
                     val decodedFooter = service.insecureGetFooter(encoded)
                     decodedFooter shouldBe token.footer.taint()

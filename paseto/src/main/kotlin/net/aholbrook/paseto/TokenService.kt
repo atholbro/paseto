@@ -18,24 +18,62 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
+/**
+ * Selects whether a service operates in `local` (symmetric) or `public` (asymmetric) mode.
+ */
 sealed interface Purpose {
+    /**
+     * Public-token mode (`v*.public`).
+     *
+     * The key provider receives the tainted footer so callers can route to the correct key pair
+     * (for example by `kid`).
+     *
+     * @property keyProvider Returns the [KeyPair] used for the current token operation.
+     */
     class Public(val keyProvider: (footer: TaintedFooter) -> KeyPair) : Purpose
+
+    /**
+     * Local-token mode (`v*.local`).
+     *
+     * The key provider receives the tainted footer so callers can route to the correct symmetric
+     * key (for example by `kid`).
+     *
+     * @property keyProvider Returns the [SymmetricKey] used for the current token operation.
+     */
     class Local(val keyProvider: (footer: TaintedFooter) -> SymmetricKey) : Purpose
 }
 
+/**
+ * Builder DSL for creating a [TokenService].
+ */
 @PasetoDslMarker
 class TokenServiceBuilder @PublishedApi internal constructor() {
     private var rules: Rules = rules()
     private var footerOptions: FooterOptions = FooterOptions()
 
+    /**
+     * Mutate the current [rules] set using the [RulesBuilder] DSL.
+     *
+     * @param init Rule mutations to apply.
+     */
     fun rules(init: RulesBuilder.() -> Unit) {
         rules = rules(rules, init)
     }
 
+    /**
+     * Replace the current rules with an externally constructed [Rules] instance.
+     *
+     * @param rules Rule set that should replace existing configuration.
+     */
     fun rules(rules: Rules) {
         this.rules = rules
     }
 
+    /**
+     * Configure footer parsing/validation options used by decode and insecure footer reads.
+     *
+     * @param init Footer option mutations to apply.
+     */
     fun footerOptions(init: FooterOptionsBuilder.() -> Unit) {
         val current = footerOptions
         footerOptions = FooterOptionsBuilder()
@@ -73,6 +111,14 @@ class TokenServiceBuilder @PublishedApi internal constructor() {
     }
 }
 
+/**
+ * Create a token service for a PASETO [version] and [purpose].
+ *
+ * @param version Protocol [Version] used for encode/decode.
+ * @param purpose Local/public service [Purpose] and key provider.
+ * @param init Optional builder configuration.
+ * @return Configured [TokenService].
+ */
 @OptIn(ExperimentalContracts::class)
 inline fun tokenService(version: Version, purpose: Purpose, init: TokenServiceBuilder.() -> Unit = {}): TokenService {
     contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
@@ -80,16 +126,40 @@ inline fun tokenService(version: Version, purpose: Purpose, init: TokenServiceBu
 }
 
 sealed interface TokenService {
+    /**
+     * Encode a [token] into a PASETO string.
+     *
+     * For v3/v4, [implicitAssertion] is authenticated but not included in the token body.
+     * v1/v2 do not support [implicitAssertion] and will throw [ImplicitAssertionsNotSupportedException].
+     *
+     * @param token Token value to encode.
+     * @param implicitAssertion Optional implicit assertion for v3/v4 tokens.
+     * @return Encoded PASETO token.
+     */
     fun encode(token: Token, implicitAssertion: String = ""): String
+
+    /**
+     * Decode and verify a PASETO [token].
+     *
+     * If [footer] is provided, it must match the token footer exactly.
+     *
+     * For v3/v4, [implicitAssertion] is authenticated but not included in the token body.
+     * v1/v2 do not support [implicitAssertion] and will throw [ImplicitAssertionsNotSupportedException].
+     *
+     * @param token Encoded PASETO token.
+     * @param footer Optional expected footer for strict footer verification.
+     * @param implicitAssertion Optional implicit assertion for v3/v4 tokens.
+     * @return Decoded [Token] after cryptographic verification.
+     */
     fun decode(token: String, footer: Footer? = null, implicitAssertion: String = ""): Token
 
     /**
      * Decode the token's footer without verifying the token.
      *
-     * This is useful if the token footer contains data required to decode the token. Returns an [TaintedFooter]
+     * This is useful if the token footer contains data required to decode the token. Returns a [TaintedFooter]
      * to prevent misuse as this footer should **never** be used when checking the footer during decoding.
      *
-     * @param [token] paseto token to decode the footer of.
+     * @param token PASETO token to inspect.
      * @return [TaintedFooter] with the decoded footer contents.
      */
     fun insecureGetFooter(token: String): TaintedFooter

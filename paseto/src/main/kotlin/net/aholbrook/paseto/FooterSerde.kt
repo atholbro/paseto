@@ -54,11 +54,26 @@ internal data class FooterOptions(
     val maxKeys: Int = 512,
 )
 
+/**
+ * Builder for footer parsing and validation settings used by [TokenServiceBuilder.footerOptions].
+ *
+ * @property parseMode Footer decode strategy, see [FooterParseMode].
+ * @property maxLength Maximum footer length in characters.
+ * @property maxDepth Maximum JSON nesting depth for object-like footers.
+ * @property maxKeys Maximum JSON key count for object-like footers.
+ */
 @PasetoDslMarker
 class FooterOptionsBuilder @PublishedApi internal constructor() {
+    /** Strategy used to decode footer text (`AUTO`, `CLAIMS`, or `STRING`). */
     var parseMode: FooterParseMode = FooterParseMode.AUTO
+
+    /** Maximum allowed footer string length in characters. */
     var maxLength: Int = 8192
+
+    /** Maximum allowed JSON object/array nesting depth for object-like footers. */
     var maxDepth: Int = 2
+
+    /** Maximum allowed JSON key count for object-like footers. */
     var maxKeys: Int = 512
 
     internal fun build(): FooterOptions = FooterOptions(

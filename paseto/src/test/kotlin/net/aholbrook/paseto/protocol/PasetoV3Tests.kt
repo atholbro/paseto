@@ -12,9 +12,9 @@ import net.aholbrook.paseto.crypto.ecdsaP384Sign
 import net.aholbrook.paseto.crypto.ecdsaP384Verify
 import net.aholbrook.paseto.exception.DecryptionException
 import net.aholbrook.paseto.exception.InvalidHeaderException
-import net.aholbrook.paseto.exception.TokenParseException
 import net.aholbrook.paseto.exception.SignatureVerificationException
 import net.aholbrook.paseto.exception.SigningException
+import net.aholbrook.paseto.exception.TokenParseException
 import net.aholbrook.paseto.keyV3Local
 import net.aholbrook.paseto.keyV3Public
 import org.junit.jupiter.api.Test

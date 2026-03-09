@@ -17,8 +17,8 @@ import net.aholbrook.paseto.crypto.rsaSign
 import net.aholbrook.paseto.crypto.rsaVerify
 import net.aholbrook.paseto.decodeOrNull
 import net.aholbrook.paseto.exception.InvalidHeaderException
-import net.aholbrook.paseto.exception.TokenParseException
 import net.aholbrook.paseto.exception.SignatureVerificationException
+import net.aholbrook.paseto.exception.TokenParseException
 import net.aholbrook.paseto.protocol.key.AsymmetricPublicKey
 import net.aholbrook.paseto.protocol.key.AsymmetricSecretKey
 import net.aholbrook.paseto.protocol.key.SymmetricKey

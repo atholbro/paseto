@@ -18,6 +18,14 @@ import java.security.PrivateKey
 import java.security.UnrecoverableKeyException
 import java.security.cert.CertificateException
 
+/**
+ * Public-token key pair.
+ *
+ * [secretKey] may be `null` for verify-only services.
+ *
+ * @property secretKey Secret key used for signing (nullable for verify-only usage).
+ * @property publicKey Public key used for verification.
+ */
 class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPublicKey) {
     init {
         if (secretKey != null && secretKey.version != publicKey.version) {
@@ -33,7 +41,15 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
 
     val version: Version = publicKey.version
 
-    fun copy(): KeyPair = KeyPair(secretKey?.copy(), publicKey)
+    /**
+     * Copy this key into a new instance.
+     *
+     * The default copy is [KeyLifecycle.EPHEMERAL] to reduce accidental long-lived key reuse.
+     *
+     * @param lifecycle Lifecycle to assign to the copied key.
+     * @return Copied [KeyPair].
+     */
+    fun copy(lifecycle: KeyLifecycle = KeyLifecycle.EPHEMERAL): KeyPair = KeyPair(secretKey?.copy(lifecycle), publicKey)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -66,6 +82,13 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
     }
 
     companion object {
+        /**
+         * Generate a new key pair for the given [version].
+         *
+         * @param version PASETO [Version].
+         * @param lifecycle [KeyLifecycle] policy for generated secret key.
+         * @return Generated [KeyPair].
+         */
         @JvmStatic
         fun generate(version: Version, lifecycle: KeyLifecycle = KeyLifecycle.PERSISTENT): KeyPair {
             val (secretKey, publicKey) = when (version) {
@@ -81,6 +104,17 @@ class KeyPair(val secretKey: AsymmetricSecretKey?, val publicKey: AsymmetricPubl
             )
         }
 
+        /**
+         * Load an RSA key pair from a PKCS#12 keystore.
+         *
+         * This helper is intended for `v1.public` key material.
+         *
+         * @param keystoreFile Path to `.p12`/`.pfx` file.
+         * @param keystorePass Keystore password.
+         * @param alias Alias containing key/certificate entries.
+         * @param keyPass Private key password (defaults to [keystorePass]).
+         * @return Loaded [KeyPair].
+         */
         @JvmStatic
         @JvmOverloads
         fun ofPkcs12(
