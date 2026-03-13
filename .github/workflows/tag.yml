@@ -16,6 +16,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: patch
           tag_prefix: v
+          custom_release_rules: |
+            "patch:patch,minor:minor,major:major"
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
