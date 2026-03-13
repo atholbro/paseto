@@ -1,0 +1,909 @@
+public final class net/aholbrook/paseto/ClaimArray : java/util/List, kotlin/jvm/internal/markers/KMappedMarker, net/aholbrook/paseto/ClaimElement {
+	public synthetic fun add (ILjava/lang/Object;)V
+	public fun add (ILnet/aholbrook/paseto/ClaimElement;)V
+	public synthetic fun add (Ljava/lang/Object;)Z
+	public fun add (Lnet/aholbrook/paseto/ClaimElement;)Z
+	public fun addAll (ILjava/util/Collection;)Z
+	public fun addAll (Ljava/util/Collection;)Z
+	public static final synthetic fun box-impl (Ljava/util/List;)Lnet/aholbrook/paseto/ClaimArray;
+	public fun clear ()V
+	public final fun contains (Ljava/lang/Object;)Z
+	public fun contains (Lnet/aholbrook/paseto/ClaimElement;)Z
+	public static fun contains-impl (Ljava/util/List;Lnet/aholbrook/paseto/ClaimElement;)Z
+	public fun containsAll (Ljava/util/Collection;)Z
+	public static fun containsAll-impl (Ljava/util/List;Ljava/util/Collection;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/util/List;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/util/List;Ljava/util/List;)Z
+	public synthetic fun get (I)Ljava/lang/Object;
+	public fun get (I)Lnet/aholbrook/paseto/ClaimElement;
+	public static fun get-impl (Ljava/util/List;I)Lnet/aholbrook/paseto/ClaimElement;
+	public fun getArrayOrNull-6iTAQ-g ()Ljava/util/List;
+	public static fun getArrayOrNull-6iTAQ-g (Ljava/util/List;)Ljava/util/List;
+	public fun getBooleanOrNull ()Ljava/lang/Boolean;
+	public static fun getBooleanOrNull-impl (Ljava/util/List;)Ljava/lang/Boolean;
+	public fun getDoubleOrNull ()Ljava/lang/Double;
+	public static fun getDoubleOrNull-impl (Ljava/util/List;)Ljava/lang/Double;
+	public fun getIntOrNull ()Ljava/lang/Integer;
+	public static fun getIntOrNull-impl (Ljava/util/List;)Ljava/lang/Integer;
+	public fun getLongOrNull ()Ljava/lang/Long;
+	public static fun getLongOrNull-impl (Ljava/util/List;)Ljava/lang/Long;
+	public fun getObjectOrNull-cIk8k5s ()Ljava/util/Map;
+	public static fun getObjectOrNull-cIk8k5s (Ljava/util/List;)Ljava/util/Map;
+	public fun getPrimitiveOrNull-zhXCdHo ()Lkotlinx/serialization/json/JsonPrimitive;
+	public static fun getPrimitiveOrNull-zhXCdHo (Ljava/util/List;)Lkotlinx/serialization/json/JsonPrimitive;
+	public fun getSize ()I
+	public static fun getSize-impl (Ljava/util/List;)I
+	public fun getStringOrNull ()Ljava/lang/String;
+	public static fun getStringOrNull-impl (Ljava/util/List;)Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/util/List;)I
+	public final fun indexOf (Ljava/lang/Object;)I
+	public fun indexOf (Lnet/aholbrook/paseto/ClaimElement;)I
+	public static fun indexOf-impl (Ljava/util/List;Lnet/aholbrook/paseto/ClaimElement;)I
+	public fun isEmpty ()Z
+	public static fun isEmpty-impl (Ljava/util/List;)Z
+	public fun iterator ()Ljava/util/Iterator;
+	public static fun iterator-impl (Ljava/util/List;)Ljava/util/Iterator;
+	public final fun lastIndexOf (Ljava/lang/Object;)I
+	public fun lastIndexOf (Lnet/aholbrook/paseto/ClaimElement;)I
+	public static fun lastIndexOf-impl (Ljava/util/List;Lnet/aholbrook/paseto/ClaimElement;)I
+	public fun listIterator ()Ljava/util/ListIterator;
+	public fun listIterator (I)Ljava/util/ListIterator;
+	public static fun listIterator-impl (Ljava/util/List;)Ljava/util/ListIterator;
+	public static fun listIterator-impl (Ljava/util/List;I)Ljava/util/ListIterator;
+	public synthetic fun remove (I)Ljava/lang/Object;
+	public fun remove (I)Lnet/aholbrook/paseto/ClaimElement;
+	public fun remove (Ljava/lang/Object;)Z
+	public fun removeAll (Ljava/util/Collection;)Z
+	public fun replaceAll (Ljava/util/function/UnaryOperator;)V
+	public fun retainAll (Ljava/util/Collection;)Z
+	public synthetic fun set (ILjava/lang/Object;)Ljava/lang/Object;
+	public fun set (ILnet/aholbrook/paseto/ClaimElement;)Lnet/aholbrook/paseto/ClaimElement;
+	public synthetic fun size ()I
+	public fun sort (Ljava/util/Comparator;)V
+	public fun subList (II)Ljava/util/List;
+	public static fun subList-impl (Ljava/util/List;II)Ljava/util/List;
+	public fun toArray ()[Ljava/lang/Object;
+	public fun toArray ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/util/List;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/util/List;
+}
+
+public final class net/aholbrook/paseto/ClaimArrayBuilder {
+	public fun <init> ()V
+	public final fun add (Ljava/lang/Number;)Z
+	public final fun add (Ljava/lang/String;)Z
+	public final fun add (Ljava/lang/Void;)Z
+	public final fun add (Lnet/aholbrook/paseto/ClaimElement;)Z
+	public final fun add (Z)Z
+	public final fun build-e4sIdDc ()Ljava/util/List;
+}
+
+public abstract interface class net/aholbrook/paseto/ClaimElement {
+	public fun getArrayOrNull-6iTAQ-g ()Ljava/util/List;
+	public fun getBooleanOrNull ()Ljava/lang/Boolean;
+	public fun getDoubleOrNull ()Ljava/lang/Double;
+	public fun getIntOrNull ()Ljava/lang/Integer;
+	public fun getLongOrNull ()Ljava/lang/Long;
+	public fun getObjectOrNull-cIk8k5s ()Ljava/util/Map;
+	public fun getPrimitiveOrNull-zhXCdHo ()Lkotlinx/serialization/json/JsonPrimitive;
+	public fun getStringOrNull ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/ClaimElement$DefaultImpls {
+	public static fun getArrayOrNull-6iTAQ-g (Lnet/aholbrook/paseto/ClaimElement;)Ljava/util/List;
+	public static fun getBooleanOrNull (Lnet/aholbrook/paseto/ClaimElement;)Ljava/lang/Boolean;
+	public static fun getDoubleOrNull (Lnet/aholbrook/paseto/ClaimElement;)Ljava/lang/Double;
+	public static fun getIntOrNull (Lnet/aholbrook/paseto/ClaimElement;)Ljava/lang/Integer;
+	public static fun getLongOrNull (Lnet/aholbrook/paseto/ClaimElement;)Ljava/lang/Long;
+	public static fun getObjectOrNull-cIk8k5s (Lnet/aholbrook/paseto/ClaimElement;)Ljava/util/Map;
+	public static fun getPrimitiveOrNull-zhXCdHo (Lnet/aholbrook/paseto/ClaimElement;)Lkotlinx/serialization/json/JsonPrimitive;
+	public static fun getStringOrNull (Lnet/aholbrook/paseto/ClaimElement;)Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/ClaimFooter : net/aholbrook/paseto/Footer {
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3-nFTQMBc ()Ljava/util/Map;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClaims-nFTQMBc ()Ljava/util/Map;
+	public final fun getKeyId ()Ljava/lang/String;
+	public final fun getWrappedKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/ClaimFooterBuilder {
+	public fun <init> ()V
+	public final fun build ()Lnet/aholbrook/paseto/ClaimFooter;
+	public final fun claims (Lkotlin/jvm/functions/Function1;)V
+	public final fun claims-qP3gXR0 (Ljava/util/Map;)V
+	public final fun getKeyId ()Ljava/lang/String;
+	public final fun getWrappedKey ()Ljava/lang/String;
+	public final fun setKeyId (Ljava/lang/String;)V
+	public final fun setWrappedKey (Ljava/lang/String;)V
+}
+
+public final class net/aholbrook/paseto/ClaimNull : net/aholbrook/paseto/ClaimElement {
+	public static final field INSTANCE Lnet/aholbrook/paseto/ClaimNull;
+	public fun getArrayOrNull-6iTAQ-g ()Ljava/util/List;
+	public fun getBooleanOrNull ()Ljava/lang/Boolean;
+	public fun getDoubleOrNull ()Ljava/lang/Double;
+	public fun getIntOrNull ()Ljava/lang/Integer;
+	public fun getLongOrNull ()Ljava/lang/Long;
+	public fun getObjectOrNull-cIk8k5s ()Ljava/util/Map;
+	public fun getPrimitiveOrNull-zhXCdHo ()Lkotlinx/serialization/json/JsonPrimitive;
+	public fun getStringOrNull ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/ClaimObject : java/util/Map, kotlin/jvm/internal/markers/KMappedMarker, net/aholbrook/paseto/ClaimElement {
+	public static final synthetic fun box-impl (Ljava/util/Map;)Lnet/aholbrook/paseto/ClaimObject;
+	public fun clear ()V
+	public synthetic fun compute (Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public fun compute (Ljava/lang/String;Ljava/util/function/BiFunction;)Lnet/aholbrook/paseto/ClaimElement;
+	public synthetic fun computeIfAbsent (Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;
+	public fun computeIfAbsent (Ljava/lang/String;Ljava/util/function/Function;)Lnet/aholbrook/paseto/ClaimElement;
+	public synthetic fun computeIfPresent (Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public fun computeIfPresent (Ljava/lang/String;Ljava/util/function/BiFunction;)Lnet/aholbrook/paseto/ClaimElement;
+	public final fun containsKey (Ljava/lang/Object;)Z
+	public fun containsKey (Ljava/lang/String;)Z
+	public static fun containsKey-impl (Ljava/util/Map;Ljava/lang/String;)Z
+	public final fun containsValue (Ljava/lang/Object;)Z
+	public fun containsValue (Lnet/aholbrook/paseto/ClaimElement;)Z
+	public static fun containsValue-impl (Ljava/util/Map;Lnet/aholbrook/paseto/ClaimElement;)Z
+	public synthetic fun entrySet ()Ljava/util/Set;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/util/Map;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/util/Map;Ljava/util/Map;)Z
+	public final synthetic fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun get (Ljava/lang/Object;)Lnet/aholbrook/paseto/ClaimElement;
+	public fun get (Ljava/lang/String;)Lnet/aholbrook/paseto/ClaimElement;
+	public static fun get-impl (Ljava/util/Map;Ljava/lang/String;)Lnet/aholbrook/paseto/ClaimElement;
+	public fun getArrayOrNull-6iTAQ-g ()Ljava/util/List;
+	public static fun getArrayOrNull-6iTAQ-g (Ljava/util/Map;)Ljava/util/List;
+	public fun getBooleanOrNull ()Ljava/lang/Boolean;
+	public static fun getBooleanOrNull-impl (Ljava/util/Map;)Ljava/lang/Boolean;
+	public fun getDoubleOrNull ()Ljava/lang/Double;
+	public static fun getDoubleOrNull-impl (Ljava/util/Map;)Ljava/lang/Double;
+	public fun getEntries ()Ljava/util/Set;
+	public static fun getEntries-impl (Ljava/util/Map;)Ljava/util/Set;
+	public fun getIntOrNull ()Ljava/lang/Integer;
+	public static fun getIntOrNull-impl (Ljava/util/Map;)Ljava/lang/Integer;
+	public fun getKeys ()Ljava/util/Set;
+	public static fun getKeys-impl (Ljava/util/Map;)Ljava/util/Set;
+	public fun getLongOrNull ()Ljava/lang/Long;
+	public static fun getLongOrNull-impl (Ljava/util/Map;)Ljava/lang/Long;
+	public fun getObjectOrNull-cIk8k5s ()Ljava/util/Map;
+	public static fun getObjectOrNull-cIk8k5s (Ljava/util/Map;)Ljava/util/Map;
+	public fun getPrimitiveOrNull-zhXCdHo ()Lkotlinx/serialization/json/JsonPrimitive;
+	public static fun getPrimitiveOrNull-zhXCdHo (Ljava/util/Map;)Lkotlinx/serialization/json/JsonPrimitive;
+	public fun getSize ()I
+	public static fun getSize-impl (Ljava/util/Map;)I
+	public fun getStringOrNull ()Ljava/lang/String;
+	public static fun getStringOrNull-impl (Ljava/util/Map;)Ljava/lang/String;
+	public fun getValues ()Ljava/util/Collection;
+	public static fun getValues-impl (Ljava/util/Map;)Ljava/util/Collection;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/util/Map;)I
+	public fun isEmpty ()Z
+	public static fun isEmpty-impl (Ljava/util/Map;)Z
+	public synthetic fun keySet ()Ljava/util/Set;
+	public synthetic fun merge (Ljava/lang/Object;Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public fun merge (Ljava/lang/String;Lnet/aholbrook/paseto/ClaimElement;Ljava/util/function/BiFunction;)Lnet/aholbrook/paseto/ClaimElement;
+	public synthetic fun put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun put (Ljava/lang/String;Lnet/aholbrook/paseto/ClaimElement;)Lnet/aholbrook/paseto/ClaimElement;
+	public fun putAll (Ljava/util/Map;)V
+	public synthetic fun putIfAbsent (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun putIfAbsent (Ljava/lang/String;Lnet/aholbrook/paseto/ClaimElement;)Lnet/aholbrook/paseto/ClaimElement;
+	public synthetic fun remove (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun remove (Ljava/lang/Object;)Lnet/aholbrook/paseto/ClaimElement;
+	public fun remove (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public synthetic fun replace (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public synthetic fun replace (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Z
+	public fun replace (Ljava/lang/String;Lnet/aholbrook/paseto/ClaimElement;)Lnet/aholbrook/paseto/ClaimElement;
+	public fun replace (Ljava/lang/String;Lnet/aholbrook/paseto/ClaimElement;Lnet/aholbrook/paseto/ClaimElement;)Z
+	public fun replaceAll (Ljava/util/function/BiFunction;)V
+	public synthetic fun size ()I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/util/Map;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/util/Map;
+	public synthetic fun values ()Ljava/util/Collection;
+}
+
+public final class net/aholbrook/paseto/ClaimObjectBuilder {
+	public fun <init> ()V
+	public final fun build-nFTQMBc ()Ljava/util/Map;
+	public final fun put (Ljava/lang/String;Ljava/lang/Number;)Lnet/aholbrook/paseto/ClaimElement;
+	public final fun put (Ljava/lang/String;Ljava/lang/String;)Lnet/aholbrook/paseto/ClaimElement;
+	public final fun put (Ljava/lang/String;Ljava/lang/Void;)Lnet/aholbrook/paseto/ClaimElement;
+	public final fun put (Ljava/lang/String;Lnet/aholbrook/paseto/ClaimElement;)Lnet/aholbrook/paseto/ClaimElement;
+	public final fun put (Ljava/lang/String;Z)Lnet/aholbrook/paseto/ClaimElement;
+}
+
+public final class net/aholbrook/paseto/ClaimPrimitive : net/aholbrook/paseto/ClaimElement {
+	public static final synthetic fun box-impl (Lkotlinx/serialization/json/JsonPrimitive;)Lnet/aholbrook/paseto/ClaimPrimitive;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Lkotlinx/serialization/json/JsonPrimitive;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Lkotlinx/serialization/json/JsonPrimitive;Lkotlinx/serialization/json/JsonPrimitive;)Z
+	public fun getArrayOrNull-6iTAQ-g ()Ljava/util/List;
+	public static fun getArrayOrNull-6iTAQ-g (Lkotlinx/serialization/json/JsonPrimitive;)Ljava/util/List;
+	public fun getBooleanOrNull ()Ljava/lang/Boolean;
+	public static fun getBooleanOrNull-impl (Lkotlinx/serialization/json/JsonPrimitive;)Ljava/lang/Boolean;
+	public fun getDoubleOrNull ()Ljava/lang/Double;
+	public static fun getDoubleOrNull-impl (Lkotlinx/serialization/json/JsonPrimitive;)Ljava/lang/Double;
+	public fun getIntOrNull ()Ljava/lang/Integer;
+	public static fun getIntOrNull-impl (Lkotlinx/serialization/json/JsonPrimitive;)Ljava/lang/Integer;
+	public fun getLongOrNull ()Ljava/lang/Long;
+	public static fun getLongOrNull-impl (Lkotlinx/serialization/json/JsonPrimitive;)Ljava/lang/Long;
+	public fun getObjectOrNull-cIk8k5s ()Ljava/util/Map;
+	public static fun getObjectOrNull-cIk8k5s (Lkotlinx/serialization/json/JsonPrimitive;)Ljava/util/Map;
+	public fun getPrimitiveOrNull-zhXCdHo ()Lkotlinx/serialization/json/JsonPrimitive;
+	public static fun getPrimitiveOrNull-zhXCdHo (Lkotlinx/serialization/json/JsonPrimitive;)Lkotlinx/serialization/json/JsonPrimitive;
+	public fun getStringOrNull ()Ljava/lang/String;
+	public static fun getStringOrNull-impl (Lkotlinx/serialization/json/JsonPrimitive;)Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Lkotlinx/serialization/json/JsonPrimitive;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Lkotlinx/serialization/json/JsonPrimitive;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Lkotlinx/serialization/json/JsonPrimitive;
+}
+
+public final class net/aholbrook/paseto/ClaimsKt {
+	public static final fun claimArray (Lkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun claimObject (Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun primitiveValue (Ljava/lang/Boolean;)Lkotlinx/serialization/json/JsonPrimitive;
+	public static final fun primitiveValue (Ljava/lang/Number;)Lkotlinx/serialization/json/JsonPrimitive;
+	public static final fun primitiveValue (Ljava/lang/String;)Lkotlinx/serialization/json/JsonPrimitive;
+	public static final fun primitiveValue (Ljava/lang/Void;)Lkotlinx/serialization/json/JsonPrimitive;
+}
+
+public abstract interface class net/aholbrook/paseto/Footer {
+}
+
+public final class net/aholbrook/paseto/FooterKt {
+	public static final fun footer (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun footer (Lkotlin/jvm/functions/Function1;)Lnet/aholbrook/paseto/ClaimFooter;
+	public static final fun taint (Lnet/aholbrook/paseto/Footer;)Lnet/aholbrook/paseto/TaintedFooter;
+}
+
+public final class net/aholbrook/paseto/FooterOptionsBuilder {
+	public fun <init> ()V
+	public final fun getMaxDepth ()I
+	public final fun getMaxKeys ()I
+	public final fun getMaxLength ()I
+	public final fun getParseMode ()Lnet/aholbrook/paseto/FooterParseMode;
+	public final fun setMaxDepth (I)V
+	public final fun setMaxKeys (I)V
+	public final fun setMaxLength (I)V
+	public final fun setParseMode (Lnet/aholbrook/paseto/FooterParseMode;)V
+}
+
+public final class net/aholbrook/paseto/FooterParseMode : java/lang/Enum {
+	public static final field AUTO Lnet/aholbrook/paseto/FooterParseMode;
+	public static final field CLAIMS Lnet/aholbrook/paseto/FooterParseMode;
+	public static final field STRING Lnet/aholbrook/paseto/FooterParseMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/aholbrook/paseto/FooterParseMode;
+	public static fun values ()[Lnet/aholbrook/paseto/FooterParseMode;
+}
+
+public abstract interface annotation class net/aholbrook/paseto/InternalApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface class net/aholbrook/paseto/Purpose {
+}
+
+public final class net/aholbrook/paseto/Purpose$Local : net/aholbrook/paseto/Purpose {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public final fun getKeyProvider ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class net/aholbrook/paseto/Purpose$Public : net/aholbrook/paseto/Purpose {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public final fun getKeyProvider ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class net/aholbrook/paseto/StringFooter : net/aholbrook/paseto/Footer {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lnet/aholbrook/paseto/StringFooter;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/TaintedClaimFooter : net/aholbrook/paseto/TaintedFooter {
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3-nFTQMBc ()Ljava/util/Map;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClaims-nFTQMBc ()Ljava/util/Map;
+	public final fun getKeyId ()Ljava/lang/String;
+	public final fun getWrappedKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class net/aholbrook/paseto/TaintedFooter {
+}
+
+public final class net/aholbrook/paseto/TaintedStringFooter : net/aholbrook/paseto/TaintedFooter {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lnet/aholbrook/paseto/TaintedStringFooter;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/Token {
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/time/Instant;
+	public final fun component5 ()Ljava/time/Instant;
+	public final fun component6 ()Ljava/time/Instant;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8-nFTQMBc ()Ljava/util/Map;
+	public final fun component9 ()Lnet/aholbrook/paseto/Footer;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAudience ()Ljava/lang/String;
+	public final fun getClaims-nFTQMBc ()Ljava/util/Map;
+	public final fun getExpiresAt ()Ljava/time/Instant;
+	public final fun getFooter ()Lnet/aholbrook/paseto/Footer;
+	public final fun getIssuedAt ()Ljava/time/Instant;
+	public final fun getIssuer ()Ljava/lang/String;
+	public final fun getNotBefore ()Ljava/time/Instant;
+	public final fun getSubject ()Ljava/lang/String;
+	public final fun getTokenId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/TokenBuilder {
+	public fun <init> (Ljava/time/Clock;)V
+	public final fun build ()Lnet/aholbrook/paseto/Token;
+	public final fun claims (Lkotlin/jvm/functions/Function1;)V
+	public final fun claims-qP3gXR0 (Ljava/util/Map;)V
+	public final fun footer (Ljava/lang/String;)V
+	public final fun footer (Lkotlin/jvm/functions/Function1;)V
+	public final fun footer (Lnet/aholbrook/paseto/Footer;)V
+	public final fun getAudience ()Ljava/lang/String;
+	public final fun getExpiresAt ()Ljava/time/Instant;
+	public final fun getIssuedAt ()Ljava/time/Instant;
+	public final fun getIssuer ()Ljava/lang/String;
+	public final fun getNotBefore ()Ljava/time/Instant;
+	public final fun getSubject ()Ljava/lang/String;
+	public final fun getTokenId ()Ljava/lang/String;
+	public final fun setAudience (Ljava/lang/String;)V
+	public final fun setExpiresAt (Ljava/time/Instant;)V
+	public final fun setIssuedAt (Ljava/time/Instant;)V
+	public final fun setIssuer (Ljava/lang/String;)V
+	public final fun setNotBefore (Ljava/time/Instant;)V
+	public final fun setSubject (Ljava/lang/String;)V
+	public final fun setTokenId (Ljava/lang/String;)V
+}
+
+public final class net/aholbrook/paseto/TokenKt {
+	public static final fun token (Ljava/time/Clock;Lkotlin/jvm/functions/Function1;)Lnet/aholbrook/paseto/Token;
+	public static synthetic fun token$default (Ljava/time/Clock;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lnet/aholbrook/paseto/Token;
+}
+
+public abstract interface class net/aholbrook/paseto/TokenService {
+	public abstract fun decode (Ljava/lang/String;Lnet/aholbrook/paseto/Footer;Ljava/lang/String;)Lnet/aholbrook/paseto/Token;
+	public static synthetic fun decode$default (Lnet/aholbrook/paseto/TokenService;Ljava/lang/String;Lnet/aholbrook/paseto/Footer;Ljava/lang/String;ILjava/lang/Object;)Lnet/aholbrook/paseto/Token;
+	public abstract fun encode (Lnet/aholbrook/paseto/Token;Ljava/lang/String;)Ljava/lang/String;
+	public static synthetic fun encode$default (Lnet/aholbrook/paseto/TokenService;Lnet/aholbrook/paseto/Token;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
+	public abstract fun insecureGetFooter (Ljava/lang/String;)Lnet/aholbrook/paseto/TaintedFooter;
+}
+
+public final class net/aholbrook/paseto/TokenService$DefaultImpls {
+	public static synthetic fun decode$default (Lnet/aholbrook/paseto/TokenService;Ljava/lang/String;Lnet/aholbrook/paseto/Footer;Ljava/lang/String;ILjava/lang/Object;)Lnet/aholbrook/paseto/Token;
+	public static synthetic fun encode$default (Lnet/aholbrook/paseto/TokenService;Lnet/aholbrook/paseto/Token;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/TokenServiceBuilder {
+	public fun <init> ()V
+	public final fun build (Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/Purpose;)Lnet/aholbrook/paseto/TokenService;
+	public final fun footerOptions (Lkotlin/jvm/functions/Function1;)V
+	public final fun rules (Lkotlin/jvm/functions/Function1;)V
+	public final fun rules (Lnet/aholbrook/paseto/rules/Rules;)V
+}
+
+public final class net/aholbrook/paseto/TokenServiceKt {
+	public static final fun tokenService (Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/Purpose;Lkotlin/jvm/functions/Function1;)Lnet/aholbrook/paseto/TokenService;
+	public static synthetic fun tokenService$default (Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/Purpose;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lnet/aholbrook/paseto/TokenService;
+}
+
+public final class net/aholbrook/paseto/crypto/ConstantTimeEqualsKt {
+	public static final fun constantTimeEquals (Ljava/lang/String;Ljava/lang/String;Ljava/nio/charset/Charset;)Z
+	public static final fun constantTimeEquals ([B[B)Z
+	public static synthetic fun constantTimeEquals$default (Ljava/lang/String;Ljava/lang/String;Ljava/nio/charset/Charset;ILjava/lang/Object;)Z
+}
+
+public final class net/aholbrook/paseto/exception/ByteArrayLengthException : net/aholbrook/paseto/exception/PasetoException {
+	public final fun getArg ()Ljava/lang/String;
+	public final fun getLen ()I
+	public final fun getRequired ()I
+	public final fun isExact ()Z
+}
+
+public final class net/aholbrook/paseto/exception/ByteArrayRangeException : net/aholbrook/paseto/exception/PasetoException {
+	public final fun getArg ()Ljava/lang/String;
+	public final fun getLen ()I
+	public final fun getMaxBound ()I
+	public final fun getMinBound ()I
+}
+
+public final class net/aholbrook/paseto/exception/CannotSignWithoutSecretKey : net/aholbrook/paseto/exception/PasetoException {
+}
+
+public class net/aholbrook/paseto/exception/CryptoException : net/aholbrook/paseto/exception/PasetoException {
+}
+
+public final class net/aholbrook/paseto/exception/DecryptionException : net/aholbrook/paseto/exception/EncodedTokenException {
+}
+
+public final class net/aholbrook/paseto/exception/EcKeyException : net/aholbrook/paseto/exception/KeyException {
+}
+
+public class net/aholbrook/paseto/exception/EncodedTokenException : net/aholbrook/paseto/exception/PasetoException {
+	public final fun getToken ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/exception/EncryptionException : net/aholbrook/paseto/exception/PasetoException {
+}
+
+public final class net/aholbrook/paseto/exception/ExpiredTokenException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/time/Instant;Lnet/aholbrook/paseto/Token;)V
+}
+
+public final class net/aholbrook/paseto/exception/FooterExceedsMaxDepthException : net/aholbrook/paseto/exception/InvalidFooterException {
+	public final fun getDepth ()I
+	public final fun getMax ()I
+}
+
+public final class net/aholbrook/paseto/exception/FooterExceedsMaxKeysException : net/aholbrook/paseto/exception/InvalidFooterException {
+	public final fun getKeys ()I
+	public final fun getMax ()I
+}
+
+public final class net/aholbrook/paseto/exception/FooterExceedsMaxLengthException : net/aholbrook/paseto/exception/InvalidFooterException {
+	public final fun getLength ()I
+	public final fun getMax ()I
+}
+
+public final class net/aholbrook/paseto/exception/FooterJsonParseException : net/aholbrook/paseto/exception/InvalidFooterException {
+}
+
+public final class net/aholbrook/paseto/exception/ImplicitAssertionsNotSupportedException : net/aholbrook/paseto/exception/PasetoException {
+}
+
+public final class net/aholbrook/paseto/exception/IncorrectAudienceException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lnet/aholbrook/paseto/Token;)V
+	public final fun getAudience ()Ljava/lang/String;
+	public final fun getExpected ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/exception/IncorrectFooterException : net/aholbrook/paseto/exception/InvalidFooterException {
+	public final fun getExpected ()Ljava/lang/String;
+	public final fun getGiven ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/exception/IncorrectIssuerException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lnet/aholbrook/paseto/Token;)V
+	public final fun getExpected ()Ljava/lang/String;
+	public final fun getIssuer ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/exception/IncorrectSubjectException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lnet/aholbrook/paseto/Token;)V
+	public final fun getExpected ()Ljava/lang/String;
+	public final fun getSubject ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/exception/IncorrectTokenIdException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lnet/aholbrook/paseto/Token;)V
+	public final fun getExpected ()Ljava/lang/String;
+	public final fun getTokenId ()Ljava/lang/String;
+}
+
+public class net/aholbrook/paseto/exception/InvalidFooterException : net/aholbrook/paseto/exception/PasetoException {
+}
+
+public final class net/aholbrook/paseto/exception/InvalidHeaderException : net/aholbrook/paseto/exception/EncodedTokenException {
+	public final fun getExpected ()Ljava/lang/String;
+	public final fun getGiven ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/exception/IssuedInFutureException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/time/Instant;Ljava/time/Instant;Lnet/aholbrook/paseto/Token;)V
+}
+
+public final class net/aholbrook/paseto/exception/KeyClearedException : net/aholbrook/paseto/exception/KeyException {
+}
+
+public class net/aholbrook/paseto/exception/KeyException : net/aholbrook/paseto/exception/PasetoException {
+}
+
+public final class net/aholbrook/paseto/exception/KeyLengthException : net/aholbrook/paseto/exception/KeyException {
+	public final fun getActual ()I
+	public final fun getAllowed ()[Ljava/lang/Integer;
+}
+
+public final class net/aholbrook/paseto/exception/KeyPemUnsupportedTypeException : net/aholbrook/paseto/exception/KeyException {
+	public final fun getType ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/exception/KeyPurposeException : net/aholbrook/paseto/exception/KeyException {
+	public final fun getActual ()Ljava/lang/String;
+	public final fun getExpected ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/exception/KeyVersionException : net/aholbrook/paseto/exception/KeyException {
+	public final fun getActual ()Lnet/aholbrook/paseto/protocol/Version;
+	public final fun getExpected ()Lnet/aholbrook/paseto/protocol/Version;
+}
+
+public final class net/aholbrook/paseto/exception/MissingClaimException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/lang/String;Lnet/aholbrook/paseto/Token;)V
+}
+
+public final class net/aholbrook/paseto/exception/MultipleValidationErrorsException : net/aholbrook/paseto/exception/PasetoException {
+	public final fun getExceptions ()Ljava/util/List;
+	public fun getMessage ()Ljava/lang/String;
+	public final fun getToken ()Lnet/aholbrook/paseto/Token;
+}
+
+public final class net/aholbrook/paseto/exception/NotYetValidException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Ljava/time/Instant;Lnet/aholbrook/paseto/Token;)V
+}
+
+public class net/aholbrook/paseto/exception/PasetoException : java/lang/RuntimeException {
+}
+
+public final class net/aholbrook/paseto/exception/Pkcs12LoadException : net/aholbrook/paseto/exception/KeyException {
+	public final fun getReason ()Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
+}
+
+public final class net/aholbrook/paseto/exception/Pkcs12LoadException$Reason : java/lang/Enum {
+	public static final field ALGORITHM_NOT_FOUND Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
+	public static final field CERTIFICATE_ERROR Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
+	public static final field INCORRECT_PASSWORD Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
+	public static final field IO_EXCEPTION Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
+	public static final field PRIVATE_KEY_NOT_FOUND Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
+	public static final field PUBLIC_KEY_NOT_FOUND Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
+	public static final field UNRECOVERABLE_KEY Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
+	public static fun values ()[Lnet/aholbrook/paseto/exception/Pkcs12LoadException$Reason;
+}
+
+public class net/aholbrook/paseto/exception/RuleValidationException : net/aholbrook/paseto/exception/PasetoException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lnet/aholbrook/paseto/Token;)V
+	public final fun getClaim ()Ljava/lang/String;
+	public final fun getRule ()Lnet/aholbrook/paseto/rules/Rule;
+	public final fun getToken ()Lnet/aholbrook/paseto/Token;
+}
+
+public final class net/aholbrook/paseto/exception/SignatureVerificationException : net/aholbrook/paseto/exception/EncodedTokenException {
+}
+
+public final class net/aholbrook/paseto/exception/SigningException : net/aholbrook/paseto/exception/PasetoException {
+	public final fun getPayload ()[B
+}
+
+public final class net/aholbrook/paseto/exception/TokenExpiresBeforeIssuedException : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Lnet/aholbrook/paseto/Token;)V
+}
+
+public final class net/aholbrook/paseto/exception/TokenIsNotValidUntilAfterExpiration : net/aholbrook/paseto/exception/RuleValidationException {
+	public fun <init> (Lnet/aholbrook/paseto/Token;)V
+}
+
+public final class net/aholbrook/paseto/exception/TokenParseException : net/aholbrook/paseto/exception/EncodedTokenException {
+	public final fun getMinLength ()I
+	public final fun getReason ()Lnet/aholbrook/paseto/exception/TokenParseException$Reason;
+}
+
+public final class net/aholbrook/paseto/exception/TokenParseException$Reason : java/lang/Enum {
+	public static final field INVALID_BASE64 Lnet/aholbrook/paseto/exception/TokenParseException$Reason;
+	public static final field MISSING_SECTIONS Lnet/aholbrook/paseto/exception/TokenParseException$Reason;
+	public static final field PAYLOAD_LENGTH Lnet/aholbrook/paseto/exception/TokenParseException$Reason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/aholbrook/paseto/exception/TokenParseException$Reason;
+	public static fun values ()[Lnet/aholbrook/paseto/exception/TokenParseException$Reason;
+}
+
+public final class net/aholbrook/paseto/protocol/Version : java/lang/Enum {
+	public static final field V1 Lnet/aholbrook/paseto/protocol/Version;
+	public static final field V2 Lnet/aholbrook/paseto/protocol/Version;
+	public static final field V3 Lnet/aholbrook/paseto/protocol/Version;
+	public static final field V4 Lnet/aholbrook/paseto/protocol/Version;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/Version;
+	public static fun values ()[Lnet/aholbrook/paseto/protocol/Version;
+}
+
+public final class net/aholbrook/paseto/protocol/key/AsymmetricPublicKey {
+	public static final field Companion Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey$Companion;
+	public synthetic fun <init> ([BLnet/aholbrook/paseto/protocol/Version;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public static final fun fromSecretKey (Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;)Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
+	public final fun getVersion ()Lnet/aholbrook/paseto/protocol/Version;
+	public fun hashCode ()I
+	public static final fun ofBase64Url (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;)Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
+	public static final fun ofHex (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;)Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
+	public static final fun ofPem (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;)Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
+	public static final fun ofPem ([BLnet/aholbrook/paseto/protocol/Version;)Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
+	public static final fun ofRawBytes ([BLnet/aholbrook/paseto/protocol/Version;)Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
+	public final fun toBase64Url ()Ljava/lang/String;
+	public final fun toHex ()Ljava/lang/String;
+	public final fun toPem ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/protocol/key/AsymmetricPublicKey$Companion {
+	public final fun fromSecretKey (Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;)Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
+	public final fun ofBase64Url (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;)Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
+	public final fun ofHex (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;)Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
+	public final fun ofPem (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;)Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
+	public final fun ofPem ([BLnet/aholbrook/paseto/protocol/Version;)Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
+	public final fun ofRawBytes ([BLnet/aholbrook/paseto/protocol/Version;)Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
+}
+
+public final class net/aholbrook/paseto/protocol/key/AsymmetricSecretKey {
+	public static final field Companion Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey$Companion;
+	public synthetic fun <init> ([BLnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun clear ()V
+	public final fun copy (Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public static synthetic fun copy$default (Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLifecycle ()Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;
+	public final fun getVersion ()Lnet/aholbrook/paseto/protocol/Version;
+	public fun hashCode ()I
+	public static final fun ofBase64Url (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public static final fun ofHex (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public static final fun ofPem (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public static final fun ofPem ([BLnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public static final fun ofRawBytes ([BLnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public final fun toBase64Url ()Ljava/lang/String;
+	public final fun toHex ()Ljava/lang/String;
+	public final fun toPem ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/protocol/key/AsymmetricSecretKey$Companion {
+	public final fun ofBase64Url (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public static synthetic fun ofBase64Url$default (Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey$Companion;Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public final fun ofHex (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public static synthetic fun ofHex$default (Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey$Companion;Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public final fun ofPem (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public final fun ofPem ([BLnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public static synthetic fun ofPem$default (Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey$Companion;Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public static synthetic fun ofPem$default (Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey$Companion;[BLnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public final fun ofRawBytes ([BLnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public static synthetic fun ofRawBytes$default (Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey$Companion;[BLnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+}
+
+public final class net/aholbrook/paseto/protocol/key/KeyLifecycle : java/lang/Enum {
+	public static final field EPHEMERAL Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;
+	public static final field PERSISTENT Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;
+	public static fun values ()[Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;
+}
+
+public final class net/aholbrook/paseto/protocol/key/KeyPair {
+	public static final field Companion Lnet/aholbrook/paseto/protocol/key/KeyPair$Companion;
+	public fun <init> (Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;)V
+	public final fun copy (Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public static synthetic fun copy$default (Lnet/aholbrook/paseto/protocol/key/KeyPair;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public fun equals (Ljava/lang/Object;)Z
+	public static final fun generate (Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public final fun getPublicKey ()Lnet/aholbrook/paseto/protocol/key/AsymmetricPublicKey;
+	public final fun getSecretKey ()Lnet/aholbrook/paseto/protocol/key/AsymmetricSecretKey;
+	public final fun getVersion ()Lnet/aholbrook/paseto/protocol/Version;
+	public fun hashCode ()I
+	public static final fun ofPkcs12 (Ljava/io/InputStream;Ljava/lang/String;Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public static final fun ofPkcs12 (Ljava/io/InputStream;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+}
+
+public final class net/aholbrook/paseto/protocol/key/KeyPair$Companion {
+	public final fun generate (Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public static synthetic fun generate$default (Lnet/aholbrook/paseto/protocol/key/KeyPair$Companion;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public final fun ofPkcs12 (Ljava/io/InputStream;Ljava/lang/String;Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public final fun ofPkcs12 (Ljava/io/InputStream;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+	public static synthetic fun ofPkcs12$default (Lnet/aholbrook/paseto/protocol/key/KeyPair$Companion;Ljava/io/InputStream;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/KeyPair;
+}
+
+public final class net/aholbrook/paseto/protocol/key/SymmetricKey {
+	public static final field Companion Lnet/aholbrook/paseto/protocol/key/SymmetricKey$Companion;
+	public synthetic fun <init> ([BLnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun copy (Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+	public static synthetic fun copy$default (Lnet/aholbrook/paseto/protocol/key/SymmetricKey;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+	public fun equals (Ljava/lang/Object;)Z
+	public static final fun generate (Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+	public final fun getLifecycle ()Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;
+	public final fun getVersion ()Lnet/aholbrook/paseto/protocol/Version;
+	public fun hashCode ()I
+	public static final fun ofBase64Url (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+	public static final fun ofHex (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+	public static final fun ofRawBytes ([BLnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+	public final fun toBase64Url ()Ljava/lang/String;
+	public final fun toHex ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/protocol/key/SymmetricKey$Companion {
+	public final fun generate (Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+	public static synthetic fun generate$default (Lnet/aholbrook/paseto/protocol/key/SymmetricKey$Companion;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+	public final fun ofBase64Url (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+	public static synthetic fun ofBase64Url$default (Lnet/aholbrook/paseto/protocol/key/SymmetricKey$Companion;Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+	public final fun ofHex (Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+	public static synthetic fun ofHex$default (Lnet/aholbrook/paseto/protocol/key/SymmetricKey$Companion;Ljava/lang/String;Lnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+	public final fun ofRawBytes ([BLnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+	public static synthetic fun ofRawBytes$default (Lnet/aholbrook/paseto/protocol/key/SymmetricKey$Companion;[BLnet/aholbrook/paseto/protocol/Version;Lnet/aholbrook/paseto/protocol/key/KeyLifecycle;ILjava/lang/Object;)Lnet/aholbrook/paseto/protocol/key/SymmetricKey;
+}
+
+public abstract interface class net/aholbrook/paseto/rules/CustomRule : net/aholbrook/paseto/rules/Rule {
+}
+
+public final class net/aholbrook/paseto/rules/ForAudience : net/aholbrook/paseto/rules/Rule {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lnet/aholbrook/paseto/rules/ForAudience;
+	public static synthetic fun copy$default (Lnet/aholbrook/paseto/rules/ForAudience;Ljava/lang/String;ILjava/lang/Object;)Lnet/aholbrook/paseto/rules/ForAudience;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAudience ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun invoke (Lnet/aholbrook/paseto/Token;Lnet/aholbrook/paseto/rules/Rule$Mode;Ljava/util/Map;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/rules/IdentifiedBy : net/aholbrook/paseto/rules/Rule {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lnet/aholbrook/paseto/rules/IdentifiedBy;
+	public static synthetic fun copy$default (Lnet/aholbrook/paseto/rules/IdentifiedBy;Ljava/lang/String;ILjava/lang/Object;)Lnet/aholbrook/paseto/rules/IdentifiedBy;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTokenId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun invoke (Lnet/aholbrook/paseto/Token;Lnet/aholbrook/paseto/rules/Rule$Mode;Ljava/util/Map;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/rules/IssuedBy : net/aholbrook/paseto/rules/Rule {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lnet/aholbrook/paseto/rules/IssuedBy;
+	public static synthetic fun copy$default (Lnet/aholbrook/paseto/rules/IssuedBy;Ljava/lang/String;ILjava/lang/Object;)Lnet/aholbrook/paseto/rules/IssuedBy;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIssuer ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun invoke (Lnet/aholbrook/paseto/Token;Lnet/aholbrook/paseto/rules/Rule$Mode;Ljava/util/Map;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/rules/IssuedInPast : net/aholbrook/paseto/rules/Rule {
+	public fun <init> ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun invoke (Lnet/aholbrook/paseto/Token;Lnet/aholbrook/paseto/rules/Rule$Mode;Ljava/util/Map;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/rules/NotBefore : net/aholbrook/paseto/rules/Rule {
+	public fun <init> ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun invoke (Lnet/aholbrook/paseto/Token;Lnet/aholbrook/paseto/rules/Rule$Mode;Ljava/util/Map;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/rules/NotExpired : net/aholbrook/paseto/rules/Rule {
+	public fun <init> ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun invoke (Lnet/aholbrook/paseto/Token;Lnet/aholbrook/paseto/rules/Rule$Mode;Ljava/util/Map;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class net/aholbrook/paseto/rules/Rule {
+	public abstract fun invoke (Lnet/aholbrook/paseto/Token;Lnet/aholbrook/paseto/rules/Rule$Mode;Ljava/util/Map;)V
+}
+
+public final class net/aholbrook/paseto/rules/Rule$Mode : java/lang/Enum {
+	public static final field DECODE Lnet/aholbrook/paseto/rules/Rule$Mode;
+	public static final field ENCODE Lnet/aholbrook/paseto/rules/Rule$Mode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/aholbrook/paseto/rules/Rule$Mode;
+	public static fun values ()[Lnet/aholbrook/paseto/rules/Rule$Mode;
+}
+
+public final class net/aholbrook/paseto/rules/RuleFailed : net/aholbrook/paseto/rules/RuleResult {
+	public static final synthetic fun box-impl (Lnet/aholbrook/paseto/exception/RuleValidationException;)Lnet/aholbrook/paseto/rules/RuleFailed;
+	public static fun constructor-impl (Lnet/aholbrook/paseto/exception/RuleValidationException;)Lnet/aholbrook/paseto/exception/RuleValidationException;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Lnet/aholbrook/paseto/exception/RuleValidationException;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Lnet/aholbrook/paseto/exception/RuleValidationException;Lnet/aholbrook/paseto/exception/RuleValidationException;)Z
+	public final fun getCause ()Lnet/aholbrook/paseto/exception/RuleValidationException;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Lnet/aholbrook/paseto/exception/RuleValidationException;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Lnet/aholbrook/paseto/exception/RuleValidationException;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Lnet/aholbrook/paseto/exception/RuleValidationException;
+}
+
+public abstract interface class net/aholbrook/paseto/rules/RuleResult {
+}
+
+public final class net/aholbrook/paseto/rules/RuleVerified : net/aholbrook/paseto/rules/RuleResult {
+	public static final field INSTANCE Lnet/aholbrook/paseto/rules/RuleVerified;
+}
+
+public final class net/aholbrook/paseto/rules/Rules {
+	public final fun getRules ()Ljava/util/List;
+	public final fun verifyAll (Lnet/aholbrook/paseto/Token;Lnet/aholbrook/paseto/rules/Rule$Mode;)Ljava/util/Map;
+}
+
+public final class net/aholbrook/paseto/rules/RulesBuilder {
+	public fun <init> ()V
+	public final fun build ()Lnet/aholbrook/paseto/rules/Rules;
+	public final fun copy (Lnet/aholbrook/paseto/rules/Rules;)V
+	public final fun getCustomRules ()Ljava/util/List;
+	public final fun getForAudience ()Lnet/aholbrook/paseto/rules/ForAudience;
+	public final fun getIdentifiedBy ()Lnet/aholbrook/paseto/rules/IdentifiedBy;
+	public final fun getIssuedBy ()Lnet/aholbrook/paseto/rules/IssuedBy;
+	public final fun getIssuedInPast ()Lnet/aholbrook/paseto/rules/IssuedInPast;
+	public final fun getNotBefore ()Lnet/aholbrook/paseto/rules/NotBefore;
+	public final fun getNotExpired ()Lnet/aholbrook/paseto/rules/NotExpired;
+	public final fun getSubject ()Lnet/aholbrook/paseto/rules/Subject;
+	public final fun getValidAt ()Lnet/aholbrook/paseto/rules/ValidAt;
+	public final fun setForAudience (Lnet/aholbrook/paseto/rules/ForAudience;)V
+	public final fun setIdentifiedBy (Lnet/aholbrook/paseto/rules/IdentifiedBy;)V
+	public final fun setIssuedBy (Lnet/aholbrook/paseto/rules/IssuedBy;)V
+	public final fun setIssuedInPast (Lnet/aholbrook/paseto/rules/IssuedInPast;)V
+	public final fun setNotBefore (Lnet/aholbrook/paseto/rules/NotBefore;)V
+	public final fun setNotExpired (Lnet/aholbrook/paseto/rules/NotExpired;)V
+	public final fun setSubject (Lnet/aholbrook/paseto/rules/Subject;)V
+	public final fun setValidAt (Lnet/aholbrook/paseto/rules/ValidAt;)V
+}
+
+public final class net/aholbrook/paseto/rules/RulesKt {
+	public static final fun rules (Lkotlin/jvm/functions/Function1;)Lnet/aholbrook/paseto/rules/Rules;
+	public static final fun rules (Lnet/aholbrook/paseto/rules/Rules;Lkotlin/jvm/functions/Function1;)Lnet/aholbrook/paseto/rules/Rules;
+	public static synthetic fun rules$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lnet/aholbrook/paseto/rules/Rules;
+}
+
+public final class net/aholbrook/paseto/rules/Subject : net/aholbrook/paseto/rules/Rule {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lnet/aholbrook/paseto/rules/Subject;
+	public static synthetic fun copy$default (Lnet/aholbrook/paseto/rules/Subject;Ljava/lang/String;ILjava/lang/Object;)Lnet/aholbrook/paseto/rules/Subject;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSubject ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun invoke (Lnet/aholbrook/paseto/Token;Lnet/aholbrook/paseto/rules/Rule$Mode;Ljava/util/Map;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/aholbrook/paseto/rules/ValidAt : net/aholbrook/paseto/rules/Rule {
+	public fun <init> ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun invoke (Lnet/aholbrook/paseto/Token;Lnet/aholbrook/paseto/rules/Rule$Mode;Ljava/util/Map;)V
+	public fun toString ()Ljava/lang/String;
+}
+

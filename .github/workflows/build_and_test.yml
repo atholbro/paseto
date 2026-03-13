@@ -1,0 +1,30 @@
+name: Build & Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-22.04
+    container:
+      image: eclipse-temurin:17.0.18_8-jdk-alpine-3.23
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gradle
+        run: ./gradlew lintKotlin check jacocoTestReport --no-daemon
+
+      - name: Codecov - Install dependencies
+        run: |
+          apk add --no-cache bash git curl
+
+      - name: Codecov - Upload
+        uses: codecov/codecov-action@v5.5.2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

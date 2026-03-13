@@ -1,0 +1,121 @@
+package net.aholbrook.paseto.rules
+
+import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import net.aholbrook.paseto.exception.IssuedInFutureException
+import net.aholbrook.paseto.exception.MissingClaimException
+import net.aholbrook.paseto.token
+import org.junit.jupiter.api.Test
+import java.time.Clock
+import java.time.Instant
+import java.time.ZoneOffset
+
+class IssuedInPastTests {
+    @Test
+    fun defaults_validToken() {
+        val issuedInPast = IssuedInPast()
+        val token = token {
+            issuedAt = Instant.now().minusSeconds(3600L)
+        }
+
+        shouldNotThrowAny {
+            issuedInPast(token, Rule.Mode.DECODE, emptyMap())
+        }
+    }
+
+    @Test
+    fun defaults_issuedInFuture() {
+        val issuedInPast = IssuedInPast()
+        val token = token {
+            issuedAt = Instant.now().plusSeconds(3600L)
+        }
+
+        val ex = shouldThrow<IssuedInFutureException> {
+            issuedInPast(token, Rule.Mode.DECODE, emptyMap())
+        }
+        ex.claim shouldBe "iat"
+        ex.token shouldBeSameInstanceAs token
+        ex.rule shouldBe null
+    }
+
+    @Test
+    fun defaults_missingIssuedAt() {
+        val issuedInPast = IssuedInPast()
+        val token = token {
+            issuedAt = null
+            expiresAt = null
+        }
+
+        val ex = shouldThrow<MissingClaimException> {
+            issuedInPast(token, Rule.Mode.DECODE, emptyMap())
+        }
+        ex.claim shouldBe "iat"
+        ex.token shouldBeSameInstanceAs token
+        ex.rule shouldBe null
+    }
+
+    @Test
+    fun checkBounds_sameInstant() {
+        val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
+
+        val issuedInPast = IssuedInPast(clock = clock)
+
+        shouldNotThrowAny {
+            issuedInPast(
+                token {
+                    issuedAt = clock.instant()
+                },
+                Rule.Mode.DECODE,
+                emptyMap(),
+            )
+        }
+    }
+
+    @Test
+    fun checkBounds_1Second() {
+        val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
+
+        val issuedInPast = IssuedInPast(clock = clock)
+
+        val ex = shouldThrow<IssuedInFutureException> {
+            issuedInPast(
+                token {
+                    issuedAt = clock.instant().plusSeconds(1)
+                },
+                Rule.Mode.DECODE,
+                emptyMap(),
+            )
+        }
+        ex.rule shouldBe null
+    }
+
+    @Test
+    fun encode_missingIssuedAtThrows() {
+        val issuedInPast = IssuedInPast()
+        val token = token {
+            issuedAt = null
+            expiresAt = null
+        }
+
+        val ex = shouldThrow<MissingClaimException> {
+            issuedInPast(token, Rule.Mode.ENCODE, emptyMap())
+        }
+        ex.claim shouldBe "iat"
+        ex.rule shouldBe null
+    }
+
+    @Test
+    fun encode_skipsIssuedInFutureCheck() {
+        val clock = Clock.fixed(Instant.EPOCH, ZoneOffset.UTC)
+        val issuedInPast = IssuedInPast(clock = clock)
+        val token = token {
+            issuedAt = clock.instant().plusSeconds(3600)
+        }
+
+        shouldNotThrowAny {
+            issuedInPast(token, Rule.Mode.ENCODE, emptyMap())
+        }
+    }
+}
