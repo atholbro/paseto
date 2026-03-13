@@ -15,6 +15,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Gradle build
+        env:
+          GPG_KEY: ${{ secrets.GPG_KEY }}
+          GPG_PASS: ${{ secrets.GPG_PASS }}
+          PUBLISH_USER: ${{ secrets.PUBLISH_USER }}
+          PUBLISH_PASS: ${{ secrets.PUBLISH_PASS }}
         run: |
           VERSION=${{ github.ref_name }}
           VERSION=${VERSION#v}
