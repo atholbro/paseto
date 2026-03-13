@@ -120,6 +120,7 @@ class GenerateCommand : CliktCommand(name = "vector-gen") {
         }
 
         val token = tokenFromVector(vector)
+        val implicitAssertion = vector.implicitAssertion ?: ""
         val encoded = withTestNonce(nonce) {
             val service = tokenService(pasetoVersion ?: inputVersion, Purpose.Local { key.copy() }) {
                 rules {
@@ -127,8 +128,8 @@ class GenerateCommand : CliktCommand(name = "vector-gen") {
                     notExpired = null
                 }
             }
-            val encoded = service.encode(token)
-            service.decode(encoded)
+            val encoded = service.encode(token, implicitAssertion)
+            service.decode(encoded, implicitAssertion = implicitAssertion)
             encoded
         }
 
@@ -169,6 +170,7 @@ class GenerateCommand : CliktCommand(name = "vector-gen") {
         }
 
         val token = tokenFromVector(vector)
+        val implicitAssertion = vector.implicitAssertion ?: ""
         val encoded = withTestNonce(vector.nonce?.toByteArray()) {
             val service = tokenService(pasetoVersion ?: inputVersion, Purpose.Public { keyPair.copy() }) {
                 rules {
@@ -176,7 +178,7 @@ class GenerateCommand : CliktCommand(name = "vector-gen") {
                     notExpired = null
                 }
             }
-            service.encode(token)
+            service.encode(token, implicitAssertion)
         }
 
         return vector.copy(

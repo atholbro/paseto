@@ -31,6 +31,8 @@ data class ServiceTestVector(
     val secretKey: String? = null,
     val payload: JsonObject,
     val footer: JsonElement? = null,
+    @SerialName("implicit-assertion")
+    val implicitAssertion: String? = null,
     val token: String,
 )
 

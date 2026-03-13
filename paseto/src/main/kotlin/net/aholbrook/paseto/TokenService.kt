@@ -218,7 +218,6 @@ internal class PublicTokenService internal constructor(
     private val json: Json = Json { explicitNulls = false },
 ) : TokenService {
     override fun encode(token: Token, implicitAssertion: String): String {
-        // TODO expand service-test-vectors for v4 with implicit assertions
         if (implicitAssertion.isNotEmpty() && !paseto.supportsImplicitAssertion) {
             throw ImplicitAssertionsNotSupportedException(paseto.version)
         }
@@ -239,7 +238,6 @@ internal class PublicTokenService internal constructor(
     }
 
     override fun decode(token: String, footer: Footer?, implicitAssertion: String): Token {
-        // TODO expand service-test-vectors for v4 with implicit assertions
         if (implicitAssertion.isNotEmpty() && !paseto.supportsImplicitAssertion) {
             throw ImplicitAssertionsNotSupportedException(paseto.version)
         }

@@ -263,6 +263,57 @@
                 "kid": "key-1"
             },
             "token": "v4.public.e30dIki_CWNjVyAgAolgKwksBFK53XcCBttt51UhiqSavDFEABNl-ioet3HVQDTnZetqJZTm7y5yrqRvoeVeOmQD.eyJraWQiOiJrZXktMSJ9"
+        },
+        {
+            "name": "TV_IA_1_V4_LOCAL",
+            "mode": "local",
+            "nonce": "3e2e599e3631b0e43595be4a31d4d615b7cb11b78d0b9d1bf703eb90ec2c0bba",
+            "key": "21a438bd432da3e9f87ec1a2e42136b77c1ec57fb5acfeb80fac8c9589ce066f",
+            "payload": {},
+            "implicit-assertion": "ia-test-v4-local",
+            "token": "v4.local.Pi5ZnjYxsOQ1lb5KMdTWFbfLEbeNC50b9wPrkOwsC7rWgAUbvteusd1WHY8LTuC5g9M3XJlDuV48rxIwC5yz8BMM"
+        },
+        {
+            "name": "TV_IA_1_V4_LOCAL_WITH_FOOTER",
+            "mode": "local",
+            "nonce": "3e2e599e3631b0e43595be4a31d4d615b7cb11b78d0b9d1bf703eb90ec2c0bba",
+            "key": "21a438bd432da3e9f87ec1a2e42136b77c1ec57fb5acfeb80fac8c9589ce066f",
+            "payload": {},
+            "footer": {
+                "kid": "key-1"
+            },
+            "implicit-assertion": "ia-test-v4-local-footer",
+            "token": "v4.local.Pi5ZnjYxsOQ1lb5KMdTWFbfLEbeNC50b9wPrkOwsC7rWgB4IAgGbX32Zn_RBZDFPICTlIqYV4Z0F5MflWIn7D_Em.eyJraWQiOiJrZXktMSJ9"
+        },
+        {
+            "name": "TV_IA_1_V4_PUBLIC",
+            "mode": "public",
+            "public-key": "968ca16429daed891fc74a34f1998968e9fc3b4172b2b8eefe01c11821abbe5c",
+            "secret-key": "737c0470b4e9b7ca8b0ee1403e41d8083b2ba76c44d48581468270f0b74fd647968ca16429daed891fc74a34f1998968e9fc3b4172b2b8eefe01c11821abbe5c",
+            "payload": {},
+            "implicit-assertion": "ia-test-v4-public",
+            "token": "v4.public.e33z8Z_SKTvH9EWzHle5ni6iqC5tyJpQReq6gGsNiopcSYNnep19KYwF9dwQOPUdUWpsJFnm-3ydEPYkHe2pJJ4A"
+        },
+        {
+            "name": "TV_IA_1_V4_PUBLIC_WITH_FOOTER",
+            "mode": "public",
+            "public-key": "968ca16429daed891fc74a34f1998968e9fc3b4172b2b8eefe01c11821abbe5c",
+            "secret-key": "737c0470b4e9b7ca8b0ee1403e41d8083b2ba76c44d48581468270f0b74fd647968ca16429daed891fc74a34f1998968e9fc3b4172b2b8eefe01c11821abbe5c",
+            "payload": {},
+            "footer": {
+                "kid": "key-1"
+            },
+            "implicit-assertion": "ia-test-v4-public-footer",
+            "token": "v4.public.e31b3quiFqZW2AzqqYXYEQ-pnGe5FhpNzDiWUTm7iB6RyTKvIxf6lnkGJ1Gha-puM_3-xKqwkHchFrFQRTvUQl8P.eyJraWQiOiJrZXktMSJ9"
+        },
+        {
+            "name": "TV_IA_NULL_V4_LOCAL",
+            "mode": "local",
+            "nonce": "3e2e599e3631b0e43595be4a31d4d615b7cb11b78d0b9d1bf703eb90ec2c0bba",
+            "key": "21a438bd432da3e9f87ec1a2e42136b77c1ec57fb5acfeb80fac8c9589ce066f",
+            "payload": {},
+            "implicit-assertion": null,
+            "token": "v4.local.Pi5ZnjYxsOQ1lb5KMdTWFbfLEbeNC50b9wPrkOwsC7rWgEhFA8BaCSmjB8wc6kE3pYHagpgK0q051d2Pwf-ZY16U"
         }
     ]
 }

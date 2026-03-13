@@ -86,14 +86,18 @@ class ServiceTestVectorsTests {
             val currentTime = expected.notBefore ?: expected.issuedAt
 
             val actual = when (vector.mode) {
-                "local" -> localService(version, vector, currentTime).encode(expected)
-                "public" -> publicService(version, vector, currentTime).encode(expected)
+                "local" -> localService(version, vector, currentTime)
+                    .encode(expected, vector.implicitAssertion ?: "")
+
+                "public" -> publicService(version, vector, currentTime)
+                    .encode(expected, vector.implicitAssertion ?: "")
+
                 else -> error("Unsupported mode: ${vector.mode}")
             }
 
             if (version == Version.V1 && vector.mode == "public") {
                 val decoded = publicService(version, vector, currentTime)
-                    .decode(actual, expected.footer)
+                    .decode(actual, expected.footer, vector.implicitAssertion ?: "")
                 decoded shouldBe expected
             } else {
                 actual shouldBe vector.token
@@ -106,10 +110,10 @@ class ServiceTestVectorsTests {
 
             val actual = when (vector.mode) {
                 "local" -> localService(version, vector, currentTime)
-                    .decode(vector.token, expected.footer)
+                    .decode(vector.token, expected.footer, vector.implicitAssertion ?: "")
 
                 "public" -> publicService(version, vector, currentTime)
-                    .decode(vector.token, expected.footer)
+                    .decode(vector.token, expected.footer, vector.implicitAssertion ?: "")
 
                 else -> error("Unsupported mode: ${vector.mode}")
             }
