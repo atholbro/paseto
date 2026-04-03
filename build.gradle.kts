@@ -68,6 +68,7 @@ allprojects {
 
         withType<Test>().configureEach {
             useJUnitPlatform()
+            jvmArgs = listOf("-Xshare:off")
 
             testLogging {
                 events("failed", "skipped")

@@ -144,7 +144,7 @@ nmcpAggregation {
         username = System.getenv("PUBLISH_USER")
         password = System.getenv("PUBLISH_PASS")
 
-        publishingType = "USER_MANAGED"
+        publishingType = "AUTOMATIC"
     }
 }
 

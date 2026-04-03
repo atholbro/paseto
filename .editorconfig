@@ -255,6 +255,7 @@ ij_java_wrap_long_lines = false
 
 [*.{kt,kts}] # See danger section: https://pinterest.github.io/ktlint/1.1.0/rules/configuration-ktlint/
 ktlint_code_style = intellij_idea
+ktlint_standard_no-unused-imports = enabled
 ktlint_standard_multiline-expression-wrapping = disabled
 ktlint_standard_string-template-indent = disabled
 ij_continuation_indent_size = 4
