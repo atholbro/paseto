@@ -14,7 +14,6 @@ import org.junit.jupiter.params.provider.ValueSource
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
-import kotlin.longArrayOf
 
 class NotExpiredTests {
     @ParameterizedTest

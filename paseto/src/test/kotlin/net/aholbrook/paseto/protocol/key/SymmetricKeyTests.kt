@@ -11,7 +11,6 @@ import net.aholbrook.paseto.exception.KeyLengthException
 import net.aholbrook.paseto.exception.KeyPurposeException
 import net.aholbrook.paseto.exception.KeyVersionException
 import net.aholbrook.paseto.keyV4Local
-import net.aholbrook.paseto.keyV4Public
 import net.aholbrook.paseto.protocol.Purpose
 import net.aholbrook.paseto.protocol.Version
 import org.junit.jupiter.api.Test

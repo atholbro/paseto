@@ -14,7 +14,6 @@ import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
 import java.time.Instant
-import kotlin.collections.forEach
 
 @Serializable
 data class ServiceTestVectors(val name: String, val version: String, val tests: List<ServiceTestVector>)
