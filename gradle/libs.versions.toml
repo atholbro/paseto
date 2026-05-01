@@ -8,12 +8,11 @@ gradleUpdateVersions = "1.1.0"
 gradleVersions = "0.53.0"
 # @keep used manually for jacoco config, see build.gradle.kts
 jacoco = "0.8.14"
-junit-jupiter = "6.0.3"
-junit-platform = "6.0.3"
+junit = "6.0.3"
 # @keep jvm target
 jvm = "17"
-kotest = "6.1.4"
-kotlin = "2.3.10"
+kotest = "6.1.10"
+kotlin = "2.3.20"
 kotlinter = "5.4.2"
 kotlinx-serialization = "1.10.0"
 mockk = "1.14.9"
@@ -22,10 +21,10 @@ nmcp = "1.4.4"
 [libraries]
 bouncycastle = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }

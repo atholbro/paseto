@@ -1,4 +1,3 @@
-import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -68,6 +67,7 @@ allprojects {
 
         withType<Test>().configureEach {
             useJUnitPlatform()
+            jvmArgs = listOf("-Xshare:off")
 
             testLogging {
                 events("failed", "skipped")
