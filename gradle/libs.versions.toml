@@ -1,22 +1,22 @@
 [versions]
 binaryCompatibilityValidator = "0.18.1"
-bouncycastle = "1.83"
+bouncycastle = "1.84"
 clikt = "5.1.0"
 detekt = "1.23.8"
 gradleFilterVersions = "0.1.16"
 gradleUpdateVersions = "1.1.0"
-gradleVersions = "0.53.0"
+gradleVersions = "0.54.0"
 # @keep used manually for jacoco config, see build.gradle.kts
 jacoco = "0.8.14"
-junit = "6.0.3"
+junit = "6.1.1"
 # @keep jvm target
 jvm = "17"
-kotest = "6.1.10"
-kotlin = "2.3.20"
-kotlinter = "5.4.2"
-kotlinx-serialization = "1.10.0"
-mockk = "1.14.9"
-nmcp = "1.4.4"
+kotest = "6.2.1"
+kotlin = "2.4.0"
+kotlinter = "5.5.0"
+kotlinx-serialization = "1.11.0"
+mockk = "1.14.11"
+nmcp = "1.6.0"
 
 [libraries]
 bouncycastle = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
